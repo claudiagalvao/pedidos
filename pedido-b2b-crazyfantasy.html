@@ -326,26 +326,38 @@ document.getElementById("total").innerText="0"
 
 function prepararEmail(){
 
-let resumo="Pedido Crazy Fantasy:\n\n"
+let empresa = document.querySelector('[name="empresa"]').value
+let contato = document.querySelector('[name="contato"]').value
+let telefone = document.querySelector('[name="telefone"]').value
+let email = document.querySelector('[name="email"]').value
+
+let resumo = "PEDIDO CRAZY FANTASY\n\n"
+
+resumo += "Empresa: "+empresa+"\n"
+resumo += "Contato: "+contato+"\n"
+resumo += "Telefone: "+telefone+"\n"
+resumo += "Email: "+email+"\n\n"
+
+resumo += "Produtos:\n"
 
 document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
 if(i==0)return
 
-let produto=linha.children[0].innerText
-let qtd=linha.querySelector(".qtd").value
+let produto = linha.children[0].innerText
+let qtd = linha.querySelector(".qtd").value
 
 if(qtd>0){
 
-resumo+=produto+" - "+qtd+" unidades\n"
+resumo += produto+" - "+qtd+" unidades\n"
 
 }
 
 })
 
-resumo+="\nTotal: R$ "+document.getElementById("total").innerText
+resumo += "\nTOTAL: R$ "+document.getElementById("total").innerText
 
-document.getElementById("pedido_email").value=resumo
+document.getElementById("pedido_email").value = resumo
 
 }
 
