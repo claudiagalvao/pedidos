@@ -21,11 +21,10 @@ color:white;
 
 .banner{
 width:100%;
-display:block;
 }
 
 .container{
-max-width:1200px;
+max-width:1100px;
 margin:auto;
 padding:20px;
 }
@@ -51,14 +50,13 @@ margin-bottom:20px;
 
 input{
 padding:10px;
-border:none;
 border-radius:6px;
+border:none;
 }
 
 .tabela-container{
 max-height:420px;
 overflow-y:auto;
-border-radius:8px;
 }
 
 table{
@@ -83,15 +81,6 @@ tr:nth-child(even){
 background:#f3f3f3;
 }
 
-.qtd{
-width:60px;
-}
-
-.desc{
-color:#ff0066;
-font-weight:bold;
-}
-
 .total{
 font-size:24px;
 text-align:right;
@@ -100,10 +89,10 @@ color:#00ff9c;
 }
 
 .buttons{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
 margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
 }
 
 button{
@@ -112,10 +101,6 @@ border:none;
 border-radius:8px;
 font-size:16px;
 cursor:pointer;
-}
-
-.enviar{
-background:linear-gradient(45deg,#00ff9d,#00c36f);
 }
 
 .whats{
@@ -133,18 +118,6 @@ background:#222;
 color:white;
 }
 
-@media(max-width:700px){
-
-.grid{
-grid-template-columns:1fr;
-}
-
-table{
-font-size:12px;
-}
-
-}
-
 </style>
 
 </head>
@@ -157,23 +130,19 @@ font-size:12px;
 
 <h1>Pedido para Parceiros & Revendedores</h1>
 
-<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
-
-<input type="hidden" name="pedido" id="pedido_email">
-
 <div class="form-box">
 
 <div class="grid">
 
-<input name="empresa" placeholder="Empresa" required>
+<input id="empresa" placeholder="Empresa">
 
-<input name="cnpj" placeholder="CNPJ">
+<input id="cnpj" placeholder="CNPJ">
 
-<input name="contato" placeholder="Nome do contato" required>
+<input id="contato" placeholder="Contato">
 
-<input name="telefone" placeholder="Telefone">
+<input id="telefone" placeholder="Telefone">
 
-<input name="email" placeholder="Email" required>
+<input id="email" placeholder="Email">
 
 </div>
 
@@ -184,7 +153,6 @@ font-size:12px;
 <tr>
 <th>Produto</th>
 <th>Preço</th>
-<th>Preço c/ 10% desc</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
@@ -199,87 +167,42 @@ Total: R$ <span id="total">0</span>
 
 <div class="buttons">
 
-<button type="button" class="limpar" onclick="limpar()">
-Limpar Pedido
-</button>
+<button class="limpar" onclick="limpar()">Limpar Pedido</button>
 
-<button type="button" class="whats" onclick="whatsapp()">
-Enviar WhatsApp
-</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 
-<button type="button" class="pdf" onclick="pdf()">
-Gerar PDF
-</button>
-
-<button type="submit" class="enviar" onclick="prepararEmail()">
-Enviar por Email
-</button>
+<button class="whats" onclick="enviarWhats()">Enviar Pedido WhatsApp</button>
 
 </div>
 
 </div>
-
-</form>
-
 </div>
 
 <script>
 
 const produtos = [
-
 ["Arlequina",180],
-["Arlequina de Casaco",180],
-["Mulher Maravilha",125],
 ["Barbie",125],
-["Sininho",99.9],
-["Unicornio c/ Led",199.99],
-["Unicornio s/ Led",189.99],
-["Jessie",129.9],
-["Jasmine",120],
-["Doutora",149.9],
-["Medica",180],
-["Astronauta",199.9],
-["Cruela",140],
 ["Elsa",269.9],
 ["Rapunzel",269.9],
 ["Cinderela",269.9],
-["Bela Adormecida",269.9],
 ["Moana",269.9],
 ["Branca de Neve",269.9],
 ["Bela",269.9],
 ["Alice",120],
-["Policial",130],
-["Aurora Basica",209.99],
-["Aurora Luxo",299.99],
-["Cinderela Pop",129.99],
-["Bela Pop",129.99],
-["Bela Luxo",299.99],
-["Rapunzel Basica",179.99],
-["Rapunzel Luxo",299.99],
-["Cinderela Basica",179.99],
-["Cinderela Luxo",299.99],
 ["Mirabel",239.99],
 ["Lady Bug",199.99],
-["Jasmine Luxo",239.99],
-["Mulher Maravilha Luxo",209.99],
-["Ana Pop",109.99],
-["Ana Luxo",269.99],
 ["Minnie",239.99]
-
 ]
 
 const tabela = document.getElementById("tabela")
 
 produtos.forEach(p=>{
 
-let preco=p[1]
-let desc=preco>200?preco*0.9:preco
-
 tabela.innerHTML += `
 <tr>
 <td>${p[0]}</td>
-<td data-preco="${preco}">${preco}</td>
-<td class="desc">${desc.toFixed(2)}</td>
+<td data-preco="${p[1]}">${p[1]}</td>
 <td><input type="number" class="qtd" onchange="calcular()"></td>
 <td class="subtotal">0</td>
 </tr>
@@ -298,7 +221,7 @@ if(i==0)return
 let preco=parseFloat(linha.children[1].dataset.preco)
 
 if(preco>200){
-preco=preco*0.9
+preco*=0.9
 }
 
 let qtd=linha.querySelector(".qtd").value
@@ -324,44 +247,45 @@ document.getElementById("total").innerText="0"
 
 }
 
-function prepararEmail(){
+function gerarPDF(){
 
-let empresa = document.querySelector('[name="empresa"]').value
-let contato = document.querySelector('[name="contato"]').value
-let telefone = document.querySelector('[name="telefone"]').value
-let email = document.querySelector('[name="email"]').value
+const { jsPDF } = window.jspdf
+let pdf = new jsPDF()
 
-let resumo = "PEDIDO CRAZY FANTASY\n\n"
+let empresa=document.getElementById("empresa").value
+let contato=document.getElementById("contato").value
 
-resumo += "Empresa: "+empresa+"\n"
-resumo += "Contato: "+contato+"\n"
-resumo += "Telefone: "+telefone+"\n"
-resumo += "Email: "+email+"\n\n"
+pdf.text("CRAZY FANTASY",20,20)
+pdf.text("Pedido B2B",20,30)
 
-resumo += "Produtos:\n"
+pdf.text("Empresa: "+empresa,20,50)
+pdf.text("Contato: "+contato,20,60)
+
+let y=80
 
 document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
 if(i==0)return
 
-let produto = linha.children[0].innerText
-let qtd = linha.querySelector(".qtd").value
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
 
 if(qtd>0){
 
-resumo += produto+" - "+qtd+" unidades\n"
+pdf.text(produto+" - "+qtd,20,y)
+y+=10
 
 }
 
 })
 
-resumo += "\nTOTAL: R$ "+document.getElementById("total").innerText
+pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+20)
 
-document.getElementById("pedido_email").value = resumo
+pdf.save("pedido-crazyfantasy.pdf")
 
 }
 
-function whatsapp(){
+function enviarWhats(){
 
 let texto="Pedido Crazy Fantasy:%0A"
 
@@ -381,38 +305,6 @@ texto+=produto+" - "+qtd+" unidades%0A"
 texto+="Total R$ "+document.getElementById("total").innerText
 
 window.open("https://wa.me/5511999999999?text="+texto)
-
-}
-
-function pdf(){
-
-const { jsPDF } = window.jspdf
-
-let pdf=new jsPDF()
-
-pdf.text("Pedido Crazy Fantasy",20,20)
-
-let y=40
-
-document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
-
-if(i==0)return
-
-let produto=linha.children[0].innerText
-let qtd=linha.querySelector(".qtd").value
-
-if(qtd>0){
-
-pdf.text(produto+" - "+qtd,20,y)
-y+=10
-
-}
-
-})
-
-pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
-
-pdf.save("pedido-crazyfantasy.pdf")
 
 }
 
