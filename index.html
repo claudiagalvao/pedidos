@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pedido B2B - Crazy Fantasy</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0b0b15;
+color:white;
+}
+
+.banner{
+width:100%;
+display:block;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+text-align:center;
+margin-bottom:25px;
+}
+
+.form-box{
+background:#141426;
+padding:25px;
+border-radius:12px;
+box-shadow:0 0 20px #ff00c8;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px;
+}
+
+input{
+padding:10px;
+border:none;
+border-radius:6px;
+}
+
+.tabela-container{
+max-height:400px;
+overflow-y:auto;
+border-radius:8px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+color:black;
+}
+
+th{
+background:#000;
+color:white;
+padding:10px;
+}
+
+td{
+padding:8px;
+text-align:center;
+}
+
+tr:nth-child(even){
+background:#f3f3f3;
+}
+
+.qtd{
+width:60px;
+}
+
+.desc{
+color:#ff0066;
+font-weight:bold;
+}
+
+.total{
+font-size:24px;
+text-align:right;
+margin-top:20px;
+color:#00ff9c;
+}
+
+.buttons{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:20px;
+}
+
+button{
+padding:15px 20px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+.enviar{
+background:linear-gradient(45deg,#00ff9d,#00c36f);
+}
+
+.whats{
+background:#25d366;
+color:white;
+}
+
+.pdf{
+background:#ff0077;
+color:white;
+}
+
+.limpar{
+background:#222;
+color:white;
+}
+
+@media(max-width:700px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+table{
+font-size:12px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<img src="banner.jpg" class="banner">
+
+<div class="container">
+
+<h1>Pedido para Parceiros & Revendedores</h1>
+
+<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+
+<div class="form-box">
+
+<div class="grid">
+
+<input name="empresa" placeholder="Empresa" required>
+
+<input name="cnpj" placeholder="CNPJ">
+
+<input name="contato" placeholder="Nome do contato" required>
+
+<input name="telefone" placeholder="Telefone">
+
+<input name="email" placeholder="Email" required>
+
+</div>
+
+<div class="tabela-container">
+
+<table id="tabela">
+
+<tr>
+<th>Produto</th>
+<th>Preço</th>
+<th>Desconto</th>
+<th>Qtd</th>
+<th>Total</th>
+</tr>
+
+<script>
+
+const produtos = [
+
+["Arlequina",180],
+["Arlequina de Casaco",180],
+["Mulher Maravilha",125],
+["Barbie",125],
+["Sininho",99.9],
+["Unicornio c/ Led",199.99],
+["Unicornio s/ Led",189.99],
+["Jessie",129.9],
+["Jasmine",120],
+["Doutora",149.9],
+["Medica",180],
+["Astronauta",199.9],
+["Cruela",140],
+["Elsa",269.9],
+["Rapunzel",269.9],
+["Cinderela",269.9],
+["Bela Adormecida",269.9],
+["Moana",269.9],
+["Branca de Neve",269.9],
+["Bela",269.9],
+["Alice",120],
+["Policial",130],
+["Aurora Basica",209.99],
+["Aurora Luxo",299.99],
+["Cinderela Pop",129.99],
+["Bela Pop",129.99],
+["Bela Luxo",299.99],
+["Rapunzel Basica",179.99],
+["Rapunzel Luxo",299.99],
+["Cinderela Basica",179.99],
+["Cinderela Luxo",299.99],
+["Mirabel",239.99],
+["Lady Bug",199.99],
+["Jasmine Luxo",239.99],
+["Mulher Maravilha Luxo",209.99],
+["Ana Pop",109.99],
+["Ana Luxo",269.99],
+["Minnie",239.99]
+
+]
+
+produtos.forEach(p=>{
+
+let preco=p[1]
+let desc=preco>200?preco*0.9:preco
+
+document.write(`
+<tr>
+<td>${p[0]}</td>
+<td data-preco="${preco}">R$ ${preco}</td>
+<td class="desc">R$ ${desc.toFixed(2)}</td>
+<td><input type="number" class="qtd" onchange="calcular()"></td>
+<td class="subtotal">0</td>
+</tr>
+`)
+
+})
+
+</script>
+
+</table>
+
+</div>
+
+<div class="total">
+Total: R$ <span id="total">0</span>
+</div>
+
+<div class="buttons">
+
+<button type="button" class="limpar" onclick="limpar()">
+Limpar Pedido
+</button>
+
+<button type="button" class="whats" onclick="whatsapp()">
+Enviar WhatsApp
+</button>
+
+<button type="button" class="pdf" onclick="pdf()">
+Gerar PDF
+</button>
+
+<button type="submit" class="enviar">
+Enviar por Email
+</button>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+function calcular(){
+
+let total=0
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i==0)return
+
+let preco=parseFloat(linha.children[1].dataset.preco)
+
+if(preco>200){
+preco=preco*0.9
+}
+
+let qtd=linha.querySelector(".qtd").value
+
+let subtotal=preco*qtd
+
+linha.querySelector(".subtotal").innerText=subtotal.toFixed(2)
+
+total+=subtotal
+
+})
+
+document.getElementById("total").innerText=total.toFixed(2)
+
+}
+
+function limpar(){
+
+document.querySelectorAll(".qtd").forEach(i=>i.value="")
+document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0")
+
+document.getElementById("total").innerText="0"
+
+}
+
+function whatsapp(){
+
+let texto="Pedido Crazy Fantasy:%0A"
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i==0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+texto+=produto+" - "+qtd+" unidades%0A"
+}
+
+})
+
+texto+="Total R$ "+document.getElementById("total").innerText
+
+window.open("https://wa.me/5511999999999?text="+texto)
+
+}
+
+function pdf(){
+
+const { jsPDF } = window.jspdf
+let pdf=new jsPDF()
+
+pdf.text("Pedido Crazy Fantasy",20,20)
+
+let y=40
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i==0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+
+pdf.text(produto+" - "+qtd,20,y)
+y+=10
+
+}
+
+})
+
+pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
+
+pdf.save("pedido-crazyfantasy.pdf")
+
+}
+
+</script>
+
+</body>
+</html>
