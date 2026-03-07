@@ -8,114 +8,150 @@
 
 <title>Pedido B2B - Crazy Fantasy</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
 
 body{
 margin:0;
-font-family:Arial;
-background:#0b0b15;
-color:white;
+font-family:Segoe UI, Arial;
+background:#f4f6fb;
+color:#333;
 }
 
-.banner{
-width:100%;
+/* HEADER */
+
+.header{
+background:linear-gradient(135deg,#6c2bd9,#b517ff);
+text-align:center;
+padding:30px;
 }
+
+.header img{
+max-width:350px;
+}
+
+/* CONTAINER */
 
 .container{
 max-width:1100px;
 margin:auto;
-padding:20px;
+padding:30px;
 }
 
-h1{
-text-align:center;
-margin-bottom:25px;
-}
+/* FORM BOX */
 
 .form-box{
-background:#141426;
+background:white;
 padding:25px;
 border-radius:12px;
-box-shadow:0 0 20px #ff00c8;
+box-shadow:0 8px 25px rgba(0,0,0,0.1);
 }
+
+/* CLIENT GRID */
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:12px;
 margin-bottom:20px;
 }
 
 input{
-padding:10px;
-border-radius:6px;
-border:none;
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
 }
+
+/* TABLE */
 
 .tabela-container{
 max-height:420px;
 overflow-y:auto;
+border-radius:10px;
+border:1px solid #ddd;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
 background:white;
-color:black;
 }
 
 th{
-background:#000;
+background:#6c2bd9;
 color:white;
-padding:10px;
+padding:12px;
 }
 
 td{
-padding:8px;
+padding:10px;
 text-align:center;
+border-bottom:1px solid #eee;
 }
 
 tr:nth-child(even){
-background:#f3f3f3;
+background:#fafafa;
 }
+
+.qtd{
+width:60px;
+}
+
+/* TOTAL */
 
 .total{
 font-size:24px;
 text-align:right;
 margin-top:20px;
-color:#00ff9c;
+color:#6c2bd9;
+font-weight:bold;
 }
 
+/* BUTTONS */
+
 .buttons{
-margin-top:20px;
 display:flex;
-gap:10px;
+gap:12px;
 flex-wrap:wrap;
+margin-top:20px;
 }
 
 button{
-padding:15px 20px;
+padding:14px 22px;
 border:none;
-border-radius:8px;
-font-size:16px;
+border-radius:10px;
+font-size:15px;
 cursor:pointer;
+transition:0.2s;
 }
 
-.whats{
-background:#25d366;
-color:white;
+button:hover{
+transform:scale(1.05);
 }
 
 .pdf{
-background:#ff0077;
+background:#ff4d6d;
+color:white;
+}
+
+.enviar{
+background:#00c897;
 color:white;
 }
 
 .limpar{
-background:#222;
+background:#444;
 color:white;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
@@ -124,25 +160,33 @@ color:white;
 
 <body>
 
-<img src="banner.jpg" class="banner">
+<div class="header">
+
+<img src="logo.png">
+
+</div>
 
 <div class="container">
 
-<h1>Pedido para Parceiros & Revendedores</h1>
+<h2 style="text-align:center;">Pedido para Parceiros & Revendedores</h2>
+
+<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+
+<input type="hidden" name="pedido" id="pedido_email">
 
 <div class="form-box">
 
 <div class="grid">
 
-<input id="empresa" placeholder="Empresa">
+<input name="empresa" placeholder="Empresa" required>
 
-<input id="cnpj" placeholder="CNPJ">
+<input name="cnpj" placeholder="CNPJ">
 
-<input id="contato" placeholder="Contato">
+<input name="contato" placeholder="Nome do contato" required>
 
-<input id="telefone" placeholder="Telefone">
+<input name="telefone" placeholder="Telefone">
 
-<input id="email" placeholder="Email">
+<input name="email" placeholder="Email" required>
 
 </div>
 
@@ -153,6 +197,7 @@ color:white;
 <tr>
 <th>Produto</th>
 <th>Preço</th>
+<th>Preço c/ desconto</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
@@ -167,42 +212,83 @@ Total: R$ <span id="total">0</span>
 
 <div class="buttons">
 
-<button class="limpar" onclick="limpar()">Limpar Pedido</button>
+<button type="button" class="limpar" onclick="limpar()">
+Limpar Pedido
+</button>
 
-<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+<button type="button" class="pdf" onclick="pdf()">
+Gerar PDF
+</button>
 
-<button class="whats" onclick="enviarWhats()">Enviar Pedido WhatsApp</button>
+<button type="submit" class="enviar" onclick="prepararEmail()">
+Enviar Pedido para Crazy Fantasy
+</button>
 
 </div>
 
 </div>
+
+</form>
+
 </div>
 
 <script>
 
 const produtos = [
+
 ["Arlequina",180],
+["Arlequina de Casaco",180],
+["Mulher Maravilha",125],
 ["Barbie",125],
+["Sininho",99.9],
+["Unicornio c/ Led",199.99],
+["Unicornio s/ Led",189.99],
+["Jessie",129.9],
+["Jasmine",120],
+["Doutora",149.9],
+["Medica",180],
+["Astronauta",199.9],
+["Cruela",140],
 ["Elsa",269.9],
 ["Rapunzel",269.9],
 ["Cinderela",269.9],
+["Bela Adormecida",269.9],
 ["Moana",269.9],
 ["Branca de Neve",269.9],
 ["Bela",269.9],
 ["Alice",120],
+["Policial",130],
+["Aurora Basica",209.99],
+["Aurora Luxo",299.99],
+["Cinderela Pop",129.99],
+["Bela Pop",129.99],
+["Bela Luxo",299.99],
+["Rapunzel Basica",179.99],
+["Rapunzel Luxo",299.99],
+["Cinderela Basica",179.99],
+["Cinderela Luxo",299.99],
 ["Mirabel",239.99],
 ["Lady Bug",199.99],
+["Jasmine Luxo",239.99],
+["Mulher Maravilha Luxo",209.99],
+["Ana Pop",109.99],
+["Ana Luxo",269.99],
 ["Minnie",239.99]
+
 ]
 
 const tabela = document.getElementById("tabela")
 
 produtos.forEach(p=>{
 
+let preco=p[1]
+let desc=preco>200?preco*0.9:preco
+
 tabela.innerHTML += `
 <tr>
 <td>${p[0]}</td>
-<td data-preco="${p[1]}">${p[1]}</td>
+<td>${preco}</td>
+<td>${desc.toFixed(2)}</td>
 <td><input type="number" class="qtd" onchange="calcular()"></td>
 <td class="subtotal">0</td>
 </tr>
@@ -218,7 +304,7 @@ document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
 if(i==0)return
 
-let preco=parseFloat(linha.children[1].dataset.preco)
+let preco=parseFloat(linha.children[1].innerText)
 
 if(preco>200){
 preco*=0.9
@@ -247,21 +333,9 @@ document.getElementById("total").innerText="0"
 
 }
 
-function gerarPDF(){
+function prepararEmail(){
 
-const { jsPDF } = window.jspdf
-let pdf = new jsPDF()
-
-let empresa=document.getElementById("empresa").value
-let contato=document.getElementById("contato").value
-
-pdf.text("CRAZY FANTASY",20,20)
-pdf.text("Pedido B2B",20,30)
-
-pdf.text("Empresa: "+empresa,20,50)
-pdf.text("Contato: "+contato,20,60)
-
-let y=80
+let resumo="Pedido Crazy Fantasy\n\n"
 
 document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
@@ -271,40 +345,14 @@ let produto=linha.children[0].innerText
 let qtd=linha.querySelector(".qtd").value
 
 if(qtd>0){
-
-pdf.text(produto+" - "+qtd,20,y)
-y+=10
-
+resumo+=produto+" - "+qtd+" unidades\n"
 }
 
 })
 
-pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+20)
+resumo+="\nTOTAL: R$ "+document.getElementById("total").innerText
 
-pdf.save("pedido-crazyfantasy.pdf")
-
-}
-
-function enviarWhats(){
-
-let texto="Pedido Crazy Fantasy:%0A"
-
-document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
-
-if(i==0)return
-
-let produto=linha.children[0].innerText
-let qtd=linha.querySelector(".qtd").value
-
-if(qtd>0){
-texto+=produto+" - "+qtd+" unidades%0A"
-}
-
-})
-
-texto+="Total R$ "+document.getElementById("total").innerText
-
-window.open("https://wa.me/5511999999999?text="+texto)
+document.getElementById("pedido_email").value=resumo
 
 }
 
