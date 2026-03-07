@@ -56,7 +56,7 @@ border-radius:6px;
 }
 
 .tabela-container{
-max-height:400px;
+max-height:420px;
 overflow-y:auto;
 border-radius:8px;
 }
@@ -159,6 +159,8 @@ font-size:12px;
 
 <form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
+<input type="hidden" name="pedido" id="pedido_email">
+
 <div class="form-box">
 
 <div class="grid">
@@ -182,10 +184,44 @@ font-size:12px;
 <tr>
 <th>Produto</th>
 <th>Preço</th>
-<th>Desconto</th>
+<th>Preço c/ 10% desc</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
+
+</table>
+
+</div>
+
+<div class="total">
+Total: R$ <span id="total">0</span>
+</div>
+
+<div class="buttons">
+
+<button type="button" class="limpar" onclick="limpar()">
+Limpar Pedido
+</button>
+
+<button type="button" class="whats" onclick="whatsapp()">
+Enviar WhatsApp
+</button>
+
+<button type="button" class="pdf" onclick="pdf()">
+Gerar PDF
+</button>
+
+<button type="submit" class="enviar" onclick="prepararEmail()">
+Enviar por Email
+</button>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
 
 <script>
 
@@ -232,60 +268,24 @@ const produtos = [
 
 ]
 
+const tabela = document.getElementById("tabela")
+
 produtos.forEach(p=>{
 
 let preco=p[1]
 let desc=preco>200?preco*0.9:preco
 
-document.write(`
+tabela.innerHTML += `
 <tr>
 <td>${p[0]}</td>
-<td data-preco="${preco}">R$ ${preco}</td>
-<td class="desc">R$ ${desc.toFixed(2)}</td>
+<td data-preco="${preco}">${preco}</td>
+<td class="desc">${desc.toFixed(2)}</td>
 <td><input type="number" class="qtd" onchange="calcular()"></td>
 <td class="subtotal">0</td>
 </tr>
-`)
+`
 
 })
-
-</script>
-
-</table>
-
-</div>
-
-<div class="total">
-Total: R$ <span id="total">0</span>
-</div>
-
-<div class="buttons">
-
-<button type="button" class="limpar" onclick="limpar()">
-Limpar Pedido
-</button>
-
-<button type="button" class="whats" onclick="whatsapp()">
-Enviar WhatsApp
-</button>
-
-<button type="button" class="pdf" onclick="pdf()">
-Gerar PDF
-</button>
-
-<button type="submit" class="enviar">
-Enviar por Email
-</button>
-
-</div>
-
-</div>
-
-</form>
-
-</div>
-
-<script>
 
 function calcular(){
 
@@ -324,6 +324,43 @@ document.getElementById("total").innerText="0"
 
 }
 
+function prepararEmail(){
+
+let empresa = document.querySelector('[name="empresa"]').value
+let contato = document.querySelector('[name="contato"]').value
+let telefone = document.querySelector('[name="telefone"]').value
+let email = document.querySelector('[name="email"]').value
+
+let resumo = "PEDIDO CRAZY FANTASY\n\n"
+
+resumo += "Empresa: "+empresa+"\n"
+resumo += "Contato: "+contato+"\n"
+resumo += "Telefone: "+telefone+"\n"
+resumo += "Email: "+email+"\n\n"
+
+resumo += "Produtos:\n"
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i==0)return
+
+let produto = linha.children[0].innerText
+let qtd = linha.querySelector(".qtd").value
+
+if(qtd>0){
+
+resumo += produto+" - "+qtd+" unidades\n"
+
+}
+
+})
+
+resumo += "\nTOTAL: R$ "+document.getElementById("total").innerText
+
+document.getElementById("pedido_email").value = resumo
+
+}
+
 function whatsapp(){
 
 let texto="Pedido Crazy Fantasy:%0A"
@@ -350,6 +387,7 @@ window.open("https://wa.me/5511999999999?text="+texto)
 function pdf(){
 
 const { jsPDF } = window.jspdf
+
 let pdf=new jsPDF()
 
 pdf.text("Pedido Crazy Fantasy",20,20)
