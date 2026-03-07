@@ -6,27 +6,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pedido B2B - Crazy Fantasy</title>
+<title>Crazy Fantasy - Catálogo de Produtos</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Segoe UI, Arial;
-background:#f4f6fb;
+background:#f5f6fb;
 color:#333;
 }
 
-/* HEADER */
+/* BANNER */
 
-.header{
-background:linear-gradient(135deg,#6c2bd9,#b517ff);
-text-align:center;
-padding:30px;
-}
-
-.header img{
-max-width:350px;
+.banner{
+width:100%;
+display:block;
 }
 
 /* CONTAINER */
@@ -43,10 +38,10 @@ padding:30px;
 background:white;
 padding:25px;
 border-radius:12px;
-box-shadow:0 8px 25px rgba(0,0,0,0.1);
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
 }
 
-/* CLIENT GRID */
+/* GRID CLIENTE */
 
 .grid{
 display:grid;
@@ -62,19 +57,18 @@ border:1px solid #ccc;
 font-size:14px;
 }
 
-/* TABLE */
+/* TABELA */
 
 .tabela-container{
 max-height:420px;
 overflow-y:auto;
-border-radius:10px;
 border:1px solid #ddd;
+border-radius:10px;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-background:white;
 }
 
 th{
@@ -107,7 +101,7 @@ color:#6c2bd9;
 font-weight:bold;
 }
 
-/* BUTTONS */
+/* BOTÕES */
 
 .buttons{
 display:flex;
@@ -160,11 +154,7 @@ grid-template-columns:1fr;
 
 <body>
 
-<div class="header">
-
-<img src="logo.png">
-
-</div>
+<img src="banner.png" class="banner">
 
 <div class="container">
 
