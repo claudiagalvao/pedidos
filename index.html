@@ -8,16 +8,16 @@
 
 <title>Crazy Fantasy - Catálogo de Produtos</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 
 body{
 margin:0;
 font-family:Segoe UI, Arial;
-background:#f5f6fb;
+background:#f4f6fb;
 color:#333;
 }
-
-/* BANNER */
 
 .banner{
 width:100%;
@@ -32,7 +32,7 @@ margin:auto;
 padding:30px;
 }
 
-/* FORM BOX */
+/* BOX FORM */
 
 .form-box{
 background:white;
@@ -343,6 +343,37 @@ resumo+=produto+" - "+qtd+" unidades\n"
 resumo+="\nTOTAL: R$ "+document.getElementById("total").innerText
 
 document.getElementById("pedido_email").value=resumo
+
+}
+
+function pdf(){
+
+const { jsPDF } = window.jspdf
+let pdf = new jsPDF()
+
+pdf.text("Pedido Crazy Fantasy",20,20)
+
+let y=40
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i==0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+
+pdf.text(produto+" - "+qtd,20,y)
+y+=10
+
+}
+
+})
+
+pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
+
+pdf.save("pedido-crazyfantasy.pdf")
 
 }
 
