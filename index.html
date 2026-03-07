@@ -19,11 +19,21 @@ background:#f4f6fb;
 color:#333;
 }
 
-.banner{
+/* BANNER */
+
+.banner-topo{
 width:100%;
-height:280px;
+height:260px;
 object-fit:cover;
 display:block;
+}
+
+@media(max-width:768px){
+
+.banner-topo{
+height:160px;
+}
+
 }
 
 /* CONTAINER */
@@ -34,7 +44,7 @@ margin:auto;
 padding:30px;
 }
 
-/* BOX FORM */
+/* FORM */
 
 .form-box{
 background:white;
@@ -43,7 +53,7 @@ border-radius:12px;
 box-shadow:0 6px 20px rgba(0,0,0,0.08);
 }
 
-/* GRID CLIENTE */
+/* GRID */
 
 .grid{
 display:grid;
@@ -140,8 +150,6 @@ background:#444;
 color:white;
 }
 
-/* MOBILE */
-
 @media(max-width:700px){
 
 .grid{
@@ -156,7 +164,7 @@ grid-template-columns:1fr;
 
 <body>
 
-<img src="banner.png" class="banner">
+<img src="banner.png" class="banner-topo">
 
 <div class="container">
 
@@ -171,11 +179,9 @@ grid-template-columns:1fr;
 <div class="grid">
 
 <input name="empresa" placeholder="Empresa" required>
-
 <input name="cnpj" placeholder="CNPJ">
 
 <input name="contato" placeholder="Nome do contato" required>
-
 <input name="telefone" placeholder="Telefone">
 
 <input name="email" placeholder="Email" required>
@@ -351,6 +357,7 @@ document.getElementById("pedido_email").value=resumo
 function pdf(){
 
 const { jsPDF } = window.jspdf
+
 let pdf = new jsPDF()
 
 pdf.text("Pedido Crazy Fantasy",20,20)
