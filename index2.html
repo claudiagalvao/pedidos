@@ -2,180 +2,112 @@
 <html lang="pt-br">
 
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crazy Fantasy | Pedido B2B</title>
 
-<title>Portal B2B Crazy Fantasy</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f5f5;
+font-family: Arial, Helvetica, sans-serif;
 margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:#000;
+color:white;
+padding:30px;
+text-align:center;
+}
+
+header h1{
+margin:0;
+font-size:32px;
 }
 
 .container{
-max-width:1200px;
+max-width:1100px;
 margin:auto;
-padding:20px;
-}
-
-.banner{
-width:100%;
-border-radius:10px;
-margin-bottom:15px;
-}
-
-.infoBox{
+padding:30px;
 background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-font-size:14px;
-}
-
-.progressBox{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-}
-
-.progressBar{
-background:#eee;
-height:10px;
-border-radius:10px;
-overflow:hidden;
-margin-top:6px;
-}
-
-#progressFill{
-height:100%;
-width:0%;
-background:#27ae60;
-}
-
-.sugestao{
-background:#fff4e5;
-padding:10px;
-border-radius:8px;
-margin-top:10px;
-}
-
-.categorias{
-background:white;
-padding:10px;
-border-radius:10px;
-margin-bottom:15px;
-}
-
-.catGrupo{
-margin-bottom:10px;
-}
-
-.categorias button{
-background:#efe8ff;
-border:none;
-padding:6px 12px;
-border-radius:20px;
-margin:3px;
-cursor:pointer;
-}
-
-.search{
-width:100%;
-padding:12px;
-border-radius:8px;
-border:1px solid #ccc;
-margin-bottom:15px;
-font-size:15px;
-}
-
-.layout{
-display:flex;
-gap:20px;
-}
-
-.produtos{
-flex:3;
-}
-
-.carrinho{
-flex:1;
-background:white;
-padding:15px;
-border-radius:10px;
-height:fit-content;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-background:white;
+margin-top:20px;
+}
+
+th, td{
+border:1px solid #ddd;
+padding:12px;
+text-align:center;
 }
 
 th{
-background:#dcd0f7;
+background:#111;
+color:white;
+}
+
+input[type="number"]{
+width:70px;
+padding:6px;
+}
+
+.form-area{
+margin-top:40px;
+background:#fafafa;
+padding:25px;
+border:1px solid #ddd;
+}
+
+.form-area input{
+width:100%;
 padding:10px;
-text-align:left;
+margin-top:8px;
+margin-bottom:15px;
 }
 
-td{
-padding:10px;
-border-bottom:1px solid #eee;
-}
-
-.precoOriginal{
-text-decoration:line-through;
-font-size:12px;
-color:#777;
-}
-
-.precoB2B{
-color:red;
-font-weight:bold;
+.buttons{
+margin-top:20px;
 }
 
 button{
 border:none;
-border-radius:6px;
-padding:10px;
+padding:14px 24px;
+font-size:15px;
 cursor:pointer;
+margin-right:10px;
 }
 
-.btnclear{background:#444;color:white;width:100%;margin-top:5px;}
-.btnpdf{background:#ff5b6b;color:white;width:100%;margin-top:5px;}
-.btnsend{background:#27ae60;color:white;width:100%;margin-top:5px;}
+.email{
+background:#e00034;
+color:white;
+}
+
+.whatsapp{
+background:#25D366;
+color:white;
+}
+
+.pdf{
+background:#333;
+color:white;
+}
 
 footer{
-background:#222;
-color:white;
-margin-top:40px;
-padding:30px;
-}
-
-.footerGrid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-max-width:1200px;
-margin:auto;
+margin-top:60px;
+background:#111;
+color:#ccc;
+padding:40px;
+text-align:center;
 }
 
 footer a{
-color:#ff5b6b;
+color:#ff2e63;
 text-decoration:none;
-}
-
-@media(max-width:768px){
-.layout{
-flex-direction:column;
-}
 }
 
 </style>
@@ -184,82 +116,82 @@ flex-direction:column;
 
 <body>
 
+<header>
+
+<h1>Crazy Fantasy</h1>
+<p>Portal de pedidos B2B</p>
+
+</header>
+
 <div class="container">
 
-<img src="banner.png" class="banner">
+<h2>Lista de Produtos</h2>
 
-<h2>Portal B2B Crazy Fantasy</h2>
+<table id="tabelaProdutos">
 
-<p>✔ Preços exclusivos para parceiros e revendedores</p>
-
-<div class="infoBox">
-
-<b>Descontos Progressivos</b><br>
-Pedidos acima de R$200 → 10%<br>
-Pedidos acima de R$500 → 12%<br>
-Pedidos acima de R$1000 → 15%<br><br>
-
-<b>Formas de Pagamento</b><br>
-PIX<br>
-Transferência bancária<br>
-Cartão de crédito (até 3x acima de R$300)<br>
-Boleto mediante consulta<br><br>
-
-<b>Frete</b><br>
-Frete por conta do cliente (FOB)
-
-</div>
-
-<div class="progressBox">
-
-<div id="progressText">Pedido mínimo: R$200</div>
-
-<div class="progressBar">
-<div id="progressFill"></div>
-</div>
-
-<div id="sugestao" class="sugestao"></div>
-
-</div>
-
-<div id="categorias" class="categorias"></div>
-
-<input type="text" id="busca" class="search" placeholder="Buscar produto...">
-
-<div class="layout">
-
-<div class="produtos">
-
-<table>
-
-<thead>
 <tr>
 <th>Produto</th>
-<th>Preço</th>
-<th>Qtd</th>
-<th>Total</th>
+<th>Preço Varejo</th>
+<th>Preço B2B</th>
+<th>Quantidade</th>
 </tr>
-</thead>
 
-<tbody id="lista"></tbody>
+<tr>
+<td>Tinta Spray Colorida</td>
+<td>R$18</td>
+<td><strong>R$12</strong></td>
+<td><input type="number" min="0"></td>
+</tr>
+
+<tr>
+<td>Peruca Neon</td>
+<td>R$69</td>
+<td><strong>R$45</strong></td>
+<td><input type="number" min="0"></td>
+</tr>
+
+<tr>
+<td>Kit Arlequina</td>
+<td>R$120</td>
+<td><strong>R$79</strong></td>
+<td><input type="number" min="0"></td>
+</tr>
+
+<tr>
+<td>Fantasia Infantil Super Herói</td>
+<td>R$149</td>
+<td><strong>R$99</strong></td>
+<td><input type="number" min="0"></td>
+</tr>
 
 </table>
 
-</div>
+<div class="form-area">
 
-<div class="carrinho">
+<h2>Dados para orçamento</h2>
 
-<h3>Carrinho</h3>
+<label>Empresa</label>
+<input type="text" id="empresa">
 
-<p>Itens: <b id="itens">0</b></p>
+<label>Responsável</label>
+<input type="text" id="responsavel">
 
-<h2>Total: R$ <span id="total">0</span></h2>
+<label>Email</label>
+<input type="email" id="email">
 
-<button class="btnclear" onclick="limpar()">Limpar</button>
+<label>Telefone</label>
+<input type="text" id="telefone">
 
-<button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
+<label>Observações</label>
+<input type="text" id="obs">
 
-<button class="btnsend" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
+<div class="buttons">
+
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+
+<button class="email" onclick="enviarEmail()">Enviar pedido por Email</button>
+
+<button class="whatsapp" onclick="enviarWhats()">Enviar pedido por WhatsApp</button>
 
 </div>
 
@@ -269,309 +201,96 @@ Frete por conta do cliente (FOB)
 
 <footer>
 
-<div class="footerGrid">
+<p><strong>Crazy Fantasy</strong></p>
 
-<div>
-<h4>Crazy Fantasy</h4>
-Portal exclusivo para parceiros e revendedores.
-</div>
+<p>Fantasia, maquiagem e acessórios para festas e eventos</p>
 
-<div>
-<h4>Endereço</h4>
-Valinhos - SP
-</div>
+<p>
+<a href="https://www.crazyfantasy.com.br" target="_blank">
+www.crazyfantasy.com.br
+</a>
+</p>
 
-<div>
-<h4>Contato</h4>
-WhatsApp: (19) 5519992850208<br>
-Email: lojacrazyfantasy@hotmail.com
-</div>
+<p>Consulte fotos e descrição completa dos produtos na loja online.</p>
 
-<div>
-<h4>Instagram</h4>
-<a href="https://instagram.com/crazyfantasy">@crazyfantasy</a>
-</div>
-
-<div>
-<h4>CNPJ</h4>
-00.000.000/0001-00
-</div>
-
-</div>
+<p style="font-size:12px;color:#888;margin-top:20px;">
+Portal B2B exclusivo para empresas, escolas e eventos.
+</p>
 
 </footer>
 
+
 <script>
 
-let produtos=[]
-let carrinho={}
+function coletarPedido(){
 
-Papa.parse("produtos.csv",{
+let tabela=document.getElementById("tabelaProdutos")
+let linhas=tabela.getElementsByTagName("tr")
 
-download:true,
-header:true,
+let pedido="Pedido B2B - Crazy Fantasy\n\n"
 
-complete:function(res){
+for(let i=1;i<linhas.length;i++){
 
-let mapa={}
+let colunas=linhas[i].getElementsByTagName("td")
 
-res.data.forEach(p=>{
+let produto=colunas[0].innerText
+let qtd=colunas[3].getElementsByTagName("input")[0].value
 
-let id=p["Identificador URL"]
+if(qtd>0){
 
-if(!id) return
-
-if(!mapa[id]){
-
-mapa[id]={
-
-nome:p["Nome"],
-categoria:p["Categorias"],
-preco:parseFloat((p["Preço"]||"0").replace(",", ".")),
-variacoes:[]
+pedido+=produto+" - Quantidade: "+qtd+"\n"
 
 }
 
 }
 
-let v=p["Valor da variação 1"]
+pedido+="\nEmpresa: "+document.getElementById("empresa").value
+pedido+="\nResponsável: "+document.getElementById("responsavel").value
+pedido+="\nEmail: "+document.getElementById("email").value
+pedido+="\nTelefone: "+document.getElementById("telefone").value
+pedido+="\nObs: "+document.getElementById("obs").value
 
-if(v && v.trim()!=""){
-mapa[id].variacoes.push(v)
-}
-
-})
-
-produtos=Object.values(mapa)
-
-gerarMenu()
-
-render(produtos)
+return pedido
 
 }
 
-})
 
-function gerarMenu(){
+function enviarWhats(){
 
-let categorias={}
+let texto=encodeURIComponent(coletarPedido())
 
-produtos.forEach(p=>{
-
-if(!p.categoria) return
-
-let partes=p.categoria.split(">")
-
-let principal=partes[0].trim()
-let sub=partes[1] ? partes[1].trim() : null
-
-if(!categorias[principal]){
-categorias[principal]=[]
-}
-
-if(sub && !categorias[principal].includes(sub)){
-categorias[principal].push(sub)
-}
-
-})
-
-let html=""
-
-Object.keys(categorias).forEach(cat=>{
-
-html+=`<div class="catGrupo"><b>${cat}</b><br>`
-
-categorias[cat].forEach(sub=>{
-html+=`<button onclick="filtrar('${cat}','${sub}')">${sub}</button>`
-})
-
-html+=`</div>`
-
-})
-
-document.getElementById("categorias").innerHTML=html
+window.open("https://wa.me/5519992850208?text="+texto)
 
 }
 
-function filtrar(cat,sub){
 
-let lista=produtos.filter(p=>p.categoria.includes(cat)&&p.categoria.includes(sub))
+function enviarEmail(){
 
-render(lista)
+let texto=encodeURIComponent(coletarPedido())
 
-}
-
-document.getElementById("busca").addEventListener("keyup",function(){
-
-let termo=this.value.toLowerCase()
-
-let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
-
-render(filtrados)
-
-})
-
-function render(lista){
-
-let html=""
-
-lista.forEach((p,i)=>{
-
-let precoB2B=p.preco*0.9
-
-let varHTML=""
-
-if(p.variacoes.length>0){
-
-varHTML=`<select>
-<option value="">Selecione</option>
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-</select>`
+window.location.href="mailto:lojacrazyfantasy@hotmail.com,claus.galvao@hotmail.com?subject=Pedido B2B Crazy Fantasy&body="+texto
 
 }
 
-html+=`
-
-<tr>
-
-<td>${p.nome}<br>${varHTML}</td>
-
-<td>
-<span class="precoOriginal">R$ ${p.preco.toFixed(2)}</span><br>
-<span class="precoB2B">R$ ${precoB2B.toFixed(2)}</span>
-</td>
-
-<td>
-<input type="number" min="0" onchange="calc(${i},this)">
-</td>
-
-<td id="t${i}">0</td>
-
-</tr>
-
-`
-
-})
-
-document.getElementById("lista").innerHTML=html
-
-}
-
-function calc(i,input){
-
-let linha=input.closest("tr")
-
-let select=linha.querySelector("select")
-
-if(select && select.value===""){
-alert("Selecione a variação")
-input.value=""
-return
-}
-
-let q=parseInt(input.value)
-
-if(!q || q<=0){
-delete carrinho[i]
-linha.querySelector(`#t${i}`).innerText="0"
-calcTotal()
-return
-}
-
-let preco=parseFloat(linha.querySelector(".precoB2B").innerText.replace("R$",""))
-
-let total=q*preco
-
-linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
-
-carrinho[i]={
-
-nome:linha.querySelector("td").innerText,
-q:q,
-total:total
-
-}
-
-calcTotal()
-
-}
-
-function calcTotal(){
-
-let soma=0
-let itens=0
-
-Object.values(carrinho).forEach(p=>{
-
-soma+=p.total
-itens+=p.q
-
-})
-
-document.getElementById("total").innerText=soma.toFixed(2)
-document.getElementById("itens").innerText=itens
-
-let minimo=200
-
-let progresso=Math.min((soma/minimo)*100,100)
-
-document.getElementById("progressFill").style.width=progresso+"%"
-
-if(soma<minimo){
-
-let falta=(minimo-soma).toFixed(2)
-
-document.getElementById("progressText").innerText="Faltam R$ "+falta+" para atingir o pedido mínimo"
-
-document.getElementById("sugestao").innerText="Sugestão: adicione acessórios ou tinta spray."
-
-}else{
-
-document.getElementById("progressText").innerText="Pedido mínimo atingido"
-document.getElementById("sugestao").innerText=""
-
-}
-
-}
-
-function limpar(){
-location.reload()
-}
 
 function gerarPDF(){
 
-const {jsPDF}=window.jspdf
+const { jsPDF } = window.jspdf
 
 let doc=new jsPDF()
 
-let y=20
+let texto=coletarPedido()
 
-doc.text("Pedido Crazy Fantasy B2B",20,y)
+let linhas=doc.splitTextToSize(texto,180)
 
-y+=10
+doc.text(linhas,10,10)
 
-Object.values(carrinho).forEach(p=>{
-doc.text(`${p.nome} - ${p.q} un`,20,y)
-y+=8
-})
-
-doc.save("pedido.pdf")
-
-}
-
-function enviarWhatsapp(){
-
-let texto="Pedido Crazy Fantasy B2B%0A%0A"
-
-Object.values(carrinho).forEach(p=>{
-texto+=`${p.nome} - ${p.q} un%0A`
-})
-
-window.open(`https://wa.me/5519992850208?text=${texto}`)
+doc.save("pedido-crazy-fantasy.pdf")
 
 }
 
 </script>
 
 </body>
+
 </html>
