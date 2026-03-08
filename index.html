@@ -199,6 +199,7 @@ Total: R$ <span id="total">0.00</span>
 <script>
 
 const produtos=[
+
 ["Arlequina",180],
 ["Arlequina de Casaco",180],
 ["Mulher Maravilha",125],
@@ -237,6 +238,7 @@ const produtos=[
 ["Ana Pop",109.99],
 ["Ana Luxo",269.99],
 ["Minnie",239.99]
+
 ]
 
 const tabela=document.getElementById("tabela")
@@ -266,10 +268,9 @@ document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
 if(i===0)return
 
-let preco=parseFloat(linha.children[1].innerText)
-let qtd=parseInt(linha.querySelector(".qtd").value)||0
+let preco=parseFloat(linha.children[2].innerText)
 
-if(preco>200){preco=preco*0.9}
+let qtd=parseInt(linha.querySelector(".qtd").value)||0
 
 let subtotal=preco*qtd
 
