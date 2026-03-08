@@ -254,13 +254,17 @@ mapa[id]={
 
 nome:p["Nome"],
 categoria:categoria,
-preco:parseFloat(p["Preço"]) || 0,
+preco:0,
 imagem:p["Imagem 1"] || "",
 variacoes:[]
 
 }
 
 }
+
+/* CORREÇÃO DO PREÇO */
+
+mapa[id].preco=parseFloat((p["Preço"] || "0").replace(",", "."))
 
 let v=p["Valor da variação 1"]
 if(v) mapa[id].variacoes.push(v)
