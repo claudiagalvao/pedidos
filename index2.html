@@ -6,8 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy - Catálogo</title>
+<title>Crazy Fantasy Catálogo</title>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -78,12 +79,7 @@ border-radius:6px;
 
 .var{
 font-size:12px;
-color:#555;
-}
-
-.preco-desc{
-color:#e60023;
-font-weight:bold;
+color:#666;
 }
 
 .total{
@@ -92,23 +88,6 @@ text-align:right;
 margin-top:20px;
 font-weight:bold;
 }
-
-.buttons{
-margin-top:20px;
-display:flex;
-gap:10px;
-}
-
-button{
-padding:12px 18px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
-
-.limpar{background:#444;color:white;}
-.pdf{background:#ff4d6d;color:white;}
-.enviar{background:#00c897;color:white;}
 
 </style>
 
@@ -152,41 +131,36 @@ cursor:pointer;
 Total: R$ <span id="total">0.00</span>
 </div>
 
-<div class="buttons">
-
-<button class="limpar" onclick="limpar()">Limpar</button>
-<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
-
-</div>
-
 </div>
 
 <script>
 
-const produtos = [
+let produtos=[]
 
-{cod:"PRD00019",nome:"Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal",cat:"Barbas e Bigodes",preco:49.99,cor:"N/D",modelo:"N/D",tam:"N/D"},
+fetch("produtos.xlsx")
+.then(res=>res.arrayBuffer())
+.then(data=>{
 
-{cod:"PRD00002",nome:"Bastão Taco Fantasia Cosplay Festa Vilã Arlequina Good Night 80cm",cat:"Acessórios Gerais",preco:49.9,cor:"N/D",modelo:"N/D",tam:"N/D"},
+let workbook = XLSX.read(data,{type:"array"})
 
-{cod:"PRD00021",nome:"Colar Vitoriano Steampunk com Relógio Vintage",cat:"Acessórios Gerais",preco:39.99,cor:"N/D",modelo:"N/D",tam:"N/D"},
+let sheet = workbook.Sheets[workbook.SheetNames[0]]
 
-{cod:"PRD00011",nome:"Coroa de Rainha Dourada Luxo",cat:"Coroas,Tiaras e Varinhas",preco:19.99,cor:"Dourada",modelo:"Luxo",tam:"N/D"},
+produtos = XLSX.utils.sheet_to_json(sheet)
 
-{cod:"PRD00010",nome:"Coroa de Rei Dourada Luxo",cat:"Coroas,Tiaras e Varinhas",preco:12.99,cor:"Dourada",modelo:"Luxo",tam:"N/D"}
+gerarMenu()
 
-]
-
-let categoriaAtual="Barbas e Bigodes"
+})
 
 function gerarMenu(){
 
-const cats=[...new Set(produtos.map(p=>p.cat))]
+let cats=[...new Set(produtos.map(p=>p["Família de Produto"]))]
 
 const menu=document.getElementById("menu")
 
 cats.forEach(c=>{
+
 menu.innerHTML+=`<button onclick="mostrar('${c}')">${c}</button>`
+
 })
 
 mostrar(cats[0])
@@ -195,37 +169,41 @@ mostrar(cats[0])
 
 function mostrar(cat){
 
-categoriaAtual=cat
-
 const tabela=document.getElementById("tabela")
+
 tabela.innerHTML=""
 
 produtos
-.filter(p=>p.cat===cat)
+.filter(p=>p["Família de Produto"]==cat)
 .forEach(p=>{
 
 let variacoes=""
 
-if(p.cor!="N/D") variacoes+="<div class='var'>Cor: "+p.cor+"</div>"
-if(p.modelo!="N/D") variacoes+="<div class='var'>Modelo: "+p.modelo+"</div>"
-if(p.tam!="N/D") variacoes+="<div class='var'>Tamanho: "+p.tam+"</div>"
+if(p["Característica - Cor"]!="N/D")
+variacoes+="<div class='var'>Cor: "+p["Característica - Cor"]+"</div>"
+
+if(p["Característica - Modelo"]!="N/D")
+variacoes+="<div class='var'>Modelo: "+p["Característica - Modelo"]+"</div>"
+
+if(p["Característica - Tamanho"]!="N/D")
+variacoes+="<div class='var'>Tamanho: "+p["Característica - Tamanho"]+"</div>"
+
+let preco=parseFloat(p["Preço Unitário de Venda"])
 
 tabela.innerHTML+=`
 
 <tr>
 
 <td>
-<img src="produtos/${p.cod}.jpg" class="prod-img">
+<img src="produtos/${p["Código do Produto"]}.jpg" class="prod-img">
 </td>
 
 <td>
-${p.nome}
+${p["Descrição do Produto"]}
 ${variacoes}
 </td>
 
-<td class="preco-desc">
-${p.preco.toFixed(2)}
-</td>
+<td>${preco.toFixed(2)}</td>
 
 <td>
 <input type="number" min="0" onchange="calcular()">
@@ -234,6 +212,7 @@ ${p.preco.toFixed(2)}
 <td class="subtotal">0.00</td>
 
 </tr>
+
 `
 
 })
@@ -262,45 +241,6 @@ document.getElementById("total").innerText=total.toFixed(2)
 
 }
 
-function limpar(){
-
-document.querySelectorAll("input").forEach(i=>i.value="")
-document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0.00")
-
-document.getElementById("total").innerText="0.00"
-
-}
-
-function gerarPDF(){
-
-const {jsPDF}=window.jspdf
-
-let pdf=new jsPDF()
-
-pdf.text("Pedido Crazy Fantasy",20,20)
-
-let y=40
-
-document.querySelectorAll("#tabela tr").forEach(l=>{
-
-let nome=l.children[1].innerText
-let qtd=l.querySelector("input").value
-
-if(qtd>0){
-
-pdf.text(nome+" - "+qtd,20,y)
-y+=10
-
-}
-
-})
-
-pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
-
-pdf.save("pedido.pdf")
-
-}
-
 function buscar(txt){
 
 txt=txt.toLowerCase()
@@ -314,8 +254,6 @@ l.style.display=nome.includes(txt)?"":"none"
 })
 
 }
-
-gerarMenu()
 
 </script>
 
