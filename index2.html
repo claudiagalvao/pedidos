@@ -8,7 +8,8 @@
 
 <title>Crazy Fantasy B2B</title>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
@@ -76,18 +77,13 @@ object-fit:cover;
 border-radius:6px;
 }
 
-.var{
-font-size:12px;
-color:#777;
-}
-
 .preco-original{
 text-decoration:line-through;
-color:#999;
+color:#888;
 font-size:13px;
 }
 
-.preco-desc{
+.preco-b2b{
 color:red;
 font-weight:bold;
 }
@@ -99,8 +95,30 @@ margin-top:20px;
 font-weight:bold;
 }
 
-</style>
+.desconto-info{
+font-size:14px;
+color:#444;
+margin-top:5px;
+}
 
+.buttons{
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+
+.buttons button{
+padding:12px 18px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.limpar{background:#444;color:white;}
+.pdf{background:#ff5c6c;color:white;}
+.email{background:#1abc9c;color:white;}
+
+</style>
 </head>
 
 <body>
@@ -111,7 +129,7 @@ font-weight:bold;
 <img src="banner.png">
 </div>
 
-<h2>Catálogo B2B</h2>
+<h2>Portal B2B Crazy Fantasy</h2>
 
 <div class="menu" id="menu"></div>
 
@@ -139,33 +157,39 @@ font-weight:bold;
 Total: R$ <span id="total">0.00</span>
 </div>
 
+<div class="desconto-info" id="descontoInfo"></div>
+
+<div class="buttons">
+<button class="limpar" onclick="limpar()">Limpar</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+<button class="email" onclick="enviarEmail()">Enviar Pedido</button>
+</div>
+
 </div>
 
 <script>
 
 let produtos=[]
+let produtosVisiveis=[]
+const pedidoMinimo=200
 
-fetch("produtos.xlsx")
+Papa.parse("produtos.csv",{
 
-.then(res=>res.arrayBuffer())
+download:true,
+header:true,
 
-.then(data=>{
+complete:function(results){
 
-let workbook = XLSX.read(data,{type:"array"})
-
-let sheet = workbook.Sheets[workbook.SheetNames[0]]
-
-let json = XLSX.utils.sheet_to_json(sheet,{range:1})
-
-produtos=json
-
+produtos = results.data
 criarCategorias()
+
+}
 
 })
 
 function criarCategorias(){
 
-let cats=[...new Set(produtos.map(p=>p["Família de Produto"]))]
+let cats=[...new Set(produtos.map(p=>p.Category).filter(Boolean))]
 
 let menu=document.getElementById("menu")
 
@@ -182,47 +206,26 @@ mostrar(cats[0])
 function mostrar(cat){
 
 let tabela=document.getElementById("tabela")
-
 tabela.innerHTML=""
 
-produtos
-.filter(p=>p["Família de Produto"]==cat)
+produtosVisiveis = produtos.filter(p=>p.Category==cat)
 
-.forEach(p=>{
+produtosVisiveis.forEach(p=>{
 
-let preco=parseFloat(p["Preço Unitário de Venda"])
-
-let desconto=0.10
-
-let precoDesc=preco*(1-desconto)
-
-let variacoes=""
-
-if(p["Característica - Cor"]!="N/D")
-variacoes+=`<div class="var">Cor: ${p["Característica - Cor"]}</div>`
-
-if(p["Característica - Modelo"]!="N/D")
-variacoes+=`<div class="var">Modelo: ${p["Característica - Modelo"]}</div>`
-
-if(p["Característica - Tamanho"]!="N/D")
-variacoes+=`<div class="var">Tamanho: ${p["Característica - Tamanho"]}</div>`
+let preco=parseFloat(p.Price)||0
 
 tabela.innerHTML+=`
 
 <tr>
 
 <td>
-<img class="prod-img" src="produtos/${p["Código do Produto"]}.jpg">
+<img class="prod-img" src="${p['Image URL']||''}">
 </td>
 
-<td>
-${p["Descrição do Produto"]}
-${variacoes}
-</td>
+<td>${p.Name}</td>
 
 <td>
-<div class="preco-original">R$ ${preco.toFixed(2)}</div>
-<div class="preco-desc">R$ ${precoDesc.toFixed(2)}</div>
+R$ ${preco.toFixed(2)}
 </td>
 
 <td>
@@ -239,18 +242,24 @@ ${variacoes}
 
 }
 
+function descontoProgressivo(total){
+
+if(total>=1000) return 0.18
+if(total>=600) return 0.15
+if(total>=300) return 0.12
+
+return 0.10
+
+}
+
 function calcular(){
 
 let total=0
 
 document.querySelectorAll("#tabela tr").forEach(l=>{
 
-let preco=parseFloat(
-l.querySelector(".preco-desc").innerText.replace("R$","")
-)
-
+let preco=parseFloat(l.children[2].innerText.replace("R$",""))
 let qtd=l.querySelector("input").value||0
-
 let sub=preco*qtd
 
 l.querySelector(".subtotal").innerText=sub.toFixed(2)
@@ -259,7 +268,23 @@ total+=sub
 
 })
 
-document.getElementById("total").innerText=total.toFixed(2)
+let desconto=descontoProgressivo(total)
+
+let totalFinal=total*(1-desconto)
+
+document.getElementById("total").innerText=totalFinal.toFixed(2)
+
+let info=document.getElementById("descontoInfo")
+
+if(total<pedidoMinimo){
+
+info.innerHTML=`⚠ Pedido mínimo: R$ ${pedidoMinimo}`
+
+}else{
+
+info.innerHTML=`Desconto aplicado: ${desconto*100}%`
+
+}
 
 }
 
@@ -270,10 +295,86 @@ txt=txt.toLowerCase()
 document.querySelectorAll("#tabela tr").forEach(l=>{
 
 let nome=l.children[1].innerText.toLowerCase()
-
 l.style.display=nome.includes(txt)?"":"none"
 
 })
+
+}
+
+function limpar(){
+
+document.querySelectorAll("input").forEach(i=>i.value="")
+document.querySelectorAll(".subtotal").forEach(s=>s.innerText="0.00")
+document.getElementById("total").innerText="0.00"
+document.getElementById("descontoInfo").innerHTML=""
+
+}
+
+function gerarPDF(){
+
+const {jsPDF}=window.jspdf
+
+let doc=new jsPDF()
+
+let y=20
+
+doc.text("Pedido Crazy Fantasy B2B",10,10)
+
+document.querySelectorAll("#tabela tr").forEach(l=>{
+
+let qtd=l.querySelector("input").value
+
+if(qtd>0){
+
+let nome=l.children[1].innerText
+let total=l.querySelector(".subtotal").innerText
+
+doc.text(`${nome} - ${qtd} un - R$ ${total}`,10,y)
+
+y+=8
+
+}
+
+})
+
+doc.text("Total final: R$ "+document.getElementById("total").innerText,10,y+10)
+
+doc.save("pedido.pdf")
+
+}
+
+function enviarEmail(){
+
+let total=parseFloat(document.getElementById("total").innerText)
+
+if(total<pedidoMinimo){
+
+alert("Pedido mínimo é R$"+pedidoMinimo)
+
+return
+
+}
+
+let texto="Pedido Crazy Fantasy B2B%0D%0A%0D%0A"
+
+document.querySelectorAll("#tabela tr").forEach(l=>{
+
+let qtd=l.querySelector("input").value
+
+if(qtd>0){
+
+let nome=l.children[1].innerText
+let total=l.querySelector(".subtotal").innerText
+
+texto+=`${nome} - ${qtd} un - R$ ${total}%0D%0A`
+
+}
+
+})
+
+texto+="%0D%0ATotal final: R$ "+document.getElementById("total").innerText
+
+window.location.href=`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido B2B&body=${texto}`
 
 }
 
