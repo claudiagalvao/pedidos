@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
+
 <meta charset="UTF-8">
 <title>Crazy Fantasy | Pedido B2B</title>
 
@@ -32,6 +32,10 @@ max-width:1100px;
 margin:auto;
 padding:30px;
 background:white;
+}
+
+h2{
+margin-top:30px;
 }
 
 table{
@@ -68,10 +72,6 @@ width:100%;
 padding:10px;
 margin-top:8px;
 margin-bottom:15px;
-}
-
-.buttons{
-margin-top:20px;
 }
 
 button{
@@ -185,15 +185,13 @@ text-decoration:none;
 <label>Observações</label>
 <input type="text" id="obs">
 
-<div class="buttons">
+<br><br>
 
 <button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 
 <button class="email" onclick="enviarEmail()">Enviar pedido por Email</button>
 
 <button class="whatsapp" onclick="enviarWhats()">Enviar pedido por WhatsApp</button>
-
-</div>
 
 </div>
 
@@ -254,7 +252,6 @@ return pedido
 
 }
 
-
 function enviarWhats(){
 
 let texto=encodeURIComponent(coletarPedido())
@@ -263,7 +260,6 @@ window.open("https://wa.me/5519992850208?text="+texto)
 
 }
 
-
 function enviarEmail(){
 
 let texto=encodeURIComponent(coletarPedido())
@@ -271,7 +267,6 @@ let texto=encodeURIComponent(coletarPedido())
 window.location.href="mailto:lojacrazyfantasy@hotmail.com,claus.galvao@hotmail.com?subject=Pedido B2B Crazy Fantasy&body="+texto
 
 }
-
 
 function gerarPDF(){
 
@@ -292,5 +287,4 @@ doc.save("pedido-crazy-fantasy.pdf")
 </script>
 
 </body>
-
 </html>
