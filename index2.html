@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -30,10 +28,6 @@ width:100%;
 border-radius:10px;
 }
 
-h2{
-margin-top:20px;
-}
-
 .menu{
 margin:20px 0;
 display:flex;
@@ -42,7 +36,7 @@ gap:10px;
 }
 
 .menu button{
-padding:10px 15px;
+padding:8px 14px;
 border:none;
 border-radius:8px;
 background:#e6e1ff;
@@ -69,10 +63,9 @@ flex:3;
 .carrinho{
 flex:1;
 background:white;
-padding:15px;
+padding:20px;
 border-radius:10px;
 height:fit-content;
-box-shadow:0 0 10px rgba(0,0,0,0.05);
 }
 
 table{
@@ -83,7 +76,7 @@ background:white;
 
 th{
 background:#e6e1ff;
-padding:12px;
+padding:10px;
 }
 
 td{
@@ -104,21 +97,15 @@ font-size:20px;
 margin-top:10px;
 }
 
-.buttons{
-margin-top:20px;
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
 button{
 padding:10px;
 border:none;
 border-radius:6px;
 cursor:pointer;
+margin-top:8px;
 }
 
-.limpar{background:#555;color:white;}
+.limpar{background:#444;color:white;}
 .pdf{background:#ff5c6c;color:white;}
 .email{background:#1abc9c;color:white;}
 
@@ -173,13 +160,11 @@ cursor:pointer;
 Total: R$ <span id="total">0.00</span>
 </div>
 
-<div id="descontoInfo"></div>
+<div id="desconto"></div>
 
-<div class="buttons">
 <button class="limpar" onclick="limpar()">Limpar</button>
 <button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 <button class="email" onclick="enviarEmail()">Enviar Pedido</button>
-</div>
 
 </div>
 
@@ -190,7 +175,7 @@ Total: R$ <span id="total">0.00</span>
 <script>
 
 let produtos=[]
-let produtosFormatados=[]
+let produtosAgrupados=[]
 let carrinho={}
 
 const pedidoMinimo=200
@@ -203,29 +188,49 @@ header:true,
 complete:function(results){
 
 produtos=results.data
-normalizar()
+agruparProdutos()
 
 }
 
 })
 
-function normalizar(){
+function agruparProdutos(){
 
-produtosFormatados=produtos.map(p=>{
+let mapa={}
 
-return{
+produtos.forEach(p=>{
 
-nome:p["Nome"],
-categoria:p["Categorias"],
-preco:parseFloat(p["Preço"]||0),
-variacao1:p["Valor da variação 1"]||"",
-variacao2:p["Valor da variação 2"]||"",
-variacao3:p["Valor da variação 3"]||"",
-sku:p["SKU"]
+let nome=p["Nome"]
+let categoria=p["Categorias"]
+let preco=parseFloat(p["Preço"]||0)
+
+let imagem=p["Imagem"] || p["Image URL"] || ""
+
+let variacao=p["Valor da variação 1"] || ""
+
+if(!mapa[nome]){
+
+mapa[nome]={
+
+nome:nome,
+categoria:categoria,
+preco:preco,
+imagem:imagem,
+variacoes:[]
+
+}
+
+}
+
+if(variacao){
+
+mapa[nome].variacoes.push(variacao)
 
 }
 
 })
+
+produtosAgrupados=Object.values(mapa)
 
 criarCategorias()
 
@@ -233,12 +238,14 @@ criarCategorias()
 
 function criarCategorias(){
 
-let cats=[...new Set(produtosFormatados.map(p=>p.categoria))]
+let cats=[...new Set(produtosAgrupados.map(p=>p.categoria))]
 
 let menu=document.getElementById("menu")
 
 cats.forEach(c=>{
+
 menu.innerHTML+=`<button onclick="mostrar('${c}')">${c}</button>`
+
 })
 
 mostrar(cats[0])
@@ -251,7 +258,7 @@ let tabela=document.getElementById("tabela")
 
 tabela.innerHTML=""
 
-produtosFormatados
+produtosAgrupados
 .filter(p=>p.categoria==cat)
 .forEach(p=>{
 
@@ -260,7 +267,7 @@ tabela.innerHTML+=`
 <tr>
 
 <td>
-<img class="prod-img" src="produtos/${p.sku}.jpg">
+<img class="prod-img" src="${p.imagem}">
 </td>
 
 <td>
@@ -269,13 +276,11 @@ ${p.nome}
 
 <br>
 
-<select onchange="selecionar('${p.sku}',this.value,${p.preco})">
+<select onchange="selecionar('${p.nome}',this.value,${p.preco})">
 
 <option value="">Selecionar</option>
 
-${p.variacao1?`<option>${p.variacao1}</option>`:""}
-${p.variacao2?`<option>${p.variacao2}</option>`:""}
-${p.variacao3?`<option>${p.variacao3}</option>`:""}
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 </select>
 
@@ -284,10 +289,12 @@ ${p.variacao3?`<option>${p.variacao3}</option>`:""}
 <td>R$ ${p.preco.toFixed(2)}</td>
 
 <td>
-<input type="number" min="0" onchange="quantidade('${p.sku}',this.value)">
+
+<input type="number" min="0" onchange="quantidade('${p.nome}',this.value)">
+
 </td>
 
-<td id="sub-${p.sku}">0.00</td>
+<td id="sub-${p.nome}">0.00</td>
 
 </tr>
 
@@ -297,13 +304,13 @@ ${p.variacao3?`<option>${p.variacao3}</option>`:""}
 
 }
 
-function selecionar(sku,variante,preco){
+function selecionar(nome,variacao,preco){
 
-if(!carrinho[sku]){
+if(!carrinho[nome]){
 
-carrinho[sku]={
+carrinho[nome]={
 
-nome:variante,
+nome:variacao,
 preco:preco,
 qtd:0
 
@@ -313,11 +320,11 @@ qtd:0
 
 }
 
-function quantidade(sku,qtd){
+function quantidade(nome,qtd){
 
-if(!carrinho[sku])return
+if(!carrinho[nome]) return
 
-carrinho[sku].qtd=parseInt(qtd)
+carrinho[nome].qtd=parseInt(qtd)
 
 calcular()
 
@@ -326,24 +333,19 @@ calcular()
 function calcular(){
 
 let total=0
-
 let lista=""
 
-Object.keys(carrinho).forEach(k=>{
+Object.values(carrinho).forEach(i=>{
 
-let item=carrinho[k]
+let sub=i.preco*i.qtd
 
-let sub=item.preco*item.qtd
+if(i.qtd>0){
 
-if(item.qtd>0){
-
-lista+=`${item.nome} x ${item.qtd}<br>`
+lista+=`${i.nome} x ${i.qtd}<br>`
 
 }
 
 total+=sub
-
-document.getElementById("sub-"+k).innerText=sub.toFixed(2)
 
 })
 
@@ -352,10 +354,9 @@ let desconto=descontoProgressivo(total)
 let totalFinal=total*(1-desconto)
 
 document.getElementById("listaCarrinho").innerHTML=lista
-
 document.getElementById("total").innerText=totalFinal.toFixed(2)
 
-document.getElementById("descontoInfo").innerHTML=`Desconto aplicado: ${desconto*100}%`
+document.getElementById("desconto").innerHTML=`Desconto aplicado: ${desconto*100}%`
 
 }
 
