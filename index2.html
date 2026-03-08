@@ -6,16 +6,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy Catálogo</title>
+<title>Crazy Fantasy B2B</title>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f5f6fb;
+background:#f4f5fb;
 margin:0;
 }
 
@@ -31,25 +30,25 @@ border-radius:10px;
 }
 
 .menu{
+margin:20px 0;
 display:flex;
 flex-wrap:wrap;
 gap:10px;
-margin:20px 0;
 }
 
 .menu button{
 padding:10px 14px;
 border:none;
 border-radius:8px;
-background:#e4dcff;
+background:#e6e1ff;
 cursor:pointer;
 }
 
 .search input{
-padding:12px;
 width:100%;
-border-radius:6px;
+padding:12px;
 border:1px solid #ccc;
+border-radius:6px;
 margin-bottom:20px;
 }
 
@@ -60,7 +59,7 @@ background:white;
 }
 
 th{
-background:#e4dcff;
+background:#e6e1ff;
 padding:12px;
 }
 
@@ -79,12 +78,23 @@ border-radius:6px;
 
 .var{
 font-size:12px;
-color:#666;
+color:#777;
+}
+
+.preco-original{
+text-decoration:line-through;
+color:#999;
+font-size:13px;
+}
+
+.preco-desc{
+color:red;
+font-weight:bold;
 }
 
 .total{
-font-size:22px;
 text-align:right;
+font-size:22px;
 margin-top:20px;
 font-weight:bold;
 }
@@ -101,18 +111,17 @@ font-weight:bold;
 <img src="banner.png">
 </div>
 
-<h2>Catálogo de Produtos</h2>
+<h2>Catálogo B2B</h2>
 
 <div class="menu" id="menu"></div>
 
 <div class="search">
-<input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
+<input placeholder="Buscar produto..." onkeyup="buscar(this.value)">
 </div>
 
 <table>
 
 <thead>
-
 <tr>
 <th>Foto</th>
 <th>Produto</th>
@@ -120,7 +129,6 @@ font-weight:bold;
 <th>Qtd</th>
 <th>Total</th>
 </tr>
-
 </thead>
 
 <tbody id="tabela"></tbody>
@@ -138,24 +146,28 @@ Total: R$ <span id="total">0.00</span>
 let produtos=[]
 
 fetch("produtos.xlsx")
+
 .then(res=>res.arrayBuffer())
+
 .then(data=>{
 
 let workbook = XLSX.read(data,{type:"array"})
 
 let sheet = workbook.Sheets[workbook.SheetNames[0]]
 
-produtos = XLSX.utils.sheet_to_json(sheet)
+let json = XLSX.utils.sheet_to_json(sheet,{range:1})
 
-gerarMenu()
+produtos=json
+
+criarCategorias()
 
 })
 
-function gerarMenu(){
+function criarCategorias(){
 
 let cats=[...new Set(produtos.map(p=>p["Família de Produto"]))]
 
-const menu=document.getElementById("menu")
+let menu=document.getElementById("menu")
 
 cats.forEach(c=>{
 
@@ -169,33 +181,38 @@ mostrar(cats[0])
 
 function mostrar(cat){
 
-const tabela=document.getElementById("tabela")
+let tabela=document.getElementById("tabela")
 
 tabela.innerHTML=""
 
 produtos
 .filter(p=>p["Família de Produto"]==cat)
+
 .forEach(p=>{
+
+let preco=parseFloat(p["Preço Unitário de Venda"])
+
+let desconto=0.10
+
+let precoDesc=preco*(1-desconto)
 
 let variacoes=""
 
 if(p["Característica - Cor"]!="N/D")
-variacoes+="<div class='var'>Cor: "+p["Característica - Cor"]+"</div>"
+variacoes+=`<div class="var">Cor: ${p["Característica - Cor"]}</div>`
 
 if(p["Característica - Modelo"]!="N/D")
-variacoes+="<div class='var'>Modelo: "+p["Característica - Modelo"]+"</div>"
+variacoes+=`<div class="var">Modelo: ${p["Característica - Modelo"]}</div>`
 
 if(p["Característica - Tamanho"]!="N/D")
-variacoes+="<div class='var'>Tamanho: "+p["Característica - Tamanho"]+"</div>"
-
-let preco=parseFloat(p["Preço Unitário de Venda"])
+variacoes+=`<div class="var">Tamanho: ${p["Característica - Tamanho"]}</div>`
 
 tabela.innerHTML+=`
 
 <tr>
 
 <td>
-<img src="produtos/${p["Código do Produto"]}.jpg" class="prod-img">
+<img class="prod-img" src="produtos/${p["Código do Produto"]}.jpg">
 </td>
 
 <td>
@@ -203,7 +220,10 @@ ${p["Descrição do Produto"]}
 ${variacoes}
 </td>
 
-<td>${preco.toFixed(2)}</td>
+<td>
+<div class="preco-original">R$ ${preco.toFixed(2)}</div>
+<div class="preco-desc">R$ ${precoDesc.toFixed(2)}</div>
+</td>
 
 <td>
 <input type="number" min="0" onchange="calcular()">
@@ -225,7 +245,9 @@ let total=0
 
 document.querySelectorAll("#tabela tr").forEach(l=>{
 
-let preco=parseFloat(l.children[2].innerText)
+let preco=parseFloat(
+l.querySelector(".preco-desc").innerText.replace("R$","")
+)
 
 let qtd=l.querySelector("input").value||0
 
