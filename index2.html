@@ -25,11 +25,17 @@ margin:auto;
 padding:10px;
 }
 
+/* BANNER */
+
 .banner{
 width:100%;
+height:auto;
+display:block;
 border-radius:10px;
 margin-top:10px;
 }
+
+/* BUSCA */
 
 .search{
 width:100%;
@@ -38,6 +44,8 @@ margin-top:10px;
 border-radius:6px;
 border:1px solid #ccc;
 }
+
+/* LAYOUT */
 
 .layout{
 display:flex;
@@ -50,6 +58,8 @@ flex-wrap:wrap;
 flex:3;
 min-width:300px;
 }
+
+/* TABELA */
 
 table{
 width:100%;
@@ -74,6 +84,8 @@ width:60px;
 border-radius:6px;
 }
 
+/* PREÇOS */
+
 .precoOriginal{
 text-decoration:line-through;
 font-size:12px;
@@ -85,12 +97,16 @@ color:#e60023;
 font-weight:bold;
 }
 
+/* CARRINHO */
+
 .carrinho{
 width:260px;
 background:white;
 padding:15px;
 border-radius:10px;
 }
+
+/* BOTÕES */
 
 button{
 border:none;
@@ -120,6 +136,8 @@ width:100%;
 margin-top:5px;
 }
 
+/* PROGRESSO */
+
 .progressBox{
 background:white;
 padding:10px;
@@ -139,10 +157,11 @@ margin-top:6px;
 #progressFill{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#6c63ff,#9b6dff);
+background:#e74c3c;
+transition:width 0.4s ease;
 }
 
-/* MENU MELHORADO */
+/* MENU */
 
 .categorias{
 margin-top:15px;
@@ -176,29 +195,29 @@ transition:all 0.2s;
 
 .categorias button:hover{
 background:#cdbdff;
-transform:translateY(-1px);
 }
 
-/* WHATSAPP FLUTUANTE */
+/* WHATSAPP */
 
 .whatsappBtn{
-
 position:fixed;
 bottom:20px;
 right:20px;
+width:65px;
+height:65px;
 background:#25D366;
-color:white;
-width:60px;
-height:60px;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:28px;
 box-shadow:0 4px 10px rgba(0,0,0,0.3);
 cursor:pointer;
 z-index:999;
+}
 
+.whatsappBtn img{
+width:32px;
+height:32px;
 }
 
 .whatsappBtn:hover{
@@ -217,10 +236,6 @@ flex-direction:column;
 width:100%;
 }
 
-table{
-font-size:14px;
-}
-
 .prodimg{
 width:40px;
 }
@@ -235,7 +250,10 @@ width:40px;
 
 <div class="container">
 
+<picture>
+<source media="(max-width:768px)" srcset="banner-mobile.png">
 <img src="banner.png" class="banner">
+</picture>
 
 <h2>Portal B2B Crazy Fantasy</h2>
 
@@ -265,7 +283,6 @@ Pedido mínimo: R$200
 
 <thead>
 <tr>
-<th>Foto</th>
 <th>Produto</th>
 <th>Preço</th>
 <th>Qtd</th>
@@ -287,11 +304,8 @@ Pedido mínimo: R$200
 
 <h2>Total: R$ <span id="total">0</span></h2>
 
-<p>Desconto aplicado: <span id="desconto">10%</span></p>
-
 <button class="btnclear" onclick="limpar()">Limpar</button>
 <button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
-<button class="btnsend" onclick="enviar()">Enviar Pedido</button>
 
 </div>
 
@@ -299,17 +313,14 @@ Pedido mínimo: R$200
 
 </div>
 
-<!-- BOTÃO WHATSAPP -->
-
-<div class="whatsappBtn" onclick="enviarWhatsapp()">
-💬
-</div>
+<a class="whatsappBtn" onclick="enviarWhatsapp()">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+</a>
 
 <script>
 
 let produtos=[]
 let carrinho={}
-let desconto=0.10
 
 Papa.parse("produtos.csv",{
 
@@ -343,7 +354,6 @@ mapa[id]={
 nome:p["Nome"],
 categoria:categoria,
 preco:parseFloat((p["Preço"]||"0").replace(",",".")),
-imagem:p["Imagem 1"]||"",
 variacoes:[]
 
 }
@@ -416,7 +426,7 @@ let html=""
 lista.forEach((p,i)=>{
 
 let precoOriginal=p.preco
-let precoB2B=p.preco*(1-desconto)
+let precoB2B=p.preco*0.9
 
 let variacaoHTML=""
 
@@ -431,13 +441,9 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 }
 
-let img=p.imagem?`<img src="${p.imagem}" class="prodimg">`:""
-
 html+=`
 
 <tr>
-
-<td>${img}</td>
 
 <td>${p.nome}<br>${variacaoHTML}</td>
 
@@ -449,9 +455,7 @@ html+=`
 </td>
 
 <td>
-
 <input type="number" min="0" onchange="calc(${i},this.value)">
-
 </td>
 
 <td id="t${i}">0</td>
@@ -495,7 +499,6 @@ document.getElementById("t"+i).innerText=total.toFixed(2)
 carrinho[i]={
 
 q:q,
-preco:preco,
 total:total
 
 }
@@ -518,6 +521,38 @@ itens+=p.q
 
 document.getElementById("total").innerText=soma.toFixed(2)
 document.getElementById("itens").innerText=itens
+
+let minimo=200
+let progresso=Math.min((soma/minimo)*100,100)
+
+let barra=document.getElementById("progressFill")
+
+barra.style.width=progresso+"%"
+
+if(soma>=200){
+
+barra.style.background="#27ae60"
+document.getElementById("progressText").innerText="Pedido mínimo atingido 🎉"
+
+}
+else if(soma>=150){
+
+barra.style.background="#f1c40f"
+
+let falta=(200-soma).toFixed(2)
+
+document.getElementById("progressText").innerText="Quase lá! Faltam R$ "+falta
+
+}
+else{
+
+barra.style.background="#e74c3c"
+
+let falta=(200-soma).toFixed(2)
+
+document.getElementById("progressText").innerText="Faltam R$ "+falta+" para atingir o pedido mínimo"
+
+}
 
 }
 
@@ -551,21 +586,6 @@ doc.save("pedido.pdf")
 
 }
 
-function enviar(){
-
-let total=parseFloat(document.getElementById("total").innerText)
-
-if(total<200){
-
-alert("Pedido mínimo: R$200")
-return
-
-}
-
-alert("Pedido enviado!")
-
-}
-
 function enviarWhatsapp(){
 
 let total=parseFloat(document.getElementById("total").innerText)
@@ -594,16 +614,6 @@ let url=`https://wa.me/${telefone}?text=${mensagem}`
 window.open(url,"_blank")
 
 }
-
-document.getElementById("busca").addEventListener("input",function(){
-
-let termo=this.value.toLowerCase()
-
-let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
-
-render(filtrados)
-
-})
 
 </script>
 
