@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<head>
+
+<meta charset="UTF-8">
 <title>Portal B2B Crazy Fantasy</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -13,47 +13,50 @@
 
 body{
 font-family:Arial;
-background:#f4f5fb;
+background:#f5f5f5;
 margin:0;
+padding:0;
 }
 
 .container{
-max-width:1200px;
+width:1200px;
 margin:auto;
-padding:20px;
 }
 
-.banner img{
+.banner{
 width:100%;
 border-radius:10px;
+margin-top:20px;
 }
 
-.menu{
-margin:20px 0;
-display:flex;
-flex-wrap:wrap;
-gap:10px;
+h1{
+margin-top:20px;
 }
 
-.menu button{
-padding:8px 14px;
+.categorias{
+margin:15px 0;
+}
+
+.catbtn{
+background:#dcd3f3;
 border:none;
+padding:8px 14px;
 border-radius:8px;
-background:#e6e1ff;
+margin:4px;
 cursor:pointer;
 }
 
-.search input{
+.search{
 width:100%;
-padding:12px;
+padding:10px;
 border-radius:6px;
 border:1px solid #ccc;
-margin-bottom:20px;
+margin-bottom:10px;
 }
 
 .layout{
 display:flex;
-gap:30px;
+gap:20px;
 }
 
 .produtos{
@@ -70,63 +73,62 @@ height:fit-content;
 
 table{
 width:100%;
-border-collapse:collapse;
 background:white;
+border-radius:10px;
 }
 
 th{
-background:#e6e1ff;
+background:#dcd3f3;
 padding:10px;
 }
 
 td{
-padding:10px;
+padding:8px;
 border-bottom:1px solid #eee;
-text-align:center;
 }
 
-.prod-img{
+.prodimg{
 width:60px;
-height:60px;
-object-fit:cover;
 border-radius:6px;
-}
-
-.total{
-font-size:20px;
-margin-top:10px;
 }
 
 button{
-padding:10px;
+padding:10px 16px;
 border:none;
 border-radius:6px;
 cursor:pointer;
-margin-top:8px;
 }
 
-.limpar{background:#444;color:white;}
-.pdf{background:#ff5c6c;color:white;}
-.email{background:#1abc9c;color:white;}
+.btnpdf{
+background:#ff5b6b;
+color:white;
+}
+
+.btnsend{
+background:#27ae60;
+color:white;
+}
+
+.btnclear{
+background:#444;
+color:white;
+}
 
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="banner">
-<img src="banner.png">
-</div>
+<img src="banner.png" class="banner">
 
-<h2>Portal B2B Crazy Fantasy</h2>
+<h1>Portal B2B Crazy Fantasy</h1>
 
-<div class="menu" id="menu"></div>
+<div id="categorias" class="categorias"></div>
 
-<div class="search">
-<input placeholder="Buscar produto..." onkeyup="buscar(this.value)">
-</div>
+<input type="text" id="busca" class="search" placeholder="Buscar produto...">
 
 <div class="layout">
 
@@ -135,6 +137,7 @@ margin-top:8px;
 <table>
 
 <thead>
+
 <tr>
 <th>Foto</th>
 <th>Produto</th>
@@ -142,9 +145,10 @@ margin-top:8px;
 <th>Qtd</th>
 <th>Total</th>
 </tr>
+
 </thead>
 
-<tbody id="tabela"></tbody>
+<tbody id="lista"></tbody>
 
 </table>
 
@@ -154,17 +158,13 @@ margin-top:8px;
 
 <h3>Carrinho</h3>
 
-<div id="listaCarrinho"></div>
+<h2>Total: R$ <span id="total">0</span></h2>
 
-<div class="total">
-Total: R$ <span id="total">0.00</span>
-</div>
+<button class="btnclear" onclick="limpar()">Limpar</button>
 
-<div id="desconto"></div>
+<button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
 
-<button class="limpar" onclick="limpar()">Limpar</button>
-<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
-<button class="email" onclick="enviarEmail()">Enviar Pedido</button>
+<button class="btnsend" onclick="enviar()">Enviar Pedido</button>
 
 </div>
 
@@ -175,126 +175,119 @@ Total: R$ <span id="total">0.00</span>
 <script>
 
 let produtos=[]
-let produtosAgrupados=[]
 let carrinho={}
-
-const pedidoMinimo=200
 
 Papa.parse("produtos.csv",{
 
 download:true,
 header:true,
+complete:function(res){
 
-complete:function(results){
+let data=res.data
 
-produtos=results.data
-agruparProdutos()
+let agrupado={}
 
-}
+data.forEach(p=>{
 
-})
+let id=p["Identificador URL"]
 
-function agruparProdutos(){
+if(!id)return
 
-let mapa={}
+if(!agrupado[id]){
 
-produtos.forEach(p=>{
+agrupado[id]={
 
-let nome=p["Nome"]
-let categoria=p["Categorias"] || "Outros"
-let preco=parseFloat(p["Preço"]||0)
-
-let imagem=p["Imagem"] || p["Image URL"] || ""
-
-let variacao=p["Valor da variação 1"] || ""
-
-if(!mapa[nome]){
-
-mapa[nome]={
-
-nome:nome,
-categoria:categoria,
-preco:preco,
-imagem:imagem,
+nome:p["Nome"],
+categoria:p["Categorias"]||"Outros",
+preco:parseFloat(p["Preço"])||0,
+imagem:p["Imagem 1"]||"",
 variacoes:[]
 
 }
 
 }
 
-if(variacao){
+let v=p["Valor da variação 1"]
 
-mapa[nome].variacoes.push(variacao)
+if(v)agrupado[id].variacoes.push(v)
+
+})
+
+produtos=Object.values(agrupado)
+
+renderCategorias()
+
+renderProdutos(produtos)
 
 }
 
 })
 
-produtosAgrupados=Object.values(mapa)
+function renderCategorias(){
 
-criarCategorias()
+let cats=[...new Set(produtos.map(p=>p.categoria))]
 
-}
-
-function criarCategorias(){
-
-let cats=[...new Set(produtosAgrupados.map(p=>p.categoria))]
-
-let menu=document.getElementById("menu")
+let html=""
 
 cats.forEach(c=>{
 
-menu.innerHTML+=`<button onclick="mostrar('${c}')">${c}</button>`
+html+=`<button class="catbtn" onclick="filtrar('${c}')">${c}</button>`
 
 })
 
-mostrar(cats[0])
+document.getElementById("categorias").innerHTML=html
 
 }
 
-function mostrar(cat){
+function filtrar(cat){
 
-let tabela=document.getElementById("tabela")
+let filtrados=produtos.filter(p=>p.categoria==cat)
 
-tabela.innerHTML=""
+renderProdutos(filtrados)
 
-produtosAgrupados
-.filter(p=>p.categoria==cat)
-.forEach(p=>{
+}
 
-tabela.innerHTML+=`
+function renderProdutos(lista){
+
+let html=""
+
+lista.forEach((p,i)=>{
+
+let preco=(p.preco*0.9).toFixed(2)
+
+let variacaoHTML=""
+
+if(p.variacoes.length){
+
+variacaoHTML=`<select>
+<option>Selecionar</option>
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+</select>`
+
+}
+
+let img=p.imagem?`<img src="${p.imagem}" class="prodimg">`:""
+
+html+=`
 
 <tr>
 
-<td>
-<img class="prod-img" src="${p.imagem}">
-</td>
+<td>${img}</td>
 
 <td>
-
-${p.nome}
-
-<br>
-
-<select onchange="selecionar('${p.nome}',this.value,${p.preco})">
-
-<option value="">Selecionar</option>
-
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-
-</select>
-
+${p.nome}<br>
+${variacaoHTML}
 </td>
 
-<td>R$ ${p.preco.toFixed(2)}</td>
+<td>R$ ${preco}</td>
 
 <td>
 
-<input type="number" min="0" onchange="quantidade('${p.nome}',this.value)">
+<input type="number" min="0" onchange="calc(${i},this.value)">
 
 </td>
 
-<td id="sub-${p.nome}">0.00</td>
+<td id="t${i}">0</td>
 
 </tr>
 
@@ -302,84 +295,37 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 })
 
-}
-
-function selecionar(nome,variacao,preco){
-
-if(!carrinho[nome]){
-
-carrinho[nome]={
-
-nome:variacao,
-preco:preco,
-qtd:0
+document.getElementById("lista").innerHTML=html
 
 }
 
-}
+function calc(i,q){
+
+let p=produtos[i]
+
+let preco=p.preco*0.9
+
+let total=(preco*q).toFixed(2)
+
+document.getElementById("t"+i).innerText=total
+
+carrinho[p.nome]={q,preco,total}
+
+calcTotal()
 
 }
 
-function quantidade(nome,qtd){
+function calcTotal(){
 
-if(!carrinho[nome]) return
+let soma=0
 
-carrinho[nome].qtd=parseInt(qtd)
+Object.values(carrinho).forEach(p=>{
 
-calcular()
-
-}
-
-function calcular(){
-
-let total=0
-let lista=""
-
-Object.values(carrinho).forEach(i=>{
-
-let sub=i.preco*i.qtd
-
-if(i.qtd>0){
-
-lista+=`${i.nome} x ${i.qtd}<br>`
-
-}
-
-total+=sub
+soma+=parseFloat(p.total)
 
 })
 
-let desconto=descontoProgressivo(total)
-
-let totalFinal=total*(1-desconto)
-
-document.getElementById("listaCarrinho").innerHTML=lista
-document.getElementById("total").innerText=totalFinal.toFixed(2)
-
-document.getElementById("desconto").innerHTML=`Desconto aplicado: ${desconto*100}%`
-
-}
-
-function descontoProgressivo(total){
-
-if(total>=1000) return 0.18
-if(total>=600) return 0.15
-if(total>=300) return 0.12
-return 0.10
-
-}
-
-function buscar(txt){
-
-txt=txt.toLowerCase()
-
-document.querySelectorAll("#tabela tr").forEach(l=>{
-
-let nome=l.innerText.toLowerCase()
-
-l.style.display=nome.includes(txt)?"":"none"
-
-})
+document.getElementById("total").innerText=soma.toFixed(2)
 
 }
 
@@ -397,17 +343,17 @@ let doc=new jsPDF()
 
 let y=20
 
-doc.text("Pedido Crazy Fantasy B2B",10,10)
+doc.text("Pedido Crazy Fantasy",20,y)
 
-Object.values(carrinho).forEach(i=>{
+y+=10
 
-if(i.qtd>0){
+Object.keys(carrinho).forEach(nome=>{
 
-doc.text(`${i.nome} x ${i.qtd}`,10,y)
+let p=carrinho[nome]
+
+doc.text(`${nome} - ${p.q} un`,20,y)
 
 y+=8
-
-}
 
 })
 
@@ -415,37 +361,24 @@ doc.save("pedido.pdf")
 
 }
 
-function enviarEmail(){
+function enviar(){
 
-let total=parseFloat(document.getElementById("total").innerText)
-
-if(total<pedidoMinimo){
-
-alert("Pedido mínimo R$"+pedidoMinimo)
-
-return
+alert("Pedido enviado!")
 
 }
 
-let texto="Pedido Crazy Fantasy B2B%0D%0A"
+document.getElementById("busca").addEventListener("input",function(){
 
-Object.values(carrinho).forEach(i=>{
+let termo=this.value.toLowerCase()
 
-if(i.qtd>0){
+let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
 
-texto+=`${i.nome} x ${i.qtd}%0D%0A`
-
-}
+renderProdutos(filtrados)
 
 })
-
-window.location.href=`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido B2B&body=${texto}`
-
-}
 
 </script>
 
 </body>
+
 </html>
-
-
