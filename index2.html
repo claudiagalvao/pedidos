@@ -41,10 +41,17 @@ margin-bottom:10px;
 .clienteBox input{
 width:100%;
 padding:10px;
-margin-top:6px;
-margin-bottom:8px;
+margin:6px 0;
 border-radius:6px;
 border:1px solid #ccc;
+}
+
+.infoBox{
+background:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+font-size:14px;
 }
 
 .progressBox{
@@ -67,6 +74,14 @@ height:100%;
 width:0%;
 background:#27ae60;
 transition:0.4s;
+}
+
+.sugestaoBox{
+background:#fff4e5;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+font-size:14px;
 }
 
 .layout{
@@ -188,6 +203,26 @@ flex-direction:column;
 </div>
 
 
+<div class="infoBox">
+
+<b>Descontos Progressivos</b><br>
+Pedidos acima de R$200 → 10%<br>
+Pedidos acima de R$500 → 12%<br>
+Pedidos acima de R$1000 → 15%<br><br>
+
+<b>Formas de Pagamento</b><br>
+PIX<br>
+Transferência bancária<br>
+Cartão de crédito (até 3x para pedidos acima de R$300)<br>
+Boleto mediante consulta cadastral<br><br>
+
+<b>Frete</b><br>
+Frete por conta do cliente (FOB)<br>
+Envio via Correios ou transportadora
+
+</div>
+
+
 <div class="progressBox">
 
 <div id="progressText">
@@ -197,6 +232,8 @@ Pedido mínimo: R$200
 <div class="progressBar">
 <div id="progressFill"></div>
 </div>
+
+<div id="sugestao" class="sugestaoBox"></div>
 
 </div>
 
@@ -486,10 +523,15 @@ if(falta>0){
 document.getElementById("progressText").innerText=
 "Faltam R$ "+falta.toFixed(2)+" para atingir o pedido mínimo"
 
+document.getElementById("sugestao").innerText=
+"Sugestão: adicione acessórios ou tintas spray para completar o pedido."
+
 }else{
 
 document.getElementById("progressText").innerText=
 "Pedido mínimo atingido"
+
+document.getElementById("sugestao").innerText=""
 
 }
 
@@ -544,7 +586,7 @@ mensagem+=`${p.nome} - ${p.q} un\n`
 
 mensagem+=`\nTotal: R$ ${total}`
 
-window.location.href=`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido B2B Crazy Fantasy&body=${encodeURIComponent(mensagem)}`
+window.location.href=`mailto:vendas@crazyfantasy.com.br?cc=claus.galvao@hotmail.com&subject=Pedido B2B Crazy Fantasy&body=${encodeURIComponent(mensagem)}`
 
 }
 
@@ -561,7 +603,7 @@ mensagem+=`${p.nome} - ${p.q} un%0A`
 
 mensagem+=`%0ATotal: R$ ${total}`
 
-window.open(`https://wa.me/5519992850208?text=${mensagem}`)
+window.open(`https://wa.me/5519999999999?text=${mensagem}`)
 
 }
 
@@ -569,4 +611,3 @@ window.open(`https://wa.me/5519992850208?text=${mensagem}`)
 
 </body>
 </html>
-
