@@ -35,10 +35,6 @@ width:60px;
 padding:4px;
 }
 
-.total{
-font-weight:bold;
-}
-
 .carrinho{
 position:fixed;
 right:40px;
@@ -71,6 +67,7 @@ color:white;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -90,32 +87,32 @@ color:white;
 
 <tbody>
 
-<tr data-preco="107.99">
+<tr>
 <td>Peruca Amy Winehouse</td>
-<td>R$ 107,99</td>
+<td class="preco">107.99</td>
 <td><input type="number" class="qtd" value="0" min="0"></td>
-<td class="total">0,00</td>
+<td class="total">0.00</td>
 </tr>
 
-<tr data-preco="59.90">
+<tr>
 <td>Peruca Arlequina</td>
-<td>R$ 59,90</td>
+<td class="preco">59.90</td>
 <td><input type="number" class="qtd" value="0" min="0"></td>
-<td class="total">0,00</td>
+<td class="total">0.00</td>
 </tr>
 
-<tr data-preco="35.99">
+<tr>
 <td>Tinta Spray de Cabelo</td>
-<td>R$ 35,99</td>
+<td class="preco">35.99</td>
 <td><input type="number" class="qtd" value="0" min="0"></td>
-<td class="total">0,00</td>
+<td class="total">0.00</td>
 </tr>
 
-<tr data-preco="29.90">
+<tr>
 <td>Tiara de Princesa</td>
-<td>R$ 29,90</td>
+<td class="preco">29.90</td>
 <td><input type="number" class="qtd" value="0" min="0"></td>
-<td class="total">0,00</td>
+<td class="total">0.00</td>
 </tr>
 
 </tbody>
@@ -128,7 +125,7 @@ color:white;
 
 <p>Itens: <span id="itens">0</span></p>
 
-<h2>Total: R$ <span id="total">0,00</span></h2>
+<h2>Total: R$ <span id="total">0.00</span></h2>
 
 <button class="pdf">Gerar PDF</button>
 <button class="enviar">Enviar Pedido</button>
@@ -137,28 +134,24 @@ color:white;
 
 <script>
 
-function formatar(valor){
-return valor.toLocaleString('pt-BR',{minimumFractionDigits:2})
-}
-
-function atualizar(){
+function atualizarCarrinho(){
 
 let linhas = document.querySelectorAll("#tabela tbody tr")
 
 let totalCarrinho = 0
 let itens = 0
 
-linhas.forEach(linha =>{
+linhas.forEach(function(linha){
 
-let preco = parseFloat(linha.dataset.preco)
+let preco = parseFloat(linha.querySelector(".preco").innerText)
 
 let qtd = parseInt(linha.querySelector(".qtd").value) || 0
 
 let total = preco * qtd
 
-linha.querySelector(".total").innerText = formatar(total)
+linha.querySelector(".total").innerText = total.toFixed(2)
 
-if(qtd>0){
+if(qtd > 0){
 
 itens += qtd
 totalCarrinho += total
@@ -168,13 +161,14 @@ totalCarrinho += total
 })
 
 document.getElementById("itens").innerText = itens
-document.getElementById("total").innerText = formatar(totalCarrinho)
+document.getElementById("total").innerText = totalCarrinho.toFixed(2)
 
 }
 
-document.querySelectorAll(".qtd").forEach(input =>{
+document.querySelectorAll(".qtd").forEach(function(input){
 
-input.addEventListener("input", atualizar)
+input.addEventListener("change", atualizarCarrinho)
+input.addEventListener("keyup", atualizarCarrinho)
 
 })
 
