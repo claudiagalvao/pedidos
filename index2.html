@@ -4,6 +4,8 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Portal B2B Crazy Fantasy</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -18,14 +20,15 @@ margin:0;
 }
 
 .container{
-width:1200px;
+max-width:1200px;
 margin:auto;
+padding:10px;
 }
 
 .banner{
 width:100%;
-margin-top:20px;
 border-radius:10px;
+margin-top:10px;
 }
 
 .search{
@@ -40,10 +43,12 @@ border:1px solid #ccc;
 display:flex;
 gap:20px;
 margin-top:10px;
+flex-wrap:wrap;
 }
 
 .produtos{
 flex:3;
+min-width:300px;
 }
 
 table{
@@ -51,6 +56,7 @@ width:100%;
 margin-top:10px;
 background:white;
 border-radius:8px;
+border-collapse:collapse;
 }
 
 th{
@@ -141,18 +147,40 @@ margin-top:10px;
 }
 
 .catGrupo{
-margin-bottom:6px;
+margin-bottom:8px;
 }
 
 .catGrupo b{
 display:block;
-margin-top:6px;
+margin-top:8px;
 font-size:14px;
 }
 
 .categorias button{
 background:#dcd0f7;
 margin:3px;
+}
+
+/* MOBILE */
+
+@media (max-width:768px){
+
+.layout{
+flex-direction:column;
+}
+
+.carrinho{
+width:100%;
+}
+
+table{
+font-size:14px;
+}
+
+.prodimg{
+width:40px;
+}
+
 }
 
 </style>
@@ -230,7 +258,6 @@ Pedido mínimo: R$200
 <script>
 
 let produtos=[]
-let categorias=[]
 let carrinho={}
 let desconto=0.10
 
@@ -243,7 +270,6 @@ complete:function(res){
 
 let data=res.data
 let mapa={}
-let cats=new Set()
 
 data.forEach(p=>{
 
@@ -260,8 +286,6 @@ if(!categoria){
 categoria="Outros"
 }
 
-cats.add(categoria)
-
 if(!mapa[id]){
 
 mapa[id]={
@@ -276,13 +300,15 @@ variacoes:[]
 
 }
 
-let v=p["Valor da variação 1"]
-if(v) mapa[id].variacoes.push(v)
+let variacao=p["Valor da variação 1"]
+
+if(variacao && mapa[id]){
+mapa[id].variacoes.push(variacao)
+}
 
 })
 
 produtos=Object.values(mapa)
-categorias=[...cats]
 
 renderCategorias()
 render(produtos)
@@ -342,6 +368,19 @@ lista.forEach((p,i)=>{
 let precoOriginal=p.preco
 let precoB2B=p.preco*(1-desconto)
 
+let variacaoHTML=""
+
+if(p.variacoes.length){
+
+variacaoHTML=`
+<select>
+<option>Selecionar</option>
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+</select>
+`
+
+}
+
 let img=p.imagem?`<img src="${p.imagem}" class="prodimg">`:""
 
 html+=`
@@ -350,15 +389,19 @@ html+=`
 
 <td>${img}</td>
 
-<td>${p.nome}</td>
+<td>${p.nome}<br>${variacaoHTML}</td>
 
 <td>
+
 <span class="precoOriginal">R$ ${precoOriginal.toFixed(2)}</span><br>
 <span class="precoB2B">R$ ${precoB2B.toFixed(2)}</span>
+
 </td>
 
 <td>
+
 <input type="number" min="0" onchange="calc(${i},this.value)">
+
 </td>
 
 <td id="t${i}">0</td>
@@ -485,7 +528,6 @@ let total=parseFloat(document.getElementById("total").innerText)
 if(total<200){
 
 alert("Pedido mínimo: R$200")
-
 return
 
 }
