@@ -1,270 +1,159 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Portal B2B Crazy Fantasy</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>Portal de Pedidos - Crazy Fantasy</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f5f5;
+font-family: Arial;
+background:#f6f6f6;
 margin:0;
+padding:30px;
 }
 
-.container{
-max-width:1200px;
-margin:auto;
+h1{
+margin-bottom:5px;
+}
+
+.topo{
+background:white;
 padding:20px;
-}
-
-.banner{
-width:100%;
-border-radius:12px;
-margin-bottom:15px;
-}
-
-.infoBox{
-background:white;
-padding:18px;
-border-radius:12px;
-margin-bottom:15px;
-line-height:1.6;
-}
-
-.progressBox{
-background:white;
-padding:18px;
-border-radius:12px;
-margin-bottom:15px;
-}
-
-.progressBar{
-background:#eee;
-height:10px;
 border-radius:10px;
-overflow:hidden;
-}
-
-#progressFill{
-height:100%;
-width:0%;
-background:#e74c3c;
-transition:.4s;
+margin-bottom:20px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
 .categorias{
-background:white;
-padding:15px;
-border-radius:12px;
-margin-bottom:15px;
+margin:15px 0;
 }
 
 .categorias button{
-background:white;
-border:1px solid #dcd0f7;
-padding:6px 12px;
+margin:5px;
+padding:8px 14px;
 border-radius:20px;
-margin:4px;
+border:1px solid #ccc;
+background:white;
 cursor:pointer;
-transition:.2s;
 }
 
 .categorias button:hover{
-background:#dcd0f7;
+background:#eee;
 }
 
-.search{
+.busca{
+margin:10px 0 20px 0;
+}
+
+.busca input{
 width:100%;
 padding:12px;
 border-radius:25px;
 border:1px solid #ccc;
-margin-bottom:15px;
-font-size:15px;
+font-size:14px;
 }
 
-.layout{
+.container{
 display:flex;
 gap:20px;
 }
 
-.produtos{
-flex:3;
-}
-
-.carrinho{
+.tabela{
 flex:1;
 background:white;
-padding:18px;
-border-radius:12px;
-height:fit-content;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-background:white;
 }
 
 th{
-background:#dcd0f7;
+background:#c9b8e9;
 padding:10px;
 text-align:left;
 }
 
 td{
-padding:10px;
+padding:8px;
 border-bottom:1px solid #eee;
 }
 
-tr:hover{
-background:#faf7ff;
+input.qtd{
+width:50px;
 }
 
-.precoOriginal{
-text-decoration:line-through;
-font-size:12px;
-color:#777;
-}
-
-.precoB2B{
-color:#e74c3c;
-font-weight:bold;
-}
-
-.precoB2B::before{
-content:"B2B ";
-color:#6c5fa7;
-}
-
-button{
-border:none;
-padding:12px;
+.carrinho{
+width:260px;
+background:white;
+padding:20px;
 border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
+height:fit-content;
+}
+
+.btn{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 font-weight:bold;
-transition:.2s;
 }
 
-.carrinho button{
-width:100%;
-margin-top:8px;
-}
-
-button:hover{
-transform:translateY(-1px);
-}
-
-.btnclear{
-background:linear-gradient(135deg,#444,#222);
+.btn-limpar{
+background:#333;
 color:white;
 }
 
-.btnpdf{
-background:linear-gradient(135deg,#ff5b6b,#ff8c6b);
+.btn-pdf{
+background:#ff6f61;
 color:white;
 }
 
-.btnsend{
-background:linear-gradient(135deg,#27ae60,#2ecc71);
-color:white;
-}
-
-.btnemail{
-background:linear-gradient(135deg,#2980b9,#3498db);
-color:white;
-}
-
-footer{
-background:linear-gradient(135deg,#dcd0f7,#cbb8f5);
-margin-top:40px;
-padding:40px 0;
-}
-
-.footerInner{
-max-width:1200px;
-margin:auto;
-padding:0 20px;
-}
-
-.footerGrid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:25px;
-}
-
-footer a{
-color:#6c5fa7;
-text-decoration:none;
-}
-
-.footerBottom{
-text-align:center;
-margin-top:20px;
+.alerta{
+margin-top:10px;
+color:red;
 font-size:13px;
 }
 
-@media(max-width:768px){
-.layout{
-flex-direction:column;
-}
-}
-
 </style>
-
 </head>
 
 <body>
 
+<div class="topo">
+
+<h1>Portal B2B Crazy Fantasy</h1>
+
+<p>Frete por conta do cliente (FOB)</p>
+<p><b>Pedido mínimo: R$200</b></p>
+
+<div class="categorias">
+
+<button onclick="filtrar('todos')">Todos</button>
+<button onclick="filtrar('kits')">Kits</button>
+<button onclick="filtrar('perucas')">Perucas</button>
+<button onclick="filtrar('barbas')">Barbas</button>
+<button onclick="filtrar('acessorios')">Acessórios</button>
+<button onclick="filtrar('maquiagem')">Maquiagem</button>
+
+</div>
+
+<div class="busca">
+<input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
+</div>
+
+</div>
+
 <div class="container">
 
-<img src="banner.png" class="banner">
-
-<h2>Portal B2B Crazy Fantasy</h2>
-<p>✔ Preços exclusivos para parceiros e revendedores</p>
-
-<div class="infoBox">
-
-<b>Descontos Progressivos</b><br>
-Pedidos acima de R$200 → 10%<br>
-Pedidos acima de R$500 → 12%<br>
-Pedidos acima de R$1000 → 15%<br><br>
-
-<b>Formas de Pagamento</b><br>
-PIX<br>
-Transferência bancária<br>
-Cartão de crédito (até 3x acima de R$300)<br>
-Boleto mediante consulta<br><br>
-
-<b>Frete</b><br>
-Frete por conta do cliente (FOB)
-
-</div>
-
-<div class="progressBox">
-
-<div id="progressText">Pedido mínimo: R$200</div>
-
-<div class="progressBar">
-<div id="progressFill"></div>
-</div>
-
-</div>
-
-<div id="categorias" class="categorias"></div>
-
-<input type="text" id="busca" class="search" placeholder="Buscar produto...">
-
-<div class="layout">
-
-<div class="produtos">
+<div class="tabela">
 
 <table>
 
@@ -277,7 +166,7 @@ Frete por conta do cliente (FOB)
 </tr>
 </thead>
 
-<tbody id="lista"></tbody>
+<tbody id="listaProdutos"></tbody>
 
 </table>
 
@@ -287,155 +176,157 @@ Frete por conta do cliente (FOB)
 
 <h3>🛒 Carrinho</h3>
 
-<p>Itens: <b id="itens">0</b></p>
+<p>Itens: <span id="itens">0</span></p>
 
 <h2>Total: R$ <span id="total">0</span></h2>
 
-<button class="btnclear" onclick="limpar()">Limpar</button>
-<button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
-<button class="btnsend" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
+<button class="btn btn-limpar" onclick="limpar()">Limpar</button>
 
-<form id="formEmail" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+<button class="btn btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
 
-<input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
-<input type="hidden" name="pedido" id="pedidoForm">
-
-<button class="btnemail" type="submit">Enviar Email</button>
-
-</form>
+<div class="alerta" id="alerta"></div>
 
 </div>
 
 </div>
-
-</div>
-
-<footer>
-
-<div class="footerInner">
-
-<div class="footerGrid">
-
-<div>
-<h4>Crazy Fantasy</h4>
-Especialistas em fantasias e acessórios para festas.
-</div>
-
-<div>
-<h4>Localização</h4>
-Valinhos – São Paulo
-</div>
-
-<div>
-<h4>Contato</h4>
-📱 <a href="https://wa.me/5519992850208" target="_blank">WhatsApp</a><br>
-✉ <a href="mailto:lojacrazyfantasy@hotmail.com">Email</a>
-</div>
-
-<div>
-<h4>Instagram</h4>
-📸 <a href="https://instagram.com/crazyfantasy" target="_blank">@crazyfantasy</a>
-</div>
-
-<div>
-<h4>Site</h4>
-🌐 <a href="https://www.crazyfantasy.com.br" target="_blank">www.crazyfantasy.com.br</a>
-</div>
-
-</div>
-
-<div class="footerBottom">
-© Crazy Fantasy — Portal B2B
-</div>
-
-</div>
-
-</footer>
 
 <script>
 
-let produtos=[]
+let produtos = [
+
+{nome:"Kit Sherlock Holmes", preco:120, categoria:"kits"},
+{nome:"Kit Arlequina", preco:110, categoria:"kits"},
+
+{nome:"Peruca Punk Rock", preco:55, categoria:"perucas"},
+{nome:"Peruca Barbie", preco:60, categoria:"perucas"},
+
+{nome:"Barba Viking", preco:35, categoria:"barbas"},
+{nome:"Bigode Mexicano", preco:18, categoria:"barbas"},
+
+{nome:"Tiara Princesa", preco:20, categoria:"acessorios"},
+{nome:"Bastão Arlequina", preco:35, categoria:"acessorios"},
+{nome:"Meia Arrastão", preco:25, categoria:"acessorios"},
+
+{nome:"Spray Cabelo Colorido", preco:22, categoria:"maquiagem"}
+
+]
+
 let carrinho={}
-let pedidoMinimo=200
 
-Papa.parse("produtos.csv",{download:true,header:true,
-
-complete:function(res){
-
-let mapa={}
-
-res.data.forEach(p=>{
-
-let id=p["Identificador URL"]
-
-if(!id)return
-
-if(!mapa[id]){
-
-mapa[id]={
-
-nome:p["Nome"],
-categoria:p["Categorias"],
-preco:parseFloat((p["Preço"]||"0").replace(",", ".")),
-variacoes:[]
-
-}
-
-}
-
-let v=p["Valor da variação 1"]
-
-if(v && v.trim()!=""){
-mapa[id].variacoes.push(v)
-}
-
-})
-
-produtos=Object.values(mapa)
-
-gerarMenu()
-render(produtos)
-
-}
-
-})
-
-function gerarMenu(){
-
-let categorias={}
-
-produtos.forEach(p=>{
-
-if(!p.categoria)return
-
-let partes=p.categoria.split(">")
-
-let principal=partes[0].trim()
-let sub=partes[1]?partes[1].trim():null
-
-if(!categorias[principal])categorias[principal]=[]
-
-if(sub && !categorias[principal].includes(sub)){
-categorias[principal].push(sub)
-}
-
-})
+function render(lista){
 
 let html=""
 
-Object.keys(categorias).forEach(cat=>{
+lista.forEach((p,i)=>{
 
-html+=`<div><b>${cat}</b><br>`
+html+=`
 
-categorias[cat].forEach(sub=>{
-html+=`<button onclick="filtrar('${cat}','${sub}')">${sub}</button>`
+<tr>
+
+<td>${p.nome}</td>
+
+<td>R$ ${p.preco}</td>
+
+<td>
+<input class="qtd" type="number" min="0"
+onchange="add(${i},this.value)">
+</td>
+
+<td id="t${i}">R$ 0</td>
+
+</tr>
+
+`
+
 })
 
-html+=`</div>`
+document.getElementById("listaProdutos").innerHTML=html
 
-})
+}
 
-document.getElementById("categorias").innerHTML=html
+render(produtos)
+
+function filtrar(cat){
+
+if(cat=="todos"){
+render(produtos)
+return
+}
+
+let filtrado = produtos.filter(p=>p.categoria==cat)
+
+render(filtrado)
+
+}
+
+function buscar(txt){
+
+txt=txt.toLowerCase()
+
+let filtrado = produtos.filter(p=>
+p.nome.toLowerCase().includes(txt)
+)
+
+render(filtrado)
+
+}
+
+function add(i,qtd){
+
+qtd=parseInt(qtd)
+
+if(!qtd) qtd=0
+
+let preco = produtos[i].preco
+
+let total = preco*qtd
+
+document.getElementById("t"+i).innerText="R$ "+total
+
+carrinho[i]=total
+
+atualizar()
+
+}
+
+function atualizar(){
+
+let total=0
+let itens=0
+
+for(let i in carrinho){
+
+total+=carrinho[i]
+
+if(carrinho[i]>0) itens++
+
+}
+
+document.getElementById("total").innerText=total
+document.getElementById("itens").innerText=itens
+
+}
+
+function limpar(){
+
+location.reload()
+
+}
+
+function gerarPDF(){
+
+let total = parseFloat(document.getElementById("total").innerText)
+
+if(total<200){
+
+document.getElementById("alerta").innerText=
+"Pedido mínimo é R$200"
+
+return
+
+}
+
+alert("PDF seria gerado aqui.")
 
 }
 
