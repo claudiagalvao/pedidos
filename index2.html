@@ -2,17 +2,18 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy - Catálogo</title>
+<title>Crazy Fantasy - Catálogo de Produtos</title>
 
 <style>
 
 body{
 font-family:Arial;
-margin:0;
 background:#f5f6fb;
+margin:0;
 }
 
 .container{
@@ -26,35 +27,40 @@ width:100%;
 border-radius:10px;
 }
 
-h2{
-margin-top:40px;
+.menu{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin:20px 0;
 }
 
-.form-box{
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 6px 20px rgba(0,0,0,0.08);
-margin-bottom:30px;
+.menu button{
+padding:10px 14px;
+border:none;
+border-radius:8px;
+background:#e4dcff;
+cursor:pointer;
 }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+.menu button:hover{
+background:#cfc4ff;
+}
+
+.search{
 margin-bottom:20px;
 }
 
-input{
+.search input{
 padding:12px;
-border:1px solid #ccc;
+width:100%;
 border-radius:6px;
+border:1px solid #ccc;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:10px;
+background:white;
 }
 
 th{
@@ -98,21 +104,15 @@ margin-top:20px;
 font-weight:bold;
 }
 
-.buttons{
+button.limpar{
 margin-top:20px;
-display:flex;
-gap:10px;
-}
-
-button{
 padding:12px 18px;
 border:none;
 border-radius:8px;
+background:#444;
+color:white;
 cursor:pointer;
 }
-
-.limpar{background:#444;color:white;}
-.enviar{background:#00c897;color:white;}
 
 </style>
 </head>
@@ -125,101 +125,137 @@ cursor:pointer;
 <img src="banner.png">
 </div>
 
-<h2>Pedido para Parceiros & Revendedores</h2>
+<h2>Catálogo de Produtos</h2>
 
-<div class="form-box">
+<div class="menu" id="menu"></div>
 
-<div class="grid">
-
-<input placeholder="Empresa">
-<input placeholder="CNPJ">
-<input placeholder="Contato">
-<input placeholder="Telefone">
-<input placeholder="Email">
-
+<div class="search">
+<input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
 </div>
 
-</div>
+<table>
 
-<div id="catalogo"></div>
+<thead>
+
+<tr>
+<th>Produto</th>
+<th>Preço</th>
+<th>Preço com desconto</th>
+<th>Qtd</th>
+<th>Total</th>
+</tr>
+
+</thead>
+
+<tbody id="tabela"></tbody>
+
+</table>
 
 <div class="total">
 Total: R$ <span id="total">0.00</span>
 </div>
 
-<div class="buttons">
-<button class="limpar" onclick="limpar()">Limpar</button>
-<button class="enviar">Enviar Pedido</button>
-</div>
+<button class="limpar" onclick="limpar()">Limpar pedido</button>
 
 </div>
 
 <script>
 
-const catalogo={
-
-"Fantasias Femininas":[
-["Arlequina",180],
-["Elsa",269.9],
-["Rapunzel",269.9],
-["Cinderela",269.9]
+const catalogo = {
+"Barbas e Bigodes":[
+["Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal",49.99],
+["Kit Papai Noel Completo Peruca e Barba Branca com Bigode Fantasia Natal",69.99]
 ],
 
-"Fantasias Masculinas":[
-["Batman",199.9],
-["Homem Aranha",199.9],
-["Super Homem",209.9]
+"Acessórios Gerais":[
+["Bastão Taco Fantasia Cosplay Festa Vilã Arlequina Good Night 80cm",49.9]
 ],
 
-"Acessórios":[
-["Varinha",39.9],
-["Coroa",29.9],
-["Capa",59.9]
+"Kits":[
+["Colar Vitoriano Steampunk com Relógio Vintage",39.99],
+["Kit Detetive Sherlock Holmes Adulto",80],
+["Kit Fantasia Rocker Completo",49.99],
+["Kit Fantasia Vilã Cosplay Peruca Rosa Azul + Bastão+ Meia",119.7],
+["Kit Peruca Rosa Azul + Bastão Good Night Cosplay",85]
+],
+
+"Coroas,Tiaras e Varinhas":[
+["Coroa de Rainha Dourada Luxo",19.99],
+["Coroa de Rei Dourada Luxo",12.99],
+["Mini Coroa Princesa",3.99],
+["Tiara Princesa Glitter",15],
+["Tiara Princesa Prata",12],
+["Varinha Princesa",7.99]
+],
+
+"Maquiagens e Sprays":[
+["Kbelo Maluco Rostinho Pintado",19.9],
+["Tinta Spray Temporária Cabelo",19.99]
+],
+
+"Meias e Luvas":[
+["Meia Calça Arrastão Preta",49.9]
+],
+
+"Perucas":[
+["Peruca Amy Winehouse",119.99],
+["Peruca Arlequina Rosa Azul",49.9],
+["Peruca Loira Ondulada Barbie",59.9],
+["Peruca Punk Colorida",30]
 ]
 
 }
 
-const divCatalogo=document.getElementById("catalogo")
+let categoriaAtual = Object.keys(catalogo)[0]
 
-Object.keys(catalogo).forEach(categoria=>{
+function gerarMenu(){
 
-let html=`<h2>${categoria}</h2>`
+const menu = document.getElementById("menu")
 
-html+=`
-<table>
+Object.keys(catalogo).forEach(cat=>{
 
-<tr>
-<th>Produto</th>
-<th>Preço</th>
-<th>Preço c/ desconto</th>
-<th>Qtd</th>
-<th>Total</th>
-</tr>
+menu.innerHTML += `
+<button onclick="mostrarCategoria('${cat}')">${cat}</button>
 `
 
-catalogo[categoria].forEach(p=>{
+})
 
-let preco=p[1]
-let desconto=preco>200?preco*0.9:preco
-let temDesconto=preco>200
+}
 
-html+=`
+function mostrarCategoria(cat){
 
-<tr class="${temDesconto?'desconto':''}">
+categoriaAtual = cat
+render()
+
+}
+
+function render(){
+
+const tabela = document.getElementById("tabela")
+tabela.innerHTML=""
+
+catalogo[categoriaAtual].forEach(p=>{
+
+let preco = p[1]
+let desconto = preco>200?preco*0.9:preco
+let classe = preco>200?"desconto":""
+
+tabela.innerHTML += `
+<tr class="${classe}">
 
 <td>${p[0]}</td>
 
-<td class="${temDesconto?'preco-antigo':''}">
+<td class="${preco>200?'preco-antigo':''}">
 ${preco.toFixed(2)}
 </td>
 
 <td class="preco-desc">
 ${desconto.toFixed(2)}
-${temDesconto?'<span class="badge">10% OFF</span>':''}
+${preco>200?'<span class="badge">10% OFF</span>':''}
 </td>
 
 <td>
-<input type="number" min="0" class="qtd" onchange="calcular()">
+<input type="number" min="0" onchange="calcular()">
 </td>
 
 <td class="subtotal">0.00</td>
@@ -229,31 +265,23 @@ ${temDesconto?'<span class="badge">10% OFF</span>':''}
 
 })
 
-html+=`</table>`
-
-divCatalogo.innerHTML+=html
-
-})
+}
 
 function calcular(){
 
-let total=0
+let total = 0
 
-document.querySelectorAll("table tr").forEach((linha,i)=>{
+document.querySelectorAll("#tabela tr").forEach(linha=>{
 
-if(linha.querySelector(".qtd")){
+let preco = parseFloat(linha.children[2].innerText)
 
-let preco=parseFloat(linha.children[2].innerText)
+let qtd = linha.querySelector("input").value || 0
 
-let qtd=parseInt(linha.querySelector(".qtd").value)||0
-
-let subtotal=preco*qtd
+let subtotal = preco*qtd
 
 linha.querySelector(".subtotal").innerText=subtotal.toFixed(2)
 
-total+=subtotal
-
-}
+total += subtotal
 
 })
 
@@ -263,11 +291,30 @@ document.getElementById("total").innerText=total.toFixed(2)
 
 function limpar(){
 
-document.querySelectorAll(".qtd").forEach(q=>q.value="")
-document.querySelectorAll(".subtotal").forEach(s=>s.innerText="0.00")
+document.querySelectorAll("input").forEach(i=>i.value="")
+document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0.00")
 document.getElementById("total").innerText="0.00"
 
 }
+
+function buscar(texto){
+
+texto = texto.toLowerCase()
+
+const tabela = document.getElementById("tabela")
+
+document.querySelectorAll("#tabela tr").forEach(linha=>{
+
+const nome = linha.children[0].innerText.toLowerCase()
+
+linha.style.display = nome.includes(texto) ? "" : "none"
+
+})
+
+}
+
+gerarMenu()
+render()
 
 </script>
 
