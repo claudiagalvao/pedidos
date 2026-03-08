@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 
 <meta charset="UTF-8">
@@ -211,6 +212,7 @@ flex-direction:column;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -242,6 +244,8 @@ Pedidos acima de R$1000 → 15%
 
 </div>
 
+<div id="categorias" class="categorias"></div>
+
 <div class="searchBox">
 <input type="text" id="busca" class="search" placeholder="Buscar produto...">
 <span class="searchIcon">🔍</span>
@@ -252,6 +256,7 @@ Pedidos acima de R$1000 → 15%
 <div class="produtos">
 
 <table>
+
 <thead>
 <tr>
 <th>Produto</th>
@@ -279,10 +284,13 @@ Pedidos acima de R$1000 → 15%
 <button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
 <button class="btnsend" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
 
-<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+<form id="formEmail" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+
 <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
 <input type="hidden" name="pedido" id="pedidoForm">
+
 <button class="btnemail" type="submit">Enviar Email</button>
+
 </form>
 
 </div>
@@ -320,7 +328,7 @@ Valinhos – São Paulo
 
 <div>
 <h4>Site</h4>
-🌐 <a href="https://www.crazyfantasy.com.br">crazyfantasy.com.br</a>
+🌐 <a href="https://crazyfantasy.com.br">crazyfantasy.com.br</a>
 </div>
 
 </div>
@@ -333,6 +341,321 @@ Valinhos – São Paulo
 
 </footer>
 
+<script>
+
+let produtos=[]
+let carrinho={}
+let pedidoMinimo=200
+
+Papa.parse("produtos.csv",{download:true,header:true,
+
+complete:function(res){
+
+let mapa={}
+
+res.data.forEach(p=>{
+
+let id=p["Identificador URL"]
+if(!id)return
+
+if(!mapa[id]){
+mapa[id]={
+nome:p["Nome"],
+categoria:p["Categorias"],
+preco:parseFloat((p["Preço"]||"0").replace(",", ".")),
+variacoes:[]
+}
+}
+
+let v=p["Valor da variação 1"]
+if(v && v.trim()!=""){
+mapa[id].variacoes.push(v)
+}
+
+})
+
+produtos=Object.values(mapa)
+
+gerarMenu()
+render(produtos)
+
+}
+
+})
+
+function gerarMenu(){
+
+let categorias={}
+
+produtos.forEach(p=>{
+
+if(!p.categoria)return
+
+let partes=p.categoria.split(">")
+
+let principal=partes[0].trim()
+let sub=partes[1]?partes[1].trim():null
+
+if(!categorias[principal])categorias[principal]=[]
+
+if(sub && !categorias[principal].includes(sub)){
+categorias[principal].push(sub)
+}
+
+})
+
+let html=""
+
+Object.keys(categorias).forEach(cat=>{
+
+html+=`<div class="catGrupo"><b>${cat}</b><br>`
+
+categorias[cat].forEach(sub=>{
+html+=`<button onclick="filtrar('${cat}','${sub}')">${sub}</button>`
+})
+
+html+=`</div>`
+
+})
+
+document.getElementById("categorias").innerHTML=html
+
+}
+
+function filtrar(cat,sub){
+
+let lista=produtos.filter(p=>p.categoria.includes(cat)&&p.categoria.includes(sub))
+render(lista)
+
+}
+
+document.getElementById("busca").addEventListener("keyup",function(){
+
+let termo=this.value.toLowerCase()
+
+let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
+
+render(filtrados)
+
+})
+
+function render(lista){
+
+let html=""
+
+lista.forEach((p,i)=>{
+
+let precoB2B=p.preco*0.9
+
+let varHTML=""
+
+if(p.variacoes.length>0){
+
+varHTML=`<select>
+<option value="">Selecione</option>
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+</select>`
+
+}
+
+html+=`
+
+<tr>
+
+<td>${p.nome}<br>${varHTML}</td>
+
+<td>
+<span class="precoOriginal">R$ ${p.preco.toFixed(2)}</span><br>
+<span class="precoB2B">R$ ${precoB2B.toFixed(2)}</span>
+</td>
+
+<td>
+<input type="number" min="0" value="0" onchange="calc(${i},this)">
+</td>
+
+<td id="t${i}">0</td>
+
+</tr>
+
+`
+
+})
+
+document.getElementById("lista").innerHTML=html
+
+}
+
+function calc(i,input){
+
+let linha=input.closest("tr")
+let select=linha.querySelector("select")
+
+if(select && select.value===""){
+alert("Selecione a variação")
+input.value=""
+return
+}
+
+let variacao=select?select.value:""
+
+let q=parseInt(input.value)
+
+if(!q || q<=0){
+delete carrinho[i]
+linha.querySelector(`#t${i}`).innerText="0"
+calcTotal()
+return
+}
+
+let preco=parseFloat(linha.querySelector(".precoB2B").innerText.replace("R$",""))
+
+let total=q*preco
+
+linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
+
+let nome=linha.querySelector("td").childNodes[0].nodeValue.trim()
+
+carrinho[i]={nome:nome,variacao:variacao,q:q,total:total}
+
+calcTotal()
+
+}
+
+function calcTotal(){
+
+let soma=0
+let itens=0
+
+Object.values(carrinho).forEach(p=>{
+soma+=p.total
+itens+=p.q
+})
+
+document.getElementById("total").innerText=soma.toFixed(2)
+document.getElementById("itens").innerText=itens
+
+let progresso=Math.min((soma/pedidoMinimo)*100,100)
+
+let barra=document.getElementById("progressFill")
+
+barra.style.width=progresso+"%"
+
+if(progresso<50){
+barra.style.background="#e74c3c"
+}
+else if(progresso<100){
+barra.style.background="#f1c40f"
+}
+else{
+barra.style.background="#27ae60"
+}
+
+}
+
+function validarPedido(){
+
+let total=parseFloat(document.getElementById("total").innerText)
+
+if(total<pedidoMinimo){
+
+alert("Pedido mínimo de R$200")
+
+return false
+}
+
+return true
+
+}
+
+function gerarPDF(){
+
+if(!validarPedido())return
+
+const {jsPDF}=window.jspdf
+let doc=new jsPDF()
+
+let y=20
+
+doc.text("Pedido Crazy Fantasy B2B",20,y)
+
+y+=10
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+doc.text(linha,20,y)
+
+y+=8
+
+})
+
+doc.save("pedido.pdf")
+
+}
+
+function enviarWhatsapp(){
+
+if(!validarPedido())return
+
+let texto="Pedido Crazy Fantasy B2B%0A%0A"
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+texto+=linha+"%0A"
+
+})
+
+window.open(`https://wa.me/5519992850208?text=${texto}`)
+
+}
+
+document.getElementById("formEmail").addEventListener("submit",function(e){
+
+if(!validarPedido()){
+e.preventDefault()
+return
+}
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+texto+=linha+"\n"
+
+})
+
+document.getElementById("pedidoForm").value=texto
+
+})
+
+function limpar(){
+location.reload()
+}
+
+</script>
+
 </body>
 </html>
-
