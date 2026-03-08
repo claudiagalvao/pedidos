@@ -14,19 +14,17 @@
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
+font-family:Arial;
 background:#f5f6fb;
-color:#333;
 }
 
-/* BANNER */
+/* BANNER GRANDE */
 
 .banner{
 width:100%;
-max-height:420px;
-object-fit:contain;
+height:420px;
+object-fit:cover;
 display:block;
-background:white;
 }
 
 /* CONTAINER */
@@ -42,8 +40,8 @@ padding:30px;
 .form-box{
 background:white;
 padding:25px;
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.08);
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
 }
 
 /* GRID */
@@ -66,8 +64,8 @@ border:1px solid #ccc;
 .tabela-container{
 max-height:420px;
 overflow-y:auto;
+border-radius:10px;
 border:1px solid #ddd;
-border-radius:8px;
 }
 
 table{
@@ -76,8 +74,7 @@ border-collapse:collapse;
 }
 
 th{
-background:#d8cff8;
-color:#333;
+background:#cfc4ff;
 padding:12px;
 }
 
@@ -87,10 +84,6 @@ text-align:center;
 border-bottom:1px solid #eee;
 }
 
-tr:nth-child(even){
-background:#fafafa;
-}
-
 .qtd{
 width:60px;
 }
@@ -98,26 +91,32 @@ width:60px;
 /* LINHAS COM DESCONTO */
 
 .desconto{
-background:#fff5f5;
+background:#fff2f4;
 }
 
-.preco-original{
+/* PREÇO ORIGINAL */
+
+.preco-antigo{
 text-decoration:line-through;
 color:#999;
 }
+
+/* PREÇO COM DESCONTO */
 
 .preco-desc{
 color:#e60023;
 font-weight:bold;
 }
 
+/* BADGE */
+
 .badge{
 background:#e60023;
 color:white;
-padding:3px 6px;
-border-radius:5px;
 font-size:11px;
-margin-left:5px;
+padding:4px 6px;
+border-radius:6px;
+margin-left:6px;
 }
 
 /* TOTAL */
@@ -126,16 +125,16 @@ margin-left:5px;
 font-size:22px;
 text-align:right;
 margin-top:20px;
-color:#6c2bd9;
 font-weight:bold;
+color:#6c2bd9;
 }
 
 /* BOTÕES */
 
 .buttons{
+margin-top:20px;
 display:flex;
 gap:10px;
-margin-top:20px;
 flex-wrap:wrap;
 }
 
@@ -144,7 +143,6 @@ padding:12px 20px;
 border:none;
 border-radius:8px;
 cursor:pointer;
-font-size:14px;
 }
 
 .limpar{background:#444;color:white;}
@@ -152,7 +150,15 @@ font-size:14px;
 .enviar{background:#00c897;color:white;}
 
 @media(max-width:700px){
-.grid{grid-template-columns:1fr;}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.banner{
+height:240px;
+}
+
 }
 
 </style>
@@ -192,7 +198,7 @@ font-size:14px;
 <tr>
 <th>Produto</th>
 <th>Preço</th>
-<th>Preço c/ desconto</th>
+<th>Preço com desconto</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
@@ -272,19 +278,21 @@ produtos.forEach(p=>{
 
 let preco=p[1]
 let desconto=preco>200?preco*0.9:preco
-let linhaClasse=preco>200?"desconto":""
+let temDesconto=preco>200
 
 tabela.innerHTML+=`
-<tr class="${linhaClasse}">
+
+<tr class="${temDesconto?'desconto':''}">
+
 <td>${p[0]}</td>
 
-<td class="${preco>200?'preco-original':''}">
+<td class="${temDesconto?'preco-antigo':''}">
 ${preco.toFixed(2)}
 </td>
 
 <td class="preco-desc">
 ${desconto.toFixed(2)}
-${preco>200?'<span class="badge">10% OFF</span>':''}
+${temDesconto?'<span class="badge">10% OFF</span>':''}
 </td>
 
 <td>
@@ -294,6 +302,7 @@ ${preco>200?'<span class="badge">10% OFF</span>':''}
 <td class="subtotal">0.00</td>
 
 </tr>
+
 `
 
 })
@@ -356,6 +365,7 @@ document.getElementById("pedido_email").value=resumo
 function gerarPDF(){
 
 const {jsPDF}=window.jspdf
+
 let pdf=new jsPDF()
 
 pdf.text("Pedido Crazy Fantasy",20,20)
@@ -372,6 +382,7 @@ let qtd=linha.querySelector(".qtd").value
 if(qtd>0){
 
 pdf.text(produto+" - "+qtd,20,y)
+
 y+=10
 
 }
