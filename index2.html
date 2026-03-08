@@ -13,10 +13,6 @@ background:#f5f5f5;
 margin:40px;
 }
 
-h1{
-margin-bottom:20px;
-}
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -84,44 +80,42 @@ color:white;
 <table id="tabela">
 
 <thead>
-
 <tr>
 <th>Produto</th>
 <th>Preço</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
-
 </thead>
 
 <tbody>
 
-<tr>
+<tr data-preco="107.99">
 <td>Peruca Amy Winehouse</td>
-<td class="preco">107.99</td>
-<td><input type="number" class="qtd" min="0" value="0"></td>
-<td class="total">0.00</td>
+<td>R$ 107,99</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
+<td class="total">0,00</td>
 </tr>
 
-<tr>
+<tr data-preco="59.90">
 <td>Peruca Arlequina</td>
-<td class="preco">59.90</td>
-<td><input type="number" class="qtd" min="0" value="0"></td>
-<td class="total">0.00</td>
+<td>R$ 59,90</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
+<td class="total">0,00</td>
 </tr>
 
-<tr>
+<tr data-preco="35.99">
 <td>Tinta Spray de Cabelo</td>
-<td class="preco">35.99</td>
-<td><input type="number" class="qtd" min="0" value="0"></td>
-<td class="total">0.00</td>
+<td>R$ 35,99</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
+<td class="total">0,00</td>
 </tr>
 
-<tr>
+<tr data-preco="29.90">
 <td>Tiara de Princesa</td>
-<td class="preco">29.90</td>
-<td><input type="number" class="qtd" min="0" value="0"></td>
-<td class="total">0.00</td>
+<td>R$ 29,90</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
+<td class="total">0,00</td>
 </tr>
 
 </tbody>
@@ -137,40 +131,34 @@ color:white;
 <h2>Total: R$ <span id="total">0,00</span></h2>
 
 <button class="pdf">Gerar PDF</button>
-
 <button class="enviar">Enviar Pedido</button>
 
 </div>
 
 <script>
 
-function formatarMoeda(valor){
-
-return valor.toLocaleString('pt-BR', {
-minimumFractionDigits:2,
-maximumFractionDigits:2
-});
-
+function formatar(valor){
+return valor.toLocaleString('pt-BR',{minimumFractionDigits:2})
 }
 
-function atualizarCarrinho(){
+function atualizar(){
 
 let linhas = document.querySelectorAll("#tabela tbody tr")
 
 let totalCarrinho = 0
 let itens = 0
 
-linhas.forEach(linha => {
+linhas.forEach(linha =>{
 
-let preco = parseFloat(linha.querySelector(".preco").innerText)
+let preco = parseFloat(linha.dataset.preco)
 
 let qtd = parseInt(linha.querySelector(".qtd").value) || 0
 
 let total = preco * qtd
 
-linha.querySelector(".total").innerText = formatarMoeda(total)
+linha.querySelector(".total").innerText = formatar(total)
 
-if(qtd > 0){
+if(qtd>0){
 
 itens += qtd
 totalCarrinho += total
@@ -180,13 +168,13 @@ totalCarrinho += total
 })
 
 document.getElementById("itens").innerText = itens
-document.getElementById("total").innerText = formatarMoeda(totalCarrinho)
+document.getElementById("total").innerText = formatar(totalCarrinho)
 
 }
 
-document.querySelectorAll(".qtd").forEach(input => {
+document.querySelectorAll(".qtd").forEach(input =>{
 
-input.addEventListener("input", atualizarCarrinho)
+input.addEventListener("input", atualizar)
 
 })
 
