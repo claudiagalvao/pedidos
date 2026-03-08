@@ -88,8 +88,8 @@ border-radius:10px;
 
 button{
 border:none;
-padding:10px;
-border-radius:6px;
+padding:8px 10px;
+border-radius:10px;
 cursor:pointer;
 }
 
@@ -140,13 +140,19 @@ background:linear-gradient(90deg,#6c63ff,#9b6dff);
 margin-top:10px;
 }
 
+.catGrupo{
+margin-bottom:6px;
+}
+
+.catGrupo b{
+display:block;
+margin-top:6px;
+font-size:14px;
+}
+
 .categorias button{
 background:#dcd0f7;
-border:none;
-padding:6px 10px;
-margin:4px;
-border-radius:10px;
-cursor:pointer;
+margin:3px;
 }
 
 </style>
@@ -244,7 +250,15 @@ data.forEach(p=>{
 let id=p["Identificador URL"]
 if(!id) return
 
-let categoria=p["Categorias"] || "Outros"
+let categoria=p["Categorias"]
+
+if(!categoria && mapa[id]){
+categoria=mapa[id].categoria
+}
+
+if(!categoria){
+categoria="Outros"
+}
 
 cats.add(categoria)
 
@@ -279,10 +293,33 @@ render(produtos)
 
 function renderCategorias(){
 
+let mapa={}
+
+produtos.forEach(p=>{
+
+let partes=p.categoria.split(">")
+
+let pai=partes[0].trim()
+let filho=partes[1]?.trim()
+
+if(!mapa[pai]) mapa[pai]=new Set()
+
+if(filho) mapa[pai].add(filho)
+
+})
+
 let html=""
 
-categorias.forEach(c=>{
-html+=`<button onclick="filtrar('${c}')">${c}</button>`
+Object.keys(mapa).forEach(cat=>{
+
+html+=`<div class="catGrupo"><b>${cat}</b>`
+
+mapa[cat].forEach(sub=>{
+html+=`<button onclick="filtrar('${cat} > ${sub}')">${sub}</button>`
+})
+
+html+=`</div>`
+
 })
 
 document.getElementById("categorias").innerHTML=html
@@ -305,28 +342,15 @@ lista.forEach((p,i)=>{
 let precoOriginal=p.preco
 let precoB2B=p.preco*(1-desconto)
 
-let variacaoHTML=""
-
-if(p.variacoes.length){
-
-variacaoHTML=`
-<select>
-<option>Selecionar</option>
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-</select>
-`
-
-}
-
 let img=p.imagem?`<img src="${p.imagem}" class="prodimg">`:""
 
 html+=`
 
-<tr data-preco="${precoB2B}">
+<tr>
 
 <td>${img}</td>
 
-<td>${p.nome}<br>${variacaoHTML}</td>
+<td>${p.nome}</td>
 
 <td>
 <span class="precoOriginal">R$ ${precoOriginal.toFixed(2)}</span><br>
@@ -334,7 +358,7 @@ html+=`
 </td>
 
 <td>
-<input type="number" min="0" onchange="calc(${i},this)">
+<input type="number" min="0" onchange="calc(${i},this.value)">
 </td>
 
 <td id="t${i}">0</td>
@@ -349,28 +373,28 @@ document.getElementById("lista").innerHTML=html
 
 }
 
-function calc(i,input){
+function calc(i,q){
 
-let q=parseInt(input.value)
+let p=produtos[i]
 
-let linha=input.closest("tr")
-
-let preco=parseFloat(linha.dataset.preco)
+q=parseInt(q)
 
 if(isNaN(q)||q<=0){
 
-delete carrinho[i]
+delete carrinho[p.nome]
 document.getElementById("t"+i).innerText="0"
 calcTotal()
 return
 
 }
 
+let preco=p.preco*(1-desconto)
+
 let total=preco*q
 
 document.getElementById("t"+i).innerText=total.toFixed(2)
 
-carrinho[i]={
+carrinho[p.nome]={
 
 q:q,
 preco:preco,
@@ -388,8 +412,10 @@ let soma=0
 let itens=0
 
 Object.values(carrinho).forEach(p=>{
+
 soma+=p.total
 itens+=p.q
+
 })
 
 if(soma>=1000) desconto=0.15
@@ -429,16 +455,23 @@ location.reload()
 function gerarPDF(){
 
 const {jsPDF}=window.jspdf
+
 let doc=new jsPDF()
+
 let y=20
 
 doc.text("Pedido Crazy Fantasy B2B",20,y)
+
 y+=10
 
 Object.keys(carrinho).forEach(nome=>{
+
 let p=carrinho[nome]
+
 doc.text(`${nome} - ${p.q} un`,20,y)
+
 y+=8
+
 })
 
 doc.save("pedido.pdf")
@@ -450,8 +483,11 @@ function enviar(){
 let total=parseFloat(document.getElementById("total").innerText)
 
 if(total<200){
+
 alert("Pedido mínimo: R$200")
+
 return
+
 }
 
 alert("Pedido enviado!")
