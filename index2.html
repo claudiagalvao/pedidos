@@ -12,10 +12,6 @@ background:#f5f5f5;
 margin:40px;
 }
 
-h1{
-margin-bottom:20px;
-}
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -36,10 +32,6 @@ border-bottom:1px solid #eee;
 input{
 width:60px;
 padding:4px;
-}
-
-.total{
-font-weight:bold;
 }
 
 .carrinho{
@@ -74,6 +66,52 @@ color:white;
 }
 
 </style>
+
+<script defer>
+
+function atualizarCarrinho(){
+
+let linhas = document.querySelectorAll("#tabela tbody tr")
+
+let totalCarrinho = 0
+let itens = 0
+
+linhas.forEach(function(linha){
+
+let preco = parseFloat(linha.querySelector(".preco").innerText)
+
+let qtd = parseInt(linha.querySelector(".qtd").value) || 0
+
+let total = preco * qtd
+
+linha.querySelector(".total").innerText = total.toFixed(2)
+
+if(qtd>0){
+
+itens += qtd
+totalCarrinho += total
+
+}
+
+})
+
+document.getElementById("itens").innerText = itens
+document.getElementById("total").innerText = totalCarrinho.toFixed(2)
+
+}
+
+window.onload = function(){
+
+document.querySelectorAll(".qtd").forEach(function(input){
+
+input.addEventListener("input", atualizarCarrinho)
+
+})
+
+}
+
+</script>
+
 </head>
 
 <body>
@@ -96,40 +134,33 @@ color:white;
 <tr>
 <td>Peruca Amy Winehouse</td>
 <td class="preco">107.99</td>
-<td>
-<input type="number" class="qtd" min="0" value="0">
-</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
 <td class="total">0.00</td>
 </tr>
 
 <tr>
 <td>Peruca Arlequina</td>
 <td class="preco">59.90</td>
-<td>
-<input type="number" class="qtd" min="0" value="0">
-</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
 <td class="total">0.00</td>
 </tr>
 
 <tr>
 <td>Tinta Spray de Cabelo</td>
-<td class="preco">35.99</td>
-<td>
-<input type="number" class="qtd" min="0" value="0">
-</td>
+<td class="preco">19.99</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
 <td class="total">0.00</td>
 </tr>
 
 <tr>
 <td>Tiara de Princesa</td>
 <td class="preco">29.90</td>
-<td>
-<input type="number" class="qtd" min="0" value="0">
-</td>
+<td><input type="number" class="qtd" value="0" min="0"></td>
 <td class="total">0.00</td>
 </tr>
 
 </tbody>
+
 </table>
 
 <div class="carrinho">
@@ -144,49 +175,6 @@ color:white;
 <button class="enviar">Enviar Pedido</button>
 
 </div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const inputs = document.querySelectorAll(".qtd")
-
-inputs.forEach(function(input){
-input.addEventListener("input", atualizarCarrinho)
-})
-
-function atualizarCarrinho(){
-
-let linhas = document.querySelectorAll("#tabela tbody tr")
-
-let totalCarrinho = 0
-let itens = 0
-
-linhas.forEach(function(linha){
-
-let preco = parseFloat(linha.querySelector(".preco").innerText)
-
-let qtd = parseInt(linha.querySelector(".qtd").value) || 0
-
-let total = preco * qtd
-
-linha.querySelector(".total").innerText = total.toFixed(2)
-
-if(qtd > 0){
-itens += qtd
-totalCarrinho += total
-}
-
-})
-
-document.getElementById("itens").innerText = itens
-document.getElementById("total").innerText = totalCarrinho.toFixed(2)
-
-}
-
-})
-
-</script>
 
 </body>
 </html>
