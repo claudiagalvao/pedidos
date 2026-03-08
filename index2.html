@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy B2B</title>
+<title>Portal B2B Crazy Fantasy</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -20,7 +20,7 @@ margin:0;
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
 padding:20px;
 }
@@ -28,6 +28,10 @@ padding:20px;
 .banner img{
 width:100%;
 border-radius:10px;
+}
+
+h2{
+margin-top:20px;
 }
 
 .menu{
@@ -38,7 +42,7 @@ gap:10px;
 }
 
 .menu button{
-padding:10px 14px;
+padding:10px 15px;
 border:none;
 border-radius:8px;
 background:#e6e1ff;
@@ -48,9 +52,27 @@ cursor:pointer;
 .search input{
 width:100%;
 padding:12px;
-border:1px solid #ccc;
 border-radius:6px;
+border:1px solid #ccc;
 margin-bottom:20px;
+}
+
+.layout{
+display:flex;
+gap:30px;
+}
+
+.produtos{
+flex:3;
+}
+
+.carrinho{
+flex:1;
+background:white;
+padding:15px;
+border-radius:10px;
+height:fit-content;
+box-shadow:0 0 10px rgba(0,0,0,0.05);
 }
 
 table{
@@ -66,8 +88,8 @@ padding:12px;
 
 td{
 padding:10px;
-text-align:center;
 border-bottom:1px solid #eee;
+text-align:center;
 }
 
 .prod-img{
@@ -78,46 +100,25 @@ border-radius:6px;
 }
 
 .total{
-text-align:right;
-font-size:22px;
-margin-top:20px;
-font-weight:bold;
-}
-
-.progress{
-width:100%;
-background:#ddd;
-height:20px;
-border-radius:10px;
+font-size:20px;
 margin-top:10px;
-}
-
-.progress-bar{
-height:20px;
-background:#1abc9c;
-width:0%;
-border-radius:10px;
-}
-
-.desconto-info{
-margin-top:10px;
-font-size:14px;
 }
 
 .buttons{
 margin-top:20px;
 display:flex;
+flex-direction:column;
 gap:10px;
 }
 
-.buttons button{
-padding:12px 18px;
+button{
+padding:10px;
 border:none;
 border-radius:6px;
 cursor:pointer;
 }
 
-.limpar{background:#444;color:white;}
+.limpar{background:#555;color:white;}
 .pdf{background:#ff5c6c;color:white;}
 .email{background:#1abc9c;color:white;}
 
@@ -140,6 +141,10 @@ cursor:pointer;
 <input placeholder="Buscar produto..." onkeyup="buscar(this.value)">
 </div>
 
+<div class="layout">
+
+<div class="produtos">
+
 <table>
 
 <thead>
@@ -156,15 +161,19 @@ cursor:pointer;
 
 </table>
 
+</div>
+
+<div class="carrinho">
+
+<h3>Carrinho</h3>
+
+<div id="listaCarrinho"></div>
+
 <div class="total">
 Total: R$ <span id="total">0.00</span>
 </div>
 
-<div class="progress">
-<div class="progress-bar" id="progressBar"></div>
-</div>
-
-<div class="desconto-info" id="descontoInfo"></div>
+<div id="descontoInfo"></div>
 
 <div class="buttons">
 <button class="limpar" onclick="limpar()">Limpar</button>
@@ -174,9 +183,16 @@ Total: R$ <span id="total">0.00</span>
 
 </div>
 
+</div>
+
+</div>
+
 <script>
 
 let produtos=[]
+let produtosFormatados=[]
+let carrinho={}
+
 const pedidoMinimo=200
 
 Papa.parse("produtos.csv",{
@@ -186,16 +202,38 @@ header:true,
 
 complete:function(results){
 
-produtos = results.data
-criarCategorias()
+produtos=results.data
+normalizar()
 
 }
 
 })
 
+function normalizar(){
+
+produtosFormatados=produtos.map(p=>{
+
+return{
+
+nome:p["Nome"],
+categoria:p["Categorias"],
+preco:parseFloat(p["Preço"]||0),
+variacao1:p["Valor da variação 1"]||"",
+variacao2:p["Valor da variação 2"]||"",
+variacao3:p["Valor da variação 3"]||"",
+sku:p["SKU"]
+
+}
+
+})
+
+criarCategorias()
+
+}
+
 function criarCategorias(){
 
-let cats=[...new Set(produtos.map(p=>p.Category).filter(Boolean))]
+let cats=[...new Set(produtosFormatados.map(p=>p.categoria))]
 
 let menu=document.getElementById("menu")
 
@@ -210,37 +248,114 @@ mostrar(cats[0])
 function mostrar(cat){
 
 let tabela=document.getElementById("tabela")
+
 tabela.innerHTML=""
 
-produtos
-.filter(p=>p.Category==cat)
+produtosFormatados
+.filter(p=>p.categoria==cat)
 .forEach(p=>{
-
-let preco=parseFloat(p.Price)||0
 
 tabela.innerHTML+=`
 
 <tr>
 
 <td>
-<img class="prod-img" src="${p['Image URL']||''}">
+<img class="prod-img" src="produtos/${p.sku}.jpg">
 </td>
-
-<td>${p.Name}</td>
-
-<td>R$ ${preco.toFixed(2)}</td>
 
 <td>
-<input type="number" min="0" onchange="calcular()">
+
+${p.nome}
+
+<br>
+
+<select onchange="selecionar('${p.sku}',this.value,${p.preco})">
+
+<option value="">Selecionar</option>
+
+${p.variacao1?`<option>${p.variacao1}</option>`:""}
+${p.variacao2?`<option>${p.variacao2}</option>`:""}
+${p.variacao3?`<option>${p.variacao3}</option>`:""}
+
+</select>
+
 </td>
 
-<td class="subtotal">0.00</td>
+<td>R$ ${p.preco.toFixed(2)}</td>
+
+<td>
+<input type="number" min="0" onchange="quantidade('${p.sku}',this.value)">
+</td>
+
+<td id="sub-${p.sku}">0.00</td>
 
 </tr>
 
 `
 
 })
+
+}
+
+function selecionar(sku,variante,preco){
+
+if(!carrinho[sku]){
+
+carrinho[sku]={
+
+nome:variante,
+preco:preco,
+qtd:0
+
+}
+
+}
+
+}
+
+function quantidade(sku,qtd){
+
+if(!carrinho[sku])return
+
+carrinho[sku].qtd=parseInt(qtd)
+
+calcular()
+
+}
+
+function calcular(){
+
+let total=0
+
+let lista=""
+
+Object.keys(carrinho).forEach(k=>{
+
+let item=carrinho[k]
+
+let sub=item.preco*item.qtd
+
+if(item.qtd>0){
+
+lista+=`${item.nome} x ${item.qtd}<br>`
+
+}
+
+total+=sub
+
+document.getElementById("sub-"+k).innerText=sub.toFixed(2)
+
+})
+
+let desconto=descontoProgressivo(total)
+
+let totalFinal=total*(1-desconto)
+
+document.getElementById("listaCarrinho").innerHTML=lista
+
+document.getElementById("total").innerText=totalFinal.toFixed(2)
+
+document.getElementById("descontoInfo").innerHTML=`Desconto aplicado: ${desconto*100}%`
 
 }
 
@@ -253,72 +368,13 @@ return 0.10
 
 }
 
-function proximoNivel(total){
-
-if(total<300) return 300-total
-if(total<600) return 600-total
-if(total<1000) return 1000-total
-return 0
-
-}
-
-function calcular(){
-
-let total=0
-
-document.querySelectorAll("#tabela tr").forEach(l=>{
-
-let preco=parseFloat(l.children[2].innerText.replace("R$",""))
-let qtd=l.querySelector("input").value||0
-let sub=preco*qtd
-
-l.querySelector(".subtotal").innerText=sub.toFixed(2)
-
-total+=sub
-
-})
-
-let desconto=descontoProgressivo(total)
-let totalFinal=total*(1-desconto)
-
-document.getElementById("total").innerText=totalFinal.toFixed(2)
-
-let falta=proximoNivel(total)
-
-let info=document.getElementById("descontoInfo")
-
-if(total<pedidoMinimo){
-
-info.innerHTML=`⚠ Pedido mínimo: R$${pedidoMinimo}`
-
-}else{
-
-if(falta>0){
-
-info.innerHTML=`Desconto atual: ${desconto*100}% • Faltam R$${falta.toFixed(2)} para próximo desconto`
-
-}else{
-
-info.innerHTML=`✔ Desconto máximo atingido`
-
-}
-
-}
-
-let progress=(total/1000)*100
-if(progress>100) progress=100
-
-document.getElementById("progressBar").style.width=progress+"%"
-
-}
-
 function buscar(txt){
 
 txt=txt.toLowerCase()
 
 document.querySelectorAll("#tabela tr").forEach(l=>{
 
-let nome=l.children[1].innerText.toLowerCase()
+let nome=l.innerText.toLowerCase()
 
 l.style.display=nome.includes(txt)?"":"none"
 
@@ -328,12 +384,7 @@ l.style.display=nome.includes(txt)?"":"none"
 
 function limpar(){
 
-document.querySelectorAll("input").forEach(i=>i.value="")
-document.querySelectorAll(".subtotal").forEach(s=>s.innerText="0.00")
-
-document.getElementById("total").innerText="0.00"
-document.getElementById("progressBar").style.width="0%"
-document.getElementById("descontoInfo").innerHTML=""
+location.reload()
 
 }
 
@@ -347,24 +398,17 @@ let y=20
 
 doc.text("Pedido Crazy Fantasy B2B",10,10)
 
-document.querySelectorAll("#tabela tr").forEach(l=>{
+Object.values(carrinho).forEach(i=>{
 
-let qtd=l.querySelector("input").value
+if(i.qtd>0){
 
-if(qtd>0){
-
-let nome=l.children[1].innerText
-let total=l.querySelector(".subtotal").innerText
-
-doc.text(`${nome} - ${qtd} un - R$ ${total}`,10,y)
+doc.text(`${i.nome} x ${i.qtd}`,10,y)
 
 y+=8
 
 }
 
 })
-
-doc.text("Total final: R$ "+document.getElementById("total").innerText,10,y+10)
 
 doc.save("pedido.pdf")
 
@@ -376,29 +420,23 @@ let total=parseFloat(document.getElementById("total").innerText)
 
 if(total<pedidoMinimo){
 
-alert("Pedido mínimo é R$"+pedidoMinimo)
+alert("Pedido mínimo R$"+pedidoMinimo)
+
 return
 
 }
 
-let texto="Pedido Crazy Fantasy B2B%0D%0A%0D%0A"
+let texto="Pedido Crazy Fantasy B2B%0D%0A"
 
-document.querySelectorAll("#tabela tr").forEach(l=>{
+Object.values(carrinho).forEach(i=>{
 
-let qtd=l.querySelector("input").value
+if(i.qtd>0){
 
-if(qtd>0){
-
-let nome=l.children[1].innerText
-let total=l.querySelector(".subtotal").innerText
-
-texto+=`${nome} - ${qtd} un - R$ ${total}%0D%0A`
+texto+=`${i.nome} x ${i.qtd}%0D%0A`
 
 }
 
 })
-
-texto+="%0D%0ATotal final: R$ "+document.getElementById("total").innerText
 
 window.location.href=`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido B2B&body=${texto}`
 
