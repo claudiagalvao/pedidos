@@ -2,6 +2,7 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -43,10 +44,6 @@ background:#e4dcff;
 cursor:pointer;
 }
 
-.menu button:hover{
-background:#cfc4ff;
-}
-
 .search input{
 padding:12px;
 width:100%;
@@ -79,27 +76,14 @@ object-fit:cover;
 border-radius:6px;
 }
 
-.desconto{
-background:#fff1f3;
-}
-
-.preco-antigo{
-text-decoration:line-through;
-color:#888;
+.var{
+font-size:12px;
+color:#555;
 }
 
 .preco-desc{
 color:#e60023;
 font-weight:bold;
-}
-
-.badge{
-background:#e60023;
-color:white;
-padding:3px 6px;
-border-radius:6px;
-font-size:11px;
-margin-left:6px;
 }
 
 .total{
@@ -126,12 +110,8 @@ cursor:pointer;
 .pdf{background:#ff4d6d;color:white;}
 .enviar{background:#00c897;color:white;}
 
-select{
-padding:6px;
-border-radius:6px;
-}
-
 </style>
+
 </head>
 
 <body>
@@ -150,22 +130,18 @@ border-radius:6px;
 <input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
 </div>
 
-<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
-
-<input type="hidden" name="pedido" id="pedido_email">
-
 <table>
 
 <thead>
+
 <tr>
 <th>Foto</th>
 <th>Produto</th>
-<th>Variação</th>
 <th>Preço</th>
-<th>Preço c/ desconto</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
+
 </thead>
 
 <tbody id="tabela"></tbody>
@@ -178,15 +154,10 @@ Total: R$ <span id="total">0.00</span>
 
 <div class="buttons">
 
-<button type="button" class="limpar" onclick="limpar()">Limpar</button>
-
-<button type="button" class="pdf" onclick="gerarPDF()">Gerar PDF</button>
-
-<button type="submit" class="enviar" onclick="prepararEmail()">Enviar Pedido</button>
+<button class="limpar" onclick="limpar()">Limpar</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 
 </div>
-
-</form>
 
 </div>
 
@@ -194,83 +165,66 @@ Total: R$ <span id="total">0.00</span>
 
 const produtos = [
 
-{codigo:"PRD00019",nome:"Barba Papai Noel",categoria:"Barbas",preco:49.99,cor:"N/D",modelo:"N/D",tamanho:"N/D"},
-{codigo:"PRD00002",nome:"Bastão Arlequina",categoria:"Acessórios",preco:49.9,cor:"N/D",modelo:"N/D",tamanho:"N/D"},
-{codigo:"PRD00021",nome:"Colar Steampunk",categoria:"Acessórios",preco:39.99,cor:"N/D",modelo:"N/D",tamanho:"N/D"},
-{codigo:"PRD00011",nome:"Coroa Rainha",categoria:"Coroas",preco:19.99,cor:"Dourada",modelo:"Luxo",tamanho:"N/D"},
-{codigo:"PRD00010",nome:"Coroa Rei",categoria:"Coroas",preco:12.99,cor:"Dourada",modelo:"Luxo",tamanho:"N/D"}
+{cod:"PRD00019",nome:"Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal",cat:"Barbas e Bigodes",preco:49.99,cor:"N/D",modelo:"N/D",tam:"N/D"},
+
+{cod:"PRD00002",nome:"Bastão Taco Fantasia Cosplay Festa Vilã Arlequina Good Night 80cm",cat:"Acessórios Gerais",preco:49.9,cor:"N/D",modelo:"N/D",tam:"N/D"},
+
+{cod:"PRD00021",nome:"Colar Vitoriano Steampunk com Relógio Vintage",cat:"Acessórios Gerais",preco:39.99,cor:"N/D",modelo:"N/D",tam:"N/D"},
+
+{cod:"PRD00011",nome:"Coroa de Rainha Dourada Luxo",cat:"Coroas,Tiaras e Varinhas",preco:19.99,cor:"Dourada",modelo:"Luxo",tam:"N/D"},
+
+{cod:"PRD00010",nome:"Coroa de Rei Dourada Luxo",cat:"Coroas,Tiaras e Varinhas",preco:12.99,cor:"Dourada",modelo:"Luxo",tam:"N/D"}
 
 ]
 
-let categoriaAtual = null
+let categoriaAtual="Barbas e Bigodes"
 
 function gerarMenu(){
 
-const categorias=[...new Set(produtos.map(p=>p.categoria))]
+const cats=[...new Set(produtos.map(p=>p.cat))]
 
 const menu=document.getElementById("menu")
 
-categorias.forEach(cat=>{
-menu.innerHTML+=`<button onclick="mostrarCategoria('${cat}')">${cat}</button>`
+cats.forEach(c=>{
+menu.innerHTML+=`<button onclick="mostrar('${c}')">${c}</button>`
 })
 
-categoriaAtual=categorias[0]
-render()
+mostrar(cats[0])
 
 }
 
-function mostrarCategoria(cat){
+function mostrar(cat){
 
 categoriaAtual=cat
-render()
-
-}
-
-function render(){
 
 const tabela=document.getElementById("tabela")
 tabela.innerHTML=""
 
 produtos
-.filter(p=>p.categoria===categoriaAtual)
+.filter(p=>p.cat===cat)
 .forEach(p=>{
 
-let preco=p.preco
-let desconto=preco>200?preco*0.9:preco
+let variacoes=""
 
-let variacoes=[]
-
-if(p.cor!="N/D") variacoes.push(p.cor)
-if(p.modelo!="N/D") variacoes.push(p.modelo)
-if(p.tamanho!="N/D") variacoes.push(p.tamanho)
-
-let selectHTML="—"
-
-if(variacoes.length>0){
-
-selectHTML=`<select>${variacoes.map(v=>`<option>${v}</option>`).join("")}</select>`
-
-}
+if(p.cor!="N/D") variacoes+="<div class='var'>Cor: "+p.cor+"</div>"
+if(p.modelo!="N/D") variacoes+="<div class='var'>Modelo: "+p.modelo+"</div>"
+if(p.tam!="N/D") variacoes+="<div class='var'>Tamanho: "+p.tam+"</div>"
 
 tabela.innerHTML+=`
 
-<tr class="${preco>200?'desconto':''}">
+<tr>
 
 <td>
-<img src="produtos/${p.codigo}.jpg" class="prod-img">
+<img src="produtos/${p.cod}.jpg" class="prod-img">
 </td>
 
-<td>${p.nome}</td>
-
-<td>${selectHTML}</td>
-
-<td class="${preco>200?'preco-antigo':''}">
-${preco.toFixed(2)}
+<td>
+${p.nome}
+${variacoes}
 </td>
 
 <td class="preco-desc">
-${desconto.toFixed(2)}
-${preco>200?'<span class="badge">10% OFF</span>':''}
+${p.preco.toFixed(2)}
 </td>
 
 <td>
@@ -280,7 +234,6 @@ ${preco>200?'<span class="badge">10% OFF</span>':''}
 <td class="subtotal">0.00</td>
 
 </tr>
-
 `
 
 })
@@ -291,16 +244,17 @@ function calcular(){
 
 let total=0
 
-document.querySelectorAll("#tabela tr").forEach(linha=>{
+document.querySelectorAll("#tabela tr").forEach(l=>{
 
-let preco=parseFloat(linha.children[4].innerText)
-let qtd=linha.querySelector("input").value||0
+let preco=parseFloat(l.children[2].innerText)
 
-let subtotal=preco*qtd
+let qtd=l.querySelector("input").value||0
 
-linha.querySelector(".subtotal").innerText=subtotal.toFixed(2)
+let sub=preco*qtd
 
-total+=subtotal
+l.querySelector(".subtotal").innerText=sub.toFixed(2)
+
+total+=sub
 
 })
 
@@ -310,33 +264,10 @@ document.getElementById("total").innerText=total.toFixed(2)
 
 function limpar(){
 
-document.querySelectorAll("input[type=number]").forEach(i=>i.value="")
+document.querySelectorAll("input").forEach(i=>i.value="")
 document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0.00")
+
 document.getElementById("total").innerText="0.00"
-
-}
-
-function prepararEmail(){
-
-let resumo="Pedido Crazy Fantasy\n\n"
-
-document.querySelectorAll("#tabela tr").forEach(linha=>{
-
-let produto=linha.children[1].innerText
-let variacao=linha.children[2].innerText
-let qtd=linha.querySelector("input").value
-
-if(qtd>0){
-
-resumo+=produto+" - "+variacao+" - "+qtd+" unidades\n"
-
-}
-
-})
-
-resumo+="\nTOTAL: R$ "+document.getElementById("total").innerText
-
-document.getElementById("pedido_email").value=resumo
 
 }
 
@@ -350,14 +281,14 @@ pdf.text("Pedido Crazy Fantasy",20,20)
 
 let y=40
 
-document.querySelectorAll("#tabela tr").forEach(linha=>{
+document.querySelectorAll("#tabela tr").forEach(l=>{
 
-let produto=linha.children[1].innerText
-let qtd=linha.querySelector("input").value
+let nome=l.children[1].innerText
+let qtd=l.querySelector("input").value
 
 if(qtd>0){
 
-pdf.text(produto+" - "+qtd,20,y)
+pdf.text(nome+" - "+qtd,20,y)
 y+=10
 
 }
@@ -370,15 +301,15 @@ pdf.save("pedido.pdf")
 
 }
 
-function buscar(texto){
+function buscar(txt){
 
-texto=texto.toLowerCase()
+txt=txt.toLowerCase()
 
-document.querySelectorAll("#tabela tr").forEach(linha=>{
+document.querySelectorAll("#tabela tr").forEach(l=>{
 
-const nome=linha.children[1].innerText.toLowerCase()
+let nome=l.children[1].innerText.toLowerCase()
 
-linha.style.display=nome.includes(texto)?"":"none"
+l.style.display=nome.includes(txt)?"":"none"
 
 })
 
