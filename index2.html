@@ -142,24 +142,70 @@ width:0%;
 background:linear-gradient(90deg,#6c63ff,#9b6dff);
 }
 
+/* MENU MELHORADO */
+
 .categorias{
-margin-top:10px;
+margin-top:15px;
+background:white;
+padding:12px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
 .catGrupo{
-margin-bottom:8px;
+margin-bottom:12px;
 }
 
 .catGrupo b{
 display:block;
-margin-top:8px;
-font-size:14px;
+font-size:15px;
+margin-bottom:6px;
+color:#333;
 }
 
 .categorias button{
-background:#dcd0f7;
-margin:3px;
+background:#efe8ff;
+border:none;
+padding:6px 12px;
+margin:4px;
+border-radius:20px;
+cursor:pointer;
+font-size:13px;
+transition:all 0.2s;
 }
+
+.categorias button:hover{
+background:#cdbdff;
+transform:translateY(-1px);
+}
+
+/* WHATSAPP FLUTUANTE */
+
+.whatsappBtn{
+
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25D366;
+color:white;
+width:60px;
+height:60px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+box-shadow:0 4px 10px rgba(0,0,0,0.3);
+cursor:pointer;
+z-index:999;
+
+}
+
+.whatsappBtn:hover{
+transform:scale(1.1);
+}
+
+/* MOBILE */
 
 @media (max-width:768px){
 
@@ -251,6 +297,12 @@ Pedido mínimo: R$200
 
 </div>
 
+</div>
+
+<!-- BOTÃO WHATSAPP -->
+
+<div class="whatsappBtn" onclick="enviarWhatsapp()">
+💬
 </div>
 
 <script>
@@ -464,33 +516,8 @@ itens+=p.q
 
 })
 
-if(soma>=1000) desconto=0.15
-else if(soma>=500) desconto=0.12
-else desconto=0.10
-
-document.getElementById("desconto").innerText=(desconto*100)+"%"
 document.getElementById("total").innerText=soma.toFixed(2)
 document.getElementById("itens").innerText=itens
-
-let minimo=200
-
-let progresso=Math.min((soma/minimo)*100,100)
-
-document.getElementById("progressFill").style.width=progresso+"%"
-
-if(soma<200){
-
-let falta=(200-soma).toFixed(2)
-
-document.getElementById("progressText").innerText=
-"Faltam R$ "+falta+" para atingir o pedido mínimo"
-
-}else{
-
-document.getElementById("progressText").innerText=
-"Pedido mínimo atingido"
-
-}
 
 }
 
@@ -536,6 +563,35 @@ return
 }
 
 alert("Pedido enviado!")
+
+}
+
+function enviarWhatsapp(){
+
+let total=parseFloat(document.getElementById("total").innerText)
+
+if(total<=0){
+alert("Adicione produtos ao pedido")
+return
+}
+
+let mensagem="Pedido Crazy Fantasy B2B%0A%0A"
+
+Object.keys(carrinho).forEach(nome=>{
+
+let p=carrinho[nome]
+
+mensagem+=`${nome} - ${p.q} un%0A`
+
+})
+
+mensagem+=`%0ATotal: R$ ${total.toFixed(2)}`
+
+let telefone="5519992850208"
+
+let url=`https://wa.me/${telefone}?text=${mensagem}`
+
+window.open(url,"_blank")
 
 }
 
