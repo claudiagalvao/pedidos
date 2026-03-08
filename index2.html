@@ -28,27 +28,50 @@ padding:15px;
 .banner{
 width:100%;
 border-radius:10px;
+margin-bottom:10px;
 }
 
 .clienteBox{
 background:white;
 padding:15px;
 border-radius:10px;
-margin-top:10px;
+margin-bottom:10px;
 }
 
 .clienteBox input{
 width:100%;
 padding:10px;
-margin:6px 0;
+margin-top:6px;
+margin-bottom:8px;
 border-radius:6px;
 border:1px solid #ccc;
+}
+
+.progressBox{
+background:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.progressBar{
+height:12px;
+background:#eee;
+border-radius:8px;
+overflow:hidden;
+margin-top:6px;
+}
+
+#progressFill{
+height:100%;
+width:0%;
+background:#27ae60;
+transition:0.4s;
 }
 
 .layout{
 display:flex;
 gap:20px;
-margin-top:10px;
 }
 
 .produtos{
@@ -113,7 +136,7 @@ border:1px solid #ccc;
 background:white;
 padding:10px;
 border-radius:10px;
-margin-top:10px;
+margin:10px 0;
 }
 
 .catGrupo{
@@ -149,6 +172,7 @@ flex-direction:column;
 
 <p>✔ Preços exclusivos para parceiros e revendedores</p>
 
+
 <div class="clienteBox">
 
 <h3>Dados do Cliente</h3>
@@ -163,11 +187,27 @@ flex-direction:column;
 
 </div>
 
+
+<div class="progressBox">
+
+<div id="progressText">
+Pedido mínimo: R$200
+</div>
+
+<div class="progressBar">
+<div id="progressFill"></div>
+</div>
+
+</div>
+
+
 <div id="categorias" class="categorias"></div>
 
 <input type="text" id="busca" class="search" placeholder="Buscar produto...">
 
+
 <div class="layout">
+
 
 <div class="produtos">
 
@@ -187,6 +227,7 @@ flex-direction:column;
 </table>
 
 </div>
+
 
 <div class="carrinho">
 
@@ -210,6 +251,7 @@ flex-direction:column;
 
 </div>
 
+
 <script>
 
 let produtos=[]
@@ -228,6 +270,7 @@ let mapa={}
 data.forEach(p=>{
 
 let id=p["Identificador URL"]
+
 if(!id) return
 
 if(!mapa[id]){
@@ -236,28 +279,90 @@ mapa[id]={
 
 nome:p["Nome"],
 categoria:p["Categorias"],
-preco:parseFloat((p["Preço"]||"0").replace(",",".")),
+preco:parseFloat((p["Preço"]||"0").replace(",", ".")),
 variacoes:[]
 
 }
 
 }
 
-let variacao=p["Valor da variação 1"]
+let valorVar=p["Valor da variação 1"]
 
-if(variacao){
-mapa[id].variacoes.push(variacao)
+if(valorVar && valorVar.trim()!=""){
+mapa[id].variacoes.push(valorVar)
 }
 
 })
 
 produtos=Object.values(mapa)
 
+gerarMenu(produtos)
+
 render(produtos)
 
 }
 
 })
+
+
+function gerarMenu(lista){
+
+let categorias={}
+
+lista.forEach(p=>{
+
+let cat=p.categoria || "Outros"
+
+let partes=cat.split(">")
+
+let principal=partes[0].trim()
+let sub=partes[1] ? partes[1].trim() : null
+
+if(!categorias[principal]){
+categorias[principal]=[]
+}
+
+if(sub && !categorias[principal].includes(sub)){
+categorias[principal].push(sub)
+}
+
+})
+
+let html=""
+
+Object.keys(categorias).forEach(cat=>{
+
+html+=`<div class="catGrupo"><b>${cat}</b><br>`
+
+categorias[cat].forEach(sub=>{
+
+html+=`<button onclick="filtrar('${cat}','${sub}')">${sub}</button>`
+
+})
+
+html+=`</div>`
+
+})
+
+document.getElementById("categorias").innerHTML=html
+
+}
+
+
+function filtrar(cat,sub){
+
+let filtrados = produtos.filter(p=>{
+
+if(!p.categoria) return false
+
+return p.categoria.includes(cat) && p.categoria.includes(sub)
+
+})
+
+render(filtrados)
+
+}
+
 
 function render(lista){
 
@@ -270,7 +375,7 @@ let precoB2B=p.preco*0.9
 
 let variacoesHTML=""
 
-if(p.variacoes.length){
+if(p.variacoes.length>0){
 
 variacoesHTML=`<select>
 <option>Selecionar</option>
@@ -314,6 +419,7 @@ document.getElementById("lista").innerHTML=html
 
 }
 
+
 function calc(i,q){
 
 q=parseInt(q)
@@ -351,6 +457,7 @@ calcTotal()
 
 }
 
+
 function calcTotal(){
 
 let soma=0
@@ -366,13 +473,35 @@ itens+=p.q
 document.getElementById("total").innerText=soma.toFixed(2)
 document.getElementById("itens").innerText=itens
 
+let minimo=200
+
+let progresso=Math.min((soma/minimo)*100,100)
+
+document.getElementById("progressFill").style.width=progresso+"%"
+
+let falta=minimo-soma
+
+if(falta>0){
+
+document.getElementById("progressText").innerText=
+"Faltam R$ "+falta.toFixed(2)+" para atingir o pedido mínimo"
+
+}else{
+
+document.getElementById("progressText").innerText=
+"Pedido mínimo atingido"
+
 }
+
+}
+
 
 function limpar(){
 
 location.reload()
 
 }
+
 
 function gerarPDF(){
 
@@ -398,6 +527,7 @@ doc.save("pedido.pdf")
 
 }
 
+
 function enviarEmail(){
 
 let nome=document.getElementById("clienteNome").value
@@ -417,6 +547,7 @@ mensagem+=`\nTotal: R$ ${total}`
 window.location.href=`mailto:seuemail@gmail.com?subject=Pedido B2B Crazy Fantasy&body=${encodeURIComponent(mensagem)}`
 
 }
+
 
 function enviarWhatsapp(){
 
