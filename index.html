@@ -23,7 +23,7 @@ color:#333;
 
 .banner{
 width:100%;
-max-height:320px;
+max-height:420px;
 object-fit:contain;
 display:block;
 background:white;
@@ -93,6 +93,31 @@ background:#fafafa;
 
 .qtd{
 width:60px;
+}
+
+/* LINHAS COM DESCONTO */
+
+.desconto{
+background:#fff5f5;
+}
+
+.preco-original{
+text-decoration:line-through;
+color:#999;
+}
+
+.preco-desc{
+color:#e60023;
+font-weight:bold;
+}
+
+.badge{
+background:#e60023;
+color:white;
+padding:3px 6px;
+border-radius:5px;
+font-size:11px;
+margin-left:5px;
 }
 
 /* TOTAL */
@@ -247,14 +272,27 @@ produtos.forEach(p=>{
 
 let preco=p[1]
 let desconto=preco>200?preco*0.9:preco
+let linhaClasse=preco>200?"desconto":""
 
 tabela.innerHTML+=`
-<tr>
+<tr class="${linhaClasse}">
 <td>${p[0]}</td>
-<td>${preco.toFixed(2)}</td>
-<td>${desconto.toFixed(2)}</td>
-<td><input type="number" min="0" class="qtd" onchange="calcular()"></td>
+
+<td class="${preco>200?'preco-original':''}">
+${preco.toFixed(2)}
+</td>
+
+<td class="preco-desc">
+${desconto.toFixed(2)}
+${preco>200?'<span class="badge">10% OFF</span>':''}
+</td>
+
+<td>
+<input type="number" min="0" class="qtd" onchange="calcular()">
+</td>
+
 <td class="subtotal">0.00</td>
+
 </tr>
 `
 
