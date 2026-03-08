@@ -2,7 +2,6 @@
 <html lang="pt-br">
 
 <head>
-
 <meta charset="UTF-8">
 <title>Portal B2B Crazy Fantasy</title>
 
@@ -13,9 +12,8 @@
 
 body{
 font-family:Arial;
-background:#f5f5f5;
+background:#f4f4f4;
 margin:0;
-padding:0;
 }
 
 .container{
@@ -25,24 +23,33 @@ margin:auto;
 
 .banner{
 width:100%;
-border-radius:10px;
 margin-top:20px;
+border-radius:10px;
 }
 
-h1{
-margin-top:20px;
+.info{
+color:#6a5acd;
+font-weight:bold;
+margin-top:10px;
+}
+
+.descontoInfo{
+background:#efe8ff;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
 }
 
 .categorias{
-margin:15px 0;
+margin-top:15px;
 }
 
 .catbtn{
-background:#dcd3f3;
+background:#ddd3f5;
 border:none;
 padding:8px 14px;
-border-radius:8px;
 margin:4px;
+border-radius:8px;
 cursor:pointer;
 }
 
@@ -51,12 +58,13 @@ width:100%;
 padding:10px;
 border-radius:6px;
 border:1px solid #ccc;
-margin-bottom:10px;
+margin-top:10px;
 }
 
 .layout{
 display:flex;
 gap:20px;
+margin-top:10px;
 }
 
 .produtos{
@@ -71,14 +79,20 @@ border-radius:10px;
 height:fit-content;
 }
 
+.carrinho button{
+width:100%;
+margin-top:8px;
+}
+
 table{
 width:100%;
 background:white;
 border-radius:10px;
+margin-top:10px;
 }
 
 th{
-background:#dcd3f3;
+background:#ddd3f5;
 padding:10px;
 }
 
@@ -92,27 +106,32 @@ width:60px;
 border-radius:6px;
 }
 
+.precoOriginal{
+text-decoration:line-through;
+color:#999;
+font-size:12px;
+}
+
+.precoB2B{
+color:#e60023;
+font-weight:bold;
+}
+
+.b2bLabel{
+font-size:11px;
+color:#555;
+}
+
 button{
-padding:10px 16px;
+padding:10px;
 border:none;
 border-radius:6px;
 cursor:pointer;
 }
 
-.btnpdf{
-background:#ff5b6b;
-color:white;
-}
-
-.btnsend{
-background:#27ae60;
-color:white;
-}
-
-.btnclear{
-background:#444;
-color:white;
-}
+.btnclear{background:#444;color:white;}
+.btnpdf{background:#ff5b6b;color:white;}
+.btnsend{background:#27ae60;color:white;}
 
 </style>
 
@@ -126,6 +145,17 @@ color:white;
 
 <h1>Portal B2B Crazy Fantasy</h1>
 
+<p class="info">
+✔ Preços exclusivos para parceiros e revendedores
+</p>
+
+<div class="descontoInfo">
+Descontos automáticos:
+<br>10% padrão B2B
+<br>12% acima de R$500
+<br>15% acima de R$1000
+</div>
+
 <div id="categorias" class="categorias"></div>
 
 <input type="text" id="busca" class="search" placeholder="Buscar produto...">
@@ -137,7 +167,6 @@ color:white;
 <table>
 
 <thead>
-
 <tr>
 <th>Foto</th>
 <th>Produto</th>
@@ -145,7 +174,6 @@ color:white;
 <th>Qtd</th>
 <th>Total</th>
 </tr>
-
 </thead>
 
 <tbody id="lista"></tbody>
@@ -160,10 +188,10 @@ color:white;
 
 <h2>Total: R$ <span id="total">0</span></h2>
 
+<p>Desconto aplicado: <b><span id="desconto">10%</span></b></p>
+
 <button class="btnclear" onclick="limpar()">Limpar</button>
-
 <button class="btnpdf" onclick="gerarPDF()">Gerar PDF</button>
-
 <button class="btnsend" onclick="enviar()">Enviar Pedido</button>
 
 </div>
@@ -176,15 +204,16 @@ color:white;
 
 let produtos=[]
 let carrinho={}
+let desconto=0.10
 
 Papa.parse("produtos.csv",{
 
 download:true,
 header:true,
+
 complete:function(res){
 
 let data=res.data
-
 let agrupado={}
 
 data.forEach(p=>{
@@ -198,9 +227,9 @@ if(!agrupado[id]){
 agrupado[id]={
 
 nome:p["Nome"],
-categoria:p["Categorias"]||"Outros",
-preco:parseFloat(p["Preço"])||0,
-imagem:p["Imagem 1"]||"",
+categoria:p["Categorias"] || "Outros",
+preco:parseFloat(p["Preço"]) || 0,
+imagem:p["Imagem 1"] || "",
 variacoes:[]
 
 }
@@ -209,14 +238,13 @@ variacoes:[]
 
 let v=p["Valor da variação 1"]
 
-if(v)agrupado[id].variacoes.push(v)
+if(v) agrupado[id].variacoes.push(v)
 
 })
 
 produtos=Object.values(agrupado)
 
 renderCategorias()
-
 renderProdutos(produtos)
 
 }
@@ -241,7 +269,7 @@ document.getElementById("categorias").innerHTML=html
 
 function filtrar(cat){
 
-let filtrados=produtos.filter(p=>p.categoria==cat)
+let filtrados=produtos.filter(p => p.categoria && p.categoria.includes(cat))
 
 renderProdutos(filtrados)
 
@@ -253,7 +281,8 @@ let html=""
 
 lista.forEach((p,i)=>{
 
-let preco=(p.preco*0.9).toFixed(2)
+let precoOriginal=p.preco
+let precoB2B=p.preco*(1-desconto)
 
 let variacaoHTML=""
 
@@ -266,7 +295,7 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 }
 
-let img=p.imagem?`<img src="${p.imagem}" class="prodimg">`:""
+let img=p.imagem ? `<img src="${p.imagem}" class="prodimg">` : ""
 
 html+=`
 
@@ -279,12 +308,26 @@ ${p.nome}<br>
 ${variacaoHTML}
 </td>
 
-<td>R$ ${preco}</td>
-
 <td>
 
-<input type="number" min="0" onchange="calc(${i},this.value)">
+<span class="precoOriginal">
+R$ ${precoOriginal.toFixed(2)}
+</span>
 
+<br>
+
+<span class="precoB2B">
+R$ ${precoB2B.toFixed(2)}
+</span>
+
+<br>
+
+<span class="b2bLabel">Preço B2B</span>
+
+</td>
+
+<td>
+<input type="number" min="0" onchange="calc(${i},this.value)">
 </td>
 
 <td id="t${i}">0</td>
@@ -303,13 +346,13 @@ function calc(i,q){
 
 let p=produtos[i]
 
-let preco=p.preco*0.9
+let preco=p.preco*(1-desconto)
 
-let total=(preco*q).toFixed(2)
+let total=preco*q
 
-document.getElementById("t"+i).innerText=total
+document.getElementById("t"+i).innerText=total.toFixed(2)
 
-carrinho[p.nome]={q,preco,total}
+carrinho[p.nome]={q:q,preco:preco,total:total}
 
 calcTotal()
 
@@ -325,14 +368,24 @@ soma+=parseFloat(p.total)
 
 })
 
+if(soma>=1000){
+desconto=0.15
+}
+else if(soma>=500){
+desconto=0.12
+}
+else{
+desconto=0.10
+}
+
+document.getElementById("desconto").innerText=(desconto*100)+"%"
+
 document.getElementById("total").innerText=soma.toFixed(2)
 
 }
 
 function limpar(){
-
 location.reload()
-
 }
 
 function gerarPDF(){
@@ -363,7 +416,17 @@ doc.save("pedido.pdf")
 
 function enviar(){
 
-alert("Pedido enviado!")
+let total=parseFloat(document.getElementById("total").innerText)
+
+if(total<200){
+
+alert("Pedido mínimo para atacado: R$200")
+
+return
+
+}
+
+alert("Pedido enviado com sucesso!")
 
 }
 
@@ -380,5 +443,4 @@ renderProdutos(filtrados)
 </script>
 
 </body>
-
 </html>
