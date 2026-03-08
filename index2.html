@@ -201,7 +201,7 @@ let mapa={}
 produtos.forEach(p=>{
 
 let nome=p["Nome"]
-let categoria:p["Categorias"] || "Outros"
+let categoria=p["Categorias"] || "Outros"
 let preco=parseFloat(p["Preço"]||0)
 
 let imagem=p["Imagem"] || p["Image URL"] || ""
@@ -447,4 +447,5 @@ window.location.href=`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido B2B&bod
 
 </body>
 </html>
+
 
