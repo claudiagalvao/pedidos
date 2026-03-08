@@ -27,23 +27,23 @@ padding:20px;
 
 .banner{
 width:100%;
-border-radius:12px;
+border-radius:10px;
 margin-bottom:15px;
 }
 
 .infoBox{
 background:white;
-padding:18px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 margin-bottom:15px;
+font-size:14px;
 line-height:1.6;
-box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
 
 .progressBox{
 background:white;
-padding:18px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 margin-bottom:15px;
 }
 
@@ -59,10 +59,13 @@ margin-top:6px;
 height:100%;
 width:0%;
 background:#e74c3c;
-transition:width .4s, background .4s;
+transition:.4s;
 }
 
 .categorias{
+background:white;
+padding:12px;
+border-radius:10px;
 margin-bottom:15px;
 }
 
@@ -80,26 +83,14 @@ transition:.2s;
 background:#dcd0f7;
 }
 
-.searchBox{
-position:relative;
-margin-bottom:20px;
-}
-
 .search{
 width:100%;
-padding:14px 45px 14px 18px;
+padding:12px;
 border-radius:25px;
-border:1px solid #ddd;
+border:1px solid #ccc;
+margin-bottom:15px;
 font-size:15px;
-box-shadow:0 2px 6px rgba(0,0,0,0.05);
-}
-
-.searchIcon{
-position:absolute;
-right:12px;
-top:50%;
-transform:translateY(-50%);
-opacity:.4;
+box-sizing:border-box;
 }
 
 .layout{
@@ -114,22 +105,21 @@ flex:3;
 .carrinho{
 flex:1;
 background:white;
-padding:20px;
-border-radius:14px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
+padding:15px;
+border-radius:10px;
+height:fit-content;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
 background:white;
-border-radius:12px;
-overflow:hidden;
 }
 
 th{
 background:#dcd0f7;
-padding:12px;
+padding:10px;
+text-align:left;
 }
 
 td{
@@ -155,17 +145,15 @@ font-weight:bold;
 .precoB2B::before{
 content:"B2B ";
 color:#6c5fa7;
-font-weight:bold;
 }
 
 button{
 border:none;
-border-radius:10px;
-padding:12px;
+border-radius:8px;
+padding:11px;
 cursor:pointer;
 font-weight:bold;
 transition:.2s;
-box-shadow:0 3px 6px rgba(0,0,0,0.15);
 }
 
 button:hover{
@@ -173,31 +161,31 @@ transform:translateY(-1px);
 }
 
 .btnclear{
-background:linear-gradient(135deg,#444,#111);
+background:linear-gradient(135deg,#444,#222);
 color:white;
 width:100%;
-margin-top:8px;
+margin-top:6px;
 }
 
 .btnpdf{
 background:linear-gradient(135deg,#ff5b6b,#ff8c6b);
 color:white;
 width:100%;
-margin-top:8px;
+margin-top:6px;
 }
 
 .btnsend{
 background:linear-gradient(135deg,#27ae60,#2ecc71);
 color:white;
 width:100%;
-margin-top:8px;
+margin-top:6px;
 }
 
 .btnemail{
 background:linear-gradient(135deg,#2980b9,#3498db);
 color:white;
 width:100%;
-margin-top:8px;
+margin-top:6px;
 }
 
 footer{
@@ -243,7 +231,10 @@ flex-direction:column;
 
 <div class="container">
 
+<img src="banner.png" class="banner">
+
 <h2>Portal B2B Crazy Fantasy</h2>
+
 <p>✔ Preços exclusivos para parceiros e revendedores</p>
 
 <div class="infoBox">
@@ -265,19 +256,18 @@ Frete por conta do cliente (FOB)
 </div>
 
 <div class="progressBox">
+
 <div id="progressText">Pedido mínimo: R$200</div>
 
 <div class="progressBar">
 <div id="progressFill"></div>
 </div>
+
 </div>
 
 <div id="categorias" class="categorias"></div>
 
-<div class="searchBox">
 <input type="text" id="busca" class="search" placeholder="Buscar produto...">
-<span class="searchIcon">🔍</span>
-</div>
 
 <div class="layout">
 
@@ -384,6 +374,7 @@ let mapa={}
 res.data.forEach(p=>{
 
 let id=p["Identificador URL"]
+
 if(!id)return
 
 if(!mapa[id]){
@@ -455,223 +446,35 @@ document.getElementById("categorias").innerHTML=html
 
 }
 
-function filtrar(cat,sub){
+function validarPedido(){
 
-let lista=produtos.filter(p=>p.categoria.includes(cat)&&p.categoria.includes(sub))
-render(lista)
+let total=parseFloat(document.getElementById("total").innerText)
 
-}
+if(total<pedidoMinimo){
 
-document.getElementById("busca").addEventListener("keyup",function(){
+alert("Pedido mínimo de R$200")
 
-let termo=this.value.toLowerCase()
-
-let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
-
-render(filtrados)
-
-})
-
-function render(lista){
-
-let html=""
-
-lista.forEach((p,i)=>{
-
-let precoB2B=p.preco*0.9
-
-let varHTML=""
-
-if(p.variacoes.length>0){
-
-varHTML=`<select>
-<option value="">Selecione</option>
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-</select>`
+return false
 
 }
 
-html+=`
-
-<tr>
-
-<td>${p.nome}<br>${varHTML}</td>
-
-<td>
-<span class="precoOriginal">R$ ${p.preco.toFixed(2)}</span><br>
-<span class="precoB2B">R$ ${precoB2B.toFixed(2)}</span>
-</td>
-
-<td>
-<input type="number" min="0" onchange="calc(${i},this)">
-</td>
-
-<td id="t${i}">0</td>
-
-</tr>
-
-`
-
-})
-
-document.getElementById("lista").innerHTML=html
-
-}
-
-function calc(i,input){
-
-let linha=input.closest("tr")
-let select=linha.querySelector("select")
-
-if(select && select.value===""){
-alert("Selecione a variação")
-input.value=""
-return
-}
-
-let variacao=select?select.value:""
-
-let q=parseInt(input.value)
-
-if(!q || q<=0){
-
-delete carrinho[i]
-
-linha.querySelector(`#t${i}`).innerText="0"
-
-calcTotal()
-
-return
-}
-
-let preco=parseFloat(linha.querySelector(".precoB2B").innerText.replace("R$",""))
-
-let total=q*preco
-
-linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
-
-let nome=linha.querySelector("td").childNodes[0].nodeValue.trim()
-
-carrinho[i]={nome:nome,variacao:variacao,q:q,total:total}
-
-calcTotal()
-
-}
-
-function calcTotal(){
-
-let soma=0
-let itens=0
-
-Object.values(carrinho).forEach(p=>{
-soma+=p.total
-itens+=p.q
-})
-
-document.getElementById("total").innerText=soma.toFixed(2)
-document.getElementById("itens").innerText=itens
-
-let progresso=Math.min((soma/pedidoMinimo)*100,100)
-
-let barra=document.getElementById("progressFill")
-
-barra.style.width=progresso+"%"
-
-if(progresso<50){
-barra.style.background="#e74c3c"
-}
-
-else if(progresso<100){
-barra.style.background="#f1c40f"
-}
-
-else{
-barra.style.background="#27ae60"
-}
-
-}
-
-function limpar(){
-
-location.reload()
-
-}
-
-function gerarPDF(){
-
-const {jsPDF}=window.jspdf
-
-let doc=new jsPDF()
-
-let y=20
-
-doc.text("Pedido Crazy Fantasy B2B",20,y)
-
-y+=10
-
-Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-doc.text(linha,20,y)
-
-y+=8
-
-})
-
-doc.save("pedido.pdf")
+return true
 
 }
 
 function enviarWhatsapp(){
 
+if(!validarPedido())return
+
 let texto="Pedido Crazy Fantasy B2B%0A%0A"
 
 Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-texto+=linha+"%0A"
-
+texto+=`${p.nome} (${p.variacao}) - ${p.q} un%0A`
 })
 
 window.open(`https://wa.me/5519992850208?text=${texto}`)
 
 }
-
-document.getElementById("formEmail").addEventListener("submit",function(){
-
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-texto+=linha+"\n"
-
-})
-
-document.getElementById("pedidoForm").value=texto
-
-})
 
 </script>
 
