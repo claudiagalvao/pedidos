@@ -161,8 +161,6 @@ background:#dcd0f7;
 margin:3px;
 }
 
-/* MOBILE */
-
 @media (max-width:768px){
 
 .layout{
@@ -418,26 +416,31 @@ document.getElementById("lista").innerHTML=html
 
 function calc(i,q){
 
-let p=produtos[i]
-
 q=parseInt(q)
+
+let linha=document.getElementById("t"+i).closest("tr")
+
+let preco=parseFloat(
+linha.querySelector(".precoB2B")
+.innerText
+.replace("R$","")
+.replace(",",".")
+)
 
 if(isNaN(q)||q<=0){
 
-delete carrinho[p.nome]
+delete carrinho[i]
 document.getElementById("t"+i).innerText="0"
 calcTotal()
 return
 
 }
 
-let preco=p.preco*(1-desconto)
-
 let total=preco*q
 
 document.getElementById("t"+i).innerText=total.toFixed(2)
 
-carrinho[p.nome]={
+carrinho[i]={
 
 q:q,
 preco:preco,
