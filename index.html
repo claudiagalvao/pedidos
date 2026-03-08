@@ -14,11 +14,20 @@
 
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial, sans-serif;
 background:#f5f6fb;
+color:#333;
 }
 
-/* BANNER GRANDE */
+/* CONTAINER */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+/* BANNER */
 
 .banner-box{
 max-width:1100px;
@@ -31,21 +40,6 @@ width:100%;
 height:auto;
 display:block;
 border-radius:12px;
-}
-
-.banner-box img{
-width:100%;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
-}
-
-  
-/* CONTAINER */
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:30px;
 }
 
 /* FORM */
@@ -77,8 +71,8 @@ border:1px solid #ccc;
 .tabela-container{
 max-height:420px;
 overflow-y:auto;
-border-radius:10px;
 border:1px solid #ddd;
+border-radius:10px;
 }
 
 table{
@@ -87,7 +81,7 @@ border-collapse:collapse;
 }
 
 th{
-background:#cfc4ff;
+background:#d8cff8;
 padding:12px;
 }
 
@@ -95,6 +89,10 @@ td{
 padding:10px;
 text-align:center;
 border-bottom:1px solid #eee;
+}
+
+tr:nth-child(even){
+background:#fafafa;
 }
 
 .qtd{
@@ -107,21 +105,15 @@ width:60px;
 background:#fff2f4;
 }
 
-/* PREÇO ORIGINAL */
-
 .preco-antigo{
 text-decoration:line-through;
 color:#999;
 }
 
-/* PREÇO COM DESCONTO */
-
 .preco-desc{
 color:#e60023;
 font-weight:bold;
 }
-
-/* BADGE */
 
 .badge{
 background:#e60023;
@@ -168,10 +160,6 @@ cursor:pointer;
 grid-template-columns:1fr;
 }
 
-.banner{
-height:240px;
-}
-
 }
 
 </style>
@@ -180,28 +168,10 @@ height:240px;
 
 <body>
 
-<div class="banner-container">
-
 <div class="banner-box">
 <img src="banner.png">
 </div>
 
-  
-</div>
-
-.banner-box{
-max-width:1100px;
-margin:auto;
-margin-top:20px;
-}
-
-.banner-box img{
-width:100%;
-height:auto;
-display:block;
-border-radius:12px;
-}
-  
 <div class="container">
 
 <h2 style="text-align:center;">Pedido para Parceiros & Revendedores</h2>
@@ -231,7 +201,7 @@ border-radius:12px;
 <tr>
 <th>Produto</th>
 <th>Preço</th>
-<th>Preço com desconto</th>
+<th>Preço c/ desconto</th>
 <th>Qtd</th>
 <th>Total</th>
 </tr>
