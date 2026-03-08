@@ -151,6 +151,7 @@ cursor:pointer;
 .btnclear{background:#444;color:white;width:100%;margin-top:5px;}
 .btnpdf{background:#ff5b6b;color:white;width:100%;margin-top:5px;}
 .btnsend{background:#27ae60;color:white;width:100%;margin-top:5px;}
+.btnemail{background:#2980b9;color:white;width:100%;margin-top:5px;}
 
 footer{
 background:#222;
@@ -261,6 +262,16 @@ Frete por conta do cliente (FOB)
 
 <button class="btnsend" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
 
+<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+
+<input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
+
+<input type="hidden" name="pedido" id="pedidoForm">
+
+<button class="btnemail" type="submit">Enviar Email</button>
+
+</form>
+
 </div>
 
 </div>
@@ -273,18 +284,18 @@ Frete por conta do cliente (FOB)
 
 <div>
 <h4>Crazy Fantasy</h4>
-Portal exclusivo para parceiros e revendedores.
+Especialistas em fantasias, maquiagem e acessórios para festas.
 </div>
 
 <div>
 <h4>Endereço</h4>
-Valinhos - SP
+Valinhos – SP
 </div>
 
 <div>
 <h4>Contato</h4>
-WhatsApp: (19) XXXXXXXX<br>
-Email: vendas@crazyfantasy.com.br
+WhatsApp: (19) 99285-0208<br>
+Email: lojacrazyfantasy@hotmail.com
 </div>
 
 <div>
@@ -293,8 +304,8 @@ Email: vendas@crazyfantasy.com.br
 </div>
 
 <div>
-<h4>CNPJ</h4>
-00.000.000/0001-00
+<h4>Site</h4>
+<a href="https://crazyfantasy.com.br">crazyfantasy.com.br</a>
 </div>
 
 </div>
@@ -442,7 +453,7 @@ html+=`
 </td>
 
 <td>
-<input type="number" min="0" onchange="calc(${i},this)">
+<input type="number" min="0" value="0" onchange="calc(${i},this)">
 </td>
 
 <td id="t${i}">0</td>
@@ -484,9 +495,11 @@ let total=q*preco
 
 linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
 
+let nome=linha.querySelector("td").childNodes[0].nodeValue.trim()
+
 carrinho[i]={
 
-nome:linha.querySelector("td").innerText,
+nome:nome,
 q:q,
 total:total
 
@@ -550,12 +563,17 @@ doc.text("Pedido Crazy Fantasy B2B",20,y)
 
 y+=10
 
+let total=0
+
 Object.values(carrinho).forEach(p=>{
 doc.text(`${p.nome} - ${p.q} un`,20,y)
 y+=8
+total+=p.total
 })
 
-doc.save("pedido.pdf")
+doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10)
+
+doc.save("pedido_crazy_fantasy.pdf")
 
 }
 
@@ -567,9 +585,21 @@ Object.values(carrinho).forEach(p=>{
 texto+=`${p.nome} - ${p.q} un%0A`
 })
 
-window.open(`https://wa.me/5519999999999?text=${texto}`)
+window.open(`https://wa.me/5519992850208?text=${texto}`)
 
 }
+
+document.querySelector("form").addEventListener("submit",function(){
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+Object.values(carrinho).forEach(p=>{
+texto+=`${p.nome} - ${p.q} un\n`
+})
+
+document.getElementById("pedidoForm").value=texto
+
+})
 
 </script>
 
