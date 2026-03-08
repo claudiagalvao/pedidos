@@ -8,11 +8,13 @@
 
 <title>Crazy Fantasy - Catálogo de Produtos</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 
 body{
 margin:0;
-font-family:Segoe UI, Arial;
+font-family:Arial, sans-serif;
 background:#f5f6fb;
 color:#333;
 }
@@ -21,7 +23,10 @@ color:#333;
 
 .banner{
 width:100%;
+max-height:320px;
+object-fit:contain;
 display:block;
+background:white;
 }
 
 /* CONTAINER */
@@ -32,16 +37,16 @@ margin:auto;
 padding:30px;
 }
 
-/* FORM BOX */
+/* FORM */
 
 .form-box{
 background:white;
 padding:25px;
-border-radius:12px;
-box-shadow:0 6px 20px rgba(0,0,0,0.08);
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* GRID CLIENTE */
+/* GRID */
 
 .grid{
 display:grid;
@@ -52,9 +57,8 @@ margin-bottom:20px;
 
 input{
 padding:12px;
-border-radius:8px;
+border-radius:6px;
 border:1px solid #ccc;
-font-size:14px;
 }
 
 /* TABELA */
@@ -63,7 +67,7 @@ font-size:14px;
 max-height:420px;
 overflow-y:auto;
 border:1px solid #ddd;
-border-radius:10px;
+border-radius:8px;
 }
 
 table{
@@ -72,8 +76,8 @@ border-collapse:collapse;
 }
 
 th{
-background:#6c2bd9;
-color:white;
+background:#d8cff8;
+color:#333;
 padding:12px;
 }
 
@@ -94,7 +98,7 @@ width:60px;
 /* TOTAL */
 
 .total{
-font-size:24px;
+font-size:22px;
 text-align:right;
 margin-top:20px;
 color:#6c2bd9;
@@ -105,47 +109,25 @@ font-weight:bold;
 
 .buttons{
 display:flex;
-gap:12px;
-flex-wrap:wrap;
+gap:10px;
 margin-top:20px;
+flex-wrap:wrap;
 }
 
 button{
-padding:14px 22px;
+padding:12px 20px;
 border:none;
-border-radius:10px;
-font-size:15px;
+border-radius:8px;
 cursor:pointer;
-transition:0.2s;
+font-size:14px;
 }
 
-button:hover{
-transform:scale(1.05);
-}
-
-.pdf{
-background:#ff4d6d;
-color:white;
-}
-
-.enviar{
-background:#00c897;
-color:white;
-}
-
-.limpar{
-background:#444;
-color:white;
-}
-
-/* MOBILE */
+.limpar{background:#444;color:white;}
+.pdf{background:#ff4d6d;color:white;}
+.enviar{background:#00c897;color:white;}
 
 @media(max-width:700px){
-
-.grid{
-grid-template-columns:1fr;
-}
-
+.grid{grid-template-columns:1fr;}
 }
 
 </style>
@@ -169,11 +151,9 @@ grid-template-columns:1fr;
 <div class="grid">
 
 <input name="empresa" placeholder="Empresa" required>
-
 <input name="cnpj" placeholder="CNPJ">
 
 <input name="contato" placeholder="Nome do contato" required>
-
 <input name="telefone" placeholder="Telefone">
 
 <input name="email" placeholder="Email" required>
@@ -197,22 +177,16 @@ grid-template-columns:1fr;
 </div>
 
 <div class="total">
-Total: R$ <span id="total">0</span>
+Total: R$ <span id="total">0.00</span>
 </div>
 
 <div class="buttons">
 
-<button type="button" class="limpar" onclick="limpar()">
-Limpar Pedido
-</button>
+<button type="button" class="limpar" onclick="limpar()">Limpar</button>
 
-<button type="button" class="pdf" onclick="pdf()">
-Gerar PDF
-</button>
+<button type="button" class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 
-<button type="submit" class="enviar" onclick="prepararEmail()">
-Enviar Pedido para Crazy Fantasy
-</button>
+<button type="submit" class="enviar" onclick="prepararEmail()">Enviar Pedido</button>
 
 </div>
 
@@ -224,8 +198,7 @@ Enviar Pedido para Crazy Fantasy
 
 <script>
 
-const produtos = [
-
+const produtos=[
 ["Arlequina",180],
 ["Arlequina de Casaco",180],
 ["Mulher Maravilha",125],
@@ -264,23 +237,22 @@ const produtos = [
 ["Ana Pop",109.99],
 ["Ana Luxo",269.99],
 ["Minnie",239.99]
-
 ]
 
-const tabela = document.getElementById("tabela")
+const tabela=document.getElementById("tabela")
 
 produtos.forEach(p=>{
 
 let preco=p[1]
-let desc=preco>200?preco*0.9:preco
+let desconto=preco>200?preco*0.9:preco
 
-tabela.innerHTML += `
+tabela.innerHTML+=`
 <tr>
 <td>${p[0]}</td>
-<td>${preco}</td>
-<td>${desc.toFixed(2)}</td>
-<td><input type="number" class="qtd" onchange="calcular()"></td>
-<td class="subtotal">0</td>
+<td>${preco.toFixed(2)}</td>
+<td>${desconto.toFixed(2)}</td>
+<td><input type="number" min="0" class="qtd" onchange="calcular()"></td>
+<td class="subtotal">0.00</td>
 </tr>
 `
 
@@ -292,15 +264,12 @@ let total=0
 
 document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
-if(i==0)return
+if(i===0)return
 
 let preco=parseFloat(linha.children[1].innerText)
+let qtd=parseInt(linha.querySelector(".qtd").value)||0
 
-if(preco>200){
-preco*=0.9
-}
-
-let qtd=linha.querySelector(".qtd").value
+if(preco>200){preco=preco*0.9}
 
 let subtotal=preco*qtd
 
@@ -317,9 +286,8 @@ document.getElementById("total").innerText=total.toFixed(2)
 function limpar(){
 
 document.querySelectorAll(".qtd").forEach(i=>i.value="")
-document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0")
-
-document.getElementById("total").innerText="0"
+document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0.00")
+document.getElementById("total").innerText="0.00"
 
 }
 
@@ -329,7 +297,7 @@ let resumo="Pedido Crazy Fantasy\n\n"
 
 document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
 
-if(i==0)return
+if(i===0)return
 
 let produto=linha.children[0].innerText
 let qtd=linha.querySelector(".qtd").value
@@ -343,6 +311,37 @@ resumo+=produto+" - "+qtd+" unidades\n"
 resumo+="\nTOTAL: R$ "+document.getElementById("total").innerText
 
 document.getElementById("pedido_email").value=resumo
+
+}
+
+function gerarPDF(){
+
+const {jsPDF}=window.jspdf
+let pdf=new jsPDF()
+
+pdf.text("Pedido Crazy Fantasy",20,20)
+
+let y=40
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i===0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+
+pdf.text(produto+" - "+qtd,20,y)
+y+=10
+
+}
+
+})
+
+pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
+
+pdf.save("pedido-crazyfantasy.pdf")
 
 }
 
