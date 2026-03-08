@@ -77,17 +77,6 @@ object-fit:cover;
 border-radius:6px;
 }
 
-.preco-original{
-text-decoration:line-through;
-color:#888;
-font-size:13px;
-}
-
-.preco-b2b{
-color:red;
-font-weight:bold;
-}
-
 .total{
 text-align:right;
 font-size:22px;
@@ -95,10 +84,24 @@ margin-top:20px;
 font-weight:bold;
 }
 
+.progress{
+width:100%;
+background:#ddd;
+height:20px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.progress-bar{
+height:20px;
+background:#1abc9c;
+width:0%;
+border-radius:10px;
+}
+
 .desconto-info{
+margin-top:10px;
 font-size:14px;
-color:#444;
-margin-top:5px;
 }
 
 .buttons{
@@ -157,6 +160,10 @@ cursor:pointer;
 Total: R$ <span id="total">0.00</span>
 </div>
 
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
 <div class="desconto-info" id="descontoInfo"></div>
 
 <div class="buttons">
@@ -170,7 +177,6 @@ Total: R$ <span id="total">0.00</span>
 <script>
 
 let produtos=[]
-let produtosVisiveis=[]
 const pedidoMinimo=200
 
 Papa.parse("produtos.csv",{
@@ -194,9 +200,7 @@ let cats=[...new Set(produtos.map(p=>p.Category).filter(Boolean))]
 let menu=document.getElementById("menu")
 
 cats.forEach(c=>{
-
 menu.innerHTML+=`<button onclick="mostrar('${c}')">${c}</button>`
-
 })
 
 mostrar(cats[0])
@@ -208,9 +212,9 @@ function mostrar(cat){
 let tabela=document.getElementById("tabela")
 tabela.innerHTML=""
 
-produtosVisiveis = produtos.filter(p=>p.Category==cat)
-
-produtosVisiveis.forEach(p=>{
+produtos
+.filter(p=>p.Category==cat)
+.forEach(p=>{
 
 let preco=parseFloat(p.Price)||0
 
@@ -224,9 +228,7 @@ tabela.innerHTML+=`
 
 <td>${p.Name}</td>
 
-<td>
-R$ ${preco.toFixed(2)}
-</td>
+<td>R$ ${preco.toFixed(2)}</td>
 
 <td>
 <input type="number" min="0" onchange="calcular()">
@@ -247,8 +249,16 @@ function descontoProgressivo(total){
 if(total>=1000) return 0.18
 if(total>=600) return 0.15
 if(total>=300) return 0.12
-
 return 0.10
+
+}
+
+function proximoNivel(total){
+
+if(total<300) return 300-total
+if(total<600) return 600-total
+if(total<1000) return 1000-total
+return 0
 
 }
 
@@ -269,22 +279,36 @@ total+=sub
 })
 
 let desconto=descontoProgressivo(total)
-
 let totalFinal=total*(1-desconto)
 
 document.getElementById("total").innerText=totalFinal.toFixed(2)
+
+let falta=proximoNivel(total)
 
 let info=document.getElementById("descontoInfo")
 
 if(total<pedidoMinimo){
 
-info.innerHTML=`⚠ Pedido mínimo: R$ ${pedidoMinimo}`
+info.innerHTML=`⚠ Pedido mínimo: R$${pedidoMinimo}`
 
 }else{
 
-info.innerHTML=`Desconto aplicado: ${desconto*100}%`
+if(falta>0){
+
+info.innerHTML=`Desconto atual: ${desconto*100}% • Faltam R$${falta.toFixed(2)} para próximo desconto`
+
+}else{
+
+info.innerHTML=`✔ Desconto máximo atingido`
 
 }
+
+}
+
+let progress=(total/1000)*100
+if(progress>100) progress=100
+
+document.getElementById("progressBar").style.width=progress+"%"
 
 }
 
@@ -295,6 +319,7 @@ txt=txt.toLowerCase()
 document.querySelectorAll("#tabela tr").forEach(l=>{
 
 let nome=l.children[1].innerText.toLowerCase()
+
 l.style.display=nome.includes(txt)?"":"none"
 
 })
@@ -305,7 +330,9 @@ function limpar(){
 
 document.querySelectorAll("input").forEach(i=>i.value="")
 document.querySelectorAll(".subtotal").forEach(s=>s.innerText="0.00")
+
 document.getElementById("total").innerText="0.00"
+document.getElementById("progressBar").style.width="0%"
 document.getElementById("descontoInfo").innerHTML=""
 
 }
@@ -350,7 +377,6 @@ let total=parseFloat(document.getElementById("total").innerText)
 if(total<pedidoMinimo){
 
 alert("Pedido mínimo é R$"+pedidoMinimo)
-
 return
 
 }
