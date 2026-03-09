@@ -1,37 +1,49 @@
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial, Helvetica, sans-serif;
 background:#0b0b0b;
 color:white;
-display:flex;
+}
+
+.banner img{
+width:100%;
+display:block;
 }
 
 .catalogo{
-width:70%;
-padding:30px;
+width:65%;
+padding:40px;
+float:left;
 }
 
 .carrinho{
 width:30%;
 background:#111;
-padding:25px;
+padding:30px;
 position:fixed;
 right:0;
 top:0;
 height:100%;
 overflow:auto;
+box-shadow:-4px 0 10px rgba(0,0,0,0.5);
 }
 
 .produto{
 background:#1a1a1a;
 padding:20px;
-margin-bottom:15px;
+margin-bottom:20px;
 border-radius:10px;
+}
+
+.produto h3{
+margin-top:0;
 }
 
 select,input{
 padding:8px;
 margin-top:10px;
+border-radius:6px;
+border:none;
 }
 
 button{
@@ -44,11 +56,15 @@ border-radius:6px;
 margin-top:10px;
 }
 
+button:hover{
+background:#ff2a7a;
+}
+
 .progress{
 height:20px;
 background:#333;
 border-radius:10px;
-margin-top:15px;
+margin-top:20px;
 overflow:hidden;
 }
 
@@ -56,4 +72,16 @@ overflow:hidden;
 height:100%;
 background:#00c853;
 width:0%;
+}
+
+form input{
+width:100%;
+margin-top:10px;
+padding:10px;
+}
+
+form button{
+width:100%;
+margin-top:15px;
+background:#00c853;
 }
