@@ -161,3 +161,22 @@ margin-right:6px;
 color:#00c853;
 font-weight:bold;
 }
+
+
+
+.itemCarrinho{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:8px;
+font-size:13px;
+}
+
+.itemCarrinho button{
+background:#ff1744;
+border:none;
+color:white;
+padding:3px 7px;
+border-radius:4px;
+cursor:pointer;
+}
