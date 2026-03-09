@@ -1,92 +1,97 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crazy Fantasy B2B</title>
 
-<title>Crazy Fantasy | Catálogo B2B</title>
-
-<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<div class="banner">
-<img src="banner.png">
-</div>
+<header class="banner">
 
-<div class="info-parceiros">
+<img src="banner.jpg">
+
+</header>
+
+
+<section class="info">
 
 <h2>Tabela exclusiva para parceiros</h2>
 
-<div class="info-grid">
+<div class="cards-info">
 
-<div class="info-box">
+<div>
 <h3>💰 Descontos</h3>
 <p>Tabela especial para lojistas e revendedores parceiros.</p>
 </div>
 
-<div class="info-box">
+<div>
 <h3>📦 Pedido mínimo</h3>
-<p>Pedidos a partir de <strong>R$200</strong>.</p>
+<p>Pedidos a partir de R$200</p>
 </div>
 
-<div class="info-box">
+<div>
 <h3>🚚 Frete</h3>
-<p>Frete calculado após envio do pedido.</p>
-</div>
-
-<div class="info-box">
-<h3>💳 Pagamento</h3>
-<p>PIX, boleto ou cartão.</p>
+<p>Frete calculado após envio do pedido</p>
 </div>
 
 </div>
 
-</div>
+</section>
 
-<div class="menu" id="menu"></div>
+
+<div class="container">
 
 <div class="catalogo">
 
-<h1>Catálogo Crazy Fantasy</h1>
+<h2>Catálogo Crazy Fantasy</h2>
 
-<input id="busca" class="busca" placeholder="🔎 Buscar produto...">
+<input id="busca" placeholder="🔎 Buscar produto...">
 
 <div id="produtos"></div>
 
 </div>
 
-<div class="carrinho">
 
-<h2>Pedido (<span id="contador">0</span>)</h2>
+<aside class="carrinho">
 
-<div id="lista"></div>
+<h2>Pedido</h2>
 
-<h3 id="total">Total: R$0</h3>
+<div id="listaPedido"></div>
 
-<div class="progress">
-<div class="progress-bar" id="barra"></div>
+<div class="total">
+
+Total: R$ <span id="total">0</span>
+
 </div>
 
-<p id="minimo-msg"></p>
+<div class="progresso">
 
-<form>
+<div id="barra"></div>
+
+</div>
+
+<p id="msgMinimo"></p>
+
 
 <input placeholder="Empresa">
 <input placeholder="Nome">
 <input placeholder="Email">
 
-<button type="button" onclick="enviarPedido()">
+<button class="btnEnviar">
+
 Enviar Pedido
+
 </button>
 
-</form>
+</aside>
 
 </div>
+
 
 <script src="script.js"></script>
 
