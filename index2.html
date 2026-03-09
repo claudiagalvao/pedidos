@@ -67,9 +67,18 @@ Total B2B: R$ <span id="total">0</span>
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
 
-<button class="btnEmail" onclick="enviarEmail()">
+
+<form id="formEmail"
+action="https://formsubmit.co/SEUEMAIL@email.com"
+method="POST">
+
+<input type="hidden" name="pedido" id="pedidoTexto">
+
+<button class="btnEmail" type="submit">
 Enviar Pedido por Email
 </button>
+
+</form>
 
 <button class="btnWhats" onclick="enviarWhatsApp()">
 Enviar por WhatsApp
@@ -88,40 +97,41 @@ Limpar Pedido
 </div>
 
 
-<div class="footer">
+<footer class="footer">
 
-<b>Crazy Fantasy B2B</b>
+<div class="footerContainer">
 
-<br><br>
+<div>
 
-Desconto progressivo
+<h4>Crazy Fantasy B2B</h4>
 
-<br>
+Portal exclusivo para parceiros
 
-até R$200 → 10%
+</div>
 
-<br>
+<div>
 
-até R$500 → 12%
+<h4>Descontos</h4>
 
-<br>
-
+até R$200 → 10%  
+até R$500 → 12%  
 até R$1000 → 15%
 
-<br><br>
+</div>
 
-Pagamento: PIX | Boleto | Cartão
+<div>
 
-<br>
+<h4>Condições</h4>
 
-Frete calculado após envio
-
-<br>
-
+Pagamento: PIX | Boleto | Cartão  
+Frete calculado após envio  
 Validade do pedido: 48h
 
 </div>
 
+</div>
+
+</footer>
 
 <script src="script.js"></script>
 
