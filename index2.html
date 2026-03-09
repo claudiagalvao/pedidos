@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
 
 <meta charset="UTF-8">
-<title>Crazy Fantasy B2B</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crazy Fantasy | Portal B2B</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -12,8 +14,11 @@
 
 <body>
 
+
 <header class="banner">
+
 <img src="banner.png">
+
 </header>
 
 
@@ -22,7 +27,12 @@
 
 <section class="catalogo">
 
-<h1>Catálogo Crazy Fantasy</h1>
+<h1>Portal B2B Crazy Fantasy</h1>
+
+<p>
+Tabela exclusiva para parceiros comerciais.  
+Preços com desconto automático de 10%.
+</p>
 
 <input id="busca" placeholder="🔎 Buscar produto">
 
@@ -37,25 +47,83 @@
 
 <div id="listaPedido"></div>
 
+
 <div class="total">
+
 Total: R$ <span id="total">0</span>
+
 </div>
 
+
 <div class="barraProgresso">
+
 <div id="barra"></div>
+
 </div>
+
 
 <p id="msgMinimo"></p>
 
-<input placeholder="Empresa">
-<input placeholder="Nome">
-<input placeholder="Email">
 
-<button class="btnEnviar">Enviar Pedido</button>
+<h3>Dados do Cliente</h3>
+
+<input id="empresa" placeholder="Empresa">
+
+<input id="nome" placeholder="Nome">
+
+<input id="email" placeholder="Email">
+
+
+<button class="btnEnviar" onclick="enviarWhatsApp()">
+
+Enviar Pedido WhatsApp
+
+</button>
+
+
+<button class="btnEnviar" onclick="enviarEmail()">
+
+Enviar Pedido Email
+
+</button>
+
+
+<button class="btnEnviar" onclick="limparCarrinho()">
+
+Limpar Pedido
+
+</button>
+
 
 </aside>
+
+
+<footer>
+
+<p>
+
+Crazy Fantasy Distribuidora  
+
+</p>
+
+<p>
+
+Tabela exclusiva para parceiros B2B  
+Condições comerciais sujeitas a confirmação.
+
+</p>
+
+<p>
+
+Frete calculado após envio do pedido.
+
+</p>
+
+</footer>
+
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
