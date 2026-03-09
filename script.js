@@ -8,9 +8,7 @@ const menuCategorias = document.getElementById("menuCategorias")
 
 let produtos = []
 let carrinho = []
-
 let total = 0
-let itensCarrinho = 0
 
 const pedidoMinimo = 200
 const descontoB2B = 0.10
@@ -58,7 +56,6 @@ menuCategorias.innerHTML = ""
 
 const btnTodos = document.createElement("button")
 btnTodos.innerText = "Todos"
-
 btnTodos.onclick = () => renderProdutos(produtos)
 
 menuCategorias.appendChild(btnTodos)
@@ -97,19 +94,23 @@ card.innerHTML = `
 
 <h3>${p.nome}</h3>
 
-${p.variacao !== "padrão" ? `<div class="variacao">${p.variacao}</div>` : ""}
+${p.variacao !== "padrão" ? `<div>${p.variacao}</div>` : ""}
 
-<div class="preco">
+<div>
 
-<span class="precoOriginal">R$ ${p.precoOriginal.toFixed(2)}</span>
+<span style="text-decoration:line-through;color:#888">
+R$ ${p.precoOriginal.toFixed(2)}
+</span>
 
-<span class="precoB2B">R$ ${p.preco.toFixed(2)}</span>
+<span style="font-weight:bold;margin-left:6px">
+R$ ${p.preco.toFixed(2)}
+</span>
 
 </div>
 
-<div class="sku">SKU: ${p.sku}</div>
+<div>SKU: ${p.sku}</div>
 
-<div class="estoque ${p.estoque == 0 ? "esgotado" : ""}">
+<div ${p.estoque == 0 ? 'style="color:red"' : ""}>
 ${p.estoque > 0 ? `Estoque: ${p.estoque}` : "Esgotado"}
 </div>
 
@@ -134,7 +135,6 @@ preco: p.preco,
 qtd: qtd
 })
 
-itensCarrinho += qtd
 total += p.preco * qtd
 
 atualizarCarrinho()
@@ -152,19 +152,17 @@ function atualizarCarrinho(){
 
 listaPedido.innerHTML = ""
 
-carrinho.forEach((item, index) => {
+carrinho.forEach((item,index)=>{
 
 const div = document.createElement("div")
 
-div.className = "itemCarrinho"
-
 div.innerHTML = `
 
-<span>
-${item.nome} ${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""} x${item.qtd}
-</span>
+${item.nome}
+${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""}
+x${item.qtd}
 
-<button onclick="removerItem(${index})">✕</button>
+<button onclick="removerItem(${index})">❌</button>
 
 `
 
@@ -175,24 +173,20 @@ listaPedido.appendChild(div)
 totalEl.innerText = total.toFixed(2)
 
 let progresso = (total / pedidoMinimo) * 100
-
 if(progresso > 100) progresso = 100
 
 barra.style.width = progresso + "%"
 
-
 if(total < pedidoMinimo){
 
 msgMinimo.innerText =
-`Faltam R$ ${(pedidoMinimo - total).toFixed(2)} para atingir o pedido mínimo`
+`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para atingir o pedido mínimo`
 
 barra.style.background = "#ff9800"
 
-}
-else{
+}else{
 
 msgMinimo.innerText = "Pedido mínimo atingido 🎉"
-
 barra.style.background = "#00c853"
 
 }
@@ -205,7 +199,6 @@ function removerItem(index){
 const item = carrinho[index]
 
 total -= item.preco * item.qtd
-itensCarrinho -= item.qtd
 
 carrinho.splice(index,1)
 
@@ -218,14 +211,74 @@ function limparCarrinho(){
 
 carrinho = []
 total = 0
-itensCarrinho = 0
 
 atualizarCarrinho()
 
 }
 
 
-busca.addEventListener("input", () => {
+function gerarTextoPedido(){
+
+const empresa = document.getElementById("empresa").value
+const nome = document.getElementById("nome").value
+const email = document.getElementById("email").value
+
+let texto = "Pedido Crazy Fantasy B2B\n\n"
+
+texto += "Empresa: " + empresa + "\n"
+texto += "Nome: " + nome + "\n"
+texto += "Email: " + email + "\n\n"
+
+texto += "Itens:\n"
+
+carrinho.forEach(item => {
+
+texto += `${item.qtd}x ${item.nome}`
+
+if(item.variacao !== "padrão"){
+texto += ` (${item.variacao})`
+}
+
+texto += "\n"
+
+})
+
+texto += "\nTotal: R$ " + total.toFixed(2)
+
+return texto
+
+}
+
+
+function enviarWhatsApp(){
+
+const texto = gerarTextoPedido()
+
+const numero = "5511999999999"
+
+const url =
+`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+
+window.open(url)
+
+}
+
+
+function enviarEmail(){
+
+const texto = gerarTextoPedido()
+
+const assunto = "Pedido Crazy Fantasy B2B"
+
+const url =
+`mailto:seuemail@empresa.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}`
+
+window.location.href = url
+
+}
+
+
+busca.addEventListener("input",()=>{
 
 const termo = busca.value.toLowerCase()
 
