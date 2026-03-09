@@ -1,150 +1,161 @@
-const listaProdutos = document.getElementById("produtos");
-const listaPedido = document.getElementById("listaPedido");
-const totalEl = document.getElementById("total");
-const barra = document.getElementById("barra");
-const msgMinimo = document.getElementById("msgMinimo");
-const busca = document.getElementById("busca");
+const produtosDiv=document.getElementById("produtos")
+const listaPedido=document.getElementById("listaPedido")
+const totalEl=document.getElementById("total")
+const barra=document.getElementById("barra")
+const msgMinimo=document.getElementById("msgMinimo")
+const busca=document.getElementById("busca")
+const menuCategorias=document.getElementById("menuCategorias")
 
-let produtos = [];
-let carrinho = [];
-let total = 0;
-const pedidoMinimo = 200;
+let produtos=[]
+let carrinho=[]
+let total=0
+const pedidoMinimo=200
 
 fetch("produtos.csv")
-.then(response => response.text())
-.then(data => {
+.then(r=>r.text())
+.then(data=>{
 
-const linhas = data.split("\n").slice(1);
+const linhas=data.split("\n").slice(1)
 
-linhas.forEach(linha => {
+linhas.forEach(l=>{
 
-if(!linha.trim()) return;
+if(!l.trim())return
 
-const col = linha.split(",");
+const c=l.split(",")
 
-const produto = {
-categoria: col[0],
-nome: col[1],
-variacao: col[2],
-preco: parseFloat(col[3]),
-link: col[4],
-sku: col[5],
-estoque: parseInt(col[6])
-};
+produtos.push({
 
-produtos.push(produto);
+categoria:c[0],
+nome:c[1],
+variacao:c[2],
+preco:parseFloat(c[3]),
+link:c[4],
+sku:c[5],
+estoque:parseInt(c[6])
 
-});
+})
 
-renderProdutos(produtos);
+})
 
-});
+criarMenu()
+renderProdutos(produtos)
 
+})
+
+function criarMenu(){
+
+const cats=[...new Set(produtos.map(p=>p.categoria))]
+
+menuCategorias.innerHTML=`<button onclick="renderProdutos(produtos)">Todos</button>`
+
+cats.forEach(c=>{
+
+const btn=document.createElement("button")
+btn.innerText=c
+
+btn.onclick=()=>{
+
+const filtrados=produtos.filter(p=>p.categoria===c)
+renderProdutos(filtrados)
+
+}
+
+menuCategorias.appendChild(btn)
+
+})
+
+}
 
 function renderProdutos(lista){
 
-listaProdutos.innerHTML="";
+produtosDiv.innerHTML=""
 
-lista.forEach(produto=>{
+lista.forEach(p=>{
 
-const card=document.createElement("div");
-card.className="produto";
+const card=document.createElement("div")
+card.className="produto"
 
-card.innerHTML = `
+card.innerHTML=`
 
-<h3>${produto.nome}</h3>
+<h3>${p.nome}</h3>
 
-${produto.variacao !== "padrão" ? `<div class="variacao">${produto.variacao}</div>` : ""}
+${p.variacao!="padrão"?`<div class="variacao">${p.variacao}</div>`:""}
 
-<div class="sku">SKU: ${produto.sku}</div>
+<div class="sku">SKU: ${p.sku}</div>
 
-<div class="estoque ${produto.estoque==0 ? "esgotado":""}">
-${produto.estoque>0 ? `Estoque: ${produto.estoque}` : "Esgotado"}
+<div class="estoque ${p.estoque==0?"esgotado":""}">
+${p.estoque>0?`Estoque: ${p.estoque}`:"Esgotado"}
 </div>
 
-<input type="number" value="1" min="1" max="${produto.estoque}" class="qtd">
+<input type="number" value="1" min="1" max="${p.estoque}">
 
-<button class="add" ${produto.estoque==0?"disabled":""}>Adicionar</button>
+<button ${p.estoque==0?"disabled":""}>Adicionar</button>
 
-<a href="${produto.link}" target="_blank">Ver produto</a>
+<a href="${p.link}" target="_blank">Ver produto</a>
 
-`;
+`
 
-const btn = card.querySelector(".add");
+const btn=card.querySelector("button")
 
-btn.onclick = ()=>{
+btn.onclick=()=>{
 
-const qtd = parseInt(card.querySelector(".qtd").value);
+const qtd=parseInt(card.querySelector("input").value)
 
 carrinho.push({
-nome: produto.nome,
-variacao: produto.variacao,
-preco: produto.preco,
-qtd: qtd
-});
+nome:p.nome,
+variacao:p.variacao,
+preco:p.preco,
+qtd:qtd
+})
 
-total += produto.preco * qtd;
-
-atualizarCarrinho();
-
-};
-
-listaProdutos.appendChild(card);
-
-});
+total+=p.preco*qtd
+atualizarCarrinho()
 
 }
 
+produtosDiv.appendChild(card)
+
+})
+
+}
 
 function atualizarCarrinho(){
 
-listaPedido.innerHTML="";
+listaPedido.innerHTML=""
 
-carrinho.forEach(item=>{
+carrinho.forEach(i=>{
 
-const div=document.createElement("div");
+const d=document.createElement("div")
+d.innerText=`${i.nome} ${i.variacao!="padrão"?"("+i.variacao+")":""} x${i.qtd}`
+listaPedido.appendChild(d)
 
-div.className="itemCarrinho";
+})
 
-div.innerText = `${item.nome} ${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""} x${item.qtd}`;
+totalEl.innerText=total.toFixed(2)
 
-listaPedido.appendChild(div);
+let prog=(total/pedidoMinimo)*100
+if(prog>100)prog=100
 
-});
+barra.style.width=prog+"%"
 
-totalEl.innerText = total.toFixed(2);
-
-let progresso = (total/pedidoMinimo)*100;
-
-if(progresso>100) progresso=100;
-
-barra.style.width = progresso+"%";
-
-if(total < pedidoMinimo){
-
-msgMinimo.innerText = "Faltam R$ "+(pedidoMinimo-total).toFixed(2)+" para atingir o pedido mínimo";
-
-}
-else{
-
-msgMinimo.innerText = "Pedido mínimo atingido";
+if(total<pedidoMinimo)
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+else
+msgMinimo.innerText="Pedido mínimo atingido"
 
 }
 
-}
+busca.addEventListener("input",()=>{
 
+const t=busca.value.toLowerCase()
 
-busca.addEventListener("input", ()=>{
+const filtrados=produtos.filter(p=>
 
-const termo = busca.value.toLowerCase();
+p.nome.toLowerCase().includes(t) ||
+p.variacao.toLowerCase().includes(t)
 
-const filtrados = produtos.filter(p =>
+)
 
-p.nome.toLowerCase().includes(termo) ||
-p.variacao.toLowerCase().includes(termo)
+renderProdutos(filtrados)
 
-);
-
-renderProdutos(filtrados);
-
-});
+})
