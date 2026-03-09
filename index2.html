@@ -2,12 +2,15 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
-<title>Crazy Fantasy B2B</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Portal B2B Crazy Fantasy</title>
 
 <link rel="stylesheet" href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 
@@ -18,49 +21,45 @@
 <div class="catalogo">
 
 <div class="banner">
-<img src="banner.jpg">
-</div>
-
-<div class="boasVindas">
-<h2>🎭 Bem-vindo ao Portal B2B Crazy Fantasy</h2>
-<p>Tabela exclusiva para parceiros.</p>
-<p><b>Pedido mínimo: R$200</b></p>
+<img src="banner.png">
 </div>
 
 <div class="barraInfo">
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
 </div>
 
-<div class="categorias">
+<div id="menuCategorias" class="menuCategorias"></div>
 
-<button onclick="filtrarCategoria('Todos')">Todos</button>
-<button onclick="filtrarCategoria('Kits')">Kits</button>
-<button onclick="filtrarCategoria('Barbas')">Barbas e Bigodes</button>
-<button onclick="filtrarCategoria('Perucas')">Perucas</button>
-<button onclick="filtrarCategoria('Acessórios')">Acessórios</button>
-<button onclick="filtrarCategoria('Maquiagens')">Maquiagens e Sprays</button>
+<input id="busca" placeholder="🔎 Buscar produto">
+
+<div id="produtos" class="gridProdutos"></div>
 
 </div>
 
-<input class="busca" placeholder="🔎 Buscar produto..." onkeyup="buscarProduto(this.value)">
 
-<div class="gridProdutos" id="listaProdutos"></div>
-
-</div>
 
 <div class="carrinho">
 
-<h2>Pedido (<span id="contadorItens">0</span> itens)</h2>
+<h2>
+Pedido
+<span id="contadorItens">(0 itens)</span>
+</h2>
 
-<div>Total B2B: <b id="totalPedido">0</b></div>
-
-<div class="progressBar">
-<div id="progress"></div>
+<div class="total">
+Total B2B: R$ <span id="total">0</span>
 </div>
 
-<div id="faltam"></div>
+<div class="economiaPedido">
+💰 Economia: R$ <span id="economia">0</span>
+</div>
 
-<div id="listaCarrinho"></div>
+<div class="barraProgresso">
+<div id="barra"></div>
+</div>
+
+<div id="msgMinimo"></div>
+
+<div id="listaPedido"></div>
 
 <h3>Dados do Cliente</h3>
 
@@ -68,50 +67,64 @@
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
 
-<button class="btnEmail">Enviar Pedido por Email</button>
-<button class="btnWhats">Enviar por WhatsApp</button>
-<button class="btnPdf">Gerar PDF do Pedido</button>
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
+<button class="btnEmail" onclick="enviarEmail()">
+Enviar Pedido por Email
+</button>
+
+<button class="btnWhats" onclick="enviarWhatsApp()">
+Enviar por WhatsApp
+</button>
+
+<button class="btnPdf" onclick="gerarPDF()">
+Gerar PDF do Pedido
+</button>
+
+<button class="btnLimpar" onclick="limparCarrinho()">
+Limpar Pedido
+</button>
 
 </div>
 
 </div>
 
-<footer class="footer">
 
-<div class="footerGrid">
+<div class="footer">
 
-<div>
-<b>Crazy Fantasy B2B</b><br>
-Portal exclusivo para parceiros
-</div>
+<b>Crazy Fantasy B2B</b>
 
-<div>
-<b>Descontos</b><br>
-até R$200 → 10%<br>
-até R$500 → 12%<br>
+<br><br>
+
+Desconto progressivo
+
+<br>
+
+até R$200 → 10%
+
+<br>
+
+até R$500 → 12%
+
+<br>
+
 até R$1000 → 15%
-</div>
 
-<div>
-<b>Pagamento</b><br>
-PIX<br>
-Boleto<br>
-Cartão
-</div>
+<br><br>
 
-<div>
-<b>Pedido</b><br>
-Frete calculado após envio<br>
-Validade 48h
-</div>
+Pagamento: PIX | Boleto | Cartão
+
+<br>
+
+Frete calculado após envio
+
+<br>
+
+Validade do pedido: 48h
 
 </div>
 
-</footer>
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
+
