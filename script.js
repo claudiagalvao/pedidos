@@ -304,15 +304,50 @@ atualizarCarrinho()
 
 
 
+function validarPedido(){
+
+if(carrinho.length===0){
+
+alert("Seu carrinho está vazio.")
+return false
+
+}
+
+if(total<pedidoMinimo){
+
+alert("O pedido mínimo é R$200.")
+return false
+
+}
+
+let empresa=document.getElementById("empresa").value.trim()
+let nome=document.getElementById("nome").value.trim()
+let email=document.getElementById("email").value.trim()
+
+if(!empresa || !nome || !email){
+
+alert("Preencha todos os dados do cliente.")
+return false
+
+}
+
+return true
+
+}
+
+
+
 function enviarWhatsApp(){
+
+if(!validarPedido()) return
 
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
-
 })
+
+texto+=`\nTotal aproximado: R$ ${total.toFixed(2)}`
 
 window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 
@@ -322,6 +357,8 @@ window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 
 function gerarPDF(){
 
+if(!validarPedido()) return
+
 const { jsPDF } = window.jspdf
 
 const doc=new jsPDF()
@@ -329,9 +366,7 @@ const doc=new jsPDF()
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
-
 })
 
 doc.text(texto,10,10)
@@ -343,6 +378,8 @@ doc.save("pedido.pdf")
 
 
 function enviarEmail(){
+
+if(!validarPedido()) return
 
 let empresa=document.getElementById("empresa").value
 let nome=document.getElementById("nome").value
@@ -359,9 +396,7 @@ corpo+="Email: "+email+"\n\n"
 corpo+="Itens do pedido:\n\n"
 
 carrinho.forEach(i=>{
-
 corpo+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
-
 })
 
 corpo+=`\nTotal aproximado: R$ ${total.toFixed(2)}`
