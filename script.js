@@ -1,251 +1,119 @@
-let produtos={}
 let carrinho=[]
-let categorias=new Set()
-let minimo=200
+let total=0
 
 fetch("produtos.csv")
+.then(r=>r.text())
+.then(data=>{
 
-.then(res=>res.text())
+const linhas=data.split("\n").slice(1)
 
-.then(text=>{
+const produtosContainer=document.getElementById("produtos")
 
-let linhas=text.trim().split("\n")
+linhas.forEach(linha=>{
 
-linhas.slice(1).forEach(linha=>{
+const col=linha.split(",")
 
-let [categoria,nome,variacao,preco,imagem]=linha.split(",")
+if(col.length<7)return
 
-categoria=categoria.trim()
+const categoria=col[0]
+const nome=col[1]
+const variacao=col[2]
+const preco=parseFloat(col[3])
+const imagem=col[4]
+const sku=col[5]
+const estoque=parseInt(col[6])
 
-categorias.add(categoria)
+const card=document.createElement("div")
 
-if(!produtos[nome]){
+card.className="produto"
 
-produtos[nome]={
+card.innerHTML=`
 
-categoria:categoria,
-preco:parseFloat(preco),
-imagem:imagem,
-variacoes:[]
-
-}
-
-}
-
-produtos[nome].variacoes.push(variacao)
-
-})
-
-criarMenu()
-render(produtos)
-
-})
-
-function criarMenu(){
-
-let div=document.getElementById("menu")
-
-div.innerHTML=""
-
-let btnTodos=document.createElement("button")
-
-btnTodos.innerText="Todos"
-
-btnTodos.onclick=()=>render(produtos)
-
-div.appendChild(btnTodos)
-
-categorias.forEach(cat=>{
-
-let btn=document.createElement("button")
-
-btn.innerText=cat
-
-btn.onclick=()=>filtrar(cat)
-
-div.appendChild(btn)
-
-})
-
-}
-
-function render(lista){
-
-let div=document.getElementById("produtos")
-
-div.innerHTML=""
-
-for(let nome in lista){
-
-let p=lista[nome]
-
-let variacaoHTML=""
-
-if(p.variacoes.length > 1 || p.variacoes[0].toLowerCase() !== "padrão"){
-
-variacaoHTML=`
-<select id="var-${nome}">
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-</select>
-`
-
-}
-
-let html=`
-
-<div class="produto">
-
-<img src="${p.imagem}" class="produto-img">
+<img src="https://via.placeholder.com/300x200">
 
 <h3>${nome}</h3>
 
-${variacaoHTML}
+<div class="sku">SKU: ${sku}</div>
 
-<input type="number" value="1" min="1" id="qtd-${nome}">
+<div class="estoque">
 
-<button onclick="add('${nome}')">Adicionar</button>
+${estoque>0?`Estoque: ${estoque}`:`<span class="esgotado">Esgotado</span>`}
 
 </div>
 
+<input type="number" value="1" min="1" max="${estoque}" class="qtd">
+
+<button class="add">Adicionar</button>
+
+<a href="${imagem}" target="_blank">Ver produto</a>
+
 `
 
-div.innerHTML+=html
+const btn=card.querySelector(".add")
 
+if(estoque==0){
+btn.disabled=true
 }
 
-}
+btn.onclick=()=>{
 
-function filtrar(cat){
-
-let filtrados={}
-
-for(let nome in produtos){
-
-if(produtos[nome].categoria==cat){
-
-filtrados[nome]=produtos[nome]
-
-}
-
-}
-
-render(filtrados)
-
-}
-
-function add(nome){
-
-let qtd=parseInt(document.getElementById("qtd-"+nome).value)
-
-let produto=produtos[nome]
-
-let item=carrinho.find(i=>i.nome==nome)
-
-if(item){
-
-item.qtd+=qtd
-
-}else{
+const qtd=parseInt(card.querySelector(".qtd").value)
 
 carrinho.push({
+nome,
+variacao,
+preco,
+qtd
+})
 
-nome:nome,
-preco:produto.preco,
-qtd:qtd
+total+=preco*qtd
+
+atualizarCarrinho()
+
+}
+
+produtosContainer.appendChild(card)
 
 })
 
-}
+})
 
-renderCarrinho()
+function atualizarCarrinho(){
 
-}
-
-function remover(nome){
-
-carrinho = carrinho.filter(i => i.nome !== nome)
-
-renderCarrinho()
-
-}
-
-function renderCarrinho(){
-
-let lista=document.getElementById("lista")
+const lista=document.getElementById("listaPedido")
 
 lista.innerHTML=""
 
-let total=0
+carrinho.forEach(item=>{
 
-carrinho.forEach(i=>{
+const div=document.createElement("div")
 
-lista.innerHTML+=`
-<div class="item-carrinho">
-${i.nome} x${i.qtd}
-<button onclick="remover('${i.nome}')">✕</button>
-</div>
-`
+div.innerText=item.nome+" x"+item.qtd
 
-total+=i.preco*i.qtd
+lista.appendChild(div)
 
 })
 
-document.getElementById("contador").innerText=carrinho.length
+document.getElementById("total").innerText=total.toFixed(2)
 
-document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
+let progresso=(total/200)*100
 
-let barra=Math.min((total/minimo)*100,100)
+if(progresso>100)progresso=100
 
-document.getElementById("barra").style.width=barra+"%"
+document.getElementById("barra").style.width=progresso+"%"
 
-if(total < minimo){
+if(total<200){
 
-let falta=(minimo-total).toFixed(2)
+document.getElementById("msgMinimo").innerText=
 
-document.getElementById("minimo-msg").innerText=
-"Faltam R$"+falta+" para atingir o pedido mínimo."
+"Faltam R$"+(200-total).toFixed(2)+" para atingir o pedido mínimo"
 
-}else{
+}
 
-document.getElementById("minimo-msg").innerText=
-"Pedido mínimo atingido!"
+else{
+
+document.getElementById("msgMinimo").innerText="Pedido mínimo atingido"
 
 }
 
 }
-
-function enviarPedido(){
-
-let texto="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-
-texto+=`${i.nome} x${i.qtd}\n`
-
-})
-
-let url="https://wa.me/?text="+encodeURIComponent(texto)
-
-window.open(url)
-
-}
-
-document.getElementById("busca").addEventListener("input",function(){
-
-let termo=this.value.toLowerCase()
-
-let filtrados={}
-
-for(let nome in produtos){
-
-if(nome.toLowerCase().includes(termo)){
-
-filtrados[nome]=produtos[nome]
-
-}
-
-}
-
-render(filtrados)
-
-})
