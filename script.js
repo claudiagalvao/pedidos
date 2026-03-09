@@ -3,12 +3,12 @@ function copiarPedido(){
 let empresa=document.getElementById("empresa").value
 let cnpj=document.getElementById("cnpj").value
 let ie=document.getElementById("ie").value
-let nome=document.getElementById("nome").value
+let nome=document.getElementById("responsavel").value
 let whatsapp=document.getElementById("whatsapp").value
 let endereco=document.getElementById("endereco").value
 let entrega=document.getElementById("entrega").value
 let pagamento=document.getElementById("pagamento").value
-let obs=document.getElementById("observacoes").value
+let obs=document.getElementById("obs").value
 
 let texto="PEDIDO CRAZY FANTASY B2B\n\n"
 
@@ -25,7 +25,9 @@ texto+="PAGAMENTO: "+pagamento+"\n\n"
 texto+="ITENS DO PEDIDO\n"
 
 carrinho.forEach(i=>{
-texto+=`${i.qtd}x ${i.nome}\n`
+
+texto+= i.qtd + "x " + i.nome + "\n"
+
 })
 
 texto+="\nOBSERVAÇÕES:\n"+obs
