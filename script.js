@@ -85,6 +85,18 @@ produtosDiv.innerHTML=""
 
 lista.forEach(p=>{
 
+let alertaEstoque=""
+
+if(p.estoque==0){
+alertaEstoque=`<div class="estoqueEsgotado">Esgotado</div>`
+}
+else if(p.estoque<=3){
+alertaEstoque=`<div class="estoqueBaixo">🔥 Apenas ${p.estoque} em estoque</div>`
+}
+else{
+alertaEstoque=`<div class="estoque">Estoque: ${p.estoque}</div>`
+}
+
 const card=document.createElement("div")
 card.className="produto"
 
@@ -94,15 +106,25 @@ card.innerHTML=`
 
 <h3>${p.nome}</h3>
 
-${p.variacao!="padrão"?`<div>${p.variacao}</div>`:""}
+${p.variacao!="padrão"?`<div class="variacao">${p.variacao}</div>`:""}
 
-<div>R$ ${p.preco.toFixed(2)}</div>
+<div class="preco">
+R$ ${p.preco.toFixed(2)}
+</div>
+
+<div class="sku">
+SKU: ${p.sku}
+</div>
+
+${alertaEstoque}
 
 <input type="number" value="1" min="1">
 
-<button>Adicionar</button>
+<button class="btnAdd">Adicionar</button>
 
-<a href="${p.link}" target="_blank">Ver produto</a>
+<a class="linkProduto" href="${p.link}" target="_blank">
+Ver produto
+</a>
 
 `
 
@@ -246,15 +268,13 @@ document.getElementById("pedidoTexto").value=gerarTextoPedido()
 function enviarWhatsApp(){
 
 if(total<pedidoMinimo){
-
 alert("Pedido mínimo de R$200 não atingido.")
 return
-
 }
 
 const texto=gerarTextoPedido()
 
-const numero="5511999999999"
+const numero="5519992850208"
 
 const url=`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
@@ -265,14 +285,11 @@ window.open(url)
 function gerarPDF(){
 
 if(total<pedidoMinimo){
-
 alert("Pedido mínimo de R$200 não atingido.")
 return
-
 }
 
 const { jsPDF } = window.jspdf
-
 const doc=new jsPDF()
 
 doc.text(gerarTextoPedido(),10,10)
