@@ -54,11 +54,7 @@ padding:20px;
 border-radius:14px;
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
 position:relative;
-transition:0.3s;
-}
-
-.produto:hover{
-transform:translateY(-6px);
+transition:.3s;
 }
 
 .camera{
@@ -99,11 +95,6 @@ border-radius:8px;
 width:100%;
 margin-top:10px;
 cursor:pointer;
-transition:0.2s;
-}
-
-.btnAdd:active{
-transform:scale(.95);
 }
 
 .btnAdd.adicionado{
@@ -136,6 +127,9 @@ flex:1;
 background:#1f2b3a;
 color:white;
 padding:20px;
+position:sticky;
+top:20px;
+height:fit-content;
 }
 
 .barraProgresso{
@@ -178,6 +172,16 @@ cursor:pointer;
 .btnWhats{background:#00c853;color:white}
 .btnPdf{background:#ff9800;color:white}
 .btnLimpar{background:#ff4444;color:white}
+
+@keyframes contadorPulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.2)}
+100%{transform:scale(1)}
+}
+
+.contadorAnimado{
+animation:contadorPulse .35s ease;
+}
 
 .footer{
 background:#111;
