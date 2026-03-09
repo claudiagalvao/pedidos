@@ -1,157 +1,154 @@
+:root{
+
+--primary:#4f46e5;
+--accent:#7c3aed;
+--success:#10b981;
+--bg:#f8fafc;
+--text:#1e293b;
+
+}
+
 body{
-font-family:Arial;
-background:#f4f6fb;
+font-family:Inter,Arial;
+background:var(--bg);
 margin:0;
+color:var(--text);
 }
 
 .container{
 display:flex;
+max-width:1400px;
+margin:auto;
 }
 
 .catalogo{
 flex:3;
-padding:20px;
+padding:30px;
 }
 
 .banner img{
 width:100%;
-max-height:320px;
-object-fit:cover;
-border-radius:12px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 .barraInfo{
-background:#ff0066;
+background:linear-gradient(90deg,var(--primary),var(--accent));
 color:white;
-padding:10px;
+padding:12px;
 border-radius:10px;
-margin:10px 0;
+margin:15px 0;
 text-align:center;
-}
-
-#menuCategorias{
-margin:10px 0;
-}
-
-#menuCategorias button{
-margin:4px;
-padding:8px 14px;
-border:none;
-border-radius:8px;
-background:#eee;
-cursor:pointer;
+font-weight:600;
 }
 
 .gridProdutos{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:24px;
 }
 
 .produto{
 background:white;
 padding:20px;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
+border-radius:16px;
+box-shadow:0 8px 24px rgba(0,0,0,0.06);
 position:relative;
-transition:.3s;
+transition:.25s;
+}
+
+.produto:hover{
+transform:translateY(-6px);
 }
 
 .camera{
 position:absolute;
-top:10px;
-right:10px;
+top:12px;
+right:12px;
 font-size:20px;
 }
 
 .badgeVendido{
 position:absolute;
-top:10px;
-left:10px;
-background:#ff9800;
+top:12px;
+left:12px;
+background:#f59e0b;
 color:white;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+padding:4px 10px;
+border-radius:20px;
+font-size:11px;
+font-weight:700;
 }
 
 .precoOriginal{
 text-decoration:line-through;
-color:#888;
+color:#94a3b8;
+font-size:14px;
 }
 
 .precoB2B{
-color:#1db954;
-font-size:18px;
-font-weight:bold;
+font-size:22px;
+font-weight:800;
+margin:4px 0;
+}
+
+.progressivo{
+font-size:12px;
+color:#64748b;
 }
 
 .btnAdd{
-background:#ff0055;
+background:linear-gradient(135deg,var(--primary),var(--accent));
 color:white;
 border:none;
 padding:10px;
-border-radius:8px;
-width:100%;
-margin-top:10px;
+border-radius:10px;
 cursor:pointer;
+font-weight:600;
+margin-top:10px;
 }
 
-.btnAdd.adicionado{
-background:#00c853;
-}
-
-@keyframes pulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.08)}
-100%{transform:scale(1)}
-}
-
-.pulse{
-animation:pulse .35s ease;
-}
-
-@keyframes carrinhoBounce{
-0%{transform:scale(1)}
-40%{transform:scale(1.08)}
-70%{transform:scale(.97)}
-100%{transform:scale(1)}
-}
-
-.carrinhoAnimado{
-animation:carrinhoBounce .45s ease;
+.btnAdd:hover{
+transform:scale(1.05);
 }
 
 .carrinho{
 flex:1;
-background:#1f2b3a;
+background:#111827;
 color:white;
-padding:20px;
+padding:25px;
 position:sticky;
 top:20px;
 height:fit-content;
+border-radius:14px;
 }
 
 .barraProgresso{
-width:100%;
-height:10px;
-background:#dfe6ee;
+height:8px;
+background:#374151;
 border-radius:10px;
 margin:10px 0;
 }
 
 #barra{
-height:10px;
+height:8px;
 width:0%;
-background:#00c853;
+background:linear-gradient(90deg,#10b981,#34d399);
 border-radius:10px;
-transition:width .3s;
+transition:.3s;
+}
+
+.economiaPedido{
+color:#22c55e;
+font-weight:600;
 }
 
 input{
 width:100%;
+padding:10px;
 margin:6px 0;
-padding:8px;
+border-radius:8px;
+border:1px solid #e5e7eb;
 }
 
 .botoesPedido{
@@ -164,29 +161,20 @@ margin-top:10px;
 button{
 padding:10px;
 border:none;
-border-radius:6px;
+border-radius:8px;
 cursor:pointer;
+font-weight:600;
 }
 
-.btnEmail{background:#00c853;color:white}
-.btnWhats{background:#00c853;color:white}
-.btnPdf{background:#ff9800;color:white}
-.btnLimpar{background:#ff4444;color:white}
-
-@keyframes contadorPulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.2)}
-100%{transform:scale(1)}
-}
-
-.contadorAnimado{
-animation:contadorPulse .35s ease;
-}
+.btnEmail{background:linear-gradient(135deg,#10b981,#34d399);color:white}
+.btnWhats{background:linear-gradient(135deg,#22c55e,#4ade80);color:white}
+.btnPdf{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:white}
+.btnLimpar{background:linear-gradient(135deg,#ef4444,#f87171);color:white}
 
 .footer{
-background:#111;
+background:#0f172a;
 color:white;
-padding:30px;
 text-align:center;
-margin-top:30px;
+padding:30px;
+margin-top:40px;
 }
