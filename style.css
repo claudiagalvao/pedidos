@@ -11,11 +11,6 @@ display:flex;
 .catalogo{
 flex:3;
 padding:20px;
-max-width:1200px;
-}
-
-.banner{
-margin-bottom:10px;
 }
 
 .banner img{
@@ -23,7 +18,6 @@ width:100%;
 max-height:320px;
 object-fit:cover;
 border-radius:12px;
-display:block;
 }
 
 .barraInfo{
@@ -35,6 +29,19 @@ margin:10px 0;
 text-align:center;
 }
 
+#menuCategorias{
+margin:10px 0;
+}
+
+#menuCategorias button{
+margin:4px;
+padding:8px 14px;
+border:none;
+border-radius:8px;
+background:#eee;
+cursor:pointer;
+}
+
 .gridProdutos{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
@@ -42,193 +49,117 @@ gap:20px;
 }
 
 .produto{
-
-background:linear-gradient(145deg,#ffffff,#f1f3f8);
-
+background:white;
 padding:20px;
-
 border-radius:14px;
-
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
-
 position:relative;
-
 transition:0.3s;
-
 }
 
 .produto:hover{
-
 transform:translateY(-6px);
-
 box-shadow:0 14px 30px rgba(0,0,0,0.12);
-
 }
 
 .camera{
-
 position:absolute;
-
 top:10px;
-
 right:10px;
-
-font-size:22px;
-
-}
-
-.camera a{
-
-text-decoration:none;
-
+font-size:20px;
 }
 
 .badgeVendido{
-
 position:absolute;
-
 top:10px;
-
 left:10px;
-
 background:#ff9800;
-
 color:white;
-
 padding:4px 8px;
-
 border-radius:6px;
-
 font-size:12px;
-
 }
 
 .precoOriginal{
-
 text-decoration:line-through;
-
 color:#888;
-
 }
 
 .precoB2B{
-
 color:#1db954;
-
 font-size:18px;
-
 font-weight:bold;
-
-}
-
-.progressivo{
-
-font-size:12px;
-
-color:#777;
-
-margin-top:6px;
-
 }
 
 .btnAdd{
-
 background:#ff0055;
-
 color:white;
-
 border:none;
-
 padding:10px;
-
 border-radius:8px;
-
 width:100%;
-
 margin-top:10px;
-
 cursor:pointer;
-
-transition:0.3s;
-
-}
-
-.btnAdd:hover{
-
-background:#e6004d;
-
-transform:scale(1.05);
-
-}
-
-.pulse{
-
-animation:pulse 0.4s;
-
-}
-
-@keyframes pulse{
-
-0%{transform:scale(1)}
-50%{transform:scale(1.1)}
-100%{transform:scale(1)}
-
 }
 
 .carrinho{
-
 flex:1;
-
 background:#1f2b3a;
-
 color:white;
-
 padding:20px;
-
 }
 
-input{
-
+.barraProgresso{
 width:100%;
+height:10px;
+background:#dfe6ee;
+border-radius:10px;
+margin:10px 0;
+}
 
-margin:6px 0;
+#barra{
+height:10px;
+width:0%;
+background:#00c853;
+border-radius:10px;
+transition:width .3s;
+}
 
-padding:8px;
+#sugestoes{
+background:#263445;
+padding:10px;
+border-radius:8px;
+margin:10px 0;
+font-size:14px;
+}
 
+.removerItem{
+margin-left:8px;
+padding:3px 6px;
+font-size:12px;
+background:#ff4444;
+color:white;
+border:none;
+border-radius:4px;
 }
 
 button{
-
 margin:6px 0;
-
 padding:10px;
-
 border:none;
-
 border-radius:6px;
-
 cursor:pointer;
-
 }
 
 .btnEmail{background:#00c853;color:white}
-
 .btnWhats{background:#00c853;color:white}
-
 .btnPdf{background:#ff9800;color:white}
-
 .btnLimpar{background:#ff4444;color:white}
 
 .footer{
-
 background:#111;
-
 color:white;
-
 padding:30px;
-
 text-align:center;
-
 margin-top:30px;
-
 }
