@@ -1,32 +1,35 @@
-const produtosDiv = document.getElementById("produtos");
-const listaPedido = document.getElementById("listaPedido");
-const totalEl = document.getElementById("total");
-const barra = document.getElementById("barra");
-const msgMinimo = document.getElementById("msgMinimo");
-const busca = document.getElementById("busca");
-const menuCategorias = document.getElementById("menuCategorias");
+const produtosDiv = document.getElementById("produtos")
+const listaPedido = document.getElementById("listaPedido")
+const totalEl = document.getElementById("total")
+const barra = document.getElementById("barra")
+const msgMinimo = document.getElementById("msgMinimo")
+const busca = document.getElementById("busca")
+const menuCategorias = document.getElementById("menuCategorias")
 
-let produtos = [];
-let carrinho = [];
-let total = 0;
+let produtos = []
+let carrinho = []
 
-const pedidoMinimo = 200;
-const descontoB2B = 0.10;
+let total = 0
+let itensCarrinho = 0
+
+const pedidoMinimo = 200
+const descontoB2B = 0.10
+
 
 fetch("produtos.csv")
 .then(r => r.text())
 .then(data => {
 
-const linhas = data.split("\n").slice(1);
+const linhas = data.split("\n").slice(1)
 
 linhas.forEach(l => {
 
-if(!l.trim()) return;
+if(!l.trim()) return
 
-const c = l.split(",");
+const c = l.split(",")
 
-const precoOriginal = parseFloat(c[3]);
-const precoB2B = precoOriginal * (1 - descontoB2B);
+const precoOriginal = parseFloat(c[3])
+const precoB2B = precoOriginal * (1 - descontoB2B)
 
 produtos.push({
 categoria: c[0],
@@ -37,53 +40,56 @@ preco: precoB2B,
 link: c[4],
 sku: c[5],
 estoque: parseInt(c[6])
-});
+})
 
-});
+})
 
-criarMenu();
-renderProdutos(produtos);
+criarMenu()
+renderProdutos(produtos)
 
-});
+})
 
 
 function criarMenu(){
 
-const categorias = [...new Set(produtos.map(p => p.categoria))];
+const categorias = [...new Set(produtos.map(p => p.categoria))]
 
-menuCategorias.innerHTML = "";
+menuCategorias.innerHTML = ""
 
-const btnTodos = document.createElement("button");
-btnTodos.innerText = "Todos";
-btnTodos.onclick = () => renderProdutos(produtos);
+const btnTodos = document.createElement("button")
+btnTodos.innerText = "Todos"
 
-menuCategorias.appendChild(btnTodos);
+btnTodos.onclick = () => renderProdutos(produtos)
+
+menuCategorias.appendChild(btnTodos)
 
 categorias.forEach(cat => {
 
-const btn = document.createElement("button");
-btn.innerText = cat;
+const btn = document.createElement("button")
+btn.innerText = cat
 
 btn.onclick = () => {
-const filtrados = produtos.filter(p => p.categoria === cat);
-renderProdutos(filtrados);
-};
 
-menuCategorias.appendChild(btn);
+const filtrados = produtos.filter(p => p.categoria === cat)
+renderProdutos(filtrados)
 
-});
+}
+
+menuCategorias.appendChild(btn)
+
+})
 
 }
 
 
 function renderProdutos(lista){
 
-produtosDiv.innerHTML = "";
+produtosDiv.innerHTML = ""
 
 lista.forEach(p => {
 
-const card = document.createElement("div");
-card.className = "produto";
+const card = document.createElement("div")
+card.className = "produto"
 
 card.innerHTML = `
 
@@ -113,74 +119,124 @@ ${p.estoque > 0 ? `Estoque: ${p.estoque}` : "Esgotado"}
 
 <a href="${p.link}" target="_blank">Ver produto</a>
 
-`;
+`
 
-const btn = card.querySelector("button");
+const btn = card.querySelector("button")
 
 btn.onclick = () => {
 
-const qtd = parseInt(card.querySelector("input").value);
+const qtd = parseInt(card.querySelector("input").value)
 
 carrinho.push({
 nome: p.nome,
 variacao: p.variacao,
 preco: p.preco,
 qtd: qtd
-});
+})
 
-total += p.preco * qtd;
+itensCarrinho += qtd
+total += p.preco * qtd
 
-atualizarCarrinho();
+atualizarCarrinho()
 
-};
+}
 
-produtosDiv.appendChild(card);
+produtosDiv.appendChild(card)
 
-});
+})
 
 }
 
 
 function atualizarCarrinho(){
 
-listaPedido.innerHTML = "";
+listaPedido.innerHTML = ""
 
-carrinho.forEach(i => {
+carrinho.forEach((item, index) => {
 
-const div = document.createElement("div");
+const div = document.createElement("div")
 
-div.innerText =
-`${i.nome} ${i.variacao !== "padrão" ? "(" + i.variacao + ")" : ""} x${i.qtd}`;
+div.className = "itemCarrinho"
 
-listaPedido.appendChild(div);
+div.innerHTML = `
 
-});
+<span>
+${item.nome} ${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""} x${item.qtd}
+</span>
 
-totalEl.innerText = total.toFixed(2);
+<button onclick="removerItem(${index})">✕</button>
 
-let progresso = (total / pedidoMinimo) * 100;
-if(progresso > 100) progresso = 100;
+`
 
-barra.style.width = progresso + "%";
+listaPedido.appendChild(div)
 
-if(total < pedidoMinimo)
-msgMinimo.innerText = `Faltam R$ ${(pedidoMinimo - total).toFixed(2)} para atingir o pedido mínimo`;
-else
-msgMinimo.innerText = "Pedido mínimo atingido";
+})
+
+totalEl.innerText = total.toFixed(2)
+
+let progresso = (total / pedidoMinimo) * 100
+
+if(progresso > 100) progresso = 100
+
+barra.style.width = progresso + "%"
+
+
+if(total < pedidoMinimo){
+
+msgMinimo.innerText =
+`Faltam R$ ${(pedidoMinimo - total).toFixed(2)} para atingir o pedido mínimo`
+
+barra.style.background = "#ff9800"
+
+}
+else{
+
+msgMinimo.innerText = "Pedido mínimo atingido 🎉"
+
+barra.style.background = "#00c853"
+
+}
+
+}
+
+
+function removerItem(index){
+
+const item = carrinho[index]
+
+total -= item.preco * item.qtd
+itensCarrinho -= item.qtd
+
+carrinho.splice(index,1)
+
+atualizarCarrinho()
+
+}
+
+
+function limparCarrinho(){
+
+carrinho = []
+total = 0
+itensCarrinho = 0
+
+atualizarCarrinho()
 
 }
 
 
 busca.addEventListener("input", () => {
 
-const termo = busca.value.toLowerCase();
+const termo = busca.value.toLowerCase()
 
 const filtrados = produtos.filter(p =>
+
 p.nome.toLowerCase().includes(termo) ||
 p.variacao.toLowerCase().includes(termo) ||
 p.categoria.toLowerCase().includes(termo)
-);
 
-renderProdutos(filtrados);
+)
 
-});
+renderProdutos(filtrados)
+
+})
