@@ -1,19 +1,7 @@
-:root{
-
---primary:#ff0055;
---secondary:#7c3aed;
---dark:#0f172a;
---bg:#f8fafc;
---border:#e2e8f0;
---success:#10b981;
-
-}
-
 body{
-font-family:'Inter',sans-serif;
-background:var(--bg);
+font-family:Inter;
+background:#f3f4f6;
 margin:0;
-color:#334155;
 }
 
 .container{
@@ -28,7 +16,6 @@ padding:30px;
 .banner img{
 width:100%;
 border-radius:12px;
-display:block;
 }
 
 .boasVindas{
@@ -36,110 +23,139 @@ background:white;
 padding:20px;
 border-radius:10px;
 margin:20px 0;
-border:1px solid var(--border);
 }
 
 .barraInfo{
-background:linear-gradient(90deg,var(--primary),var(--secondary));
+background:linear-gradient(90deg,#ff0055,#7c3aed);
 color:white;
 padding:12px;
 border-radius:10px;
-margin-bottom:20px;
 text-align:center;
-font-weight:600;
+margin-bottom:20px;
+}
+
+.categorias{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:20px;
+}
+
+.categorias button{
+padding:8px 14px;
+border-radius:20px;
+border:none;
+background:#e5e7eb;
+cursor:pointer;
 }
 
 .busca{
 width:100%;
 padding:12px;
 border-radius:8px;
-border:1px solid var(--border);
+border:1px solid #ddd;
 margin-bottom:20px;
 }
 
 .gridProdutos{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
 gap:20px;
 }
 
 .produto{
 background:white;
-border:1px solid var(--border);
 padding:20px;
-border-radius:14px;
-transition:.25s;
+border-radius:12px;
+position:relative;
 }
 
 .produto:hover{
-transform:translateY(-5px);
 box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.camera{
+position:absolute;
+top:10px;
+right:10px;
+cursor:pointer;
+font-size:18px;
+}
+
+.badge{
+position:absolute;
+top:10px;
+left:10px;
+background:#f59e0b;
+color:white;
+padding:4px 10px;
+font-size:11px;
+border-radius:20px;
 }
 
 .precoOriginal{
 text-decoration:line-through;
 font-size:13px;
-color:#94a3b8;
+color:#999;
 }
 
 .precoB2B{
 font-size:22px;
 font-weight:800;
-color:var(--dark);
 }
 
 .btnAdd{
-background:var(--dark);
+background:#111827;
 color:white;
-border:none;
 padding:10px;
+border:none;
 width:100%;
 border-radius:8px;
 margin-top:10px;
 cursor:pointer;
 }
 
-.btnAdd:hover{
-background:var(--primary);
-}
-
 .carrinho{
 flex:1;
-background:var(--dark);
+background:#0f172a;
 color:white;
 padding:25px;
 }
 
-input{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:8px;
+.progressBar{
+height:8px;
+background:#1e293b;
+border-radius:6px;
+margin:10px 0;
+}
+
+#progress{
+background:#10b981;
+height:8px;
+width:0%;
+border-radius:6px;
+}
+
+.removerItem{
+padding:3px 7px;
+font-size:12px;
+background:#ef4444;
+color:white;
 border:none;
+border-radius:4px;
 }
 
 button{
 width:100%;
 padding:12px;
-margin-top:8px;
 border:none;
 border-radius:8px;
-font-weight:600;
+margin-top:8px;
 cursor:pointer;
 }
 
-.removerItem{
-width:auto;
-padding:3px 7px;
-font-size:12px;
-background:#ef4444;
-color:white;
-border-radius:4px;
-margin-left:5px;
-}
-
 .btnEmail,.btnWhats{
-background:var(--success);
+background:#10b981;
 color:white;
 }
 
@@ -152,20 +168,6 @@ background:#ef4444;
 color:white;
 }
 
-.progressBar{
-background:#1e293b;
-height:8px;
-border-radius:6px;
-margin:10px 0;
-}
-
-#progress{
-background:var(--success);
-height:8px;
-border-radius:6px;
-width:0%;
-}
-
 .footer{
 background:white;
 padding:40px;
@@ -175,6 +177,5 @@ margin-top:40px;
 .footerGrid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:20px;
 text-align:center;
 }
