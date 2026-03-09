@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
 <meta charset="UTF-8">
@@ -7,69 +8,7 @@
 
 <title>Crazy Fantasy | Portal B2B</title>
 
-<style>
-
-body{
-font-family:Arial;
-margin:0;
-background:#0b0b0b;
-color:white;
-display:flex;
-}
-
-.catalogo{
-width:70%;
-padding:30px;
-}
-
-.carrinho{
-width:30%;
-background:#111;
-padding:25px;
-position:fixed;
-right:0;
-top:0;
-height:100%;
-overflow:auto;
-}
-
-.produto{
-background:#1a1a1a;
-padding:20px;
-margin-bottom:15px;
-border-radius:10px;
-}
-
-select,input{
-padding:8px;
-margin-top:10px;
-}
-
-button{
-background:#ff0066;
-border:none;
-padding:10px 16px;
-color:white;
-cursor:pointer;
-border-radius:6px;
-margin-top:10px;
-}
-
-.progress{
-height:20px;
-background:#333;
-border-radius:10px;
-margin-top:15px;
-overflow:hidden;
-}
-
-.progress-bar{
-height:100%;
-background:#00c853;
-width:0%;
-}
-
-</style>
+<link rel="stylesheet" href="estilo.css">
 
 </head>
 
@@ -120,7 +59,9 @@ let carrinho=[]
 const minimo=200
 
 fetch("produtos.csv")
+
 .then(r=>r.text())
+
 .then(text=>{
 
 let linhas=text.trim().split("\n").slice(1)
