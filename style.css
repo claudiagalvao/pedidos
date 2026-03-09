@@ -1,180 +1,269 @@
-:root{
-
---primary:#4f46e5;
---accent:#7c3aed;
---success:#10b981;
---bg:#f8fafc;
---text:#1e293b;
-
-}
-
 body{
+
 font-family:Inter,Arial;
-background:var(--bg);
+
+background:#f8fafc;
+
 margin:0;
-color:var(--text);
+
 }
 
 .container{
+
 display:flex;
+
 max-width:1400px;
+
 margin:auto;
+
+align-items:flex-start;
+
 }
 
 .catalogo{
+
 flex:3;
+
 padding:30px;
+
+}
+
+.banner{
+
+width:100%;
+
+margin-bottom:15px;
+
 }
 
 .banner img{
+
 width:100%;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+max-width:1200px;
+
+display:block;
+
+margin:auto;
+
+border-radius:12px;
+
 }
 
 .barraInfo{
-background:linear-gradient(90deg,var(--primary),var(--accent));
+
+background:linear-gradient(90deg,#4f46e5,#7c3aed);
+
 color:white;
+
 padding:12px;
+
 border-radius:10px;
+
 margin:15px 0;
+
 text-align:center;
-font-weight:600;
+
 }
 
 .gridProdutos{
+
 display:grid;
+
 grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:24px;
+
+gap:20px;
+
 }
 
 .produto{
-background:white;
-padding:20px;
-border-radius:16px;
-box-shadow:0 8px 24px rgba(0,0,0,0.06);
-position:relative;
-transition:.25s;
-}
 
-.produto:hover{
-transform:translateY(-6px);
+background:white;
+
+padding:18px;
+
+border-radius:12px;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.06);
+
+position:relative;
+
 }
 
 .camera{
+
 position:absolute;
-top:12px;
-right:12px;
-font-size:20px;
+
+top:10px;
+
+right:10px;
+
 }
 
 .badgeVendido{
+
 position:absolute;
-top:12px;
-left:12px;
+
+top:10px;
+
+left:10px;
+
 background:#f59e0b;
+
 color:white;
-padding:4px 10px;
-border-radius:20px;
-font-size:11px;
-font-weight:700;
+
+padding:4px 8px;
+
+border-radius:6px;
+
+font-size:12px;
+
 }
 
 .precoOriginal{
+
 text-decoration:line-through;
+
 color:#94a3b8;
-font-size:14px;
+
 }
 
 .precoB2B{
-font-size:22px;
-font-weight:800;
-margin:4px 0;
+
+font-size:20px;
+
+font-weight:bold;
+
 }
 
 .progressivo{
+
 font-size:12px;
+
 color:#64748b;
+
+}
+
+.estoque{
+
+font-size:12px;
+
+color:#64748b;
+
 }
 
 .btnAdd{
-background:linear-gradient(135deg,var(--primary),var(--accent));
-color:white;
-border:none;
-padding:10px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-margin-top:10px;
-}
 
-.btnAdd:hover{
-transform:scale(1.05);
+background:linear-gradient(135deg,#4f46e5,#7c3aed);
+
+color:white;
+
+border:none;
+
+padding:10px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+width:100%;
+
+margin-top:8px;
+
 }
 
 .carrinho{
+
 flex:1;
+
 background:#111827;
+
 color:white;
+
 padding:25px;
+
 position:sticky;
+
 top:20px;
-height:fit-content;
-border-radius:14px;
+
+border-radius:12px;
+
 }
 
 .barraProgresso{
+
 height:8px;
+
 background:#374151;
+
 border-radius:10px;
+
 margin:10px 0;
+
 }
 
 #barra{
+
 height:8px;
+
 width:0%;
-background:linear-gradient(90deg,#10b981,#34d399);
+
+background:#10b981;
+
 border-radius:10px;
+
 transition:.3s;
+
 }
 
-.economiaPedido{
-color:#22c55e;
-font-weight:600;
-}
+input,select,textarea{
 
-input{
 width:100%;
-padding:10px;
-margin:6px 0;
-border-radius:8px;
+
+padding:8px;
+
+margin-top:6px;
+
+border-radius:6px;
+
 border:1px solid #e5e7eb;
+
 }
 
 .botoesPedido{
+
 display:grid;
+
 grid-template-columns:1fr 1fr;
+
 gap:8px;
+
 margin-top:10px;
+
 }
 
 button{
+
 padding:10px;
+
 border:none;
-border-radius:8px;
+
+border-radius:6px;
+
 cursor:pointer;
-font-weight:600;
+
 }
 
-.btnEmail{background:linear-gradient(135deg,#10b981,#34d399);color:white}
-.btnWhats{background:linear-gradient(135deg,#22c55e,#4ade80);color:white}
-.btnPdf{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:white}
-.btnLimpar{background:linear-gradient(135deg,#ef4444,#f87171);color:white}
-
 .footer{
+
 background:#0f172a;
+
 color:white;
+
 text-align:center;
+
 padding:30px;
+
 margin-top:40px;
+
 }
