@@ -254,7 +254,7 @@ function enviarWhatsApp(){
 
 const texto = gerarTextoPedido()
 
-const numero = "5511999999999"
+const numero = "5519992850208"
 
 const url =
 `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
@@ -271,7 +271,7 @@ const texto = gerarTextoPedido()
 const assunto = "Pedido Crazy Fantasy B2B"
 
 const url =
-`mailto:seuemail@empresa.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}`
+`mailto:lojacrazyfantasy@hotmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}`
 
 window.location.href = url
 
