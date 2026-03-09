@@ -1,148 +1,269 @@
-let carrinho=[]
+const produtosDiv = document.getElementById("produtos")
+const listaPedido = document.getElementById("listaPedido")
+const totalEl = document.getElementById("total")
+const economiaEl = document.getElementById("economia")
+const contadorItens = document.getElementById("contadorItens")
+
 let produtos=[]
+let carrinho=[]
+
+let total=0
+let totalOriginal=0
+
+const pedidoMinimo=200
+
+
+
+function calcularDesconto(valor){
+
+if(valor>=1000) return 0.15
+if(valor>=500) return 0.12
+if(valor>=200) return 0.10
+
+return 0.10
+
+}
+
+
 
 fetch("produtos.csv")
-.then(res=>res.text())
-.then(text=>{
 
-let linhas=text.split("\n")
+.then(r=>r.text())
 
-linhas.slice(1).forEach(l=>{
+.then(data=>{
 
-let c=l.split(",")
+const linhas=data.split("\n").slice(1)
+
+linhas.forEach(l=>{
+
+if(!l.trim()) return
+
+const c=l.split(",")
 
 produtos.push({
 
-nome:c[0],
-preco:parseFloat(c[1]),
-categoria:c[2],
-link:c[3],
-vendas:parseInt(c[4])
+categoria:c[0],
+nome:c[1],
+variacao:c[2],
+preco:parseFloat(c[3]),
+link:c[4],
+sku:c[5],
+estoque:parseInt(c[6]),
+vendas:Math.floor(Math.random()*100)
 
 })
 
 })
 
-renderProdutos()
+renderProdutos(produtos)
 
 })
 
-function renderProdutos(){
 
-let html=""
 
-produtos.forEach(p=>{
+function renderProdutos(lista){
+
+produtosDiv.innerHTML=""
+
+lista.forEach(p=>{
 
 let selo=""
 
-if(p.vendas>50){
+if(p.vendas>70){
 
-selo='<div class="badge">🔥 Mais vendido</div>'
+selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
 
 }
 
-html+=`
+const desconto10=p.preco*0.90
+const desconto12=p.preco*0.88
+const desconto15=p.preco*0.85
 
-<div class="produto" data-cat="${p.categoria}">
+
+const card=document.createElement("div")
+
+card.className="produto"
+
+card.innerHTML=`
 
 ${selo}
 
-<div class="camera" onclick="window.open('${p.link}')">📷</div>
+<div class="camera">
+<a href="${p.link}" target="_blank">📸</a>
+</div>
 
-<div>${p.nome}</div>
+<h3>${p.nome}</h3>
 
-<div class="precoB2B">R$ ${p.preco.toFixed(2)}</div>
+<div class="precoOriginal">
+R$ ${p.preco.toFixed(2)}
+</div>
 
-<button class="btnAdd" onclick="addCarrinho('${p.nome}',${p.preco})">Adicionar</button>
+<div class="precoB2B">
+R$ ${desconto10.toFixed(2)}
+</div>
+
+<div class="progressivo">
+
+10% → ${desconto10.toFixed(2)}
+
+<br>
+
+12% → ${desconto12.toFixed(2)}
+
+<br>
+
+15% → ${desconto15.toFixed(2)}
 
 </div>
 
+<div class="sku">
+
+SKU: ${p.sku}
+
+</div>
+
+<div class="estoque">
+
+Estoque: ${p.estoque}
+
+</div>
+
+<input type="number" value="1" min="1">
+
+<button class="btnAdd">
+Adicionar
+</button>
+
 `
+
+const btn=card.querySelector("button")
+
+btn.onclick=()=>{
+
+card.classList.add("pulse")
+
+const qtd=parseInt(card.querySelector("input").value)
+
+carrinho.push({
+
+nome:p.nome,
+preco:p.preco,
+qtd:qtd
 
 })
 
-document.getElementById("listaProdutos").innerHTML=html
-
-}
-
-function addCarrinho(nome,preco){
-
-carrinho.push({nome,preco})
+total+=p.preco*qtd
+totalOriginal+=p.preco*qtd
 
 atualizarCarrinho()
 
 }
+
+produtosDiv.appendChild(card)
+
+})
+
+}
+
+
 
 function atualizarCarrinho(){
 
-let html=""
-let total=0
+listaPedido.innerHTML=""
 
-carrinho.forEach((p,i)=>{
+let itens=0
 
-total+=p.preco
+carrinho.forEach((item,index)=>{
 
-html+=`${p.nome} - R$${p.preco}
-<button class="removerItem" onclick="remover(${i})">x</button><br>`
+itens+=item.qtd
+
+const div=document.createElement("div")
+
+div.innerHTML=`
+
+${item.nome} x${item.qtd}
+
+<button onclick="removerItem(${index})">✕</button>
+
+`
+
+listaPedido.appendChild(div)
 
 })
 
-document.getElementById("listaCarrinho").innerHTML=html
-document.getElementById("contadorItens").innerText=carrinho.length
-document.getElementById("totalPedido").innerText="R$ "+total.toFixed(2)
+contadorItens.innerText=`(${itens} itens)`
 
-let minimo=200
+const desconto=calcularDesconto(total)
 
-let progresso=(total/minimo)*100
+const totalFinal=total*(1-desconto)
 
-document.getElementById("progress").style.width=progresso+"%"
+totalEl.innerText=totalFinal.toFixed(2)
 
-let faltam=minimo-total
-
-if(faltam>0){
-
-document.getElementById("faltam").innerText="Faltam R$ "+faltam.toFixed(2)+" para pedido mínimo"
-
-}else{
-
-document.getElementById("faltam").innerText="Pedido mínimo atingido 🎉"
+economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
 
 }
 
-}
 
-function remover(i){
 
-carrinho.splice(i,1)
+function removerItem(index){
+
+const item=carrinho[index]
+
+total-=item.preco*item.qtd
+totalOriginal-=item.preco*item.qtd
+
+carrinho.splice(index,1)
 
 atualizarCarrinho()
 
 }
 
-function buscarProduto(txt){
 
-document.querySelectorAll(".produto").forEach(p=>{
 
-p.style.display=p.innerText.toLowerCase().includes(txt.toLowerCase())?"block":"none"
+function limparCarrinho(){
 
-})
+carrinho=[]
+total=0
+totalOriginal=0
 
-}
-
-function filtrarCategoria(cat){
-
-document.querySelectorAll(".produto").forEach(p=>{
-
-if(cat==="Todos"||p.dataset.cat===cat){
-
-p.style.display="block"
-
-}else{
-
-p.style.display="none"
+atualizarCarrinho()
 
 }
 
+
+
+function enviarWhatsApp(){
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+
+texto+=`${i.qtd}x ${i.nome}\n`
+
 })
+
+window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
+
+}
+
+
+
+function gerarPDF(){
+
+const { jsPDF } = window.jspdf
+
+const doc=new jsPDF()
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+
+texto+=`${i.qtd}x ${i.nome}\n`
+
+})
+
+doc.text(texto,10,10)
+
+doc.save("pedido.pdf")
 
 }
