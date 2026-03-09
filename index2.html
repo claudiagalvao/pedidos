@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 <meta charset="UTF-8">
 <title>Crazy Fantasy B2B</title>
@@ -21,17 +22,24 @@
 </div>
 
 <div class="boasVindas">
-
 <h2>🎭 Bem-vindo ao Portal B2B Crazy Fantasy</h2>
-
 <p>Tabela exclusiva para parceiros.</p>
-
 <p><b>Pedido mínimo: R$200</b></p>
-
 </div>
 
 <div class="barraInfo">
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+</div>
+
+<div class="categorias">
+
+<button onclick="filtrarCategoria('Todos')">Todos</button>
+<button onclick="filtrarCategoria('Kits')">Kits</button>
+<button onclick="filtrarCategoria('Barbas')">Barbas e Bigodes</button>
+<button onclick="filtrarCategoria('Perucas')">Perucas</button>
+<button onclick="filtrarCategoria('Acessórios')">Acessórios</button>
+<button onclick="filtrarCategoria('Maquiagens')">Maquiagens e Sprays</button>
+
 </div>
 
 <input class="busca" placeholder="🔎 Buscar produto..." onkeyup="buscarProduto(this.value)">
@@ -105,4 +113,5 @@ Validade 48h
 <script src="script.js"></script>
 
 </body>
+
 </html>
