@@ -317,3 +317,29 @@ font-size:13px;
 margin-bottom:5px;
 
 }
+
+
+
+
+.precoOriginal{
+text-decoration:line-through;
+color:#888;
+font-size:13px;
+margin-right:6px;
+}
+
+.precoB2B{
+color:#00c853;
+font-weight:bold;
+font-size:16px;
+}
+
+.seloDesconto{
+background:#00c853;
+color:white;
+font-size:11px;
+padding:3px 6px;
+border-radius:4px;
+display:inline-block;
+margin-bottom:6px;
+}
