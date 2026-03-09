@@ -1,38 +1,21 @@
 categoria,nome,variacao,preco,imagem
-Kits,Colar Vitoriano Steampunk com Relógio Vintage | Choker Investigadora Estilo Enola Holmes Fantasia Cosplay,Padrão,39.99
-Kits,Kit Detetive Sherlock Holmes Adulto | Chapéu Investigador + Cachimbo + Lupa Fantasia,Padrão,80.00
-Barbas e Bigodes,Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal,Padrão,49.99
-Barbas e Bigodes,Kit Papai Noel Completo Peruca e Barba Branca com Bigode Fantasia Natal,Padrão,69.99
-Perucas,Peruca Punk Colorida Estilo Moicano Peruca Fantasia Multicolorida,Padrão,30.00
-Perucas,Peruca Loira Ondulada com Laço Rosa Acessório de Fantasia Princesa Barbie,Padrão,59.90
-Acessórios,Varinha de Princesa com Coração e Laço Acessório de Fantasia Infantil,Pink,7.99
-Acessórios,Varinha de Princesa com Coração e Laço Acessório de Fantasia Infantil,Azul,7.99
-Acessórios,Varinha de Princesa com Coração e Laço Acessório de Fantasia Infantil,Lilás,7.99
-Acessórios,Varinha de Princesa com Coração e Laço Acessório de Fantasia Infantil,Rosa,7.99
-Acessórios,Mini Coroa de Princesa Tiara Infantil para Fantasia,Modelo 01,3.99
-Acessórios,Mini Coroa de Princesa Tiara Infantil para Fantasia,Modelo 02,3.99
-Acessórios,Mini Coroa de Princesa Tiara Infantil para Fantasia,Modelo 03,3.99
-Acessórios,Mini Coroa de Princesa Tiara Infantil para Fantasia,Modelo 04,3.99
-Acessórios,Tiara Princesa Infantil Glitter Fantasia,Rosa,15.00
-Acessórios,Tiara Princesa Infantil Glitter Fantasia,Lilás,15.00
-Acessórios,Tiara Princesa Prata Infantil com Pedras,Azul,12.00
-Acessórios,Tiara Princesa Prata Infantil com Pedras,Rosa,12.00
-Acessórios,Coroa de Rei Dourada Luxo Medieval com Pedras Coloridas Fantasia Cosplay Festa Temática,Padrão,12.99
-Acessórios,Coroa de Rainha Dourada Luxo com Pedras Coloridas Fantasia Medieval Princesa Realeza Carnaval Festa,Padrão,19.99
-Kits,Kit Fantasia Rocker Completo Bandana Vermelha Óculos Escuros Lenço Animal Print Festa Carnaval Halloween,Padrão,49.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Vermelho,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Amarelo,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Pink,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Azul,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Azul Claro,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Prata,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Preto,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Branco,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Verde,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Laranja,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Roxo,19.99
-Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,Dourado,19.99
-Perucas,Peruca Amy Winehouse Feminina Preta Longa com Coque Alto Fantasia Retrô Diva,Padrão,119.99
-Kits,Kit Fantasia Vilã Cosplay Peruca Rosa Azul + Bastão + Meia Arrastão,Padrão,119.70
-Kits,Kit Peruca Rosa Azul + Bastão Good Night Cosplay Fantasia 80cm,Padrão,85.00
-
+Kits,Colar Vitoriano Steampunk com Relógio Vintage | Choker Investigadora Estilo Enola Holmes Fantasia Cosplay,padrão,39.99,https://cdnx.nuvemshop.com.br/products/colar-vitoriano-steampunk-com-relogio-vintage-choker-investigadora-estilo-enola-holmes-fantasia-cosplay-fghfx.jpg
+Kits,Kit Detetive Sherlock Holmes Adulto | Chapéu Investigador + Cachimbo + Lupa Fantasia,padrão,80.00,https://cdnx.nuvemshop.com.br/products/kit-detetive-sherlock-holmes-adulto-chapeu-investigador-cachimbo-lupa-fantasia-1omzd.jpg
+Barbas e Bigodes,Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal,padrão,49.99,https://cdnx.nuvemshop.com.br/products/barba-de-papai-noel-branca-com-bigode-acessorio-fantasia-natal-h50af.jpg
+Barbas e Bigodes,Kit Papai Noel Completo Peruca e Barba Branca com Bigode Fantasia Natal,padrão,69.99,https://cdnx.nuvemshop.com.br/products/kit-papai-noel-completo-peruca-e-barba-branca-com-bigode-fantasia-natal-k8ve0.jpg
+Perucas,Peruca Punk Colorida Estilo Moicano Peruca Fantasia Multicolorida,padrão,30.00,https://cdnx.nuvemshop.com.br/products/peruca-punk-colorida-estilo-moicano-peruca-fantasia-multicolorida-1eq93.jpg
+Perucas,Peruca Loira Ondulada com Laço Rosa Acessório de Fantasia Princesa Barbie,padrão,59.90,https://cdnx.nuvemshop.com.br/products/peruca-loira-ondulada-com-laco-rosa-acessorio-de-fantasia-princesa-barbie-e71rt.jpg
+Acessórios,Varinha de Princesa com Coração e Laço Acessório de Fantasia Infantil,padrão,7.99,https://cdnx.nuvemshop.com.br/products/varinha-de-princesa-com-coracao-e-laco-acessorio-de-fantasia-infantil-1ypo6.jpg
+Acessórios,Mini Coroa de Princesa Tiara Infantil para Fantasia,padrão,3.99,https://cdnx.nuvemshop.com.br/products/mini-coroa-de-princesa-tiara-infantil-para-fantasia-5pmn2.jpg
+Acessórios,Tiara Princesa Infantil Glitter Fantasia,padrão,15.00,https://cdnx.nuvemshop.com.br/products/tiara-princesa-infantil-glitter-fantasia-1089g.jpg
+Acessórios,Tiara Princesa Prata Infantil com Pedras,padrão,12.00,https://cdnx.nuvemshop.com.br/products/tiara-princesa-prata-infantil-com-pedras-5va6p.jpg
+Acessórios,Coroa de Rei Dourada Luxo Medieval com Pedras Coloridas Fantasia Cosplay Festa Temática,padrão,12.99,https://cdnx.nuvemshop.com.br/products/coroa-de-rei-dourada-luxo-medieval-com-pedras-coloridas-fantasia-cosplay-festa-tematica-1l9zu.jpg
+Acessórios,Coroa de Rainha Dourada Luxo com Pedras Coloridas Fantasia Medieval Princesa Realeza Carnaval Festa,padrão,19.99,https://cdnx.nuvemshop.com.br/products/coroa-de-rainha-dourada-luxo-com-pedras-coloridas-fantasia-medieval-princesa-realeza-carnaval-festa-1q6vg.jpg
+Kits,Kit Fantasia Rocker Completo Bandana Vermelha Óculos Escuros Lenço Animal Print Festa Carnaval Halloween,padrão,49.99,https://cdnx.nuvemshop.com.br/products/kit-fantasia-rocker-completo-bandana-vermelha-oculos-escuros-lenco-animal-print-festa-carnaval-halloween-11phx.jpg
+Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.,padrão,19.99,https://cdnx.nuvemshop.com.br/products/tinta-spray-colorida.jpg
+Perucas,Peruca Amy Winehouse Feminina Preta Longa com Coque Alto Fantasia Retrô Diva,padrão,119.99,https://cdnx.nuvemshop.com.br/products/peruca-amy-winehouse.jpg
+Kits,Kit Fantasia Vilã Cosplay Peruca Rosa Azul + Bastão + Meia Arrastão,padrão,119.70,https://cdnx.nuvemshop.com.br/products/kit-fantasia-vila-cosplay-peruca-rosa-azul-bastao-meia-arrastao-o0rrw.jpg
+Kits,Kit Peruca Rosa Azul + Bastão Good Night Cosplay Fantasia 80cm,padrão,85.00,https://cdnx.nuvemshop.com.br/products/kit-peruca-rosa-azul-bastao-good-night-cosplay-fantasia-80cm-g0v3l.jpg
+Perucas,Peruca Arlequina Colorida Rosa Azul 40cm Cosplay Fantasia Cosplay.,padrão,49.90,https://cdnx.nuvemshop.com.br/products/peruca-arlequina-colorida-rosa-azul-40cm-cosplay-fantasia-cosplay-14qj0.jpg
+Acessórios,Bastão Taco Fantasia Cosplay Festa Vilã Arlequina Good Night 80cm,padrão,49.90,https://cdnx.nuvemshop.com.br/products/bastao-taco-fantasia-cosplay-festa-vila-arlequina-good-night-80cm-1kky9.jpg
+Acessórios,Meia Calça Arrastão Preta Feminina Tamanho Único Cosplay Carnaval,padrão,49.90,https://cdnx.nuvemshop.com.br/products/meia-calca-arrastao-preta-feminina-tamanho-unico-cosplay-carnaval-1l0rs.jpg
