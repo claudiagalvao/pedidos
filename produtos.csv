@@ -1,4 +1,4 @@
-categoria,nome,variacao,preco
+categoria,nome,variacao,preco,imagem
 Kits,Colar Vitoriano Steampunk com Relógio Vintage | Choker Investigadora Estilo Enola Holmes Fantasia Cosplay,Padrão,39.99
 Kits,Kit Detetive Sherlock Holmes Adulto | Chapéu Investigador + Cachimbo + Lupa Fantasia,Padrão,80.00
 Barbas e Bigodes,Barba de Papai Noel Branca com Bigode Acessório Fantasia Natal,Padrão,49.99
@@ -35,3 +35,4 @@ Maquiagens e Sprays,Tinta Spray Colorida Temporária Para Cabelo 120ml Carnaval.
 Perucas,Peruca Amy Winehouse Feminina Preta Longa com Coque Alto Fantasia Retrô Diva,Padrão,119.99
 Kits,Kit Fantasia Vilã Cosplay Peruca Rosa Azul + Bastão + Meia Arrastão,Padrão,119.70
 Kits,Kit Peruca Rosa Azul + Bastão Good Night Cosplay Fantasia 80cm,Padrão,85.00
+
