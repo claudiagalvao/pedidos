@@ -18,6 +18,8 @@ const pedidoMinimo=200
 
 
 
+/* LOGIN */
+
 function fazerLogin(){
 
 const nome=document.getElementById("loginNome").value
@@ -32,20 +34,12 @@ return
 
 }
 
-localStorage.setItem("lojista",JSON.stringify({
-
-nome,
-empresa,
-email
-
-}))
+localStorage.setItem("lojista",JSON.stringify({nome,empresa,email}))
 
 document.getElementById("loginTela").style.display="none"
 document.getElementById("portal").style.display="block"
 
 }
-
-
 
 if(localStorage.getItem("lojista")){
 
@@ -55,6 +49,8 @@ document.getElementById("portal").style.display="block"
 }
 
 
+
+/* DESCONTO PROGRESSIVO */
 
 function calcularDesconto(valor){
 
@@ -67,6 +63,8 @@ return 0.10
 }
 
 
+
+/* CARREGAR CSV */
 
 fetch("produtos.csv")
 
@@ -104,6 +102,8 @@ renderProdutos(produtos)
 
 
 
+/* MENU CATEGORIAS */
+
 function criarMenu(){
 
 const categorias=[...new Set(produtos.map(p=>p.categoria))]
@@ -111,7 +111,6 @@ const categorias=[...new Set(produtos.map(p=>p.categoria))]
 menuCategorias.innerHTML=""
 
 const btn=document.createElement("button")
-
 btn.innerText="Todos"
 
 btn.onclick=()=>renderProdutos(produtos)
@@ -140,6 +139,8 @@ menuCategorias.appendChild(b)
 
 
 
+/* RENDER PRODUTOS */
+
 function renderProdutos(lista){
 
 produtosDiv.innerHTML=""
@@ -147,6 +148,8 @@ produtosDiv.innerHTML=""
 lista.forEach(p=>{
 
 const preco10=p.preco*0.90
+const preco12=p.preco*0.88
+const preco15=p.preco*0.85
 
 const card=document.createElement("div")
 
@@ -155,47 +158,37 @@ card.className="produto"
 card.innerHTML=`
 
 <div class="camera">
-
-<a href="${p.link}" target="_blank">
-
-📸
-
-</a>
-
+<a href="${p.link}" target="_blank">📸</a>
 </div>
 
 <h3>${p.nome}</h3>
 
 <div class="precoOriginal">
-
 R$ ${p.preco.toFixed(2)}
-
 </div>
 
 <div class="precoB2B">
-
 R$ ${preco10.toFixed(2)}
+</div>
 
+<div class="progressivo">
+10% → ${preco10.toFixed(2)}<br>
+12% → ${preco12.toFixed(2)}<br>
+15% → ${preco15.toFixed(2)}
 </div>
 
 <div class="sku">
-
 SKU: ${p.sku}
-
 </div>
 
 <div class="estoque">
-
 Estoque: ${p.estoque}
-
 </div>
 
 <input type="number" value="1" min="1">
 
 <button class="btnAdd">
-
 Adicionar
-
 </button>
 
 `
@@ -207,11 +200,9 @@ btn.onclick=()=>{
 const qtd=parseInt(card.querySelector("input").value)
 
 carrinho.push({
-
 nome:p.nome,
 preco:p.preco,
 qtd:qtd
-
 })
 
 total+=p.preco*qtd
@@ -229,6 +220,8 @@ produtosDiv.appendChild(card)
 
 
 
+/* ATUALIZAR CARRINHO */
+
 function atualizarCarrinho(){
 
 listaPedido.innerHTML=""
@@ -242,15 +235,8 @@ itens+=item.qtd
 const div=document.createElement("div")
 
 div.innerHTML=`
-
 ${item.nome} x${item.qtd}
-
-<button onclick="removerItem(${index})">
-
-✕
-
-</button>
-
+<button onclick="removerItem(${index})">✕</button>
 `
 
 listaPedido.appendChild(div)
@@ -287,6 +273,8 @@ msgMinimo.innerText="Pedido mínimo atingido 🎉"
 
 
 
+/* REMOVER ITEM */
+
 function removerItem(index){
 
 const item=carrinho[index]
@@ -302,6 +290,8 @@ atualizarCarrinho()
 
 
 
+/* LIMPAR */
+
 function limparCarrinho(){
 
 carrinho=[]
@@ -313,6 +303,8 @@ atualizarCarrinho()
 }
 
 
+
+/* VALIDAR CLIENTE */
 
 function validarCliente(){
 
@@ -334,6 +326,8 @@ return true
 
 
 
+/* VALIDAR PEDIDO */
+
 function validarPedido(){
 
 if(total < pedidoMinimo){
@@ -350,14 +344,14 @@ return true
 
 
 
+/* GERAR TEXTO */
+
 function gerarTextoPedido(){
 
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome}\n`
-
 })
 
 texto+=`\nTotal: R$ ${total}`
@@ -367,6 +361,8 @@ return texto
 }
 
 
+
+/* WHATSAPP */
 
 function enviarWhatsApp(){
 
@@ -380,6 +376,8 @@ window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 }
 
 
+
+/* PDF */
 
 function gerarPDF(){
 
@@ -398,6 +396,8 @@ doc.save("pedido.pdf")
 
 
 
+/* EMAIL */
+
 document.getElementById("formEmail").addEventListener("submit",function(e){
 
 if(!validarCliente() || !validarPedido()){
@@ -413,6 +413,8 @@ document.getElementById("pedidoTexto").value=gerarTextoPedido()
 })
 
 
+
+/* BUSCA */
 
 busca.addEventListener("input",()=>{
 
