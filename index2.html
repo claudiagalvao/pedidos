@@ -2,14 +2,11 @@
 <html lang="pt-BR">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Crazy Fantasy | Portal B2B</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -19,7 +16,7 @@
 </header>
 
 <div class="avisoB2B">
-🔥 Tabela exclusiva para parceiros | Desconto automático 10% B2B
+🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
 </div>
 
 <nav id="menuCategorias"></nav>
@@ -53,23 +50,19 @@ Total: R$ <span id="total">0</span>
 
 <p id="msgMinimo"></p>
 
-
 <div class="formCliente">
 
 <h3>Dados do Cliente</h3>
 
-<form id="formPedido" action="https://formsubmit.co/seuemail@empresa.com" method="POST">
+<form id="formPedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
 <input id="empresa" name="empresa" placeholder="Empresa" required>
-
 <input id="nome" name="nome" placeholder="Nome" required>
-
 <input id="email" name="email" placeholder="Email" required>
 
 <textarea id="pedidoTexto" name="pedido" hidden></textarea>
 
 <input type="hidden" name="_subject" value="Novo Pedido B2B Crazy Fantasy">
-
 <input type="hidden" name="_captcha" value="false">
 
 <button class="btnEnviar" onclick="prepararPedido()" type="submit">
@@ -94,25 +87,21 @@ Limpar Pedido
 
 </aside>
 
-
 <footer>
 
 <h3>Condições Comerciais</h3>
 
 <p>
-✔ Tabela exclusiva para parceiros B2B  
-✔ Desconto automático de 10% no portal  
+✔ Tabela exclusiva para parceiros  
+✔ Desconto progressivo automático  
 ✔ Pedido mínimo: R$200  
-✔ Frete calculado após envio do pedido  
+✔ Frete calculado após envio  
 ✔ Pagamento via PIX, boleto ou transferência
 </p>
 
-<p>
-Crazy Fantasy Distribuidora
-</p>
+<p>Crazy Fantasy Distribuidora</p>
 
 </footer>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
