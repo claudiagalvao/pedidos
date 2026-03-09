@@ -14,13 +14,9 @@
 
 <body>
 
-<!-- BANNER -->
-
 <div class="banner">
 <img src="banner.png">
 </div>
-
-<!-- INFORMAÇÕES PARA PARCEIROS -->
 
 <div class="info-parceiros">
 
@@ -52,25 +48,21 @@
 
 </div>
 
-<!-- MENU AUTOMÁTICO DE CATEGORIAS -->
-
 <div class="menu" id="menu"></div>
-
-<!-- CATÁLOGO -->
 
 <div class="catalogo">
 
 <h1>Catálogo Crazy Fantasy</h1>
 
+<input id="busca" class="busca" placeholder="🔎 Buscar produto...">
+
 <div id="produtos"></div>
 
 </div>
 
-<!-- CARRINHO -->
-
 <div class="carrinho">
 
-<h2>Pedido</h2>
+<h2>Pedido (<span id="contador">0</span>)</h2>
 
 <div id="lista"></div>
 
@@ -80,12 +72,12 @@
 <div class="progress-bar" id="barra"></div>
 </div>
 
+<p id="minimo-msg"></p>
+
 <form>
 
 <input placeholder="Empresa">
-
 <input placeholder="Nome">
-
 <input placeholder="Email">
 
 <button type="button" onclick="enviarPedido()">
@@ -95,8 +87,6 @@ Enviar Pedido
 </form>
 
 </div>
-
-<!-- LINK PARA O JAVASCRIPT -->
 
 <script src="script.js"></script>
 
