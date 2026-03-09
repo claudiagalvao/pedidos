@@ -4,9 +4,6 @@ const totalEl=document.getElementById("total")
 const economiaEl=document.getElementById("economia")
 const contadorItens=document.getElementById("contadorItens")
 
-const menuCategorias=document.getElementById("menuCategorias")
-const busca=document.getElementById("busca")
-
 const barra=document.getElementById("barra")
 const msgMinimo=document.getElementById("msgMinimo")
 
@@ -14,9 +11,20 @@ let produtos=[]
 let carrinho=[]
 
 let total=0
-let totalOriginal=0
 
 const pedidoMinimo=200
+
+
+
+function calcularDesconto(valor){
+
+if(valor>=1000) return 0.15
+if(valor>=500) return 0.12
+if(valor>=200) return 0.10
+
+return 0
+
+}
 
 
 
@@ -33,55 +41,20 @@ if(!l.trim()) return
 const c=l.split(",")
 
 produtos.push({
+
 categoria:c[0],
 nome:c[1],
-variacao:c[2],
 preco:parseFloat(c[3]),
 link:c[4],
 sku:c[5],
 estoque:parseInt(c[6]),
 vendas:Math.floor(Math.random()*100)
-})
 
 })
 
-criarCategorias()
+})
+
 renderProdutos(produtos)
-
-})
-
-
-
-function criarCategorias(){
-
-const categorias=[...new Set(produtos.map(p=>p.categoria))]
-
-menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</button>`
-
-categorias.forEach(c=>{
-menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</button>`
-})
-
-}
-
-
-
-function filtrarCategoria(cat){
-
-if(cat==="Todos") renderProdutos(produtos)
-else renderProdutos(produtos.filter(p=>p.categoria===cat))
-
-}
-
-
-
-busca.addEventListener("keyup",()=>{
-
-const termo=busca.value.toLowerCase()
-
-renderProdutos(produtos.filter(p=>
-p.nome.toLowerCase().includes(termo)
-))
 
 })
 
@@ -96,10 +69,14 @@ lista.forEach(p=>{
 let selo=""
 
 if(p.vendas>70){
+
 selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
+
 }
 
-const desconto=p.preco*0.90
+const desconto10=p.preco*0.90
+const desconto12=p.preco*0.88
+const desconto15=p.preco*0.85
 
 const card=document.createElement("div")
 
@@ -117,11 +94,18 @@ ${selo}
 
 <div class="precoOriginal">R$ ${p.preco.toFixed(2)}</div>
 
-<div class="precoB2B">R$ ${desconto.toFixed(2)}</div>
+<div class="precoB2B">R$ ${desconto10.toFixed(2)}</div>
 
-<input type="number" value="0" min="0">
+<div class="progressivo">
+10% → ${desconto10.toFixed(2)}<br>
+12% → ${desconto12.toFixed(2)}<br>
+15% → ${desconto15.toFixed(2)}
+</div>
+
+<input type="number" value="0">
 
 <button class="btnAdd">Adicionar</button>
+
 `
 
 const btn=card.querySelector("button")
@@ -132,32 +116,15 @@ const qtd=parseInt(card.querySelector("input").value)
 
 if(qtd<=0) return
 
-card.classList.add("pulse")
+const item=carrinho.find(i=>i.nome===p.nome)
 
-setTimeout(()=>card.classList.remove("pulse"),400)
-
-btn.classList.add("adicionado")
-btn.innerText="✓ Adicionado"
-
-setTimeout(()=>{
-btn.classList.remove("adicionado")
-btn.innerText="Adicionar"
-},800)
-
-document.querySelector(".carrinho").classList.add("carrinhoAnimado")
-
-setTimeout(()=>{
-document.querySelector(".carrinho").classList.remove("carrinhoAnimado")
-},450)
-
-carrinho.push({
-nome:p.nome,
-preco:p.preco,
-qtd:qtd
-})
+if(item){
+item.qtd+=qtd
+}else{
+carrinho.push({nome:p.nome,preco:p.preco,qtd:qtd})
+}
 
 total+=p.preco*qtd
-totalOriginal+=p.preco*qtd
 
 atualizarCarrinho()
 
@@ -183,18 +150,22 @@ carrinho.forEach((item,index)=>{
 
 itens+=item.qtd
 
-listaPedido.innerHTML+=`${item.nome} x${item.qtd}
-<button onclick="removerItem(${index})">✕</button><br>`
+listaPedido.innerHTML+=`
+${item.nome} x${item.qtd}
+<button onclick="removerItem(${index})">✕</button><br>
+`
 
 })
 
 contadorItens.innerText=`(${itens} itens)`
 
-contadorItens.classList.add("contadorAnimado")
+const desconto=calcularDesconto(total)
 
-setTimeout(()=>contadorItens.classList.remove("contadorAnimado"),350)
+const totalFinal=total*(1-desconto)
 
-totalEl.innerText=total.toFixed(2)
+totalEl.innerText=totalFinal.toFixed(2)
+
+economiaEl.innerText=(total-totalFinal).toFixed(2)
 
 let progresso=(total/pedidoMinimo)*100
 
@@ -203,9 +174,13 @@ if(progresso>100) progresso=100
 barra.style.width=progresso+"%"
 
 if(total<pedidoMinimo){
+
 msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+
 }else{
+
 msgMinimo.innerText="Pedido mínimo atingido 🎉"
+
 }
 
 }
@@ -214,10 +189,7 @@ msgMinimo.innerText="Pedido mínimo atingido 🎉"
 
 function removerItem(index){
 
-const item=carrinho[index]
-
-total-=item.preco*item.qtd
-totalOriginal-=item.preco*item.qtd
+total-=carrinho[index].preco*carrinho[index].qtd
 
 carrinho.splice(index,1)
 
@@ -231,26 +203,7 @@ function limparCarrinho(){
 
 carrinho=[]
 total=0
-totalOriginal=0
 
 atualizarCarrinho()
-
-}
-
-
-
-function validarPedido(){
-
-if(carrinho.length===0){
-alert("Seu carrinho está vazio.")
-return false
-}
-
-if(total<pedidoMinimo){
-alert("O pedido mínimo é R$200.")
-return false
-}
-
-return true
 
 }
