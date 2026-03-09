@@ -27,25 +27,23 @@ padding:20px;
 
 .banner{
 width:100%;
-border-radius:12px;
+border-radius:10px;
 margin-bottom:15px;
 }
 
 .infoBox{
 background:white;
-padding:18px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 margin-bottom:15px;
 font-size:14px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .progressBox{
 background:white;
-padding:18px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 margin-bottom:15px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .progressBar{
@@ -59,7 +57,7 @@ margin-top:6px;
 #progressFill{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#27ae60,#2ecc71);
+background:#27ae60;
 }
 
 .sugestao{
@@ -71,10 +69,9 @@ margin-top:10px;
 
 .categorias{
 background:white;
-padding:15px;
-border-radius:12px;
+padding:10px;
+border-radius:10px;
 margin-bottom:15px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .catGrupo{
@@ -88,34 +85,15 @@ padding:6px 12px;
 border-radius:20px;
 margin:3px;
 cursor:pointer;
-transition:all .2s;
-}
-
-.categorias button:hover{
-background:#dcd0f7;
-}
-
-.searchBox{
-position:relative;
-margin-bottom:20px;
 }
 
 .search{
 width:100%;
-padding:14px 45px 14px 15px;
-border-radius:10px;
+padding:12px;
+border-radius:8px;
 border:1px solid #ccc;
+margin-bottom:15px;
 font-size:15px;
-box-shadow:0 3px 8px rgba(0,0,0,0.05);
-box-sizing:border-box;
-}
-
-.searchIcon{
-position:absolute;
-right:12px;
-top:50%;
-transform:translateY(-50%);
-opacity:.4;
 }
 
 .layout{
@@ -130,19 +108,15 @@ flex:3;
 .carrinho{
 flex:1;
 background:white;
-padding:18px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 height:fit-content;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
 table{
 width:100%;
 border-collapse:collapse;
 background:white;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 th{
@@ -163,86 +137,40 @@ color:#777;
 }
 
 .precoB2B{
-color:#e74c3c;
+color:red;
 font-weight:bold;
 }
 
 button{
 border:none;
-border-radius:8px;
-padding:11px;
+border-radius:6px;
+padding:10px;
 cursor:pointer;
-font-weight:bold;
-transition:all .25s;
 }
 
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
-
-.btnclear{
-background:linear-gradient(135deg,#444,#222);
-color:white;
-width:100%;
-margin-top:6px;
-}
-
-.btnpdf{
-background:linear-gradient(135deg,#ff5b6b,#ff8c6b);
-color:white;
-width:100%;
-margin-top:6px;
-}
-
-.btnsend{
-background:linear-gradient(135deg,#27ae60,#2ecc71);
-color:white;
-width:100%;
-margin-top:6px;
-}
-
-.btnemail{
-background:linear-gradient(135deg,#2980b9,#3498db);
-color:white;
-width:100%;
-margin-top:6px;
-}
+.btnclear{background:#444;color:white;width:100%;margin-top:5px;}
+.btnpdf{background:#ff5b6b;color:white;width:100%;margin-top:5px;}
+.btnsend{background:#27ae60;color:white;width:100%;margin-top:5px;}
+.btnemail{background:#2980b9;color:white;width:100%;margin-top:5px;}
 
 footer{
-background:#1a1a1a;
-color:#ddd;
+background:#222;
+color:white;
 margin-top:40px;
-padding:40px 20px;
+padding:30px;
 }
 
 .footerGrid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:25px;
+gap:20px;
 max-width:1200px;
 margin:auto;
-}
-
-footer h4{
-margin-bottom:10px;
-color:white;
 }
 
 footer a{
 color:#ff5b6b;
 text-decoration:none;
-}
-
-footer a:hover{
-text-decoration:underline;
-}
-
-.footerBottom{
-text-align:center;
-margin-top:30px;
-font-size:13px;
-opacity:.6;
 }
 
 @media(max-width:768px){
@@ -270,7 +198,16 @@ flex-direction:column;
 <b>Descontos Progressivos</b><br>
 Pedidos acima de R$200 → 10%<br>
 Pedidos acima de R$500 → 12%<br>
-Pedidos acima de R$1000 → 15%
+Pedidos acima de R$1000 → 15%<br><br>
+
+<b>Formas de Pagamento</b><br>
+PIX<br>
+Transferência bancária<br>
+Cartão de crédito (até 3x acima de R$300)<br>
+Boleto mediante consulta<br><br>
+
+<b>Frete</b><br>
+Frete por conta do cliente (FOB)
 
 </div>
 
@@ -288,10 +225,7 @@ Pedidos acima de R$1000 → 15%
 
 <div id="categorias" class="categorias"></div>
 
-<div class="searchBox">
 <input type="text" id="busca" class="search" placeholder="Buscar produto...">
-<span class="searchIcon">🔍</span>
-</div>
 
 <div class="layout">
 
@@ -331,6 +265,7 @@ Pedidos acima de R$1000 → 15%
 <form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
 <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
+
 <input type="hidden" name="pedido" id="pedidoForm">
 
 <button class="btnemail" type="submit">Enviar Email</button>
@@ -349,12 +284,12 @@ Pedidos acima de R$1000 → 15%
 
 <div>
 <h4>Crazy Fantasy</h4>
-Especialistas em fantasias, maquiagem e acessórios para festas e eventos.
+Especialistas em fantasias, maquiagem e acessórios para festas.
 </div>
 
 <div>
-<h4>Localização</h4>
-Valinhos – São Paulo
+<h4>Endereço</h4>
+Valinhos – SP
 </div>
 
 <div>
@@ -375,10 +310,6 @@ Email: lojacrazyfantasy@hotmail.com
 
 </div>
 
-<div class="footerBottom">
-© Crazy Fantasy — Portal B2B para parceiros e revendedores
-</div>
-
 </footer>
 
 <script>
@@ -386,7 +317,10 @@ Email: lojacrazyfantasy@hotmail.com
 let produtos=[]
 let carrinho={}
 
-Papa.parse("produtos.csv",{download:true,header:true,
+Papa.parse("produtos.csv",{
+
+download:true,
+header:true,
 
 complete:function(res){
 
@@ -395,24 +329,34 @@ let mapa={}
 res.data.forEach(p=>{
 
 let id=p["Identificador URL"]
-if(!id)return
+
+if(!id) return
 
 if(!mapa[id]){
+
 mapa[id]={
+
 nome:p["Nome"],
 categoria:p["Categorias"],
 preco:parseFloat((p["Preço"]||"0").replace(",", ".")),
 variacoes:[]
+
 }
+
 }
 
 let v=p["Valor da variação 1"]
-if(v && v.trim()!=""){mapa[id].variacoes.push(v)}
+
+if(v && v.trim()!=""){
+mapa[id].variacoes.push(v)
+}
 
 })
 
 produtos=Object.values(mapa)
+
 gerarMenu()
+
 render(produtos)
 
 }
@@ -425,14 +369,16 @@ let categorias={}
 
 produtos.forEach(p=>{
 
-if(!p.categoria)return
+if(!p.categoria) return
 
 let partes=p.categoria.split(">")
 
 let principal=partes[0].trim()
-let sub=partes[1]?partes[1].trim():null
+let sub=partes[1] ? partes[1].trim() : null
 
-if(!categorias[principal])categorias[principal]=[]
+if(!categorias[principal]){
+categorias[principal]=[]
+}
 
 if(sub && !categorias[principal].includes(sub)){
 categorias[principal].push(sub)
@@ -461,6 +407,7 @@ document.getElementById("categorias").innerHTML=html
 function filtrar(cat,sub){
 
 let lista=produtos.filter(p=>p.categoria.includes(cat)&&p.categoria.includes(sub))
+
 render(lista)
 
 }
@@ -527,10 +474,10 @@ let linha=input.closest("tr")
 
 let select=linha.querySelector("select")
 
-let variacao=""
-
-if(select){
-variacao=select.value
+if(select && select.value===""){
+alert("Selecione a variação")
+input.value=""
+return
 }
 
 let q=parseInt(input.value)
@@ -550,7 +497,13 @@ linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
 
 let nome=linha.querySelector("td").childNodes[0].nodeValue.trim()
 
-carrinho[i]={nome:nome,variacao:variacao,q:q,total:total}
+carrinho[i]={
+
+nome:nome,
+q:q,
+total:total
+
+}
 
 calcTotal()
 
@@ -562,8 +515,10 @@ let soma=0
 let itens=0
 
 Object.values(carrinho).forEach(p=>{
+
 soma+=p.total
 itens+=p.q
+
 })
 
 document.getElementById("total").innerText=soma.toFixed(2)
@@ -575,6 +530,21 @@ let progresso=Math.min((soma/minimo)*100,100)
 
 document.getElementById("progressFill").style.width=progresso+"%"
 
+if(soma<minimo){
+
+let falta=(minimo-soma).toFixed(2)
+
+document.getElementById("progressText").innerText="Faltam R$ "+falta+" para atingir o pedido mínimo"
+
+document.getElementById("sugestao").innerText="Sugestão: adicione acessórios ou tinta spray."
+
+}else{
+
+document.getElementById("progressText").innerText="Pedido mínimo atingido"
+document.getElementById("sugestao").innerText=""
+
+}
+
 }
 
 function limpar(){
@@ -584,30 +554,21 @@ location.reload()
 function gerarPDF(){
 
 const {jsPDF}=window.jspdf
+
 let doc=new jsPDF()
+
 let y=20
 
 doc.text("Pedido Crazy Fantasy B2B",20,y)
+
 y+=10
 
 let total=0
 
 Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-doc.text(linha,20,y)
-
+doc.text(`${p.nome} - ${p.q} un`,20,y)
 y+=8
-
 total+=p.total
-
 })
 
 doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10)
@@ -621,17 +582,7 @@ function enviarWhatsapp(){
 let texto="Pedido Crazy Fantasy B2B%0A%0A"
 
 Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-texto+=linha+"%0A"
-
+texto+=`${p.nome} - ${p.q} un%0A`
 })
 
 window.open(`https://wa.me/5519992850208?text=${texto}`)
@@ -643,17 +594,7 @@ document.querySelector("form").addEventListener("submit",function(){
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 Object.values(carrinho).forEach(p=>{
-
-let linha=p.nome
-
-if(p.variacao){
-linha+=` (${p.variacao})`
-}
-
-linha+=` - ${p.q} un`
-
-texto+=linha+"\n"
-
+texto+=`${p.nome} - ${p.q} un\n`
 })
 
 document.getElementById("pedidoForm").value=texto
