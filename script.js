@@ -9,7 +9,9 @@ const menuCategorias = document.getElementById("menuCategorias");
 let produtos = [];
 let carrinho = [];
 let total = 0;
+
 const pedidoMinimo = 200;
+const descontoB2B = 0.10;
 
 fetch("produtos.csv")
 .then(r => r.text())
@@ -23,11 +25,15 @@ if(!l.trim()) return;
 
 const c = l.split(",");
 
+const precoOriginal = parseFloat(c[3]);
+const precoB2B = precoOriginal * (1 - descontoB2B);
+
 produtos.push({
 categoria: c[0],
 nome: c[1],
 variacao: c[2],
-preco: parseFloat(c[3]),
+precoOriginal: precoOriginal,
+preco: precoB2B,
 link: c[4],
 sku: c[5],
 estoque: parseInt(c[6])
@@ -49,10 +55,7 @@ menuCategorias.innerHTML = "";
 
 const btnTodos = document.createElement("button");
 btnTodos.innerText = "Todos";
-
-btnTodos.onclick = () => {
-renderProdutos(produtos);
-};
+btnTodos.onclick = () => renderProdutos(produtos);
 
 menuCategorias.appendChild(btnTodos);
 
@@ -62,10 +65,8 @@ const btn = document.createElement("button");
 btn.innerText = cat;
 
 btn.onclick = () => {
-
 const filtrados = produtos.filter(p => p.categoria === cat);
 renderProdutos(filtrados);
-
 };
 
 menuCategorias.appendChild(btn);
@@ -86,9 +87,19 @@ card.className = "produto";
 
 card.innerHTML = `
 
+<div class="badgeB2B">B2B</div>
+
 <h3>${p.nome}</h3>
 
 ${p.variacao !== "padrão" ? `<div class="variacao">${p.variacao}</div>` : ""}
+
+<div class="preco">
+
+<span class="precoOriginal">R$ ${p.precoOriginal.toFixed(2)}</span>
+
+<span class="precoB2B">R$ ${p.preco.toFixed(2)}</span>
+
+</div>
 
 <div class="sku">SKU: ${p.sku}</div>
 
