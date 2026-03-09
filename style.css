@@ -59,7 +59,6 @@ transition:0.3s;
 
 .produto:hover{
 transform:translateY(-6px);
-box-shadow:0 14px 30px rgba(0,0,0,0.12);
 }
 
 .camera{
@@ -100,6 +99,36 @@ border-radius:8px;
 width:100%;
 margin-top:10px;
 cursor:pointer;
+transition:0.2s;
+}
+
+.btnAdd:active{
+transform:scale(.95);
+}
+
+.btnAdd.adicionado{
+background:#00c853;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.08)}
+100%{transform:scale(1)}
+}
+
+.pulse{
+animation:pulse .35s ease;
+}
+
+@keyframes carrinhoBounce{
+0%{transform:scale(1)}
+40%{transform:scale(1.08)}
+70%{transform:scale(.97)}
+100%{transform:scale(1)}
+}
+
+.carrinhoAnimado{
+animation:carrinhoBounce .45s ease;
 }
 
 .carrinho{
@@ -125,26 +154,20 @@ border-radius:10px;
 transition:width .3s;
 }
 
-#sugestoes{
-background:#263445;
-padding:10px;
-border-radius:8px;
-margin:10px 0;
-font-size:14px;
+input{
+width:100%;
+margin:6px 0;
+padding:8px;
 }
 
-.removerItem{
-margin-left:8px;
-padding:3px 6px;
-font-size:12px;
-background:#ff4444;
-color:white;
-border:none;
-border-radius:4px;
+.botoesPedido{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:10px;
 }
 
 button{
-margin:6px 0;
 padding:10px;
 border:none;
 border-radius:6px;
