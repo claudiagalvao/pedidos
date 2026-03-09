@@ -2,6 +2,10 @@ const produtosDiv = document.getElementById("produtos")
 const listaPedido = document.getElementById("listaPedido")
 const totalEl = document.getElementById("total")
 const economiaEl = document.getElementById("economia")
+const barra = document.getElementById("barra")
+const msgMinimo = document.getElementById("msgMinimo")
+const busca = document.getElementById("busca")
+const menuCategorias = document.getElementById("menuCategorias")
 const contadorItens = document.getElementById("contadorItens")
 
 let produtos=[]
@@ -55,9 +59,47 @@ vendas:Math.floor(Math.random()*100)
 
 })
 
+criarMenu()
+
 renderProdutos(produtos)
 
 })
+
+
+
+function criarMenu(){
+
+const categorias=[...new Set(produtos.map(p=>p.categoria))]
+
+menuCategorias.innerHTML=""
+
+const btn=document.createElement("button")
+
+btn.innerText="Todos"
+
+btn.onclick=()=>renderProdutos(produtos)
+
+menuCategorias.appendChild(btn)
+
+categorias.forEach(cat=>{
+
+const b=document.createElement("button")
+
+b.innerText=cat
+
+b.onclick=()=>{
+
+const filtrados=produtos.filter(p=>p.categoria===cat)
+
+renderProdutos(filtrados)
+
+}
+
+menuCategorias.appendChild(b)
+
+})
+
+}
 
 
 
@@ -75,9 +117,9 @@ selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
 
 }
 
-const desconto10=p.preco*0.90
-const desconto12=p.preco*0.88
-const desconto15=p.preco*0.85
+const preco10=p.preco*0.90
+const preco12=p.preco*0.88
+const preco15=p.preco*0.85
 
 
 const card=document.createElement("div")
@@ -99,33 +141,23 @@ R$ ${p.preco.toFixed(2)}
 </div>
 
 <div class="precoB2B">
-R$ ${desconto10.toFixed(2)}
+R$ ${preco10.toFixed(2)}
 </div>
 
 <div class="progressivo">
 
-10% → ${desconto10.toFixed(2)}
-
-<br>
-
-12% → ${desconto12.toFixed(2)}
-
-<br>
-
-15% → ${desconto15.toFixed(2)}
+10% → ${preco10.toFixed(2)}<br>
+12% → ${preco12.toFixed(2)}<br>
+15% → ${preco15.toFixed(2)}
 
 </div>
 
 <div class="sku">
-
 SKU: ${p.sku}
-
 </div>
 
 <div class="estoque">
-
 Estoque: ${p.estoque}
-
 </div>
 
 <input type="number" value="1" min="1">
@@ -201,6 +233,22 @@ totalEl.innerText=totalFinal.toFixed(2)
 
 economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
 
+let progresso=(total/pedidoMinimo)*100
+
+if(progresso>100)progresso=100
+
+barra.style.width=progresso+"%"
+
+if(total<pedidoMinimo){
+
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+
+}else{
+
+msgMinimo.innerText=`Pedido mínimo atingido 🎉`
+
+}
+
 }
 
 
@@ -232,7 +280,43 @@ atualizarCarrinho()
 
 
 
-function enviarWhatsApp(){
+function validarCliente(){
+
+const empresa=document.getElementById("empresa").value
+const nome=document.getElementById("nome").value
+const email=document.getElementById("email").value
+
+if(!empresa || !nome || !email){
+
+alert("Preencha os dados do cliente")
+
+return false
+
+}
+
+return true
+
+}
+
+
+
+function validarPedido(){
+
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200")
+
+return false
+
+}
+
+return true
+
+}
+
+
+
+function gerarTextoPedido(){
 
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
@@ -241,6 +325,21 @@ carrinho.forEach(i=>{
 texto+=`${i.qtd}x ${i.nome}\n`
 
 })
+
+texto+=`\nTotal: R$ ${total}`
+
+return texto
+
+}
+
+
+
+function enviarWhatsApp(){
+
+if(!validarCliente()) return
+if(!validarPedido()) return
+
+const texto=gerarTextoPedido()
 
 window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 
@@ -250,20 +349,48 @@ window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 
 function gerarPDF(){
 
+if(!validarCliente()) return
+if(!validarPedido()) return
+
 const { jsPDF } = window.jspdf
 
 const doc=new jsPDF()
 
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-carrinho.forEach(i=>{
-
-texto+=`${i.qtd}x ${i.nome}\n`
-
-})
-
-doc.text(texto,10,10)
+doc.text(gerarTextoPedido(),10,10)
 
 doc.save("pedido.pdf")
 
 }
+
+
+
+document.getElementById("formEmail").addEventListener("submit",function(e){
+
+if(!validarCliente() || !validarPedido()){
+
+e.preventDefault()
+
+return
+
+}
+
+document.getElementById("pedidoTexto").value=gerarTextoPedido()
+
+})
+
+
+
+busca.addEventListener("input",()=>{
+
+const termo=busca.value.toLowerCase()
+
+const filtrados=produtos.filter(p=>
+
+p.nome.toLowerCase().includes(termo) ||
+p.categoria.toLowerCase().includes(termo)
+
+)
+
+renderProdutos(filtrados)
+
+})
