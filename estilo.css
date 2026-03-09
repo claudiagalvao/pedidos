@@ -1,19 +1,40 @@
 body{
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
-background:#0b0b0b;
-color:white;
+background:#ffffff;
+color:#222;
 }
 
 /* banner */
 
 .banner{
-width:65%;
+width:70%;
 }
 
 .banner img{
 width:100%;
 display:block;
+}
+
+/* menu */
+
+.menu{
+background:#111;
+padding:15px 40px;
+}
+
+.menu button{
+background:#222;
+color:white;
+border:none;
+padding:10px 18px;
+margin-right:10px;
+border-radius:20px;
+cursor:pointer;
+}
+
+.menu button:hover{
+background:#ff0066;
 }
 
 /* catálogo */
@@ -25,7 +46,7 @@ float:left;
 margin-right:35%;
 }
 
-/* carrinho lateral */
+/* carrinho */
 
 .carrinho{
 width:30%;
@@ -37,12 +58,13 @@ top:0;
 height:100%;
 overflow:auto;
 box-shadow:-4px 0 10px rgba(0,0,0,0.6);
+color:white;
 }
 
-/* cards de produto */
+/* produtos */
 
 .produto{
-background:#1a1a1a;
+background:#f5f5f5;
 padding:20px;
 margin-bottom:20px;
 border-radius:10px;
@@ -51,25 +73,18 @@ max-width:500px;
 
 .produto h3{
 margin-top:0;
-font-size:18px;
 }
 
-/* campos */
+/* inputs */
 
 select,input{
 padding:8px;
 margin-top:10px;
 border-radius:6px;
-border:none;
+border:1px solid #ddd;
 }
 
-/* quantidade */
-
-.produto input{
-width:120px;
-}
-
-/* botão adicionar */
+/* botão */
 
 button{
 background:#ff0066;
@@ -86,7 +101,7 @@ button:hover{
 background:#ff2a7a;
 }
 
-/* barra de progresso */
+/* progresso */
 
 .progress{
 height:20px;
