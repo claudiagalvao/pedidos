@@ -1,6 +1,6 @@
-categoria,nome,preco,url
-Kits,Kit Detetive Sherlock Holmes,80,kit-detetive-sherlock-holmes
-Perucas,Peruca Punk Colorida,30,peruca-punk-colorida
-Acessorios,Varinha de Princesa,7.99,varinha-princesa
-Maquiagem,Tinta Spray Azul,19.99,tinta-spray-azul
-
+categoria,nome,variacao,preco
+Perucas,Peruca Punk,Azul,30
+Perucas,Peruca Punk,Rosa,30
+Perucas,Peruca Punk,Verde,30
+Acessorios,Varinha Princesa,Rosa,7.99
+Acessorios,Varinha Princesa,Azul,7.99
