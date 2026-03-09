@@ -18,6 +18,7 @@ function calcularDesconto(valor){
 if(valor>=1000) return 0.18
 if(valor>=500) return 0.15
 if(valor>=200) return 0.12
+
 return 0.10
 
 }
@@ -69,8 +70,11 @@ const b=document.createElement("button")
 b.innerText=cat
 
 b.onclick=()=>{
+
 const filtrados=produtos.filter(p=>p.categoria===cat)
+
 renderProdutos(filtrados)
+
 }
 
 menuCategorias.appendChild(b)
@@ -88,28 +92,43 @@ lista.forEach(p=>{
 let alertaEstoque=""
 
 if(p.estoque==0){
+
 alertaEstoque=`<div class="estoqueEsgotado">Esgotado</div>`
-}
-else if(p.estoque<=3){
+
+}else if(p.estoque<=3){
+
 alertaEstoque=`<div class="estoqueBaixo">🔥 Apenas ${p.estoque} em estoque</div>`
-}
-else{
+
+}else{
+
 alertaEstoque=`<div class="estoque">Estoque: ${p.estoque}</div>`
+
 }
+
+const descontoBase=0.10
+const precoB2B=p.preco*(1-descontoBase)
 
 const card=document.createElement("div")
 card.className="produto"
 
 card.innerHTML=`
 
-<div class="seloDesconto">B2B</div>
+<div class="seloDesconto">10% OFF B2B</div>
 
 <h3>${p.nome}</h3>
 
 ${p.variacao!="padrão"?`<div class="variacao">${p.variacao}</div>`:""}
 
 <div class="preco">
+
+<span class="precoOriginal">
 R$ ${p.preco.toFixed(2)}
+</span>
+
+<span class="precoB2B">
+R$ ${precoB2B.toFixed(2)}
+</span>
+
 </div>
 
 <div class="sku">
@@ -132,13 +151,20 @@ const btn=card.querySelector("button")
 
 btn.onclick=()=>{
 
+if(p.estoque==0){
+alert("Produto esgotado.")
+return
+}
+
 const qtd=parseInt(card.querySelector("input").value)
 
 carrinho.push({
+
 nome:p.nome,
 variacao:p.variacao,
 preco:p.preco,
 qtd:qtd
+
 })
 
 total+=p.preco*qtd
@@ -184,6 +210,7 @@ const totalFinal=total*(1-desconto)
 totalEl.innerText=totalFinal.toFixed(2)
 
 let progresso=(total/pedidoMinimo)*100
+
 if(progresso>100)progresso=100
 
 barra.style.width=progresso+"%"
@@ -274,7 +301,7 @@ return
 
 const texto=gerarTextoPedido()
 
-const numero="5519992850208"
+const numero="5511999999999"
 
 const url=`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
@@ -290,6 +317,7 @@ return
 }
 
 const { jsPDF } = window.jspdf
+
 const doc=new jsPDF()
 
 doc.text(gerarTextoPedido(),10,10)
@@ -303,8 +331,10 @@ busca.addEventListener("input",()=>{
 const termo=busca.value.toLowerCase()
 
 const filtrados=produtos.filter(p=>
+
 p.nome.toLowerCase().includes(termo) ||
 p.categoria.toLowerCase().includes(termo)
+
 )
 
 renderProdutos(filtrados)
