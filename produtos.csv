@@ -1,4 +1,4 @@
-nome,preco,categoria,link
-Colar Vitoriano Steampunk,39.99,Kits,https://crazyfantasy.com.br/colar-vitoriano-steampunk-com-relogio-vintage-choker-investigadora-estilo-enola-holmes-fantasia-cosplay-fghfx
-Kit Detetive Sherlock Holmes,80.00,Kits,https://crazyfantasy.com.br/kit-detetive-sherlock-holmes-adulto-chapeu-investigador-cachimbo-lupa-fantasia-1omzd
-Barba de Papai Noel Branca com Bigode,49.99,Barbas,https://crazyfantasy.com.br/barba-de-papai-noel-branca-com-bigode-acessorio-fantasia-natal-h50af
+categoria,nome,preco
+Acessórios,Colar Vitoriano Steampunk,39.99
+Kits,Kit Detetive Sherlock Holmes,80.00
+Barbas,Barba de Papai Noel Branca com Bigode,49.99
