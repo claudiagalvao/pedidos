@@ -9,6 +9,7 @@ const busca = document.getElementById("busca")
 
 const barra = document.getElementById("barra")
 const msgMinimo = document.getElementById("msgMinimo")
+const sugestoes = document.getElementById("sugestoes")
 
 let produtos=[]
 let carrinho=[]
@@ -62,7 +63,6 @@ vendas:Math.floor(Math.random()*100)
 })
 
 criarCategorias()
-
 renderProdutos(produtos)
 
 })
@@ -77,9 +77,7 @@ menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</but
 
 categorias.forEach(c=>{
 
-menuCategorias.innerHTML+=`
-<button onclick="filtrarCategoria('${c}')">${c}</button>
-`
+menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</button>`
 
 })
 
@@ -89,15 +87,8 @@ menuCategorias.innerHTML+=`
 
 function filtrarCategoria(cat){
 
-if(cat==="Todos"){
-
-renderProdutos(produtos)
-
-}else{
-
-renderProdutos(produtos.filter(p=>p.categoria===cat))
-
-}
+if(cat==="Todos") renderProdutos(produtos)
+else renderProdutos(produtos.filter(p=>p.categoria===cat))
 
 }
 
@@ -107,11 +98,7 @@ busca.addEventListener("keyup",()=>{
 
 const termo=busca.value.toLowerCase()
 
-renderProdutos(produtos.filter(p=>
-
-p.nome.toLowerCase().includes(termo)
-
-))
+renderProdutos(produtos.filter(p=>p.nome.toLowerCase().includes(termo)))
 
 })
 
@@ -132,8 +119,6 @@ selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
 }
 
 const desconto10=p.preco*0.90
-const desconto12=p.preco*0.88
-const desconto15=p.preco*0.85
 
 const card=document.createElement("div")
 
@@ -149,60 +134,21 @@ ${selo}
 
 <h3>${p.nome}</h3>
 
-<div class="precoOriginal">
-R$ ${p.preco.toFixed(2)}
-</div>
+<div class="precoOriginal">R$ ${p.preco.toFixed(2)}</div>
 
-<div class="precoB2B">
-R$ ${desconto10.toFixed(2)}
-</div>
-
-<div class="progressivo">
-
-10% → ${desconto10.toFixed(2)}
-
-<br>
-
-12% → ${desconto12.toFixed(2)}
-
-<br>
-
-15% → ${desconto15.toFixed(2)}
-
-</div>
-
-<div class="sku">
-SKU: ${p.sku}
-</div>
-
-<div class="estoque">
-Estoque: ${p.estoque}
-</div>
+<div class="precoB2B">R$ ${desconto10.toFixed(2)}</div>
 
 <input type="number" value="1" min="1">
 
-<button class="btnAdd">
-Adicionar
-</button>
+<button class="btnAdd">Adicionar</button>
 
 `
 
-const btn=card.querySelector("button")
-
-btn.onclick=()=>{
-
-card.classList.add("pulse")
+card.querySelector("button").onclick=()=>{
 
 const qtd=parseInt(card.querySelector("input").value)
 
-carrinho.push({
-
-nome:p.nome,
-sku:p.sku,
-preco:p.preco,
-qtd:qtd
-
-})
+carrinho.push({nome:p.nome,sku:p.sku,preco:p.preco,qtd})
 
 total+=p.preco*qtd
 totalOriginal+=p.preco*qtd
@@ -229,17 +175,8 @@ carrinho.forEach((item,index)=>{
 
 itens+=item.qtd
 
-const div=document.createElement("div")
-
-div.innerHTML=`
-
-${item.nome} x${item.qtd}
-
-<button class="removerItem" onclick="removerItem(${index})">✕</button>
-
-`
-
-listaPedido.appendChild(div)
+listaPedido.innerHTML+=`${item.nome} x${item.qtd}
+<button class="removerItem" onclick="removerItem(${index})">✕</button><br>`
 
 })
 
@@ -256,7 +193,6 @@ economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
 
 
 let progresso=(total/pedidoMinimo)*100
-
 if(progresso>100) progresso=100
 
 barra.style.width=progresso+"%"
@@ -265,11 +201,16 @@ barra.style.width=progresso+"%"
 
 if(total<pedidoMinimo){
 
-msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+let faltam=pedidoMinimo-total
+
+msgMinimo.innerText=`Faltam R$ ${faltam.toFixed(2)} para pedido mínimo`
+
+sugerirProdutos(faltam)
 
 }else{
 
 msgMinimo.innerText="Pedido mínimo atingido 🎉"
+sugestoes.innerHTML=""
 
 }
 
@@ -277,14 +218,42 @@ msgMinimo.innerText="Pedido mínimo atingido 🎉"
 
 
 
-function removerItem(index){
+function sugerirProdutos(faltam){
 
-const item=carrinho[index]
+let sugestao=produtos
+.filter(p=>p.preco<=faltam)
+.slice(0,3)
+
+if(sugestao.length===0){
+
+sugestoes.innerHTML=""
+
+return
+
+}
+
+let html="<b>Sugestões para completar pedido:</b><br>"
+
+sugestao.forEach(p=>{
+
+html+=`+ ${p.nome} R$ ${p.preco.toFixed(2)}<br>`
+
+})
+
+sugestoes.innerHTML=html
+
+}
+
+
+
+function removerItem(i){
+
+const item=carrinho[i]
 
 total-=item.preco*item.qtd
 totalOriginal-=item.preco*item.qtd
 
-carrinho.splice(index,1)
+carrinho.splice(i,1)
 
 atualizarCarrinho()
 
@@ -324,54 +293,14 @@ let empresa=document.getElementById("empresa").value.trim()
 let nome=document.getElementById("nome").value.trim()
 let email=document.getElementById("email").value.trim()
 
-if(!empresa || !nome || !email){
+if(!empresa||!nome||!email){
 
-alert("Preencha todos os dados do cliente.")
+alert("Preencha todos os dados.")
 return false
 
 }
 
 return true
-
-}
-
-
-
-function enviarWhatsApp(){
-
-if(!validarPedido()) return
-
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-carrinho.forEach(i=>{
-texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
-})
-
-texto+=`\nTotal aproximado: R$ ${total.toFixed(2)}`
-
-window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
-
-}
-
-
-
-function gerarPDF(){
-
-if(!validarPedido()) return
-
-const { jsPDF } = window.jspdf
-
-const doc=new jsPDF()
-
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-carrinho.forEach(i=>{
-texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
-})
-
-doc.text(texto,10,10)
-
-doc.save("pedido.pdf")
 
 }
 
@@ -393,16 +322,50 @@ corpo+="Empresa: "+empresa+"\n"
 corpo+="Nome: "+nome+"\n"
 corpo+="Email: "+email+"\n\n"
 
-corpo+="Itens do pedido:\n\n"
-
 carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
+corpo+=`${i.qtd}x ${i.nome}\n`
 })
-
-corpo+=`\nTotal aproximado: R$ ${total.toFixed(2)}`
 
 let link=`mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`
 
 window.location.href=link
+
+}
+
+
+
+function enviarWhatsApp(){
+
+if(!validarPedido()) return
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+texto+=`${i.qtd}x ${i.nome}\n`
+})
+
+window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
+
+}
+
+
+
+function gerarPDF(){
+
+if(!validarPedido()) return
+
+const { jsPDF } = window.jspdf
+
+const doc=new jsPDF()
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+texto+=`${i.qtd}x ${i.nome}\n`
+})
+
+doc.text(texto,10,10)
+
+doc.save("pedido.pdf")
 
 }
