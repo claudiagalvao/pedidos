@@ -1,126 +1,72 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy | Catálogo B2B</title>
+<title>Crazy Fantasy | Portal B2B</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#0b0b0b;
+font-family:Arial;
 margin:0;
+background:#0b0b0b;
 color:white;
+display:flex;
 }
 
-.banner img{
-width:100%;
-display:block;
-}
-
-.container{
-max-width:1200px;
-margin:auto;
+.catalogo{
+width:70%;
 padding:30px;
 }
 
-.search{
-width:100%;
-padding:14px;
-border-radius:8px;
-border:none;
-font-size:16px;
-margin-bottom:20px;
-}
-
-.categories{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-bottom:20px;
-}
-
-.categories button{
-background:#1c1c1c;
-color:white;
-border:none;
-padding:10px 18px;
-border-radius:20px;
-cursor:pointer;
-}
-
-.categories button:hover{
-background:#ff0066;
-}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-gap:25px;
-}
-
-.card{
-background:#1a1a1a;
-padding:18px;
-border-radius:10px;
-}
-
-.card h3{
-margin-top:0;
-}
-
-.card input{
-width:60px;
-padding:5px;
-}
-
-.card button{
-margin-top:10px;
-background:#ff0066;
-color:white;
-border:none;
-padding:8px 14px;
-border-radius:6px;
-cursor:pointer;
-}
-
-.cart{
-margin-top:40px;
+.carrinho{
+width:30%;
 background:#111;
 padding:25px;
+position:fixed;
+right:0;
+top:0;
+height:100%;
+overflow:auto;
+}
+
+.produto{
+background:#1a1a1a;
+padding:20px;
+margin-bottom:15px;
 border-radius:10px;
 }
 
-.total{
-font-size:20px;
-font-weight:bold;
+select,input{
+padding:8px;
 margin-top:10px;
 }
 
-.form{
-display:grid;
-gap:10px;
-margin-top:15px;
-}
-
-.form input{
-padding:10px;
-border-radius:6px;
+button{
+background:#ff0066;
 border:none;
-}
-
-.send{
-background:#00c853;
-padding:12px;
-border:none;
-border-radius:6px;
+padding:10px 16px;
 color:white;
-font-size:16px;
 cursor:pointer;
+border-radius:6px;
+margin-top:10px;
+}
+
+.progress{
+height:20px;
+background:#333;
+border-radius:10px;
+margin-top:15px;
+overflow:hidden;
+}
+
+.progress-bar{
+height:100%;
+background:#00c853;
+width:0%;
 }
 
 </style>
@@ -129,146 +75,121 @@ cursor:pointer;
 
 <body>
 
-<div class="banner">
-<img src="banner.png">
+<div class="catalogo">
+
+<h1>Catálogo Crazy Fantasy</h1>
+
+<div id="produtos"></div>
+
 </div>
 
-<div class="container">
-
-<input class="search" id="search" placeholder="Buscar produto...">
-
-<div class="categories" id="categories"></div>
-
-<div class="products" id="products"></div>
-
-<div class="cart">
+<div class="carrinho">
 
 <h2>Pedido</h2>
 
-<div id="cart"></div>
+<div id="lista"></div>
 
-<div class="total" id="total">Total: R$0</div>
+<h3 id="total">Total: R$0</h3>
 
-<div class="form">
-
-<input id="empresa" placeholder="Empresa">
-<input id="nome" placeholder="Nome">
-<input id="telefone" placeholder="Telefone">
-<input id="email" placeholder="Email">
-
-<button class="send" onclick="enviar()">Enviar Pedido</button>
-
+<div class="progress">
+<div class="progress-bar" id="progress"></div>
 </div>
 
-</div>
+<p id="faltam"></p>
+
+<form action="https://formsubmit.co/seuemail@aqui.com" method="POST">
+
+<input type="hidden" name="pedido" id="pedido">
+
+<input type="text" name="empresa" placeholder="Empresa" required>
+
+<input type="text" name="nome" placeholder="Nome" required>
+
+<input type="email" name="email" placeholder="Email" required>
+
+<button type="submit">Enviar Pedido</button>
+
+</form>
 
 </div>
 
 <script>
 
-let produtos=[]
+let produtos={}
 let carrinho=[]
+const minimo=200
 
 fetch("produtos.csv")
-
-.then(res=>res.text())
-
+.then(r=>r.text())
 .then(text=>{
 
-let linhas=text.trim().split("\n")
+let linhas=text.trim().split("\n").slice(1)
 
-for(let i=1;i<linhas.length;i++){
+linhas.forEach(l=>{
 
-let c=linhas[i].split(",")
+let c=l.split(",")
 
-produtos.push({
+let categoria=c[0]
+let nome=c[1]
+let variacao=c[2]
+let preco=parseFloat(c[3])
 
-categoria:c[0],
-nome:c[1],
-preco:parseFloat(c[2])
+if(!produtos[nome]){
 
-})
-
-}
-
-renderCategorias()
-renderProdutos(produtos)
-
-})
-
-function renderCategorias(){
-
-let cats=[...new Set(produtos.map(p=>p.categoria))]
-
-let div=document.getElementById("categories")
-
-cats.forEach(cat=>{
-
-let b=document.createElement("button")
-
-b.innerText=cat
-
-b.onclick=()=>{
-
-renderProdutos(produtos.filter(p=>p.categoria==cat))
+produtos[nome]={variacoes:[],preco}
 
 }
 
-div.appendChild(b)
+produtos[nome].variacoes.push(variacao)
 
 })
 
-}
+render()
 
-function renderProdutos(lista){
+})
 
-let div=document.getElementById("products")
+function render(){
 
-div.innerHTML=""
+let div=document.getElementById("produtos")
 
-lista.forEach(p=>{
+for(let nome in produtos){
 
-let id=p.nome.replace(/\s/g,'')
+let p=produtos[nome]
 
-let el=document.createElement("div")
+let html=`
+<div class="produto">
 
-el.className="card"
+<h3>${nome}</h3>
 
-el.innerHTML=`
-
-<h3>${p.nome}</h3>
-
-<div>R$ ${p.preco.toFixed(2)}</div>
-
-<input type="number" value="1" min="1" id="${id}">
+<select id="var-${nome}">
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+</select>
 
 <br>
 
-<button onclick="add('${p.nome}',${p.preco},'${id}')">Adicionar</button>
+<input type="number" value="1" min="1" id="qtd-${nome}">
 
+<br>
+
+<button onclick="add('${nome}',${p.preco})">
+Adicionar
+</button>
+
+</div>
 `
 
-div.appendChild(el)
-
-})
+div.innerHTML+=html
 
 }
 
-function add(nome,preco,id){
-
-let qtd=parseInt(document.getElementById(id).value)
-
-let item=carrinho.find(i=>i.nome==nome)
-
-if(item){
-
-item.qtd+=qtd
-
-}else{
-
-carrinho.push({nome,preco,qtd})
-
 }
+
+function add(nome,preco){
+
+let variacao=document.getElementById("var-"+nome).value
+let qtd=parseInt(document.getElementById("qtd-"+nome).value)
+
+carrinho.push({nome,variacao,qtd,preco})
 
 renderCarrinho()
 
@@ -276,53 +197,41 @@ renderCarrinho()
 
 function renderCarrinho(){
 
-let div=document.getElementById("cart")
-
+let div=document.getElementById("lista")
 div.innerHTML=""
 
 let total=0
 
 carrinho.forEach(i=>{
 
-div.innerHTML+=`${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}<br>`
+div.innerHTML+=`${i.nome} (${i.variacao}) x${i.qtd}<br>`
 
-total+=i.preco*i.qtd
+total+=i.qtd*i.preco
 
 })
 
 document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
 
-}
+let perc=Math.min((total/minimo)*100,100)
 
-function enviar(){
+document.getElementById("progress").style.width=perc+"%"
 
-let texto="Pedido Crazy Fantasy\n\n"
+if(total<minimo){
 
-carrinho.forEach(i=>{
+document.getElementById("faltam").innerText=
+"Faltam R$"+(minimo-total).toFixed(2)+" para o pedido mínimo"
 
-texto+=`${i.nome} x${i.qtd}\n`
+}else{
 
-})
-
-let url="https://wa.me/?text="+encodeURIComponent(texto)
-
-window.open(url)
+document.getElementById("faltam").innerText="Pedido mínimo atingido"
 
 }
 
-document.getElementById("search")
+document.getElementById("pedido").value=JSON.stringify(carrinho)
 
-.addEventListener("input",function(){
-
-let t=this.value.toLowerCase()
-
-renderProdutos(produtos.filter(p=>p.nome.toLowerCase().includes(t)))
-
-})
+}
 
 </script>
 
 </body>
 </html>
-
-
