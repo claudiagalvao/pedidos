@@ -24,8 +24,8 @@ font-weight:bold;
 
 .banner{
 width:100%;
-height:400px;
-background:url("banner.jpg") center/cover no-repeat;
+height:350px;
+background:url("banner.png") center/cover no-repeat;
 }
 
 .container{
@@ -65,7 +65,7 @@ background:#ff0066;
 
 .products{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
 gap:20px;
 }
 
@@ -142,7 +142,7 @@ cursor:pointer;
 <body>
 
 <header>
-Portal B2B - Crazy Fantasy
+Portal de Pedidos - Crazy Fantasy
 </header>
 
 <div class="banner"></div>
@@ -183,13 +183,13 @@ fetch("produtos.csv")
 .then(res=>res.text())
 .then(text=>{
 
-let linhas=text.split("\n")
+let linhas=text.trim().split("\n")
 
 for(let i=1;i<linhas.length;i++){
 
 let col=linhas[i].split(",")
 
-if(col.length>3){
+if(col.length>=3){
 
 produtos.push({
 categoria:col[0],
@@ -218,6 +218,7 @@ categorias.forEach(cat=>{
 
 let btn=document.createElement("button")
 btn.innerText=cat
+
 btn.onclick=()=>{
 
 let filtrados=produtos.filter(p=>p.categoria==cat)
@@ -239,16 +240,23 @@ div.innerHTML=""
 
 lista.forEach(p=>{
 
+let id=p.nome.replace(/\s/g,'')
+
 let el=document.createElement("div")
 el.className="product"
 
 el.innerHTML=`
 
 <h3>${p.nome}</h3>
-<div>R$ ${p.preco}</div>
-<input type="number" min="1" value="1" id="${p.nome}">
+<div>R$ ${p.preco.toFixed(2)}</div>
+
+<input type="number" min="1" value="1" id="${id}">
+
 <br>
-<button onclick="addCarrinho('${p.nome}',${p.preco})">Adicionar</button>
+
+<button onclick="addCarrinho('${p.nome}',${p.preco},'${id}')">
+Adicionar
+</button>
 
 `
 
@@ -258,9 +266,9 @@ div.appendChild(el)
 
 }
 
-function addCarrinho(nome,preco){
+function addCarrinho(nome,preco,id){
 
-let qtd=parseInt(document.getElementById(nome).value)
+let qtd=parseInt(document.getElementById(id).value)
 
 let item=carrinho.find(i=>i.nome==nome)
 
@@ -291,7 +299,7 @@ carrinho.forEach(i=>{
 let linha=document.createElement("div")
 linha.className="cart-item"
 
-linha.innerHTML=`${i.nome} x${i.qtd} - R$ ${i.preco*i.qtd}`
+linha.innerHTML=`${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}`
 
 div.appendChild(linha)
 
@@ -299,7 +307,7 @@ total+=i.preco*i.qtd
 
 })
 
-document.getElementById("total").innerText="Total: R$"+total
+document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
 
 }
 
