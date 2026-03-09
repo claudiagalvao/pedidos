@@ -28,7 +28,7 @@
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
 </div>
 
-<div id="menuCategorias" class="menuCategorias"></div>
+<div id="menuCategorias"></div>
 
 <input id="busca" placeholder="🔎 Buscar produto">
 
@@ -59,6 +59,8 @@ Total B2B: R$ <span id="total">0</span>
 
 <div id="msgMinimo"></div>
 
+<div id="sugestoes"></div>
+
 <div id="listaPedido"></div>
 
 <h3>Dados do Cliente</h3>
@@ -67,26 +69,17 @@ Total B2B: R$ <span id="total">0</span>
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
 
-<button class="btnEmail" onclick="enviarEmail()">
-Enviar Pedido por Email
-</button>
+<button class="btnEmail" onclick="enviarEmail()">Enviar Pedido por Email</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">
-Enviar por WhatsApp
-</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
 
-<button class="btnPdf" onclick="gerarPDF()">
-Gerar PDF do Pedido
-</button>
+<button class="btnPdf" onclick="gerarPDF()">Gerar PDF do Pedido</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">
-Limpar Pedido
-</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
 
 </div>
 
 </div>
-
 
 <div class="footer">
 
@@ -121,7 +114,6 @@ Frete calculado após envio
 Validade do pedido: 48h
 
 </div>
-
 
 <script src="script.js"></script>
 
