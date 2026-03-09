@@ -37,6 +37,7 @@ padding:18px;
 border-radius:12px;
 margin-bottom:15px;
 font-size:14px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .progressBox{
@@ -44,6 +45,7 @@ background:white;
 padding:18px;
 border-radius:12px;
 margin-bottom:15px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .progressBar{
@@ -57,7 +59,7 @@ margin-top:6px;
 #progressFill{
 height:100%;
 width:0%;
-background:#27ae60;
+background:linear-gradient(90deg,#27ae60,#2ecc71);
 }
 
 .sugestao{
@@ -72,6 +74,7 @@ background:white;
 padding:15px;
 border-radius:12px;
 margin-bottom:15px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .catGrupo{
@@ -85,6 +88,11 @@ padding:6px 12px;
 border-radius:20px;
 margin:3px;
 cursor:pointer;
+transition:all .2s;
+}
+
+.categorias button:hover{
+background:#dcd0f7;
 }
 
 .searchBox{
@@ -98,6 +106,7 @@ padding:14px 45px 14px 15px;
 border-radius:10px;
 border:1px solid #ccc;
 font-size:15px;
+box-shadow:0 3px 8px rgba(0,0,0,0.05);
 box-sizing:border-box;
 }
 
@@ -124,6 +133,7 @@ background:white;
 padding:18px;
 border-radius:12px;
 height:fit-content;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
 table{
@@ -132,6 +142,7 @@ border-collapse:collapse;
 background:white;
 border-radius:12px;
 overflow:hidden;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 th{
@@ -162,12 +173,12 @@ border-radius:8px;
 padding:11px;
 cursor:pointer;
 font-weight:bold;
-transition:all .2s;
-box-shadow:0 2px 4px rgba(0,0,0,0.15);
+transition:all .25s;
 }
 
 button:hover{
-transform:translateY(-1px);
+transform:translateY(-2px);
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
 .btnclear{
@@ -202,19 +213,15 @@ footer{
 background:#1a1a1a;
 color:#ddd;
 margin-top:40px;
-padding:40px 0;
-}
-
-.footerInner{
-max-width:1200px;
-margin:auto;
-padding:0 20px;
+padding:40px 20px;
 }
 
 .footerGrid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:25px;
+max-width:1200px;
+margin:auto;
 }
 
 footer h4{
@@ -225,6 +232,10 @@ color:white;
 footer a{
 color:#ff5b6b;
 text-decoration:none;
+}
+
+footer a:hover{
+text-decoration:underline;
 }
 
 .footerBottom{
@@ -259,16 +270,7 @@ flex-direction:column;
 <b>Descontos Progressivos</b><br>
 Pedidos acima de R$200 → 10%<br>
 Pedidos acima de R$500 → 12%<br>
-Pedidos acima de R$1000 → 15%<br><br>
-
-<b>Formas de Pagamento</b><br>
-PIX<br>
-Transferência bancária<br>
-Cartão de crédito (até 3x acima de R$300)<br>
-Boleto mediante consulta<br><br>
-
-<b>Frete</b><br>
-Frete por conta do cliente (FOB)
+Pedidos acima de R$1000 → 15%
 
 </div>
 
@@ -343,8 +345,6 @@ Frete por conta do cliente (FOB)
 
 <footer>
 
-<div class="footerInner">
-
 <div class="footerGrid">
 
 <div>
@@ -377,8 +377,6 @@ Email: lojacrazyfantasy@hotmail.com
 
 <div class="footerBottom">
 © Crazy Fantasy — Portal B2B para parceiros e revendedores
-</div>
-
 </div>
 
 </footer>
@@ -421,18 +419,119 @@ render(produtos)
 
 })
 
+function gerarMenu(){
+
+let categorias={}
+
+produtos.forEach(p=>{
+
+if(!p.categoria)return
+
+let partes=p.categoria.split(">")
+
+let principal=partes[0].trim()
+let sub=partes[1]?partes[1].trim():null
+
+if(!categorias[principal])categorias[principal]=[]
+
+if(sub && !categorias[principal].includes(sub)){
+categorias[principal].push(sub)
+}
+
+})
+
+let html=""
+
+Object.keys(categorias).forEach(cat=>{
+
+html+=`<div class="catGrupo"><b>${cat}</b><br>`
+
+categorias[cat].forEach(sub=>{
+html+=`<button onclick="filtrar('${cat}','${sub}')">${sub}</button>`
+})
+
+html+=`</div>`
+
+})
+
+document.getElementById("categorias").innerHTML=html
+
+}
+
+function filtrar(cat,sub){
+
+let lista=produtos.filter(p=>p.categoria.includes(cat)&&p.categoria.includes(sub))
+render(lista)
+
+}
+
+document.getElementById("busca").addEventListener("keyup",function(){
+
+let termo=this.value.toLowerCase()
+
+let filtrados=produtos.filter(p=>p.nome.toLowerCase().includes(termo))
+
+render(filtrados)
+
+})
+
+function render(lista){
+
+let html=""
+
+lista.forEach((p,i)=>{
+
+let precoB2B=p.preco*0.9
+
+let varHTML=""
+
+if(p.variacoes.length>0){
+
+varHTML=`<select>
+<option value="">Selecione</option>
+${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+</select>`
+
+}
+
+html+=`
+
+<tr>
+
+<td>${p.nome}<br>${varHTML}</td>
+
+<td>
+<span class="precoOriginal">R$ ${p.preco.toFixed(2)}</span><br>
+<span class="precoB2B">R$ ${precoB2B.toFixed(2)}</span>
+</td>
+
+<td>
+<input type="number" min="0" value="0" onchange="calc(${i},this)">
+</td>
+
+<td id="t${i}">0</td>
+
+</tr>
+
+`
+
+})
+
+document.getElementById("lista").innerHTML=html
+
+}
+
 function calc(i,input){
 
 let linha=input.closest("tr")
+
 let select=linha.querySelector("select")
 
-if(select && select.value===""){
-alert("Selecione a variação")
-input.value=""
-return
-}
+let variacao=""
 
-let variacao=select?select.value:""
+if(select){
+variacao=select.value
+}
 
 let q=parseInt(input.value)
 
@@ -444,6 +543,7 @@ return
 }
 
 let preco=parseFloat(linha.querySelector(".precoB2B").innerText.replace("R$",""))
+
 let total=q*preco
 
 linha.querySelector(`#t${i}`).innerText=total.toFixed(2)
@@ -455,6 +555,110 @@ carrinho[i]={nome:nome,variacao:variacao,q:q,total:total}
 calcTotal()
 
 }
+
+function calcTotal(){
+
+let soma=0
+let itens=0
+
+Object.values(carrinho).forEach(p=>{
+soma+=p.total
+itens+=p.q
+})
+
+document.getElementById("total").innerText=soma.toFixed(2)
+document.getElementById("itens").innerText=itens
+
+let minimo=200
+
+let progresso=Math.min((soma/minimo)*100,100)
+
+document.getElementById("progressFill").style.width=progresso+"%"
+
+}
+
+function limpar(){
+location.reload()
+}
+
+function gerarPDF(){
+
+const {jsPDF}=window.jspdf
+let doc=new jsPDF()
+let y=20
+
+doc.text("Pedido Crazy Fantasy B2B",20,y)
+y+=10
+
+let total=0
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+doc.text(linha,20,y)
+
+y+=8
+
+total+=p.total
+
+})
+
+doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10)
+
+doc.save("pedido_crazy_fantasy.pdf")
+
+}
+
+function enviarWhatsapp(){
+
+let texto="Pedido Crazy Fantasy B2B%0A%0A"
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+texto+=linha+"%0A"
+
+})
+
+window.open(`https://wa.me/5519992850208?text=${texto}`)
+
+}
+
+document.querySelector("form").addEventListener("submit",function(){
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+Object.values(carrinho).forEach(p=>{
+
+let linha=p.nome
+
+if(p.variacao){
+linha+=` (${p.variacao})`
+}
+
+linha+=` - ${p.q} un`
+
+texto+=linha+"\n"
+
+})
+
+document.getElementById("pedidoForm").value=texto
+
+})
 
 </script>
 
