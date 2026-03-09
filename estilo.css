@@ -1,272 +1,94 @@
 body{
+font-family:Arial;
 margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-background:#f6f6f8;
-color:#1f1f1f;
+background:#f4f4f4;
 }
-
-/* BANNER */
 
 .banner img{
 width:100%;
-height:220px;
-object-fit:cover;
-display:block;
 }
 
-/* INFO PARCEIROS */
-
-.info-parceiros{
-background:white;
-padding:40px 20px;
-text-align:center;
-border-bottom:1px solid #eee;
-}
-
-.info-parceiros h2{
-font-size:24px;
-margin-bottom:25px;
-}
-
-.info-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-max-width:1100px;
-margin:auto;
-}
-
-.info-box{
-background:#fafafa;
-padding:22px;
-border-radius:12px;
-box-shadow:0 4px 14px rgba(0,0,0,0.05);
-transition:all .2s;
-}
-
-.info-box:hover{
-transform:translateY(-2px);
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
-}
-
-/* MENU */
-
-.menu{
-background:#0b0b0b;
-padding:14px;
+.container{
 display:flex;
-gap:10px;
-flex-wrap:wrap;
-position:sticky;
-top:0;
-z-index:50;
 }
-
-.menu button{
-background:#1e1e1e;
-color:white;
-border:none;
-padding:9px 16px;
-border-radius:30px;
-cursor:pointer;
-font-size:14px;
-transition:.2s;
-}
-
-.menu button:hover{
-background:#ff0a5b;
-}
-
-/* CATALOGO */
 
 .catalogo{
-width:70%;
-padding:40px;
-box-sizing:border-box;
+flex:1;
+padding:30px;
 }
-
-.catalogo h1{
-margin-top:0;
-margin-bottom:20px;
-}
-
-/* BUSCA */
-
-.busca{
-width:100%;
-padding:12px 14px;
-border-radius:8px;
-border:1px solid #ddd;
-margin-bottom:30px;
-font-size:15px;
-}
-
-/* GRID */
 
 #produtos{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:28px;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:20px;
 }
-
-/* CARD PRODUTO */
 
 .produto{
 background:white;
-padding:20px;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.06);
-transition:.2s;
-display:flex;
-flex-direction:column;
+border-radius:10px;
+padding:15px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-.produto:hover{
-transform:translateY(-3px);
-box-shadow:0 10px 22px rgba(0,0,0,0.09);
-}
-
-/* IMAGEM */
-
-.produto-img{
+.produto img{
 width:100%;
-height:170px;
-object-fit:contain;
-margin-bottom:12px;
+height:150px;
+object-fit:cover;
+background:#eee;
 }
-
-/* TITULO */
 
 .produto h3{
-font-size:15px;
-margin-bottom:10px;
-line-height:1.3;
-min-height:42px;
-}
-
-/* INPUTS */
-
-.produto select,
-.produto input{
-width:100%;
-padding:8px;
-margin-bottom:10px;
-border-radius:6px;
-border:1px solid #ddd;
-}
-
-/* BOTÃO */
-
-.produto button{
-background:#ff0a5b;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-transition:.2s;
-}
-
-.produto button:hover{
-background:#d1004a;
-}
-
-/* CARRINHO */
-
-.carrinho{
-position:fixed;
-right:0;
-top:0;
-width:30%;
-height:100%;
-background:#0b0b0b;
-color:white;
-padding:25px;
-box-sizing:border-box;
-overflow:auto;
-}
-
-.carrinho h2{
-margin-top:0;
-font-size:20px;
-}
-
-/* ITEM CARRINHO */
-
-.item-carrinho{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
 font-size:14px;
+min-height:50px;
 }
 
-.item-carrinho button{
-background:#ff3b3b;
-border:none;
+.sku{
+font-size:12px;
+color:#777;
+}
+
+.estoque{
+font-size:13px;
+margin-bottom:5px;
+}
+
+.esgotado{
+color:red;
+}
+
+.add{
+background:#ff0066;
 color:white;
-border-radius:4px;
-cursor:pointer;
-padding:3px 7px;
-}
-
-/* TOTAL */
-
-#total{
-margin-top:20px;
-font-size:18px;
-}
-
-/* BARRA */
-
-.progress{
-width:100%;
-height:12px;
-background:#333;
-border-radius:10px;
-margin:15px 0;
-overflow:hidden;
-}
-
-.progress-bar{
-height:100%;
-background:#00c853;
-width:0%;
-}
-
-/* FORM */
-
-.carrinho input{
-width:100%;
+border:none;
 padding:10px;
-margin-bottom:10px;
+width:100%;
 border-radius:6px;
-border:none;
-}
-
-.carrinho button{
-background:#00c853;
-border:none;
-padding:12px;
-border-radius:6px;
-color:white;
-font-size:16px;
 cursor:pointer;
-width:100%;
-}
-
-/* RESPONSIVO */
-
-@media(max-width:1000px){
-
-.catalogo{
-width:100%;
 }
 
 .carrinho{
-position:relative;
-width:100%;
-height:auto;
+width:300px;
+background:black;
+color:white;
+padding:20px;
+position:sticky;
+top:0;
+height:100vh;
 }
 
+.total{
+font-size:20px;
+margin-top:10px;
+}
+
+.progresso{
+height:8px;
+background:#444;
+margin-top:10px;
+}
+
+#barra{
+height:8px;
+background:#00c853;
+width:0;
 }
