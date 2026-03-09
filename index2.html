@@ -1,212 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Portal B2B Crazy Fantasy</title>
+<title>Crazy Fantasy B2B</title>
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 </head>
 
-
 <body>
-
-
-<div id="loginTela" class="loginTela">
-
-<div class="loginBox">
-
-<h2>Portal B2B Crazy Fantasy</h2>
-
-<input id="loginNome" placeholder="Nome do lojista">
-
-<input id="loginEmpresa" placeholder="Empresa">
-
-<input id="loginEmail" placeholder="Email">
-
-<button onclick="fazerLogin()">
-
-Entrar
-
-</button>
-
-</div>
-
-</div>
-
-
-
-<div id="portal" style="display:none">
-
 
 <div class="container">
 
-
 <div class="catalogo">
 
-
 <div class="banner">
-<img src="banner.png">
+<img src="banner.jpg">
 </div>
 
+<div class="boasVindas">
+
+<h2>🎭 Bem-vindo ao Portal B2B Crazy Fantasy</h2>
+
+<p>Tabela exclusiva para parceiros.</p>
+
+<p><b>Pedido mínimo: R$200</b></p>
+
+</div>
 
 <div class="barraInfo">
-
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
-
 </div>
 
+<input class="busca" placeholder="🔎 Buscar produto..." onkeyup="buscarProduto(this.value)">
 
-<div id="menuCategorias" class="menuCategorias"></div>
-
-
-<input id="busca" placeholder="🔎 Buscar produto">
-
-
-<div id="produtos" class="gridProdutos"></div>
-
+<div class="gridProdutos" id="listaProdutos"></div>
 
 </div>
-
-
 
 <div class="carrinho">
 
+<h2>Pedido (<span id="contadorItens">0</span> itens)</h2>
 
-<h2>
+<div>Total B2B: <b id="totalPedido">0</b></div>
 
-Pedido
-
-<span id="contadorItens">(0 itens)</span>
-
-</h2>
-
-
-<div class="total">
-
-Total B2B: R$ <span id="total">0</span>
-
+<div class="progressBar">
+<div id="progress"></div>
 </div>
 
+<div id="faltam"></div>
 
-<div class="economiaPedido">
-
-💰 Economia: R$ <span id="economia">0</span>
-
-</div>
-
-
-<div class="barraProgresso">
-
-<div id="barra"></div>
-
-</div>
-
-
-<div id="msgMinimo"></div>
-
-
-<div id="listaPedido"></div>
-
+<div id="listaCarrinho"></div>
 
 <h3>Dados do Cliente</h3>
 
 <input id="empresa" placeholder="Empresa">
-
 <input id="nome" placeholder="Nome">
-
 <input id="email" placeholder="Email">
 
-
-<form id="formEmail"
-action="https://formsubmit.co/SEUEMAIL@email.com"
-method="POST">
-
-<input type="hidden" name="pedido" id="pedidoTexto">
-
-<button type="submit" class="btnEmail">
-
-Enviar Pedido por Email
-
-</button>
-
-</form>
-
-
-<button class="btnWhats" onclick="enviarWhatsApp()">
-
-Enviar por WhatsApp
-
-</button>
-
-
-<button class="btnPdf" onclick="gerarPDF()">
-
-Gerar PDF do Pedido
-
-</button>
-
-
-<button class="btnLimpar" onclick="limparCarrinho()">
-
-Limpar Pedido
-
-</button>
-
+<button class="btnEmail">Enviar Pedido por Email</button>
+<button class="btnWhats">Enviar por WhatsApp</button>
+<button class="btnPdf">Gerar PDF do Pedido</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
 
 </div>
 
-
 </div>
-
-
 
 <footer class="footer">
 
-Crazy Fantasy B2B
+<div class="footerGrid">
 
-<br><br>
+<div>
+<b>Crazy Fantasy B2B</b><br>
+Portal exclusivo para parceiros
+</div>
 
-Desconto progressivo
-
-<br>
-
-até R$200 → 10%
-
-<br>
-
-até R$500 → 12%
-
-<br>
-
+<div>
+<b>Descontos</b><br>
+até R$200 → 10%<br>
+até R$500 → 12%<br>
 até R$1000 → 15%
+</div>
 
-<br><br>
+<div>
+<b>Pagamento</b><br>
+PIX<br>
+Boleto<br>
+Cartão
+</div>
 
-Pagamento: PIX | Boleto | Cartão
-
-<br>
-
-Frete calculado após envio
-
-<br>
-
-Validade do pedido: 48h
-
-</footer>
-
+<div>
+<b>Pedido</b><br>
+Frete calculado após envio<br>
+Validade 48h
+</div>
 
 </div>
 
+</footer>
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
