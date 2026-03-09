@@ -1,119 +1,150 @@
-let carrinho=[]
-let total=0
+const listaProdutos = document.getElementById("produtos");
+const listaPedido = document.getElementById("listaPedido");
+const totalEl = document.getElementById("total");
+const barra = document.getElementById("barra");
+const msgMinimo = document.getElementById("msgMinimo");
+const busca = document.getElementById("busca");
+
+let produtos = [];
+let carrinho = [];
+let total = 0;
+const pedidoMinimo = 200;
 
 fetch("produtos.csv")
-.then(r=>r.text())
-.then(data=>{
+.then(response => response.text())
+.then(data => {
 
-const linhas=data.split("\n").slice(1)
+const linhas = data.split("\n").slice(1);
 
-const produtosContainer=document.getElementById("produtos")
+linhas.forEach(linha => {
 
-linhas.forEach(linha=>{
+if(!linha.trim()) return;
 
-const col=linha.split(",")
+const col = linha.split(",");
 
-if(col.length<7)return
+const produto = {
+categoria: col[0],
+nome: col[1],
+variacao: col[2],
+preco: parseFloat(col[3]),
+link: col[4],
+sku: col[5],
+estoque: parseInt(col[6])
+};
 
-const categoria=col[0]
-const nome=col[1]
-const variacao=col[2]
-const preco=parseFloat(col[3])
-const imagem=col[4]
-const sku=col[5]
-const estoque=parseInt(col[6])
+produtos.push(produto);
 
-const card=document.createElement("div")
+});
 
-card.className="produto"
+renderProdutos(produtos);
 
-card.innerHTML=`
+});
 
-<img src="https://via.placeholder.com/300x200">
 
-<h3>${nome}</h3>
+function renderProdutos(lista){
 
-<div class="sku">SKU: ${sku}</div>
+listaProdutos.innerHTML="";
 
-<div class="estoque">
+lista.forEach(produto=>{
 
-${estoque>0?`Estoque: ${estoque}`:`<span class="esgotado">Esgotado</span>`}
+const card=document.createElement("div");
+card.className="produto";
 
+card.innerHTML = `
+
+<h3>${produto.nome}</h3>
+
+${produto.variacao !== "padrão" ? `<div class="variacao">${produto.variacao}</div>` : ""}
+
+<div class="sku">SKU: ${produto.sku}</div>
+
+<div class="estoque ${produto.estoque==0 ? "esgotado":""}">
+${produto.estoque>0 ? `Estoque: ${produto.estoque}` : "Esgotado"}
 </div>
 
-<input type="number" value="1" min="1" max="${estoque}" class="qtd">
+<input type="number" value="1" min="1" max="${produto.estoque}" class="qtd">
 
-<button class="add">Adicionar</button>
+<button class="add" ${produto.estoque==0?"disabled":""}>Adicionar</button>
 
-<a href="${imagem}" target="_blank">Ver produto</a>
+<a href="${produto.link}" target="_blank">Ver produto</a>
 
-`
+`;
 
-const btn=card.querySelector(".add")
+const btn = card.querySelector(".add");
 
-if(estoque==0){
-btn.disabled=true
-}
+btn.onclick = ()=>{
 
-btn.onclick=()=>{
-
-const qtd=parseInt(card.querySelector(".qtd").value)
+const qtd = parseInt(card.querySelector(".qtd").value);
 
 carrinho.push({
-nome,
-variacao,
-preco,
-qtd
-})
+nome: produto.nome,
+variacao: produto.variacao,
+preco: produto.preco,
+qtd: qtd
+});
 
-total+=preco*qtd
+total += produto.preco * qtd;
 
-atualizarCarrinho()
+atualizarCarrinho();
+
+};
+
+listaProdutos.appendChild(card);
+
+});
 
 }
 
-produtosContainer.appendChild(card)
-
-})
-
-})
 
 function atualizarCarrinho(){
 
-const lista=document.getElementById("listaPedido")
-
-lista.innerHTML=""
+listaPedido.innerHTML="";
 
 carrinho.forEach(item=>{
 
-const div=document.createElement("div")
+const div=document.createElement("div");
 
-div.innerText=item.nome+" x"+item.qtd
+div.className="itemCarrinho";
 
-lista.appendChild(div)
+div.innerText = `${item.nome} ${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""} x${item.qtd}`;
 
-})
+listaPedido.appendChild(div);
 
-document.getElementById("total").innerText=total.toFixed(2)
+});
 
-let progresso=(total/200)*100
+totalEl.innerText = total.toFixed(2);
 
-if(progresso>100)progresso=100
+let progresso = (total/pedidoMinimo)*100;
 
-document.getElementById("barra").style.width=progresso+"%"
+if(progresso>100) progresso=100;
 
-if(total<200){
+barra.style.width = progresso+"%";
 
-document.getElementById("msgMinimo").innerText=
+if(total < pedidoMinimo){
 
-"Faltam R$"+(200-total).toFixed(2)+" para atingir o pedido mínimo"
+msgMinimo.innerText = "Faltam R$ "+(pedidoMinimo-total).toFixed(2)+" para atingir o pedido mínimo";
 
 }
-
 else{
 
-document.getElementById("msgMinimo").innerText="Pedido mínimo atingido"
+msgMinimo.innerText = "Pedido mínimo atingido";
 
 }
 
 }
+
+
+busca.addEventListener("input", ()=>{
+
+const termo = busca.value.toLowerCase();
+
+const filtrados = produtos.filter(p =>
+
+p.nome.toLowerCase().includes(termo) ||
+p.variacao.toLowerCase().includes(termo)
+
+);
+
+renderProdutos(filtrados);
+
+});
