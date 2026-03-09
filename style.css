@@ -1,15 +1,19 @@
 body{
 font-family:Arial, Helvetica, sans-serif;
 margin:0;
-background:#f5f5f5;
+background:#f4f4f4;
 display:flex;
 flex-direction:column;
 }
+
+/* BANNER */
 
 .banner img{
 width:100%;
 display:block;
 }
+
+/* MENU */
 
 #menuCategorias{
 background:black;
@@ -26,20 +30,29 @@ border:none;
 padding:8px 14px;
 border-radius:20px;
 cursor:pointer;
+transition:0.2s;
 }
 
+#menuCategorias button:hover{
+background:#ff0066;
+}
+
+/* CATALOGO */
+
 .catalogo{
-padding:20px;
+padding:25px;
 width:calc(100% - 300px);
 }
 
 #busca{
 width:100%;
-padding:10px;
-margin-bottom:20px;
-border-radius:6px;
+padding:12px;
+border-radius:8px;
 border:1px solid #ccc;
+margin-bottom:20px;
 }
+
+/* GRID PRODUTOS */
 
 #produtos{
 display:grid;
@@ -47,13 +60,22 @@ grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
 gap:20px;
 }
 
+/* CARD PRODUTO */
+
 .produto{
 background:white;
 padding:15px;
 border-radius:10px;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
 display:flex;
 flex-direction:column;
+position:relative;
+transition:0.2s;
+}
+
+.produto:hover{
+transform:translateY(-5px);
+box-shadow:0 6px 16px rgba(0,0,0,0.15);
 }
 
 .produto h3{
@@ -64,27 +86,67 @@ margin-bottom:6px;
 .variacao{
 font-size:13px;
 color:#666;
-margin-bottom:6px;
+margin-bottom:5px;
 }
 
-.sku{
+/* PREÇO */
+
+.precoOriginal{
+text-decoration:line-through;
+color:#999;
 font-size:12px;
-color:#888;
 }
+
+.precoB2B{
+color:#00c853;
+font-weight:bold;
+font-size:15px;
+margin-left:5px;
+}
+
+/* BADGE B2B */
+
+.badgeB2B{
+position:absolute;
+top:10px;
+right:10px;
+background:#ff0066;
+color:white;
+font-size:11px;
+padding:4px 6px;
+border-radius:4px;
+}
+
+/* SKU */
+
+.sku{
+font-size:11px;
+color:#888;
+margin-top:4px;
+}
+
+/* ESTOQUE */
 
 .estoque{
 font-size:13px;
+margin-top:5px;
 margin-bottom:8px;
 }
 
 .esgotado{
 color:red;
+font-weight:bold;
 }
+
+/* INPUT QUANTIDADE */
 
 .produto input{
 width:60px;
 margin-bottom:8px;
+padding:4px;
 }
+
+/* BOTÃO */
 
 .produto button{
 background:#ff0066;
@@ -93,12 +155,23 @@ border:none;
 padding:8px;
 border-radius:6px;
 cursor:pointer;
+transition:0.2s;
 }
+
+.produto button:hover{
+background:#d80057;
+transform:scale(1.05);
+}
+
+/* LINK PRODUTO */
 
 .produto a{
 font-size:12px;
 margin-top:6px;
+color:#1976D2;
 }
+
+/* CARRINHO */
 
 .carrinho{
 position:fixed;
@@ -112,57 +185,9 @@ padding:20px;
 overflow:auto;
 }
 
-.total{
-margin-top:10px;
-font-size:18px;
+.carrinho h2{
+margin-top:0;
 }
-
-.barraProgresso{
-height:8px;
-background:#444;
-margin-top:10px;
-}
-
-#barra{
-height:8px;
-background:#00c853;
-width:0%;
-}
-
-.btnEnviar{
-margin-top:10px;
-background:#00c853;
-color:white;
-border:none;
-padding:10px;
-width:100%;
-border-radius:6px;
-}
-
-
-.badgeB2B{
-background:#ff0066;
-color:white;
-font-size:11px;
-padding:3px 6px;
-border-radius:4px;
-display:inline-block;
-margin-bottom:5px;
-}
-
-.precoOriginal{
-text-decoration:line-through;
-color:#888;
-font-size:12px;
-margin-right:6px;
-}
-
-.precoB2B{
-color:#00c853;
-font-weight:bold;
-}
-
-
 
 .itemCarrinho{
 display:flex;
@@ -179,4 +204,69 @@ color:white;
 padding:3px 7px;
 border-radius:4px;
 cursor:pointer;
+}
+
+/* TOTAL */
+
+.total{
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
+}
+
+/* BARRA PROGRESSO */
+
+.barraProgresso{
+height:10px;
+background:#333;
+margin-top:10px;
+border-radius:10px;
+overflow:hidden;
+}
+
+#barra{
+height:10px;
+width:0%;
+background:#ff9800;
+transition:0.3s;
+}
+
+/* FORMULARIO */
+
+.carrinho input{
+width:100%;
+padding:8px;
+margin-top:8px;
+border-radius:6px;
+border:none;
+}
+
+/* BOTÃO ENVIAR */
+
+.btnEnviar{
+margin-top:12px;
+background:#00c853;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.btnEnviar:hover{
+background:#00a844;
+}
+
+/* RODAPÉ */
+
+footer{
+margin-top:40px;
+padding:20px;
+background:#222;
+color:white;
+text-align:center;
+font-size:13px;
 }
