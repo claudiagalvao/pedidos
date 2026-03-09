@@ -169,7 +169,7 @@ cursor:pointer;
 let produtos=[]
 let carrinho=[]
 
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRi59vKsbA6E1scWbYOexo2YInRb22e20v5u3sfKc6gdGrciEvdSa7--OfIP-P_xatipf52xeM28MrN/pub?output=csv")
+fetch("produtos.csv")
 
 .then(res=>res.text())
 
@@ -324,4 +324,5 @@ renderProdutos(produtos.filter(p=>p.nome.toLowerCase().includes(t)))
 
 </body>
 </html>
+
 
