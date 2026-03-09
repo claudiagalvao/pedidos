@@ -14,25 +14,63 @@
 
 </head>
 
+
 <body>
+
+
+<div id="loginTela" class="loginTela">
+
+<div class="loginBox">
+
+<h2>Portal B2B Crazy Fantasy</h2>
+
+<input id="loginNome" placeholder="Nome do lojista">
+
+<input id="loginEmpresa" placeholder="Empresa">
+
+<input id="loginEmail" placeholder="Email">
+
+<button onclick="fazerLogin()">
+
+Entrar
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<div id="portal" style="display:none">
+
 
 <div class="container">
 
+
 <div class="catalogo">
+
 
 <div class="banner">
 <img src="banner.png">
 </div>
 
+
 <div class="barraInfo">
+
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+
 </div>
+
 
 <div id="menuCategorias" class="menuCategorias"></div>
 
+
 <input id="busca" placeholder="🔎 Buscar produto">
 
+
 <div id="produtos" class="gridProdutos"></div>
+
 
 </div>
 
@@ -40,31 +78,49 @@
 
 <div class="carrinho">
 
+
 <h2>
+
 Pedido
+
 <span id="contadorItens">(0 itens)</span>
+
 </h2>
 
+
 <div class="total">
+
 Total B2B: R$ <span id="total">0</span>
+
 </div>
+
 
 <div class="economiaPedido">
+
 💰 Economia: R$ <span id="economia">0</span>
+
 </div>
 
+
 <div class="barraProgresso">
+
 <div id="barra"></div>
+
 </div>
+
 
 <div id="msgMinimo"></div>
 
+
 <div id="listaPedido"></div>
+
 
 <h3>Dados do Cliente</h3>
 
 <input id="empresa" placeholder="Empresa">
+
 <input id="nome" placeholder="Nome">
+
 <input id="email" placeholder="Email">
 
 
@@ -74,66 +130,83 @@ method="POST">
 
 <input type="hidden" name="pedido" id="pedidoTexto">
 
-<button class="btnEmail" type="submit">
+<button type="submit" class="btnEmail">
+
 Enviar Pedido por Email
+
 </button>
 
 </form>
 
+
 <button class="btnWhats" onclick="enviarWhatsApp()">
+
 Enviar por WhatsApp
+
 </button>
+
 
 <button class="btnPdf" onclick="gerarPDF()">
+
 Gerar PDF do Pedido
+
 </button>
+
 
 <button class="btnLimpar" onclick="limparCarrinho()">
+
 Limpar Pedido
+
 </button>
 
-</div>
 
 </div>
+
+
+</div>
+
 
 
 <footer class="footer">
 
-<div class="footerContainer">
+Crazy Fantasy B2B
 
-<div>
+<br><br>
 
-<h4>Crazy Fantasy B2B</h4>
+Desconto progressivo
 
-Portal exclusivo para parceiros
+<br>
 
-</div>
+até R$200 → 10%
 
-<div>
+<br>
 
-<h4>Descontos</h4>
+até R$500 → 12%
 
-até R$200 → 10%  
-até R$500 → 12%  
+<br>
+
 até R$1000 → 15%
 
-</div>
+<br><br>
 
-<div>
+Pagamento: PIX | Boleto | Cartão
 
-<h4>Condições</h4>
+<br>
 
-Pagamento: PIX | Boleto | Cartão  
-Frete calculado após envio  
+Frete calculado após envio
+
+<br>
+
 Validade do pedido: 48h
 
-</div>
-
-</div>
-
 </footer>
+
+
+</div>
+
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
