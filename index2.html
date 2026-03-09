@@ -16,16 +16,12 @@
 
 
 <header class="banner">
-
 <img src="banner.png">
-
 </header>
 
 
 <div class="avisoB2B">
-
-🔥 Tabela exclusiva para parceiros | Desconto automático de 10% B2B
-
+🔥 Tabela exclusiva para parceiros | Desconto automático 10% B2B
 </div>
 
 
@@ -54,38 +50,44 @@ Pedido
 
 
 <div class="total">
-
 Total: R$ <span id="total">0</span>
-
 </div>
 
 
 <div class="barraProgresso">
-
 <div id="barra"></div>
-
 </div>
-
 
 <p id="msgMinimo"></p>
 
 
 <h3>Dados do Cliente</h3>
 
-<input id="empresa" placeholder="Empresa">
 
-<input id="nome" placeholder="Nome">
+<form id="formPedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
-<input id="email" placeholder="Email">
+<input id="empresa" name="empresa" placeholder="Empresa" required>
+
+<input id="nome" name="nome" placeholder="Nome" required>
+
+<input id="email" name="email" placeholder="Email" required>
+
+<textarea id="pedidoTexto" name="pedido" hidden></textarea>
+
+<input type="hidden" name="_subject" value="Novo Pedido B2B Crazy Fantasy">
+
+<input type="hidden" name="_captcha" value="false">
+
+
+<button class="btnEnviar" onclick="prepararPedido()" type="submit">
+Enviar Pedido
+</button>
+
+</form>
 
 
 <button class="btnEnviar" onclick="enviarWhatsApp()">
-Enviar Pedido WhatsApp
-</button>
-
-
-<button class="btnEnviar" onclick="enviarEmail()">
-Enviar Pedido Email
+Enviar por WhatsApp
 </button>
 
 
