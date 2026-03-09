@@ -1,63 +1,450 @@
-:root {
-    --primary: #4f46e5;
-    --secondary: #ec4899;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --dark: #0f172a;
-    --border: #e2e8f0;
+body{
+
+font-family:Arial;
+
+background:#f4f6fb;
+
+margin:0;
+
 }
 
-body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; }
-.container { display: flex; }
-.catalogo { flex: 3; padding: 40px; }
 
-/* Barra Info Vibrante */
-.barraInfo {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: white; padding: 14px; border-radius: 12px;
-    text-align: center; font-weight: 600; margin-bottom: 20px;
+
+.container{
+
+display:flex;
+
 }
 
-/* Card de Produto Profissional */
-.gridProdutos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-.produto {
-    background: white; padding: 24px; border-radius: 16px;
-    border: 1px solid var(--border); position: relative;
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.produto:hover { transform: translateY(-8px); box-shadow: 0 20px 25px rgba(0,0,0,0.1); }
 
-/* Posicionamento dos Ícones no Card */
-.camera { position: absolute; top: 15px; right: 15px; font-size: 20px; }
-.badgeVendido { position: absolute; top: 15px; left: 15px; background: var(--warning); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 
-/* Carrinho Lateral Escuro */
-.carrinho { flex: 1; background: var(--dark); color: white; padding: 30px; min-width: 350px; }
-.total { font-size: 22px; font-weight: 800; }
-.economiaPedido { color: var(--success); margin-bottom: 20px; }
+.catalogo{
 
-/* Estilo da Barra de Progresso */
-.checkout-progresso { margin: 20px 0; }
-.status-desconto { font-size: 13px; display: block; min-height: 35px; color: #94a3b8; }
-.barra-container { height: 12px; background: #1e293b; border-radius: 10px; position: relative; margin-top: 10px; }
-.barra-preenchimento { 
-    height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); 
-    border-radius: 10px; width: var(--percentual, 0%); transition: 0.5s; 
-}
-.marcador { position: absolute; top: -4px; width: 2px; height: 20px; background: rgba(255,255,255,0.2); }
-.marcador::after { content: attr(data-label); position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #64748b; }
-.m1 { left: 20%; } .m2 { left: 50%; } .m3 { left: 100%; }
+flex:3;
 
-/* Itens no Carrinho e Botão Excluir Pequeno */
-.itemCarrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding: 10px 0; }
-.btnExcluirItem { 
-    background: transparent !important; color: #ff4444 !important; border: 1px solid #ff4444 !important;
-    width: auto !important; padding: 4px 8px !important; font-size: 11px !important; margin: 0 !important;
+padding:20px;
+
 }
 
-/* Inputs e Botões Gerais */
-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
-button { width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; margin: 5px 0; }
-.btnEmail, .btnWhats { background: var(--success); color: white; }
-.btnPdf { background: var(--warning); color: white; }
-.btnLimpar { background: transparent; color: #64748b; border: 1px solid #334155; }
+
+
+.banner img{
+
+width:100%;
+
+border-radius:12px;
+
+}
+
+
+
+.barraInfo{
+
+background:#ff0066;
+
+color:white;
+
+padding:10px;
+
+border-radius:10px;
+
+margin:10px 0;
+
+text-align:center;
+
+}
+
+
+
+.gridProdutos{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+
+gap:20px;
+
+}
+
+
+
+.produto{
+
+
+
+background:linear-gradient(145deg,#ffffff,#f1f3f8);
+
+
+
+padding:20px;
+
+
+
+border-radius:14px;
+
+
+
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+
+
+
+position:relative;
+
+
+
+transition:0.3s;
+
+
+
+}
+
+
+
+.produto:hover{
+
+
+
+transform:translateY(-6px);
+
+
+
+box-shadow:0 14px 30px rgba(0,0,0,0.12);
+
+
+
+}
+
+
+
+.camera{
+
+
+
+position:absolute;
+
+
+
+top:10px;
+
+
+
+right:10px;
+
+
+
+font-size:22px;
+
+
+
+}
+
+
+
+.camera a{
+
+
+
+text-decoration:none;
+
+
+
+}
+
+
+
+.badgeVendido{
+
+
+
+position:absolute;
+
+
+
+top:10px;
+
+
+
+left:10px;
+
+
+
+background:#ff9800;
+
+
+
+color:white;
+
+
+
+padding:4px 8px;
+
+
+
+border-radius:6px;
+
+
+
+font-size:12px;
+
+
+
+}
+
+
+
+.precoOriginal{
+
+
+
+text-decoration:line-through;
+
+
+
+color:#888;
+
+
+
+}
+
+
+
+.precoB2B{
+
+
+
+color:#1db954;
+
+
+
+font-size:18px;
+
+
+
+font-weight:bold;
+
+
+
+}
+
+
+
+.progressivo{
+
+
+
+font-size:12px;
+
+
+
+color:#777;
+
+
+
+margin-top:6px;
+
+
+
+}
+
+
+
+.btnAdd{
+
+
+
+background:#ff0055;
+
+
+
+color:white;
+
+
+
+border:none;
+
+
+
+padding:10px;
+
+
+
+border-radius:8px;
+
+
+
+width:100%;
+
+
+
+margin-top:10px;
+
+
+
+cursor:pointer;
+
+
+
+transition:0.3s;
+
+
+
+}
+
+
+
+.btnAdd:hover{
+
+
+
+background:#e6004d;
+
+
+
+transform:scale(1.05);
+
+
+
+}
+
+
+
+.pulse{
+
+
+
+animation:pulse 0.4s;
+
+
+
+}
+
+
+
+@keyframes pulse{
+
+
+
+0%{transform:scale(1)}
+
+
+
+50%{transform:scale(1.1)}
+
+
+
+100%{transform:scale(1)}
+
+
+
+}
+
+
+
+.carrinho{
+
+
+
+flex:1;
+
+
+
+background:#1f2b3a;
+
+
+
+color:white;
+
+
+
+padding:20px;
+
+
+
+}
+
+
+
+input{
+
+
+
+width:100%;
+
+
+
+margin:6px 0;
+
+
+
+padding:8px;
+
+
+
+}
+
+
+
+button{
+
+
+
+margin:6px 0;
+
+
+
+padding:10px;
+
+
+
+border:none;
+
+
+
+border-radius:6px;
+
+
+
+cursor:pointer;
+
+
+
+}
+
+
+
+.btnEmail{background:#00c853;color:white}
+
+.btnWhats{background:#00c853;color:white}
+
+.btnPdf{background:#ff9800;color:white}
+
+.btnLimpar{background:#ff4444;color:white}
+
+
+
+.footer{
+
+
+
+background:#111;
+
+
+
+color:white;
+
+
+
+padding:30px;
+
+
+
+text-align:center;
+
+
+
+margin-top:30px;
+
+
+
+}
+
