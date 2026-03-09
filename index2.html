@@ -14,41 +14,25 @@
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
-
 <div class="catalogo">
 
-
 <div class="banner">
-
 <img src="banner.png">
-
 </div>
-
 
 <div class="barraInfo">
-
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
-
 </div>
-
 
 <div id="menuCategorias" class="menuCategorias"></div>
 
-
-<h1>Portal B2B Crazy Fantasy</h1>
-
-
 <input id="busca" placeholder="🔎 Buscar produto">
 
-
 <div id="produtos" class="gridProdutos"></div>
-
 
 </div>
 
@@ -56,89 +40,90 @@
 
 <div class="carrinho">
 
-
-<h2>Pedido <span id="contadorItens">(0 itens)</span></h2>
-
+<h2>
+Pedido
+<span id="contadorItens">(0 itens)</span>
+</h2>
 
 <div class="total">
-
-Total: R$ <span id="total">0</span>
-
+Total B2B: R$ <span id="total">0</span>
 </div>
 
+<div class="economiaPedido">
+💰 Economia: R$ <span id="economia">0</span>
+</div>
 
 <div class="barraProgresso">
-
 <div id="barra"></div>
-
 </div>
 
-
-<div id="msgMinimo" class="msgMinimo"></div>
-
+<div id="msgMinimo"></div>
 
 <div id="listaPedido"></div>
 
-
-
 <h3>Dados do Cliente</h3>
 
-
 <input id="empresa" placeholder="Empresa">
-
 <input id="nome" placeholder="Nome">
-
 <input id="email" placeholder="Email">
 
-
-
-<form action="https://formsubmit.co/seuemail@email.com"
-method="POST"
-onsubmit="prepararPedido()">
-
-<input type="hidden" name="pedido" id="pedidoTexto">
-
-<button class="btnEmail">
-
+<button class="btnEmail" onclick="enviarEmail()">
 Enviar Pedido por Email
-
 </button>
-
-</form>
-
 
 <button class="btnWhats" onclick="enviarWhatsApp()">
-
 Enviar por WhatsApp
-
 </button>
-
 
 <button class="btnPdf" onclick="gerarPDF()">
-
 Gerar PDF do Pedido
-
 </button>
-
 
 <button class="btnLimpar" onclick="limparCarrinho()">
-
 Limpar Pedido
-
 </button>
 
-
+</div>
 
 </div>
 
 
+<div class="footer">
+
+<b>Crazy Fantasy B2B</b>
+
+<br><br>
+
+Desconto progressivo
+
+<br>
+
+até R$200 → 10%
+
+<br>
+
+até R$500 → 12%
+
+<br>
+
+até R$1000 → 15%
+
+<br><br>
+
+Pagamento: PIX | Boleto | Cartão
+
+<br>
+
+Frete calculado após envio
+
+<br>
+
+Validade do pedido: 48h
 
 </div>
 
 
 <script src="script.js"></script>
 
-
 </body>
-
 </html>
