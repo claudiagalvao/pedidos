@@ -1,6 +1,7 @@
 let produtos={}
 let carrinho=[]
 let categorias=new Set()
+let minimo=200
 
 fetch("produtos.csv")
 
@@ -12,7 +13,7 @@ let linhas=text.trim().split("\n")
 
 linhas.slice(1).forEach(linha=>{
 
-let [categoria,nome,variacao,preco]=linha.split(",")
+let [categoria,nome,variacao,preco,imagem]=linha.split(",")
 
 categoria=categoria.trim()
 
@@ -24,6 +25,7 @@ produtos[nome]={
 
 categoria:categoria,
 preco:parseFloat(preco),
+imagem:imagem,
 variacoes:[]
 
 }
@@ -35,7 +37,6 @@ produtos[nome].variacoes.push(variacao)
 })
 
 criarMenu()
-
 render(produtos)
 
 })
@@ -82,7 +83,7 @@ let variacaoHTML=""
 
 if(p.variacoes.length > 1 || p.variacoes[0].toLowerCase() !== "padrão"){
 
-variacaoHTML = `
+variacaoHTML=`
 <select id="var-${nome}">
 ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 </select>
@@ -93,6 +94,8 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 let html=`
 
 <div class="produto">
+
+<img src="${p.imagem}" class="produto-img">
 
 <h3>${nome}</h3>
 
@@ -158,6 +161,14 @@ renderCarrinho()
 
 }
 
+function remover(nome){
+
+carrinho = carrinho.filter(i => i.nome !== nome)
+
+renderCarrinho()
+
+}
+
 function renderCarrinho(){
 
 let lista=document.getElementById("lista")
@@ -168,17 +179,38 @@ let total=0
 
 carrinho.forEach(i=>{
 
-lista.innerHTML+=`${i.nome} x${i.qtd}<br>`
+lista.innerHTML+=`
+<div class="item-carrinho">
+${i.nome} x${i.qtd}
+<button onclick="remover('${i.nome}')">✕</button>
+</div>
+`
 
 total+=i.preco*i.qtd
 
 })
 
+document.getElementById("contador").innerText=carrinho.length
+
 document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
 
-let barra=Math.min((total/200)*100,100)
+let barra=Math.min((total/minimo)*100,100)
 
 document.getElementById("barra").style.width=barra+"%"
+
+if(total < minimo){
+
+let falta=(minimo-total).toFixed(2)
+
+document.getElementById("minimo-msg").innerText=
+"Faltam R$"+falta+" para atingir o pedido mínimo."
+
+}else{
+
+document.getElementById("minimo-msg").innerText=
+"Pedido mínimo atingido!"
+
+}
 
 }
 
@@ -197,3 +229,23 @@ let url="https://wa.me/?text="+encodeURIComponent(texto)
 window.open(url)
 
 }
+
+document.getElementById("busca").addEventListener("input",function(){
+
+let termo=this.value.toLowerCase()
+
+let filtrados={}
+
+for(let nome in produtos){
+
+if(nome.toLowerCase().includes(termo)){
+
+filtrados[nome]=produtos[nome]
+
+}
+
+}
+
+render(filtrados)
+
+})
