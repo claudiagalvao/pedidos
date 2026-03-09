@@ -14,6 +14,10 @@
 
 <body>
 
+<div class="banner">
+<img src="banner.png" style="width:100%">
+</div>
+
 <div class="catalogo">
 
 <h1>Catálogo Crazy Fantasy</h1>
@@ -36,7 +40,7 @@
 
 <p id="faltam"></p>
 
-<form action="https://formsubmit.co/lojacrazyfantasy@hotmailcom" method="POST">
+<form action="https://formsubmit.co/seuemail@aqui.com" method="POST">
 
 <input type="hidden" name="pedido" id="pedido">
 
@@ -93,6 +97,8 @@ function render(){
 
 let div=document.getElementById("produtos")
 
+div.innerHTML=""
+
 for(let nome in produtos){
 
 let p=produtos[nome]
@@ -130,7 +136,17 @@ function add(nome,preco){
 let variacao=document.getElementById("var-"+nome).value
 let qtd=parseInt(document.getElementById("qtd-"+nome).value)
 
+let item=carrinho.find(i=>i.nome==nome && i.variacao==variacao)
+
+if(item){
+
+item.qtd+=qtd
+
+}else{
+
 carrinho.push({nome,variacao,qtd,preco})
+
+}
 
 renderCarrinho()
 
@@ -176,4 +192,3 @@ document.getElementById("pedido").value=JSON.stringify(carrinho)
 
 </body>
 </html>
-
