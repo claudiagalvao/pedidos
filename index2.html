@@ -48,14 +48,7 @@
 
 </div>
 
-<div class="menu">
-
-<button onclick="filtrar('todos')">Todos</button>
-<button onclick="filtrar('Perucas')">Perucas</button>
-<button onclick="filtrar('Acessórios')">Acessórios</button>
-<button onclick="filtrar('Maquiagem')">Maquiagem</button>
-
-</div>
+<div class="menu" id="menu"></div>
 
 <div class="catalogo">
 
@@ -80,9 +73,7 @@
 <form>
 
 <input placeholder="Empresa">
-
 <input placeholder="Nome">
-
 <input placeholder="Email">
 
 <button type="button" onclick="enviarPedido()">
@@ -97,6 +88,7 @@ Enviar Pedido
 
 let produtos={}
 let carrinho=[]
+let categorias=new Set()
 
 /* CARREGAR CSV */
 
@@ -111,6 +103,10 @@ let linhas=text.trim().split("\n")
 linhas.slice(1).forEach(linha=>{
 
 let [categoria,nome,variacao,preco]=linha.split(",")
+
+categoria=categoria.trim()
+
+categorias.add(categoria)
 
 if(!produtos[nome]){
 
@@ -127,9 +123,41 @@ produtos[nome].variacoes.push(variacao)
 
 })
 
+criarMenu()
+
 render(produtos)
 
 })
+
+/* CRIAR MENU AUTOMATICO */
+
+function criarMenu(){
+
+let div=document.getElementById("menu")
+
+div.innerHTML=""
+
+let btnTodos=document.createElement("button")
+
+btnTodos.innerText="Todos"
+
+btnTodos.onclick=()=>render(produtos)
+
+div.appendChild(btnTodos)
+
+categorias.forEach(cat=>{
+
+let btn=document.createElement("button")
+
+btn.innerText=cat
+
+btn.onclick=()=>filtrar(cat)
+
+div.appendChild(btn)
+
+})
+
+}
 
 /* RENDER PRODUTOS */
 
@@ -166,6 +194,26 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 div.innerHTML+=html
 
 }
+
+}
+
+/* FILTRAR CATEGORIA */
+
+function filtrar(cat){
+
+let filtrados={}
+
+for(let nome in produtos){
+
+if(produtos[nome].categoria==cat){
+
+filtrados[nome]=produtos[nome]
+
+}
+
+}
+
+render(filtrados)
 
 }
 
@@ -240,34 +288,6 @@ texto+=`${i.nome} x${i.qtd}\n`
 let url="https://wa.me/?text="+encodeURIComponent(texto)
 
 window.open(url)
-
-}
-
-/* FILTRO MENU */
-
-function filtrar(cat){
-
-if(cat=="todos"){
-
-render(produtos)
-
-return
-
-}
-
-let filtrados={}
-
-for(let nome in produtos){
-
-if(produtos[nome].categoria==cat){
-
-filtrados[nome]=produtos[nome]
-
-}
-
-}
-
-render(filtrados)
 
 }
 
