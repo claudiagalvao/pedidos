@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy | Portal B2B</title>
+<title>Crazy Fantasy | Catálogo B2B</title>
 
 <link rel="stylesheet" href="estilo.css">
 
@@ -15,21 +15,18 @@
 <body>
 
 <div class="banner">
-<img src="banner.png" style="width:100%">
+<img src="banner.png">
 </div>
 
 <div class="menu">
 
-<button onclick="filtrar('Todos')">Todos</button>
+<button onclick="filtrar('todos')">Todos</button>
 <button onclick="filtrar('Perucas')">Perucas</button>
 <button onclick="filtrar('Acessorios')">Acessórios</button>
 <button onclick="filtrar('Maquiagem')">Maquiagem</button>
 
 </div>
 
-
-
-  
 <div class="catalogo">
 
 <h1>Catálogo Crazy Fantasy</h1>
@@ -47,22 +44,20 @@
 <h3 id="total">Total: R$0</h3>
 
 <div class="progress">
-<div class="progress-bar" id="progress"></div>
+<div class="progress-bar" id="barra"></div>
 </div>
 
-<p id="faltam"></p>
+<form>
 
-<form action="https://formsubmit.co/seuemail@aqui.com" method="POST">
+<input placeholder="Empresa">
 
-<input type="hidden" name="pedido" id="pedido">
+<input placeholder="Nome">
 
-<input type="text" name="empresa" placeholder="Empresa" required>
+<input placeholder="Email">
 
-<input type="text" name="nome" placeholder="Nome" required>
-
-<input type="email" name="email" placeholder="Email" required>
-
-<button type="submit">Enviar Pedido</button>
+<button type="button" onclick="enviarPedido()">
+Enviar Pedido
+</button>
 
 </form>
 
@@ -70,58 +65,48 @@
 
 <script>
 
-let produtos={}
-let carrinho=[]
-const minimo=200
+let produtos={
+"Peruca Punk":{
+categoria:"Perucas",
+variacoes:["Azul","Rosa","Verde"],
+preco:30
+},
 
-fetch("produtos.csv")
+"Varinha Princesa":{
+categoria:"Acessorios",
+variacoes:["Rosa","Lilás"],
+preco:7.99
+},
 
-.then(r=>r.text())
-
-.then(text=>{
-
-let linhas=text.trim().split("\n").slice(1)
-
-linhas.forEach(l=>{
-
-let c=l.split(",")
-
-let categoria=c[0]
-let nome=c[1]
-let variacao=c[2]
-let preco=parseFloat(c[3])
-
-if(!produtos[nome]){
-
-produtos[nome]={variacoes:[],preco}
-
+"Tinta Spray":{
+categoria:"Maquiagem",
+variacoes:["Azul","Vermelho","Amarelo"],
+preco:19.99
+}
 }
 
-produtos[nome].variacoes.push(variacao)
+let carrinho=[]
 
-})
-
-render()
-
-})
-
-function render(){
+function render(lista=produtos){
 
 let div=document.getElementById("produtos")
 
 div.innerHTML=""
 
-for(let nome in produtos){
+for(let nome in lista){
 
-let p=produtos[nome]
+let p=lista[nome]
 
 let html=`
+
 <div class="produto">
 
 <h3>${nome}</h3>
 
 <select id="var-${nome}">
+
 ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
+
 </select>
 
 <br>
@@ -130,11 +115,10 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 <br>
 
-<button onclick="add('${nome}',${p.preco})">
-Adicionar
-</button>
+<button onclick="add('${nome}')">Adicionar</button>
 
 </div>
+
 `
 
 div.innerHTML+=html
@@ -143,12 +127,13 @@ div.innerHTML+=html
 
 }
 
-function add(nome,preco){
+function add(nome){
 
-let variacao=document.getElementById("var-"+nome).value
 let qtd=parseInt(document.getElementById("qtd-"+nome).value)
 
-let item=carrinho.find(i=>i.nome==nome && i.variacao==variacao)
+let produto=produtos[nome]
+
+let item=carrinho.find(i=>i.nome==nome)
 
 if(item){
 
@@ -156,7 +141,15 @@ item.qtd+=qtd
 
 }else{
 
-carrinho.push({nome,variacao,qtd,preco})
+carrinho.push({
+
+nome:nome,
+
+preco:produto.preco,
+
+qtd:qtd
+
+})
 
 }
 
@@ -166,42 +159,73 @@ renderCarrinho()
 
 function renderCarrinho(){
 
-let div=document.getElementById("lista")
-div.innerHTML=""
+let lista=document.getElementById("lista")
+
+lista.innerHTML=""
 
 let total=0
 
 carrinho.forEach(i=>{
 
-div.innerHTML+=`${i.nome} (${i.variacao}) x${i.qtd}<br>`
+lista.innerHTML+=`${i.nome} x${i.qtd}<br>`
 
-total+=i.qtd*i.preco
+total+=i.preco*i.qtd
 
 })
 
 document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
 
-let perc=Math.min((total/minimo)*100,100)
+let barra=Math.min((total/200)*100,100)
 
-document.getElementById("progress").style.width=perc+"%"
-
-if(total<minimo){
-
-document.getElementById("faltam").innerText=
-"Faltam R$"+(minimo-total).toFixed(2)+" para o pedido mínimo"
-
-}else{
-
-document.getElementById("faltam").innerText="Pedido mínimo atingido"
+document.getElementById("barra").style.width=barra+"%"
 
 }
 
-document.getElementById("pedido").value=JSON.stringify(carrinho)
+function enviarPedido(){
+
+let texto="Pedido Crazy Fantasy\n\n"
+
+carrinho.forEach(i=>{
+
+texto+=`${i.nome} x${i.qtd}\n`
+
+})
+
+let url="https://wa.me/?text="+encodeURIComponent(texto)
+
+window.open(url)
 
 }
+
+function filtrar(cat){
+
+if(cat=="todos"){
+
+render()
+
+return
+
+}
+
+let filtrados={}
+
+for(let nome in produtos){
+
+if(produtos[nome].categoria==cat){
+
+filtrados[nome]=produtos[nome]
+
+}
+
+}
+
+render(filtrados)
+
+}
+
+render()
 
 </script>
 
 </body>
 </html>
-
