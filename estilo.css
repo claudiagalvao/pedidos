@@ -12,145 +12,150 @@ width:100%;
 display:block;
 }
 
-/* BLOCO PARCEIROS */
+/* SEÇÃO INFORMAÇÕES */
 
 .info-parceiros{
-background:#f8f8f8;
-padding:40px;
 text-align:center;
+padding:40px 20px;
+background:#f5f5f5;
 }
 
 .info-parceiros h2{
-margin-top:0;
-font-size:26px;
+margin-bottom:30px;
 }
 
 .info-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:20px;
-margin-top:30px;
+max-width:1100px;
+margin:auto;
 }
 
 .info-box{
 background:white;
 padding:20px;
 border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.08);
-}
-
-.info-box h3{
-margin-top:0;
-font-size:18px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 /* MENU */
 
 .menu{
-background:#000;
-padding:15px 40px;
+background:black;
+padding:15px;
 display:flex;
 gap:10px;
+flex-wrap:wrap;
 }
 
 .menu button{
-background:#1c1c1c;
+background:#222;
 color:white;
 border:none;
-padding:10px 20px;
+padding:10px 16px;
 border-radius:20px;
 cursor:pointer;
+font-size:14px;
 }
 
 .menu button:hover{
-background:#ff0066;
+background:#ff0a5b;
 }
 
 /* CATALOGO */
 
 .catalogo{
-width:65%;
+width:70%;
 padding:40px;
-float:left;
-margin-right:35%;
-background:#fff;
-min-height:100vh;
+box-sizing:border-box;
 }
-
-/* GRID PRODUTOS */
 
 #produtos{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:25px;
-margin-top:30px;
 }
 
 /* CARD PRODUTO */
 
 .produto{
-background:#f5f5f5;
+background:#f7f7f7;
 padding:20px;
-border-radius:12px;
+border-radius:10px;
 box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 .produto h3{
-margin-top:0;
+font-size:16px;
+margin-bottom:15px;
 }
 
-select,input{
-padding:10px;
-margin-top:10px;
+/* INPUTS */
+
+.produto select,
+.produto input{
+width:100%;
+padding:8px;
+margin-bottom:10px;
 border-radius:6px;
 border:1px solid #ddd;
-width:100%;
 box-sizing:border-box;
 }
 
-/* BOTAO */
+/* BOTÃO ADICIONAR */
 
 .produto button{
-background:#ff0066;
-border:none;
-padding:10px 16px;
+background:#ff0a5b;
 color:white;
-cursor:pointer;
+border:none;
+padding:10px;
 border-radius:6px;
-margin-top:12px;
-font-weight:bold;
+cursor:pointer;
+width:100%;
 }
 
 .produto button:hover{
-background:#ff2a7a;
+background:#d6004b;
 }
 
-/* CARRINHO */
+/* CARRINHO LATERAL */
 
 .carrinho{
-width:30%;
-background:#111;
-padding:30px;
 position:fixed;
 right:0;
 top:0;
+width:30%;
 height:100%;
-overflow:auto;
-box-shadow:-4px 0 10px rgba(0,0,0,0.6);
+background:#0b0b0b;
 color:white;
+padding:25px;
+box-sizing:border-box;
+overflow:auto;
 }
 
 .carrinho h2{
 margin-top:0;
 }
 
-/* BARRA PROGRESSO */
+#lista{
+margin-bottom:20px;
+}
+
+/* TOTAL */
+
+#total{
+margin-top:15px;
+}
+
+/* BARRA DE PROGRESSO */
 
 .progress{
-height:20px;
+width:100%;
+height:12px;
 background:#333;
 border-radius:10px;
-margin-top:20px;
+margin:15px 0;
 overflow:hidden;
 }
 
@@ -160,28 +165,44 @@ background:#00c853;
 width:0%;
 }
 
-/* FORMULARIO */
+/* FORM */
 
-form input{
+.carrinho input{
 width:100%;
-margin-top:10px;
 padding:10px;
+margin-bottom:10px;
 border-radius:6px;
 border:none;
+box-sizing:border-box;
 }
 
-form button{
-width:100%;
-margin-top:15px;
+.carrinho button{
 background:#00c853;
-font-size:16px;
 border:none;
 padding:12px;
 border-radius:6px;
 color:white;
+font-size:16px;
 cursor:pointer;
+width:100%;
 }
 
-form button:hover{
+.carrinho button:hover{
 background:#00a844;
+}
+
+/* RESPONSIVO */
+
+@media (max-width:1000px){
+
+.catalogo{
+width:100%;
+}
+
+.carrinho{
+position:relative;
+width:100%;
+height:auto;
+}
+
 }
