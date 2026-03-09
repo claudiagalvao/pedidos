@@ -7,38 +7,41 @@ const busca = document.getElementById("busca")
 const menuCategorias = document.getElementById("menuCategorias")
 const contadorItens = document.getElementById("contadorItens")
 
-let produtos = []
-let carrinho = []
-let total = 0
+let produtos=[]
+let carrinho=[]
+let total=0
 
-const pedidoMinimo = 200
-const descontoB2B = 0.10
+const pedidoMinimo=200
 
+function calcularDesconto(valor){
+
+if(valor>=1000) return 0.18
+if(valor>=500) return 0.15
+if(valor>=200) return 0.12
+return 0.10
+
+}
 
 fetch("produtos.csv")
-.then(r => r.text())
-.then(data => {
+.then(r=>r.text())
+.then(data=>{
 
-const linhas = data.split("\n").slice(1)
+const linhas=data.split("\n").slice(1)
 
-linhas.forEach(l => {
+linhas.forEach(l=>{
 
 if(!l.trim()) return
 
-const c = l.split(",")
-
-const precoOriginal = parseFloat(c[3])
-const precoB2B = precoOriginal * (1 - descontoB2B)
+const c=l.split(",")
 
 produtos.push({
-categoria: c[0],
-nome: c[1],
-variacao: c[2],
-precoOriginal: precoOriginal,
-preco: precoB2B,
-link: c[4],
-sku: c[5],
-estoque: parseInt(c[6])
+categoria:c[0],
+nome:c[1],
+variacao:c[2],
+preco:parseFloat(c[3]),
+link:c[4],
+sku:c[5],
+estoque:parseInt(c[6])
 })
 
 })
@@ -48,95 +51,75 @@ renderProdutos(produtos)
 
 })
 
-
 function criarMenu(){
 
-const categorias = [...new Set(produtos.map(p => p.categoria))]
+const categorias=[...new Set(produtos.map(p=>p.categoria))]
 
-menuCategorias.innerHTML = ""
+menuCategorias.innerHTML=""
 
-const btnTodos = document.createElement("button")
-btnTodos.innerText = "Todos"
-btnTodos.onclick = () => renderProdutos(produtos)
-
-menuCategorias.appendChild(btnTodos)
-
-categorias.forEach(cat => {
-
-const btn = document.createElement("button")
-btn.innerText = cat
-
-btn.onclick = () => {
-
-const filtrados = produtos.filter(p => p.categoria === cat)
-renderProdutos(filtrados)
-
-}
+const btn=document.createElement("button")
+btn.innerText="Todos"
+btn.onclick=()=>renderProdutos(produtos)
 
 menuCategorias.appendChild(btn)
+
+categorias.forEach(cat=>{
+
+const b=document.createElement("button")
+b.innerText=cat
+
+b.onclick=()=>{
+const filtrados=produtos.filter(p=>p.categoria===cat)
+renderProdutos(filtrados)
+}
+
+menuCategorias.appendChild(b)
 
 })
 
 }
 
-
 function renderProdutos(lista){
 
-produtosDiv.innerHTML = ""
+produtosDiv.innerHTML=""
 
-lista.forEach(p => {
+lista.forEach(p=>{
 
-const card = document.createElement("div")
-card.className = "produto"
+const card=document.createElement("div")
+card.className="produto"
 
-card.innerHTML = `
+card.innerHTML=`
 
-<div class="seloDesconto">10% OFF B2B</div>
+<div class="seloDesconto">B2B</div>
 
 <h3>${p.nome}</h3>
 
-${p.variacao !== "padrão" ? `<div class="variacao">${p.variacao}</div>` : ""}
+${p.variacao!="padrão"?`<div>${p.variacao}</div>`:""}
 
-<div>
+<div>R$ ${p.preco.toFixed(2)}</div>
 
-<span class="precoOriginal">
-R$ ${p.precoOriginal.toFixed(2)}
-</span>
+<input type="number" value="1" min="1">
 
-<span class="precoB2B">
-R$ ${p.preco.toFixed(2)}
-</span>
-
-</div>
-
-<div class="sku">SKU: ${p.sku}</div>
-
-<div class="estoque ${p.estoque == 0 ? "esgotado" : ""}">
-${p.estoque > 0 ? `Estoque: ${p.estoque}` : "Esgotado"}
-</div>
-
-<input type="number" value="1" min="1" max="${p.estoque}">
-
-<button ${p.estoque == 0 ? "disabled" : ""}>Adicionar</button>
+<button>Adicionar</button>
 
 <a href="${p.link}" target="_blank">Ver produto</a>
 
 `
 
-const btn = card.querySelector("button")
+const btn=card.querySelector("button")
 
-btn.onclick = () => {
+btn.onclick=()=>{
 
-const qtd = parseInt(card.querySelector("input").value)
+const qtd=parseInt(card.querySelector("input").value)
 
 carrinho.push({
-nome: p.nome,
-variacao: p.variacao,
-preco: p.preco,
-qtd: qtd
+nome:p.nome,
+variacao:p.variacao,
+preco:p.preco,
+qtd:qtd
 })
 
-total += p.preco * qtd
+total+=p.preco*qtd
 
 atualizarCarrinho()
 
@@ -148,72 +131,60 @@ produtosDiv.appendChild(card)
 
 }
 
-
 function atualizarCarrinho(){
 
-listaPedido.innerHTML = ""
+listaPedido.innerHTML=""
 
-let quantidadeTotal = 0
+let quantidadeTotal=0
 
 carrinho.forEach((item,index)=>{
 
-quantidadeTotal += item.qtd
+quantidadeTotal+=item.qtd
 
-const div = document.createElement("div")
+const div=document.createElement("div")
+div.className="itemCarrinho"
 
-div.className = "itemCarrinho"
-
-div.innerHTML = `
-
-<span>
-${item.nome}
-${item.variacao !== "padrão" ? "(" + item.variacao + ")" : ""}
-x${item.qtd}
-</span>
-
+div.innerHTML=`
+${item.nome} x${item.qtd}
 <button onclick="removerItem(${index})">✕</button>
-
 `
 
 listaPedido.appendChild(div)
 
 })
 
-contadorItens.innerText = `(${quantidadeTotal} itens)`
+contadorItens.innerText=`(${quantidadeTotal} itens)`
 
-totalEl.innerText = total.toFixed(2)
+const desconto=calcularDesconto(total)
 
-let progresso = (total / pedidoMinimo) * 100
+const totalFinal=total*(1-desconto)
 
-if(progresso > 100) progresso = 100
+totalEl.innerText=totalFinal.toFixed(2)
 
-barra.style.width = progresso + "%"
+let progresso=(total/pedidoMinimo)*100
+if(progresso>100)progresso=100
 
+barra.style.width=progresso+"%"
 
-if(total < pedidoMinimo){
+if(total<pedidoMinimo){
 
-msgMinimo.innerText =
-`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para atingir o pedido mínimo`
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+barra.style.background="#ff9800"
 
-barra.style.background = "#ff9800"
+}else{
 
-}
-else{
-
-msgMinimo.innerText = "Pedido mínimo atingido 🎉"
-
-barra.style.background = "#00c853"
+msgMinimo.innerText=`🎉 Desconto ${(desconto*100)}% aplicado`
+barra.style.background="#00c853"
 
 }
 
 }
-
 
 function removerItem(index){
 
-const item = carrinho[index]
+const item=carrinho[index]
 
-total -= item.preco * item.qtd
+total-=item.preco*item.qtd
 
 carrinho.splice(index,1)
 
@@ -221,100 +192,104 @@ atualizarCarrinho()
 
 }
 
-
 function limparCarrinho(){
 
-carrinho = []
-total = 0
-
+carrinho=[]
+total=0
 atualizarCarrinho()
 
 }
 
-
 function gerarTextoPedido(){
 
-const empresa = document.getElementById("empresa").value
-const nome = document.getElementById("nome").value
-const email = document.getElementById("email").value
+const empresa=document.getElementById("empresa").value
+const nome=document.getElementById("nome").value
+const email=document.getElementById("email").value
 
-let texto = "Pedido Crazy Fantasy B2B\n\n"
+let texto="Pedido Crazy Fantasy B2B\n\n"
 
-texto += "Empresa: " + empresa + "\n"
-texto += "Nome: " + nome + "\n"
-texto += "Email: " + email + "\n\n"
+texto+="Empresa: "+empresa+"\n"
+texto+="Nome: "+nome+"\n"
+texto+="Email: "+email+"\n\n"
 
-texto += "Itens:\n"
+texto+="Itens:\n"
 
-carrinho.forEach(item => {
-
-texto += `${item.qtd}x ${item.nome}`
-
-if(item.variacao !== "padrão"){
-texto += ` (${item.variacao})`
-}
-
-texto += "\n"
-
+carrinho.forEach(item=>{
+texto+=`${item.qtd}x ${item.nome}\n`
 })
 
-texto += "\nTotal: R$ " + total.toFixed(2)
+const desconto=calcularDesconto(total)
+const totalFinal=total*(1-desconto)
+
+texto+="\nSubtotal: R$ "+total.toFixed(2)
+texto+="\nDesconto: "+(desconto*100)+"%"
+texto+="\nTotal: R$ "+totalFinal.toFixed(2)
 
 return texto
 
 }
 
-
 function prepararPedido(){
 
-const texto = gerarTextoPedido()
+if(total<pedidoMinimo){
 
-document.getElementById("pedidoTexto").value = texto
+alert("Pedido mínimo de R$200 não atingido.")
+event.preventDefault()
+return
 
 }
 
+document.getElementById("pedidoTexto").value=gerarTextoPedido()
+
+}
 
 function enviarWhatsApp(){
 
-const texto = gerarTextoPedido()
+if(total<pedidoMinimo){
 
-const numero = "5511999999999"
+alert("Pedido mínimo de R$200 não atingido.")
+return
 
-const url =
-`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+}
+
+const texto=gerarTextoPedido()
+
+const numero="5511999999999"
+
+const url=`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
 window.open(url)
 
 }
 
+function gerarPDF(){
+
+if(total<pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido.")
+return
+
+}
+
+const { jsPDF } = window.jspdf
+
+const doc=new jsPDF()
+
+doc.text(gerarTextoPedido(),10,10)
+
+doc.save("pedido-crazyfantasy.pdf")
+
+}
 
 busca.addEventListener("input",()=>{
 
-const termo = busca.value.toLowerCase()
+const termo=busca.value.toLowerCase()
 
-const filtrados = produtos.filter(p =>
-
+const filtrados=produtos.filter(p=>
 p.nome.toLowerCase().includes(termo) ||
-p.variacao.toLowerCase().includes(termo) ||
 p.categoria.toLowerCase().includes(termo)
-
 )
 
 renderProdutos(filtrados)
 
 })
-
-
-function gerarPDF(){
-
-const { jsPDF } = window.jspdf
-
-const doc = new jsPDF()
-
-const texto = gerarTextoPedido()
-
-doc.text(texto,10,10)
-
-doc.save("pedido-crazy-fantasy.pdf")
-
-}
