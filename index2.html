@@ -14,9 +14,13 @@
 
 <body>
 
+<!-- BANNER -->
+
 <div class="banner">
 <img src="banner.png">
 </div>
+
+<!-- INFORMAÇÕES PARA PARCEIROS -->
 
 <div class="info-parceiros">
 
@@ -48,7 +52,11 @@
 
 </div>
 
+<!-- MENU AUTOMÁTICO DE CATEGORIAS -->
+
 <div class="menu" id="menu"></div>
+
+<!-- CATÁLOGO -->
 
 <div class="catalogo">
 
@@ -57,6 +65,8 @@
 <div id="produtos"></div>
 
 </div>
+
+<!-- CARRINHO -->
 
 <div class="carrinho">
 
@@ -73,7 +83,9 @@
 <form>
 
 <input placeholder="Empresa">
+
 <input placeholder="Nome">
+
 <input placeholder="Email">
 
 <button type="button" onclick="enviarPedido()">
@@ -84,214 +96,9 @@ Enviar Pedido
 
 </div>
 
-<script>
+<!-- LINK PARA O JAVASCRIPT -->
 
-let produtos={}
-let carrinho=[]
-let categorias=new Set()
-
-/* CARREGAR CSV */
-
-fetch("produtos.csv")
-
-.then(res=>res.text())
-
-.then(text=>{
-
-let linhas=text.trim().split("\n")
-
-linhas.slice(1).forEach(linha=>{
-
-let [categoria,nome,variacao,preco]=linha.split(",")
-
-categoria=categoria.trim()
-
-categorias.add(categoria)
-
-if(!produtos[nome]){
-
-produtos[nome]={
-
-categoria:categoria,
-preco:parseFloat(preco),
-variacoes:[]
-}
-
-}
-
-produtos[nome].variacoes.push(variacao)
-
-})
-
-criarMenu()
-
-render(produtos)
-
-})
-
-/* CRIAR MENU AUTOMATICO */
-
-function criarMenu(){
-
-let div=document.getElementById("menu")
-
-div.innerHTML=""
-
-let btnTodos=document.createElement("button")
-
-btnTodos.innerText="Todos"
-
-btnTodos.onclick=()=>render(produtos)
-
-div.appendChild(btnTodos)
-
-categorias.forEach(cat=>{
-
-let btn=document.createElement("button")
-
-btn.innerText=cat
-
-btn.onclick=()=>filtrar(cat)
-
-div.appendChild(btn)
-
-})
-
-}
-
-/* RENDER PRODUTOS */
-
-function render(lista){
-
-let div=document.getElementById("produtos")
-
-div.innerHTML=""
-
-for(let nome in lista){
-
-let p=lista[nome]
-
-let html=`
-
-<div class="produto">
-
-<h3>${nome}</h3>
-
-<select id="var-${nome}">
-
-${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
-
-</select>
-
-<input type="number" value="1" min="1" id="qtd-${nome}">
-
-<button onclick="add('${nome}')">Adicionar</button>
-
-</div>
-
-`
-
-div.innerHTML+=html
-
-}
-
-}
-
-/* FILTRAR CATEGORIA */
-
-function filtrar(cat){
-
-let filtrados={}
-
-for(let nome in produtos){
-
-if(produtos[nome].categoria==cat){
-
-filtrados[nome]=produtos[nome]
-
-}
-
-}
-
-render(filtrados)
-
-}
-
-/* ADICIONAR AO CARRINHO */
-
-function add(nome){
-
-let qtd=parseInt(document.getElementById("qtd-"+nome).value)
-
-let produto=produtos[nome]
-
-let item=carrinho.find(i=>i.nome==nome)
-
-if(item){
-
-item.qtd+=qtd
-
-}else{
-
-carrinho.push({
-
-nome:nome,
-preco:produto.preco,
-qtd:qtd
-
-})
-
-}
-
-renderCarrinho()
-
-}
-
-/* ATUALIZAR CARRINHO */
-
-function renderCarrinho(){
-
-let lista=document.getElementById("lista")
-
-lista.innerHTML=""
-
-let total=0
-
-carrinho.forEach(i=>{
-
-lista.innerHTML+=`${i.nome} x${i.qtd}<br>`
-
-total+=i.preco*i.qtd
-
-})
-
-document.getElementById("total").innerText="Total: R$"+total.toFixed(2)
-
-let barra=Math.min((total/200)*100,100)
-
-document.getElementById("barra").style.width=barra+"%"
-
-}
-
-/* ENVIAR PEDIDO */
-
-function enviarPedido(){
-
-let texto="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-
-texto+=`${i.nome} x${i.qtd}\n`
-
-})
-
-let url="https://wa.me/?text="+encodeURIComponent(texto)
-
-window.open(url)
-
-}
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
