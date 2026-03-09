@@ -1,111 +1,144 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crazy Fantasy | Portal B2B</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Portal B2B Crazy Fantasy</title>
 
 <link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
+
 
 <body>
 
-<header class="banner">
-<img src="banner.png">
-</header>
 
-<div class="avisoB2B">
-🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+<div class="container">
+
+
+<div class="catalogo">
+
+
+<div class="banner">
+
+<img src="banner.png">
+
 </div>
 
-<nav id="menuCategorias"></nav>
 
-<section class="catalogo">
+<div class="barraInfo">
+
+🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+
+</div>
+
+
+<div id="menuCategorias" class="menuCategorias"></div>
+
 
 <h1>Portal B2B Crazy Fantasy</h1>
 
+
 <input id="busca" placeholder="🔎 Buscar produto">
 
-<div id="produtos"></div>
 
-</section>
+<div id="produtos" class="gridProdutos"></div>
 
-<aside class="carrinho">
 
-<h2>
-Pedido
-<span id="contadorItens">(0 itens)</span>
-</h2>
+</div>
+
+
+
+<div class="carrinho">
+
+
+<h2>Pedido <span id="contadorItens">(0 itens)</span></h2>
+
+
+<div class="total">
+
+Total: R$ <span id="total">0</span>
+
+</div>
+
+
+<div class="barraProgresso">
+
+<div id="barra"></div>
+
+</div>
+
+
+<div id="msgMinimo" class="msgMinimo"></div>
+
 
 <div id="listaPedido"></div>
 
-<div class="total">
-Total: R$ <span id="total">0</span>
-</div>
 
-<div class="barraProgresso">
-<div id="barra"></div>
-</div>
-
-<p id="msgMinimo"></p>
-
-<div class="formCliente">
 
 <h3>Dados do Cliente</h3>
 
-<form id="formPedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
-<input id="empresa" name="empresa" placeholder="Empresa" required>
-<input id="nome" name="nome" placeholder="Nome" required>
-<input id="email" name="email" placeholder="Email" required>
+<input id="empresa" placeholder="Empresa">
 
-<textarea id="pedidoTexto" name="pedido" hidden></textarea>
+<input id="nome" placeholder="Nome">
 
-<input type="hidden" name="_subject" value="Novo Pedido B2B Crazy Fantasy">
-<input type="hidden" name="_captcha" value="false">
+<input id="email" placeholder="Email">
 
-<button class="btnEnviar" onclick="prepararPedido()" type="submit">
+
+
+<form action="https://formsubmit.co/seuemail@email.com"
+method="POST"
+onsubmit="prepararPedido()">
+
+<input type="hidden" name="pedido" id="pedidoTexto">
+
+<button class="btnEmail">
+
 Enviar Pedido por Email
+
 </button>
 
 </form>
 
-<button class="btnEnviar" onclick="enviarWhatsApp()">
+
+<button class="btnWhats" onclick="enviarWhatsApp()">
+
 Enviar por WhatsApp
+
 </button>
 
-<button class="btnEnviar" onclick="gerarPDF()">
+
+<button class="btnPdf" onclick="gerarPDF()">
+
 Gerar PDF do Pedido
+
 </button>
 
-<button class="btnEnviar" onclick="limparCarrinho()">
+
+<button class="btnLimpar" onclick="limparCarrinho()">
+
 Limpar Pedido
+
 </button>
+
+
 
 </div>
 
-</aside>
 
-<footer>
 
-<h3>Condições Comerciais</h3>
+</div>
 
-<p>
-✔ Tabela exclusiva para parceiros  
-✔ Desconto progressivo automático  
-✔ Pedido mínimo: R$200  
-✔ Frete calculado após envio  
-✔ Pagamento via PIX, boleto ou transferência
-</p>
-
-<p>Crazy Fantasy Distribuidora</p>
-
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
