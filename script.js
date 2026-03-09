@@ -9,7 +9,6 @@ const busca = document.getElementById("busca")
 
 const barra = document.getElementById("barra")
 const msgMinimo = document.getElementById("msgMinimo")
-const sugestoes = document.getElementById("sugestoes")
 
 let produtos=[]
 let carrinho=[]
@@ -63,6 +62,7 @@ vendas:Math.floor(Math.random()*100)
 })
 
 criarCategorias()
+
 renderProdutos(produtos)
 
 })
@@ -87,8 +87,15 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 
 function filtrarCategoria(cat){
 
-if(cat==="Todos") renderProdutos(produtos)
-else renderProdutos(produtos.filter(p=>p.categoria===cat))
+if(cat==="Todos"){
+
+renderProdutos(produtos)
+
+}else{
+
+renderProdutos(produtos.filter(p=>p.categoria===cat))
+
+}
 
 }
 
@@ -98,7 +105,11 @@ busca.addEventListener("keyup",()=>{
 
 const termo=busca.value.toLowerCase()
 
-renderProdutos(produtos.filter(p=>p.nome.toLowerCase().includes(termo)))
+renderProdutos(produtos.filter(p=>
+
+p.nome.toLowerCase().includes(termo)
+
+))
 
 })
 
@@ -138,22 +149,64 @@ ${selo}
 
 <div class="precoB2B">R$ ${desconto10.toFixed(2)}</div>
 
-<input type="number" value="1" min="1">
+<input type="number" value="0" min="0">
 
 <button class="btnAdd">Adicionar</button>
 
 `
 
-card.querySelector("button").onclick=()=>{
+const btn=card.querySelector("button")
+
+btn.onclick=()=>{
 
 const qtd=parseInt(card.querySelector("input").value)
 
-carrinho.push({nome:p.nome,sku:p.sku,preco:p.preco,qtd})
+if(qtd<=0) return
+
+card.classList.add("pulse")
+
+setTimeout(()=>{
+
+card.classList.remove("pulse")
+
+},400)
+
+btn.classList.add("adicionado")
+
+btn.innerText="✓ Adicionado"
+
+setTimeout(()=>{
+
+btn.classList.remove("adicionado")
+
+btn.innerText="Adicionar"
+
+},800)
+
+const carrinhoBox=document.querySelector(".carrinho")
+
+carrinhoBox.classList.add("carrinhoAnimado")
+
+setTimeout(()=>{
+
+carrinhoBox.classList.remove("carrinhoAnimado")
+
+},450)
+
+carrinho.push({
+
+nome:p.nome,
+preco:p.preco,
+qtd:qtd
+
+})
 
 total+=p.preco*qtd
 totalOriginal+=p.preco*qtd
 
 atualizarCarrinho()
+
+card.querySelector("input").value=0
 
 }
 
@@ -176,7 +229,7 @@ carrinho.forEach((item,index)=>{
 itens+=item.qtd
 
 listaPedido.innerHTML+=`${item.nome} x${item.qtd}
-<button class="removerItem" onclick="removerItem(${index})">✕</button><br>`
+<button onclick="removerItem(${index})">✕</button><br>`
 
 })
 
@@ -190,27 +243,19 @@ totalEl.innerText=totalFinal.toFixed(2)
 
 economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
 
-
-
 let progresso=(total/pedidoMinimo)*100
+
 if(progresso>100) progresso=100
 
 barra.style.width=progresso+"%"
 
-
-
 if(total<pedidoMinimo){
 
-let faltam=pedidoMinimo-total
-
-msgMinimo.innerText=`Faltam R$ ${faltam.toFixed(2)} para pedido mínimo`
-
-sugerirProdutos(faltam)
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
 
 }else{
 
 msgMinimo.innerText="Pedido mínimo atingido 🎉"
-sugestoes.innerHTML=""
 
 }
 
@@ -218,42 +263,14 @@ sugestoes.innerHTML=""
 
 
 
-function sugerirProdutos(faltam){
+function removerItem(index){
 
-let sugestao=produtos
-.filter(p=>p.preco<=faltam)
-.slice(0,3)
-
-if(sugestao.length===0){
-
-sugestoes.innerHTML=""
-
-return
-
-}
-
-let html="<b>Sugestões para completar pedido:</b><br>"
-
-sugestao.forEach(p=>{
-
-html+=`+ ${p.nome} R$ ${p.preco.toFixed(2)}<br>`
-
-})
-
-sugestoes.innerHTML=html
-
-}
-
-
-
-function removerItem(i){
-
-const item=carrinho[i]
+const item=carrinho[index]
 
 total-=item.preco*item.qtd
 totalOriginal-=item.preco*item.qtd
 
-carrinho.splice(i,1)
+carrinho.splice(index,1)
 
 atualizarCarrinho()
 
@@ -313,6 +330,7 @@ if(!validarPedido()) return
 let empresa=document.getElementById("empresa").value
 let nome=document.getElementById("nome").value
 let email=document.getElementById("email").value
+let whatsapp=document.getElementById("whatsapp").value
 
 let assunto="Pedido B2B Crazy Fantasy"
 
@@ -320,7 +338,8 @@ let corpo="Pedido Crazy Fantasy B2B\n\n"
 
 corpo+="Empresa: "+empresa+"\n"
 corpo+="Nome: "+nome+"\n"
-corpo+="Email: "+email+"\n\n"
+corpo+="Email: "+email+"\n"
+corpo+="WhatsApp: "+whatsapp+"\n\n"
 
 carrinho.forEach(i=>{
 corpo+=`${i.qtd}x ${i.nome}\n`
