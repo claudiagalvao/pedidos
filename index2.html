@@ -14,19 +14,15 @@
 
 <body>
 
-
 <header class="banner">
 <img src="banner.png">
 </header>
-
 
 <div class="avisoB2B">
 🔥 Tabela exclusiva para parceiros | Desconto automático 10% B2B
 </div>
 
-
 <nav id="menuCategorias"></nav>
-
 
 <section class="catalogo">
 
@@ -38,7 +34,6 @@
 
 </section>
 
-
 <aside class="carrinho">
 
 <h2>
@@ -48,11 +43,9 @@ Pedido
 
 <div id="listaPedido"></div>
 
-
 <div class="total">
 Total: R$ <span id="total">0</span>
 </div>
-
 
 <div class="barraProgresso">
 <div id="barra"></div>
@@ -61,10 +54,11 @@ Total: R$ <span id="total">0</span>
 <p id="msgMinimo"></p>
 
 
+<div class="formCliente">
+
 <h3>Dados do Cliente</h3>
 
-
-<form id="formPedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+<form id="formPedido" action="https://formsubmit.co/seuemail@empresa.com" method="POST">
 
 <input id="empresa" name="empresa" placeholder="Empresa" required>
 
@@ -78,34 +72,49 @@ Total: R$ <span id="total">0</span>
 
 <input type="hidden" name="_captcha" value="false">
 
-
 <button class="btnEnviar" onclick="prepararPedido()" type="submit">
-Enviar Pedido
+Enviar Pedido por Email
 </button>
 
 </form>
-
 
 <button class="btnEnviar" onclick="enviarWhatsApp()">
 Enviar por WhatsApp
 </button>
 
+<button class="btnEnviar" onclick="gerarPDF()">
+Gerar PDF do Pedido
+</button>
 
 <button class="btnEnviar" onclick="limparCarrinho()">
 Limpar Pedido
 </button>
 
+</div>
 
 </aside>
 
 
 <footer>
 
-Crazy Fantasy Distribuidora  
-Tabela exclusiva para parceiros B2B.
+<h3>Condições Comerciais</h3>
+
+<p>
+✔ Tabela exclusiva para parceiros B2B  
+✔ Desconto automático de 10% no portal  
+✔ Pedido mínimo: R$200  
+✔ Frete calculado após envio do pedido  
+✔ Pagamento via PIX, boleto ou transferência
+</p>
+
+<p>
+Crazy Fantasy Distribuidora
+</p>
 
 </footer>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script src="script.js"></script>
 
