@@ -25,12 +25,12 @@
 </div>
 
 <div class="barraInfo">
-🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+Tabela exclusiva para parceiros • Desconto progressivo B2B
 </div>
 
 <div id="menuCategorias"></div>
 
-<input id="busca" placeholder="🔎 Buscar produto">
+<input id="busca" placeholder="🔎 Buscar produto ou SKU">
 
 <div id="produtos" class="gridProdutos"></div>
 
@@ -53,6 +53,8 @@ Total B2B: R$ <span id="total">0</span>
 💰 Economia: R$ <span id="economia">0</span>
 </div>
 
+<div id="proximoDesconto"></div>
+
 <div class="barraProgresso">
 <div id="barra"></div>
 </div>
@@ -63,20 +65,52 @@ Total B2B: R$ <span id="total">0</span>
 
 <h3>Dados do Cliente</h3>
 
-<input id="empresa" placeholder="Empresa">
-<input id="nome" placeholder="Nome">
+<input id="empresa" placeholder="Empresa / Razão Social">
+<input id="cnpj" placeholder="CNPJ">
+<input id="ie" placeholder="Inscrição Estadual">
+<input id="nome" placeholder="Nome do responsável">
+<input id="whatsapp" placeholder="WhatsApp">
 <input id="email" placeholder="Email">
-<input id="whatsapp" placeholder="WhatsApp do cliente">
+
+<textarea id="endereco" placeholder="Endereço completo"></textarea>
+
+<h3>Entrega</h3>
+
+<select id="entrega">
+
+<option value="">Selecione</option>
+<option>Correios</option>
+<option>Transportadora</option>
+<option>Retirada na loja</option>
+
+</select>
+
+<h3>Pagamento</h3>
+
+<select id="pagamento">
+
+<option value="">Selecione</option>
+<option>PIX</option>
+<option>Boleto</option>
+<option>Cartão</option>
+<option>Transferência bancária</option>
+
+</select>
+
+<h3>Observações</h3>
+
+<textarea id="observacoes"></textarea>
+
 
 <div class="botoesPedido">
 
-<button class="btnEmail" onclick="enviarEmail()">Enviar Email</button>
+<button onclick="copiarPedido()">Copiar Pedido (ERP)</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
+<button onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
+<button onclick="gerarPDF()">Gerar PDF</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
+<button onclick="limparCarrinho()">Limpar</button>
 
 </div>
 
