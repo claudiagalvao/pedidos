@@ -4,6 +4,12 @@ const totalEl = document.getElementById("total")
 const economiaEl = document.getElementById("economia")
 const contadorItens = document.getElementById("contadorItens")
 
+const menuCategorias = document.getElementById("menuCategorias")
+const busca = document.getElementById("busca")
+
+const barra = document.getElementById("barra")
+const msgMinimo = document.getElementById("msgMinimo")
+
 let produtos=[]
 let carrinho=[]
 
@@ -55,7 +61,57 @@ vendas:Math.floor(Math.random()*100)
 
 })
 
+criarCategorias()
+
 renderProdutos(produtos)
+
+})
+
+
+
+function criarCategorias(){
+
+const categorias=[...new Set(produtos.map(p=>p.categoria))]
+
+menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</button>`
+
+categorias.forEach(c=>{
+
+menuCategorias.innerHTML+=`
+<button onclick="filtrarCategoria('${c}')">${c}</button>
+`
+
+})
+
+}
+
+
+
+function filtrarCategoria(cat){
+
+if(cat==="Todos"){
+
+renderProdutos(produtos)
+
+}else{
+
+renderProdutos(produtos.filter(p=>p.categoria===cat))
+
+}
+
+}
+
+
+
+busca.addEventListener("keyup",()=>{
+
+const termo=busca.value.toLowerCase()
+
+renderProdutos(produtos.filter(p=>
+
+p.nome.toLowerCase().includes(termo)
+
+))
 
 })
 
@@ -78,7 +134,6 @@ selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
 const desconto10=p.preco*0.90
 const desconto12=p.preco*0.88
 const desconto15=p.preco*0.85
-
 
 const card=document.createElement("div")
 
@@ -117,15 +172,11 @@ R$ ${desconto10.toFixed(2)}
 </div>
 
 <div class="sku">
-
 SKU: ${p.sku}
-
 </div>
 
 <div class="estoque">
-
 Estoque: ${p.estoque}
-
 </div>
 
 <input type="number" value="1" min="1">
@@ -147,6 +198,7 @@ const qtd=parseInt(card.querySelector("input").value)
 carrinho.push({
 
 nome:p.nome,
+sku:p.sku,
 preco:p.preco,
 qtd:qtd
 
@@ -183,7 +235,7 @@ div.innerHTML=`
 
 ${item.nome} x${item.qtd}
 
-<button onclick="removerItem(${index})">✕</button>
+<button class="removerItem" onclick="removerItem(${index})">✕</button>
 
 `
 
@@ -200,6 +252,26 @@ const totalFinal=total*(1-desconto)
 totalEl.innerText=totalFinal.toFixed(2)
 
 economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
+
+
+
+let progresso=(total/pedidoMinimo)*100
+
+if(progresso>100) progresso=100
+
+barra.style.width=progresso+"%"
+
+
+
+if(total<pedidoMinimo){
+
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+
+}else{
+
+msgMinimo.innerText="Pedido mínimo atingido 🎉"
+
+}
 
 }
 
@@ -238,7 +310,7 @@ let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
 
-texto+=`${i.qtd}x ${i.nome}\n`
+texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
 
 })
 
@@ -258,12 +330,44 @@ let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
 
-texto+=`${i.qtd}x ${i.nome}\n`
+texto+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
 
 })
 
 doc.text(texto,10,10)
 
 doc.save("pedido.pdf")
+
+}
+
+
+
+function enviarEmail(){
+
+let empresa=document.getElementById("empresa").value
+let nome=document.getElementById("nome").value
+let email=document.getElementById("email").value
+
+let assunto="Pedido B2B Crazy Fantasy"
+
+let corpo="Pedido Crazy Fantasy B2B\n\n"
+
+corpo+="Empresa: "+empresa+"\n"
+corpo+="Nome: "+nome+"\n"
+corpo+="Email: "+email+"\n\n"
+
+corpo+="Itens do pedido:\n\n"
+
+carrinho.forEach(i=>{
+
+corpo+=`${i.qtd}x ${i.nome} (SKU ${i.sku})\n`
+
+})
+
+corpo+=`\nTotal aproximado: R$ ${total.toFixed(2)}`
+
+let link=`mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`
+
+window.location.href=link
 
 }
