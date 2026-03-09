@@ -303,3 +303,18 @@ p.categoria.toLowerCase().includes(termo)
 renderProdutos(filtrados)
 
 })
+
+
+function gerarPDF(){
+
+const { jsPDF } = window.jspdf
+
+const doc = new jsPDF()
+
+const texto = gerarTextoPedido()
+
+doc.text(texto,10,10)
+
+doc.save("pedido-crazy-fantasy.pdf")
+
+}
