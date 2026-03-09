@@ -52,7 +52,7 @@
 
 <button onclick="filtrar('todos')">Todos</button>
 <button onclick="filtrar('Perucas')">Perucas</button>
-<button onclick="filtrar('Acessorios')">Acessórios</button>
+<button onclick="filtrar('Acessórios')">Acessórios</button>
 <button onclick="filtrar('Maquiagem')">Maquiagem</button>
 
 </div>
@@ -95,29 +95,45 @@ Enviar Pedido
 
 <script>
 
-let produtos={
-"Peruca Punk":{
-categoria:"Perucas",
-variacoes:["Azul","Rosa","Verde"],
-preco:30
-},
-
-"Varinha Princesa":{
-categoria:"Acessorios",
-variacoes:["Rosa","Lilás"],
-preco:7.99
-},
-
-"Tinta Spray":{
-categoria:"Maquiagem",
-variacoes:["Azul","Vermelho","Amarelo"],
-preco:19.99
-}
-}
-
+let produtos={}
 let carrinho=[]
 
-function render(lista=produtos){
+/* CARREGAR CSV */
+
+fetch("produtos.csv")
+
+.then(res=>res.text())
+
+.then(text=>{
+
+let linhas=text.trim().split("\n")
+
+linhas.slice(1).forEach(linha=>{
+
+let [categoria,nome,variacao,preco]=linha.split(",")
+
+if(!produtos[nome]){
+
+produtos[nome]={
+
+categoria:categoria,
+preco:parseFloat(preco),
+variacoes:[]
+}
+
+}
+
+produtos[nome].variacoes.push(variacao)
+
+})
+
+render(produtos)
+
+})
+
+/* RENDER PRODUTOS */
+
+function render(lista){
 
 let div=document.getElementById("produtos")
 
@@ -139,11 +155,7 @@ ${p.variacoes.map(v=>`<option>${v}</option>`).join("")}
 
 </select>
 
-<br>
-
 <input type="number" value="1" min="1" id="qtd-${nome}">
-
-<br>
 
 <button onclick="add('${nome}')">Adicionar</button>
 
@@ -156,6 +168,8 @@ div.innerHTML+=html
 }
 
 }
+
+/* ADICIONAR AO CARRINHO */
 
 function add(nome){
 
@@ -174,9 +188,7 @@ item.qtd+=qtd
 carrinho.push({
 
 nome:nome,
-
 preco:produto.preco,
-
 qtd:qtd
 
 })
@@ -186,6 +198,8 @@ qtd:qtd
 renderCarrinho()
 
 }
+
+/* ATUALIZAR CARRINHO */
 
 function renderCarrinho(){
 
@@ -211,6 +225,8 @@ document.getElementById("barra").style.width=barra+"%"
 
 }
 
+/* ENVIAR PEDIDO */
+
 function enviarPedido(){
 
 let texto="Pedido Crazy Fantasy\n\n"
@@ -227,11 +243,13 @@ window.open(url)
 
 }
 
+/* FILTRO MENU */
+
 function filtrar(cat){
 
 if(cat=="todos"){
 
-render()
+render(produtos)
 
 return
 
@@ -252,8 +270,6 @@ filtrados[nome]=produtos[nome]
 render(filtrados)
 
 }
-
-render()
 
 </script>
 
