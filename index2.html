@@ -4,19 +4,14 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Portal Parceiros Crazy Fantasy</title>
+<title>Portal B2B Crazy Fantasy</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f4f4f4;
+background:#f6f6f6;
 margin:0;
-}
-
-.container{
-max-width:1400px;
-margin:auto;
 padding:30px;
 }
 
@@ -26,16 +21,67 @@ border-radius:10px;
 margin-bottom:20px;
 }
 
-.box{
+.topo{
 background:white;
 padding:20px;
 border-radius:10px;
 margin-bottom:20px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
-.flex{
+.info-b2b{
+background:#eef2ff;
+color:#4c51bf;
+padding:8px 12px;
+border-radius:6px;
+font-size:13px;
+display:inline-block;
+margin-top:5px;
+}
+
+.progress-container{
+width:100%;
+height:12px;
+background:#eee;
+border-radius:10px;
+margin-top:8px;
+overflow:hidden;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:red;
+transition:0.4s;
+}
+
+.categorias button{
+margin:5px;
+padding:8px 14px;
+border-radius:20px;
+border:1px solid #ccc;
+background:white;
+cursor:pointer;
+}
+
+.busca input{
+width:100%;
+padding:10px;
+border-radius:20px;
+border:1px solid #ccc;
+margin-top:10px;
+}
+
+.container{
 display:flex;
 gap:20px;
+}
+
+.tabela{
+flex:1;
+background:white;
+padding:20px;
+border-radius:10px;
 }
 
 table{
@@ -44,7 +90,7 @@ border-collapse:collapse;
 }
 
 th{
-background:#c7b7e4;
+background:#c9b8e9;
 padding:10px;
 }
 
@@ -53,52 +99,37 @@ padding:8px;
 border-bottom:1px solid #eee;
 }
 
-select{
-padding:6px;
-}
-
-.progress{
-height:10px;
-background:#eee;
-border-radius:10px;
-}
-
-.bar{
-height:100%;
-width:0%;
-background:red;
-border-radius:10px;
-transition:0.3s;
-}
-
-.cart{
+.carrinho{
 width:260px;
+background:white;
+padding:20px;
+border-radius:10px;
 }
 
-button{
-padding:10px;
-border:none;
-border-radius:6px;
+.btn{
 width:100%;
+padding:10px;
 margin-top:8px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 }
 
-.whats{background:#25D366;color:white;}
-.email{background:#6c63ff;color:white;}
-.pdf{background:#ff9800;color:white;}
-.clear{background:#444;color:white;}
-
-footer{
-background:#111;
+.whats{
+background:#25D366;
 color:white;
-padding:30px;
-margin-top:40px;
 }
 
-footer a{
-color:#ddd;
-text-decoration:none;
+.email{
+background:#6c63ff;
+color:white;
+}
+
+footer{
+margin-top:30px;
+text-align:center;
+font-size:13px;
+color:#777;
 }
 
 </style>
@@ -107,87 +138,52 @@ text-decoration:none;
 
 <body>
 
+<div class="banner">
+<img src="banner.jpg">
+</div>
+
+<div class="topo">
+
+<h2>Portal B2B Crazy Fantasy</h2>
+
+<div class="info-b2b">
+Tabela exclusiva para lojistas • Frete FOB
+</div>
+
+<p>Pedido mínimo: R$200</p>
+
+<div class="progress-container">
+<div class="progress-bar" id="barra"></div>
+</div>
+
+<p id="textoBarra">Faltam R$200</p>
+
+<div class="categorias">
+
+<button onclick="filtrar('todos')">Todos</button>
+<button onclick="filtrar('kits')">Kits</button>
+<button onclick="filtrar('perucas')">Perucas</button>
+<button onclick="filtrar('barbas')">Barbas</button>
+<button onclick="filtrar('acessorios')">Acessórios</button>
+<button onclick="filtrar('maquiagem')">Maquiagem</button>
+
+</div>
+
+<div class="busca">
+<input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
+</div>
+
+</div>
+
 <div class="container">
 
-<div class="banner">
-<a href="https://www.crazyfantasy.com.br" target="_blank">
-<img src="banner.png">
-</a>
-</div>
-
-<div class="box">
-
-<h2>Portal de Pedidos – Parceiros e Revendedores Crazy Fantasy</h2>
-
-<b>📦 Formas de envio</b><br>
-Correios (PAC ou SEDEX)<br>
-Transportadora indicada pelo cliente<br>
-Retirada em Valinhos/SP<br>
-Frete por conta do comprador (FOB)
-
-<br><br>
-
-<b>💳 Formas de pagamento</b><br>
-Pix<br>
-Transferência bancária<br>
-Cartão de crédito<br>
-Boleto mediante consulta<br>
-Pagamento antecipado
-
-<br><br>
-
-<b>🏷 Tabela de desconto</b>
-
-<table>
-
-<tr>
-<th>Valor</th>
-<th>Desconto</th>
-</tr>
-
-<tr>
-<td>R$400+</td>
-<td>10%</td>
-</tr>
-
-<tr>
-<td>R$800+</td>
-<td>12%</td>
-</tr>
-
-<tr>
-<td>R$1500+</td>
-<td>15%</td>
-</tr>
-
-</table>
-
-</div>
-
-<div class="box">
-
-<p>Progresso do pedido mínimo</p>
-
-<div class="progress">
-<div class="bar" id="bar"></div>
-</div>
-
-<p id="faltam">Faltam R$200</p>
-
-<input type="text" placeholder="Buscar produto..." onkeyup="buscar(this.value)">
-
-</div>
-
-<div class="flex">
-
-<div class="box" style="flex:1">
+<div class="tabela">
 
 <table>
 
 <thead>
 <tr>
 <th>Produto</th>
-<th>Variação</th>
 <th>Preço</th>
 <th>Qtd</th>
 <th>Total</th>
@@ -200,7 +196,7 @@ Pagamento antecipado
 
 </div>
 
-<div class="box cart">
+<div class="carrinho">
 
 <h3>Pedido</h3>
 
@@ -208,13 +204,13 @@ Itens: <span id="itens">0</span>
 
 <h2>R$ <span id="total">0</span></h2>
 
-<button class="clear" onclick="limpar()">Limpar</button>
+<button class="btn whats" onclick="enviarWhats()">
+Enviar pedido WhatsApp
+</button>
 
-<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
-
-<button class="whats" onclick="whats()">WhatsApp</button>
-
-<button class="email" onclick="email()">Enviar Email</button>
+<button class="btn email" onclick="enviarEmail()">
+Enviar por Email
+</button>
 
 </div>
 
@@ -222,41 +218,10 @@ Itens: <span id="itens">0</span>
 
 <footer>
 
-<b>Crazy Fantasy</b><br>
-Fantasias e acessórios para festas e eventos.<br><br>
-
-Portal exclusivo para parceiros e revendedores.<br>
-Pedido mínimo R$200.<br><br>
-
-<b>Contato</b><br>
-
-WhatsApp<br>
-<a href="https://wa.me/5519992850208">
-+55 19 99285-0208
-</a>
-
-<br><br>
-
-Email<br>
-<a href="mailto:lojacrazyfantasy@hotmail.com">
-lojacrazyfantasy@hotmail.com
-</a>
-
-<br><br>
-
-<a href="https://www.crazyfantasy.com.br" target="_blank">
-www.crazyfantasy.com.br
-</a>
-
-<br>
-
-<a href="https://www.instagram.com/lojacrazyfantasy" target="_blank">
-Instagram @lojacrazyfantasy
-</a>
+Crazy Fantasy © 2026  
+Portal B2B para empresas e escolas
 
 </footer>
-
-</div>
 
 <script>
 
@@ -264,91 +229,50 @@ let produtos=[]
 let carrinho={}
 
 fetch("produtos.csv")
-
-.then(r=>r.text())
-
+.then(res=>res.text())
 .then(text=>{
 
-let linhas=text.split("\n")
-
-linhas.shift()
-
-let mapa={}
+let linhas=text.split("\n").slice(1)
 
 linhas.forEach(l=>{
 
-let c=l.split(";")
+let c=l.split(",")
 
-let url=c[0]
-let nome=c[1]
-let variacao=c[4]
-let preco=parseFloat(c[9])||0
+produtos.push({
 
-if(!mapa[url]){
-
-mapa[url]={
-nome:nome,
-url:url,
-variacoes:[]
-}
-
-}
-
-mapa[url].variacoes.push({
-
-nome:variacao||"Padrão",
-preco:preco
+nome:c[0],
+preco:parseFloat(c[1]),
+categoria:c[2]
 
 })
 
 })
 
-produtos=Object.values(mapa)
-
-render()
+render(produtos)
 
 })
 
-function render(){
+function render(lista){
 
 let html=""
 
-produtos.forEach((p,i)=>{
-
-let op=""
-
-p.variacoes.forEach((v,j)=>{
-
-op+=`<option value="${j}">${v.nome}</option>`
-
-})
+lista.forEach((p,i)=>{
 
 html+=`
-
 <tr>
 
-<td>
-<a href="https://www.crazyfantasy.com.br/${p.url}" target="_blank">
-${p.nome}
-</a>
-</td>
+<td>${p.nome}</td>
+
+<td>R$ ${p.preco}</td>
 
 <td>
-<select id="var${i}" onchange="mudarPreco(${i})">
-${op}
-</select>
-</td>
-
-<td id="preco${i}">R$ ${p.variacoes[0].preco.toFixed(2)}</td>
-
-<td>
-<input type="number" min="0" onchange="add(${i},this.value)">
+<input type="number" min="0"
+onchange="add(${i},this.value)">
 </td>
 
 <td id="t${i}">0</td>
 
 </tr>
-
 `
 
 })
@@ -357,127 +281,14 @@ document.getElementById("lista").innerHTML=html
 
 }
 
-function mudarPreco(i){
+function filtrar(cat){
 
-let sel=document.getElementById("var"+i)
-
-let v=produtos[i].variacoes[sel.value]
-
-document.getElementById("preco"+i).innerText="R$ "+v.preco.toFixed(2)
-
+if(cat=="todos"){
+render(produtos)
+return
 }
 
-function add(i,q){
-
-q=parseInt(q)||0
-
-let sel=document.getElementById("var"+i)
-
-let v=produtos[i].variacoes[sel.value]
-
-carrinho[i]={
-
-nome:produtos[i].nome+" "+v.nome,
-qtd:q,
-preco:v.preco
-
-}
-
-document.getElementById("t"+i).innerText=(q*v.preco).toFixed(2)
-
-update()
-
-}
-
-function update(){
-
-let total=0
-let itens=0
-
-for(let i in carrinho){
-
-let item=carrinho[i]
-
-if(item.qtd>0){
-
-total+=item.qtd*item.preco
-itens+=item.qtd
-
-}
-
-}
-
-document.getElementById("total").innerText=total.toFixed(2)
-document.getElementById("itens").innerText=itens
-
-let p=(total/200)*100
-if(p>100)p=100
-
-let bar=document.getElementById("bar")
-
-bar.style.width=p+"%"
-
-if(p<40) bar.style.background="red"
-else if(p<100) bar.style.background="orange"
-else bar.style.background="green"
-
-document.getElementById("faltam").innerText=
-
-total<200
-? "Faltam R$"+(200-total).toFixed(2)
-: "Pedido mínimo atingido"
-
-}
-
-function limpar(){
-location.reload()
-}
-
-function gerarPDF(){
-window.print()
-}
-
-function whats(){
-
-let msg="Pedido Crazy Fantasy%0A%0A"
-
-for(let i in carrinho){
-
-let item=carrinho[i]
-
-if(item.qtd>0){
-
-msg+=item.nome+" x"+item.qtd+"%0A"
-
-}
-
-}
-
-msg+="%0ATotal: R$"+document.getElementById("total").innerText
-
-window.open("https://wa.me/5519992850208?text="+msg)
-
-}
-
-function email(){
-
-let msg="Pedido Crazy Fantasy\n\n"
-
-for(let i in carrinho){
-
-let item=carrinho[i]
-
-if(item.qtd>0){
-
-msg+=item.nome+" x"+item.qtd+"\n"
-
-}
-
-}
-
-msg+="\nTotal: R$"+document.getElementById("total").innerText
-
-window.location="mailto:lojacrazyfantasy@hotmail.com?subject=Pedido&body="+msg
+render(produtos.filter(p=>p.categoria==cat))
 
 }
 
@@ -485,15 +296,106 @@ function buscar(txt){
 
 txt=txt.toLowerCase()
 
-let linhas=document.querySelectorAll("#lista tr")
+render(produtos.filter(p=>
+p.nome.toLowerCase().includes(txt)
+))
 
-linhas.forEach(l=>{
+}
 
-let nome=l.innerText.toLowerCase()
+function add(i,qtd){
 
-l.style.display=nome.includes(txt)?"":"none"
+qtd=parseInt(qtd)||0
 
-})
+let total=qtd*produtos[i].preco
+
+document.getElementById("t"+i).innerText=total
+
+carrinho[i]=total
+
+atualizar()
+
+}
+
+function atualizar(){
+
+let total=0
+let itens=0
+
+for(let i in carrinho){
+
+total+=carrinho[i]
+
+if(carrinho[i]>0) itens++
+
+}
+
+document.getElementById("total").innerText=total
+document.getElementById("itens").innerText=itens
+
+let minimo=200
+
+let barra=document.getElementById("barra")
+
+let progresso=(total/minimo)*100
+
+if(progresso>100) progresso=100
+
+barra.style.width=progresso+"%"
+
+if(progresso<40) barra.style.background="red"
+else if(progresso<100) barra.style.background="orange"
+else barra.style.background="green"
+
+let falta=minimo-total
+
+document.getElementById("textoBarra").innerText=
+
+falta>0
+? "Faltam R$"+falta+" para o pedido mínimo"
+: "Pedido mínimo atingido"
+
+}
+
+function enviarWhats(){
+
+let msg="Pedido Crazy Fantasy%0A%0A"
+
+for(let i in carrinho){
+
+if(carrinho[i]>0){
+
+msg+=produtos[i].nome+"%0A"
+
+}
+
+}
+
+msg+="%0ATotal: R$"+document.getElementById("total").innerText
+
+window.open(
+"https://wa.me/551999999999?text="+msg
+)
+
+}
+
+function enviarEmail(){
+
+let msg="Pedido Crazy Fantasy\n\n"
+
+for(let i in carrinho){
+
+if(carrinho[i]>0){
+
+msg+=produtos[i].nome+"\n"
+
+}
+
+}
+
+msg+="\nTotal: R$"+document.getElementById("total").innerText
+
+window.location=
+"mailto:vendas@crazyfantasy.com.br?subject=Pedido&body="+msg
 
 }
 
