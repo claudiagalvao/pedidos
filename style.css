@@ -1,29 +1,197 @@
 body{
-
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 margin:0;
 background:#f5f5f5;
-
 }
 
+/* LAYOUT */
 
 .container{
-
 display:flex;
-
 }
 
+/* CATALOGO */
 
 .catalogo{
-
 width:75%;
 padding:20px;
-
 }
 
+/* BANNER */
+
+.banner img{
+width:100%;
+border-radius:10px;
+}
+
+/* BARRA INFO */
+
+.barraInfo{
+background:#ff0055;
+color:white;
+padding:8px;
+margin-top:10px;
+border-radius:6px;
+font-weight:bold;
+text-align:center;
+}
+
+/* MENU CATEGORIAS */
+
+.menuCategorias{
+margin:15px 0;
+}
+
+.menuCategorias button{
+margin-right:6px;
+padding:6px 12px;
+border:none;
+border-radius:20px;
+background:#333;
+color:white;
+cursor:pointer;
+}
+
+.menuCategorias button:hover{
+background:#ff0055;
+}
+
+/* BUSCA */
+
+#busca{
+width:100%;
+padding:8px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+/* GRID PRODUTOS */
+
+.gridProdutos{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+/* CARD PRODUTO */
+
+.produto{
+background:white;
+padding:16px;
+border-radius:12px;
+box-shadow:0 6px 16px rgba(0,0,0,0.08);
+transition:0.2s;
+}
+
+.produto:hover{
+transform:translateY(-4px);
+box-shadow:0 10px 24px rgba(0,0,0,0.12);
+}
+
+.produto h3{
+font-size:14px;
+margin-bottom:6px;
+}
+
+/* VARIAÇÃO */
+
+.variacao{
+font-size:13px;
+color:#666;
+margin-bottom:4px;
+}
+
+/* PREÇO */
+
+.preco{
+margin:6px 0;
+}
+
+.precoOriginal{
+text-decoration:line-through;
+color:#888;
+font-size:13px;
+margin-right:6px;
+}
+
+.precoB2B{
+color:#00c853;
+font-weight:bold;
+font-size:16px;
+}
+
+/* SELO DESCONTO */
+
+.seloDesconto{
+background:#00c853;
+color:white;
+font-size:11px;
+padding:3px 6px;
+border-radius:4px;
+display:inline-block;
+margin-bottom:6px;
+}
+
+/* SKU */
+
+.sku{
+font-size:12px;
+color:#777;
+}
+
+/* ESTOQUE */
+
+.estoque{
+font-size:13px;
+color:#444;
+margin-bottom:6px;
+}
+
+.estoqueBaixo{
+font-size:13px;
+color:#ff9800;
+font-weight:bold;
+margin-bottom:6px;
+}
+
+.estoqueEsgotado{
+font-size:13px;
+color:red;
+font-weight:bold;
+margin-bottom:6px;
+}
+
+/* BOTÃO ADICIONAR */
+
+.btnAdd{
+background:#ff0066;
+color:white;
+border:none;
+padding:8px;
+border-radius:6px;
+cursor:pointer;
+margin-top:4px;
+width:100%;
+}
+
+.btnAdd:hover{
+background:#d80057;
+}
+
+/* LINK PRODUTO */
+
+.linkProduto{
+display:block;
+font-size:12px;
+margin-top:6px;
+color:#1976D2;
+text-decoration:none;
+}
+
+/* CARRINHO */
 
 .carrinho{
-
 width:25%;
 background:black;
 color:white;
@@ -31,338 +199,103 @@ padding:20px;
 height:100vh;
 position:sticky;
 top:0;
-
+overflow:auto;
 }
 
-
-.banner img{
-
-width:100%;
-border-radius:10px;
-
+.carrinho h2{
+margin-top:0;
 }
 
+/* ITEM CARRINHO */
 
-.barraInfo{
-
-background:#ff0055;
-color:white;
-padding:8px;
-margin-top:10px;
-border-radius:6px;
-font-weight:bold;
-
-}
-
-
-.menuCategorias{
-
-margin:15px 0;
-
-}
-
-
-.menuCategorias button{
-
-margin-right:5px;
-padding:6px 10px;
-border:none;
-border-radius:20px;
-background:#333;
-color:white;
-cursor:pointer;
-
-}
-
-
-.menuCategorias button:hover{
-
-background:#ff0055;
-
-}
-
-
-#busca{
-
-width:100%;
-padding:8px;
-margin-bottom:15px;
-
-}
-
-
-.gridProdutos{
-
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:15px;
-
-}
-
-
-.produto{
-
-background:white;
-padding:16px;
-border-radius:12px;
-box-shadow:0 6px 16px rgba(0,0,0,0.08);
-transition:0.2s;
-
-}
-
-
-.produto:hover{
-
-transform:translateY(-4px);
-box-shadow:0 10px 24px rgba(0,0,0,0.12);
-
-}
-
-
-.produto h3{
-
-font-size:14px;
-margin-bottom:6px;
-
-}
-
-
-.variacao{
-
+.itemCarrinho{
+display:flex;
+justify-content:space-between;
 font-size:13px;
-color:#666;
-
-}
-
-
-.preco{
-
-font-size:16px;
-font-weight:bold;
-margin:6px 0;
-
-}
-
-
-.sku{
-
-font-size:12px;
-color:#777;
-
-}
-
-
-.estoque{
-
-font-size:13px;
-
-}
-
-
-.estoqueBaixo{
-
-color:#ff9800;
-font-weight:bold;
-
-}
-
-
-.estoqueEsgotado{
-
-color:red;
-font-weight:bold;
-
-}
-
-
-.btnAdd{
-
-background:#ff0066;
-color:white;
-border:none;
-padding:8px;
-border-radius:6px;
-cursor:pointer;
-margin-top:5px;
-width:100%;
-
-}
-
-
-.btnAdd:hover{
-
-background:#d80057;
-
-}
-
-
-.linkProduto{
-
-display:block;
-font-size:12px;
-margin-top:6px;
-
-}
-
-
-.seloDesconto{
-
-background:#00c853;
-color:white;
-font-size:11px;
-padding:3px 6px;
-border-radius:4px;
-display:inline-block;
 margin-bottom:6px;
-
 }
 
+.itemCarrinho button{
+background:red;
+border:none;
+color:white;
+padding:2px 6px;
+cursor:pointer;
+}
+
+/* TOTAL */
 
 .total{
-
 margin-top:10px;
 font-size:18px;
-
+font-weight:bold;
 }
 
+/* BARRA PROGRESSO */
 
 .barraProgresso{
-
 width:100%;
 height:8px;
 background:#444;
 margin:10px 0;
-
+border-radius:4px;
 }
 
-
 #barra{
-
 height:8px;
 width:0%;
 background:#00c853;
-
+transition:0.3s;
 }
 
+/* MENSAGEM PEDIDO MINIMO */
 
 .msgMinimo{
-
 font-size:12px;
 margin-bottom:10px;
-
 }
 
+/* INPUT CLIENTE */
 
 .carrinho input{
-
 width:100%;
 margin-bottom:6px;
 padding:6px;
-
+border-radius:4px;
+border:none;
 }
 
+/* BOTÕES ENVIO */
 
 .btnEmail,
 .btnWhats,
 .btnPdf,
 .btnLimpar{
-
 width:100%;
 padding:10px;
 margin-top:6px;
 border:none;
 cursor:pointer;
 border-radius:6px;
-
+font-weight:bold;
 }
-
 
 .btnEmail{
-
 background:#00c853;
 color:white;
-
 }
-
 
 .btnWhats{
-
 background:#25D366;
 color:white;
-
 }
-
 
 .btnPdf{
-
 background:#ff9800;
 color:white;
-
 }
-
 
 .btnLimpar{
-
 background:#e53935;
 color:white;
-
-}
-
-
-.itemCarrinho{
-
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-bottom:5px;
-
-}
-
-
-
-
-.precoOriginal{
-text-decoration:line-through;
-color:#888;
-font-size:13px;
-margin-right:6px;
-}
-
-.precoB2B{
-color:#00c853;
-font-weight:bold;
-font-size:16px;
-}
-
-.seloDesconto{
-background:#00c853;
-color:white;
-font-size:11px;
-padding:3px 6px;
-border-radius:4px;
-display:inline-block;
-margin-bottom:6px;
-}
-
-
-
-
-
-
-
-
-
-
-
-.precoOriginal{
-text-decoration:line-through;
-color:#888;
-font-size:13px;
-margin-right:6px;
-}
-
-.precoB2B{
-color:#00c853;
-font-weight:bold;
-font-size:16px;
 }
