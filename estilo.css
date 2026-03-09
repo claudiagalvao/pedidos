@@ -5,16 +5,27 @@ background:#0b0b0b;
 color:white;
 }
 
+/* banner */
+
+.banner{
+width:65%;
+}
+
 .banner img{
 width:100%;
 display:block;
 }
 
+/* catálogo */
+
 .catalogo{
 width:65%;
 padding:40px;
 float:left;
+margin-right:35%;
 }
+
+/* carrinho lateral */
 
 .carrinho{
 width:30%;
@@ -25,19 +36,25 @@ right:0;
 top:0;
 height:100%;
 overflow:auto;
-box-shadow:-4px 0 10px rgba(0,0,0,0.5);
+box-shadow:-4px 0 10px rgba(0,0,0,0.6);
 }
+
+/* cards de produto */
 
 .produto{
 background:#1a1a1a;
 padding:20px;
 margin-bottom:20px;
 border-radius:10px;
+max-width:500px;
 }
 
 .produto h3{
 margin-top:0;
+font-size:18px;
 }
+
+/* campos */
 
 select,input{
 padding:8px;
@@ -46,6 +63,14 @@ border-radius:6px;
 border:none;
 }
 
+/* quantidade */
+
+.produto input{
+width:120px;
+}
+
+/* botão adicionar */
+
 button{
 background:#ff0066;
 border:none;
@@ -53,12 +78,15 @@ padding:10px 16px;
 color:white;
 cursor:pointer;
 border-radius:6px;
-margin-top:10px;
+margin-top:12px;
+font-weight:bold;
 }
 
 button:hover{
 background:#ff2a7a;
 }
+
+/* barra de progresso */
 
 .progress{
 height:20px;
@@ -74,6 +102,8 @@ background:#00c853;
 width:0%;
 }
 
+/* formulário */
+
 form input{
 width:100%;
 margin-top:10px;
@@ -84,4 +114,5 @@ form button{
 width:100%;
 margin-top:15px;
 background:#00c853;
+font-size:16px;
 }
