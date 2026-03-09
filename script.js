@@ -18,6 +18,44 @@ const pedidoMinimo=200
 
 
 
+function fazerLogin(){
+
+const nome=document.getElementById("loginNome").value
+const empresa=document.getElementById("loginEmpresa").value
+const email=document.getElementById("loginEmail").value
+
+if(!nome || !empresa || !email){
+
+alert("Preencha todos os campos")
+
+return
+
+}
+
+localStorage.setItem("lojista",JSON.stringify({
+
+nome,
+empresa,
+email
+
+}))
+
+document.getElementById("loginTela").style.display="none"
+document.getElementById("portal").style.display="block"
+
+}
+
+
+
+if(localStorage.getItem("lojista")){
+
+document.getElementById("loginTela").style.display="none"
+document.getElementById("portal").style.display="block"
+
+}
+
+
+
 function calcularDesconto(valor){
 
 if(valor>=1000) return 0.15
@@ -52,8 +90,7 @@ variacao:c[2],
 preco:parseFloat(c[3]),
 link:c[4],
 sku:c[5],
-estoque:parseInt(c[6]),
-vendas:Math.floor(Math.random()*100)
+estoque:parseInt(c[6])
 
 })
 
@@ -109,18 +146,7 @@ produtosDiv.innerHTML=""
 
 lista.forEach(p=>{
 
-let selo=""
-
-if(p.vendas>70){
-
-selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
-
-}
-
 const preco10=p.preco*0.90
-const preco12=p.preco*0.88
-const preco15=p.preco*0.85
-
 
 const card=document.createElement("div")
 
@@ -128,42 +154,48 @@ card.className="produto"
 
 card.innerHTML=`
 
-${selo}
-
 <div class="camera">
-<a href="${p.link}" target="_blank">📸</a>
+
+<a href="${p.link}" target="_blank">
+
+📸
+
+</a>
+
 </div>
 
 <h3>${p.nome}</h3>
 
 <div class="precoOriginal">
+
 R$ ${p.preco.toFixed(2)}
+
 </div>
 
 <div class="precoB2B">
+
 R$ ${preco10.toFixed(2)}
-</div>
-
-<div class="progressivo">
-
-10% → ${preco10.toFixed(2)}<br>
-12% → ${preco12.toFixed(2)}<br>
-15% → ${preco15.toFixed(2)}
 
 </div>
 
 <div class="sku">
+
 SKU: ${p.sku}
+
 </div>
 
 <div class="estoque">
+
 Estoque: ${p.estoque}
+
 </div>
 
 <input type="number" value="1" min="1">
 
 <button class="btnAdd">
+
 Adicionar
+
 </button>
 
 `
@@ -171,8 +203,6 @@ Adicionar
 const btn=card.querySelector("button")
 
 btn.onclick=()=>{
-
-card.classList.add("pulse")
 
 const qtd=parseInt(card.querySelector("input").value)
 
@@ -215,7 +245,11 @@ div.innerHTML=`
 
 ${item.nome} x${item.qtd}
 
-<button onclick="removerItem(${index})">✕</button>
+<button onclick="removerItem(${index})">
+
+✕
+
+</button>
 
 `
 
@@ -245,7 +279,7 @@ msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido m�
 
 }else{
 
-msgMinimo.innerText=`Pedido mínimo atingido 🎉`
+msgMinimo.innerText="Pedido mínimo atingido 🎉"
 
 }
 
