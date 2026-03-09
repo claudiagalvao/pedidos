@@ -2,6 +2,7 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
 <title>Crazy Fantasy B2B</title>
 
@@ -12,49 +13,22 @@
 <body>
 
 <header class="banner">
-
-<img src="banner.jpg">
-
+<img src="banner.png">
 </header>
 
 
-<section class="info">
-
-<h2>Tabela exclusiva para parceiros</h2>
-
-<div class="cards-info">
-
-<div>
-<h3>💰 Descontos</h3>
-<p>Tabela especial para lojistas e revendedores parceiros.</p>
-</div>
-
-<div>
-<h3>📦 Pedido mínimo</h3>
-<p>Pedidos a partir de R$200</p>
-</div>
-
-<div>
-<h3>🚚 Frete</h3>
-<p>Frete calculado após envio do pedido</p>
-</div>
-
-</div>
-
-</section>
+<nav id="menuCategorias"></nav>
 
 
-<div class="container">
+<section class="catalogo">
 
-<div class="catalogo">
+<h1>Catálogo Crazy Fantasy</h1>
 
-<h2>Catálogo Crazy Fantasy</h2>
-
-<input id="busca" placeholder="🔎 Buscar produto...">
+<input id="busca" placeholder="🔎 Buscar produto">
 
 <div id="produtos"></div>
 
-</div>
+</section>
 
 
 <aside class="carrinho">
@@ -64,34 +38,22 @@
 <div id="listaPedido"></div>
 
 <div class="total">
-
 Total: R$ <span id="total">0</span>
-
 </div>
 
-<div class="progresso">
-
+<div class="barraProgresso">
 <div id="barra"></div>
-
 </div>
 
 <p id="msgMinimo"></p>
-
 
 <input placeholder="Empresa">
 <input placeholder="Nome">
 <input placeholder="Email">
 
-<button class="btnEnviar">
-
-Enviar Pedido
-
-</button>
+<button class="btnEnviar">Enviar Pedido</button>
 
 </aside>
-
-</div>
-
 
 <script src="script.js"></script>
 
