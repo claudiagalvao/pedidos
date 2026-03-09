@@ -7,10 +7,6 @@ color:#222;
 
 /* banner */
 
-.banner{
-width:70%;
-}
-
 .banner img{
 width:100%;
 display:block;
@@ -31,34 +27,20 @@ padding:10px 18px;
 margin-right:10px;
 border-radius:20px;
 cursor:pointer;
+font-size:14px;
 }
 
 .menu button:hover{
 background:#ff0066;
 }
 
-/* catálogo */
+/* layout */
 
 .catalogo{
 width:65%;
 padding:40px;
 float:left;
 margin-right:35%;
-}
-
-/* carrinho */
-
-.carrinho{
-width:30%;
-background:#111;
-padding:30px;
-position:fixed;
-right:0;
-top:0;
-height:100%;
-overflow:auto;
-box-shadow:-4px 0 10px rgba(0,0,0,0.6);
-color:white;
 }
 
 /* produtos */
@@ -69,13 +51,12 @@ padding:20px;
 margin-bottom:20px;
 border-radius:10px;
 max-width:500px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .produto h3{
 margin-top:0;
 }
-
-/* inputs */
 
 select,input{
 padding:8px;
@@ -101,7 +82,26 @@ button:hover{
 background:#ff2a7a;
 }
 
-/* progresso */
+/* carrinho */
+
+.carrinho{
+width:30%;
+background:#111;
+padding:30px;
+position:fixed;
+right:0;
+top:0;
+height:100%;
+overflow:auto;
+box-shadow:-4px 0 10px rgba(0,0,0,0.6);
+color:white;
+}
+
+.carrinho h2{
+margin-top:0;
+}
+
+/* barra progresso */
 
 .progress{
 height:20px;
@@ -123,6 +123,8 @@ form input{
 width:100%;
 margin-top:10px;
 padding:10px;
+border-radius:6px;
+border:none;
 }
 
 form button{
