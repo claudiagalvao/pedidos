@@ -21,9 +21,9 @@ carrinho.forEach((p,i)=>{
 total+=p.preco
 
 lista.innerHTML+=`
-<div class="itemCarrinho">
+<div>
 ${p.nome} - R$${p.preco}
-<button onclick="removerItem(${i})">x</button>
+<button class="removerItem" onclick="removerItem(${i})">x</button>
 </div>
 `
 
