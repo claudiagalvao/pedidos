@@ -138,3 +138,26 @@ padding:10px;
 width:100%;
 border-radius:6px;
 }
+
+
+.badgeB2B{
+background:#ff0066;
+color:white;
+font-size:11px;
+padding:3px 6px;
+border-radius:4px;
+display:inline-block;
+margin-bottom:5px;
+}
+
+.precoOriginal{
+text-decoration:line-through;
+color:#888;
+font-size:12px;
+margin-right:6px;
+}
+
+.precoB2B{
+color:#00c853;
+font-weight:bold;
+}
