@@ -18,8 +18,6 @@
 
 <div class="container">
 
-<!-- COLUNA CATÁLOGO -->
-
 <div class="catalogo">
 
 <div class="banner">
@@ -30,7 +28,7 @@
 🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
 </div>
 
-<div id="menuCategorias" class="menuCategorias"></div>
+<div id="menuCategorias"></div>
 
 <input id="busca" placeholder="🔎 Buscar produto">
 
@@ -39,12 +37,11 @@
 </div>
 
 
-<!-- COLUNA CARRINHO -->
 
 <div class="carrinho">
 
 <h2>
-Pedido
+🛒 Pedido
 <span id="contadorItens">(0 itens)</span>
 </h2>
 
@@ -69,62 +66,45 @@ Total B2B: R$ <span id="total">0</span>
 <input id="empresa" placeholder="Empresa">
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
+<input id="whatsapp" placeholder="WhatsApp do cliente">
 
-<button class="btnEmail" onclick="enviarEmail()">
-Enviar Pedido por Email
-</button>
+<div class="botoesPedido">
 
-<button class="btnWhats" onclick="enviarWhatsApp()">
-Enviar por WhatsApp
-</button>
+<button class="btnEmail" onclick="enviarEmail()">Enviar Email</button>
 
-<button class="btnPdf" onclick="gerarPDF()">
-Gerar PDF do Pedido
-</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">
-Limpar Pedido
-</button>
+<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
+
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
 
 </div>
 
 </div>
 
+</div>
 
 <div class="footer">
 
-<b>Crazy Fantasy B2B</b>
+Crazy Fantasy B2B
 
 <br><br>
 
-Desconto progressivo
+Descontos progressivos
 
 <br>
 
-até R$200 → 10%
+R$200 → 10%
 
 <br>
 
-até R$500 → 12%
+R$500 → 12%
 
 <br>
 
-até R$1000 → 15%
-
-<br><br>
-
-Pagamento: PIX | Boleto | Cartão
-
-<br>
-
-Frete calculado após envio
-
-<br>
-
-Validade do pedido: 48h
+R$1000 → 15%
 
 </div>
-
 
 <script src="script.js"></script>
 
