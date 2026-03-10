@@ -1,4 +1,4 @@
-/* RESET E ESTRUTURA BASE */
+/* RESET E ESTRUTURA */
 * {
     margin: 0;
     padding: 0;
@@ -9,72 +9,47 @@ body {
     font-family: 'Inter', Arial, sans-serif;
     background: #eef1f4;
     color: #333;
+    overflow-x: hidden; /* Evita barra de rolagem lateral por causa do banner */
 }
 
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px;
+    padding: 20px;
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0;
 }
 
-/* BANNER COLADO */
+/* BANNER: TÉCNICA DE QUEBRA DE CONTAINER */
 .bannerTopo {
-    width: calc(100% + 40px);
-    margin-left: -20px;
+    width: 100vw;           /* Força a largura total da tela */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;     /* Centraliza ignorando o pai */
+    margin-right: -50vw;
     height: auto;
     display: block;
-    margin-bottom: 15px;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    object-fit: cover;
 }
 
 .barraInfo {
     background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* MENU DE CATEGORIAS */
-#menuCategorias {
-    margin-bottom: 15px;
-}
-
-#menuCategorias button {
-    background: #e5e5e7;
-    color: #444;
-    border: none;
-    border-radius: 18px;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    margin: 4px;
-    transition: 0.2s;
-}
-
-#menuCategorias button:hover {
-    background: #cfd3d8;
-}
-
-#busca {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-}
-
-/* GRID E CARDS */
+/* CARDS: SELO E CÂMERA */
 .gridProdutos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -83,91 +58,65 @@ body {
 
 .produto {
     background: white;
-    padding: 24px;
+    padding: 25px;
     border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    position: relative; /* Importante para o posicionamento absoluto interno */
-    transition: 0.25s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+    position: relative;
     display: flex;
     flex-direction: column;
 }
 
-.produto:hover {
-    transform: translateY(-5px);
-}
-
-/* SELO MAIS VENDIDO COM RESPIRO */
+/* SELO: Posicionado com distanciamento do nome */
 .badgeVendido {
     position: absolute;
-    top: 14px; /* Mais distante do topo para dar respiro */
-    left: 14px;
+    top: 15px;
+    left: 15px;
     background: #ff9800;
     color: white;
-    padding: 5px 10px; /* Aumentado para melhor leitura */
+    padding: 5px 12px;
     border-radius: 6px;
     font-size: 11px;
     font-weight: bold;
-    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* ÍCONE DA CÂMERA RESTAURADO */
-.camera-icon {
+/* CÂMERA: Topo direito */
+.camera-link {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-    cursor: pointer;
+    top: 15px;
+    right: 15px;
     text-decoration: none;
-    color: #333;
-    z-index: 2;
+    font-size: 20px;
+    z-index: 5;
 }
 
-.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
+.produto h3 {
+    margin-top: 35px; /* Espaço para o selo e a câmera respirarem */
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.precoB2B { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 10px; }
 
 .progressivo-card {
     font-size: 11px;
-    color: #666;
+    color: #555;
     background: #f8f9fa;
-    padding: 8px;
-    border-radius: 8px;
-    margin: 8px 0;
-    line-height: 1.4;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
 }
 
-.estoque-card { font-size: 12px; color: #444; margin-bottom: 8px; }
+.estoque-card { font-size: 12px; font-weight: 500; color: #666; margin-bottom: 15px; }
 
 /* CARRINHO */
 .carrinho {
     flex: 1;
     background: #2f3242;
     color: white;
-    padding: 20px;
-    min-width: 340px;
+    padding: 25px;
+    min-width: 350px;
     position: sticky;
     top: 20px;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
-    border-radius: 15px;
-}
-
-.formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
-}
-
-.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
-
-/* RODAPÉ */
-.footer {
-    background: #2f3242;
-    color: white;
-    padding: 40px;
-    text-align: center;
-    margin-top: 40px;
-    font-size: 14px;
-}
-
-@media (max-width: 1000px) {
-    .container { flex-direction: column; padding: 0 10px; }
-    .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
-    .carrinho { position: static; width: 100%; min-width: auto; }
+    border-radius: 20px;
 }
