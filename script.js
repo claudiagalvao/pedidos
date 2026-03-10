@@ -54,8 +54,7 @@ variacao:c[2],
 preco:parseFloat(c[3]),
 link:c[4],
 sku:c[5],
-estoque:parseInt(c[6]),
-vendas:Math.floor(Math.random()*100)
+estoque:parseInt(c[6])
 
 })
 
@@ -115,8 +114,6 @@ produtosDiv.innerHTML=""
 lista.forEach(p=>{
 
 const desconto10=p.preco*0.90
-const desconto12=p.preco*0.88
-const desconto15=p.preco*0.85
 
 const card=document.createElement("div")
 card.className="produto"
@@ -128,12 +125,6 @@ card.innerHTML=`
 <div class="precoOriginal">R$ ${p.preco.toFixed(2)}</div>
 
 <div class="precoB2B">Preço B2B: R$ ${desconto10.toFixed(2)}</div>
-
-<div class="progressivo">
-10% → ${desconto10.toFixed(2)}<br>
-12% → ${desconto12.toFixed(2)}<br>
-15% → ${desconto15.toFixed(2)}
-</div>
 
 <div class="estoque">Estoque: ${p.estoque}</div>
 
@@ -245,6 +236,13 @@ atualizarCarrinho()
 
 function enviarWhatsApp(){
 
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido")
+return
+
+}
+
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
@@ -259,21 +257,27 @@ window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
 
 function enviarEmail(){
 
-let texto="Pedido Crazy Fantasy B2B\n\n"
+if(total < pedidoMinimo){
 
-carrinho.forEach(i=>{
-texto+=`${i.qtd}x ${i.nome}\n`
-})
+alert("Pedido mínimo de R$200 não atingido")
+return
 
-const assunto="Pedido Crazy Fantasy"
+}
 
-window.location.href=`mailto:?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}`
+alert("Pedido enviado por formulário")
 
 }
 
 
 
 function gerarPDF(){
+
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido")
+return
+
+}
 
 const { jsPDF } = window.jspdf
 
