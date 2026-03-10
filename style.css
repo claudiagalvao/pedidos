@@ -6,6 +6,7 @@ margin:0;
 
 .container{
 display:flex;
+align-items:flex-start;
 }
 
 .catalogo{
@@ -15,8 +16,6 @@ padding:20px;
 
 .banner img{
 width:100%;
-max-height:320px;
-object-fit:cover;
 border-radius:12px;
 }
 
@@ -54,18 +53,12 @@ padding:20px;
 border-radius:14px;
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
 position:relative;
-transition:0.3s;
-}
-
-.produto:hover{
-transform:translateY(-6px);
 }
 
 .camera{
 position:absolute;
 top:10px;
 right:10px;
-font-size:20px;
 }
 
 .badgeVendido{
@@ -98,7 +91,6 @@ margin-top:6px;
 
 .estoque{
 font-size:12px;
-color:#444;
 margin-top:4px;
 }
 
@@ -113,11 +105,46 @@ margin-top:10px;
 cursor:pointer;
 }
 
+
+/* CARRINHO */
+
 .carrinho{
 flex:1;
 background:#1f2b3a;
 color:white;
 padding:20px;
+
+max-width:360px;
+
+/* carrinho flutuante */
+
+position:sticky;
+top:20px;
+
+height:fit-content;
+}
+
+
+.formPedido{
+display:grid;
+grid-template-columns:1fr;
+gap:6px;
+margin-top:10px;
+}
+
+.formPedido input,
+.formPedido select,
+.formPedido textarea{
+width:100%;
+padding:8px;
+border-radius:6px;
+border:none;
+font-size:13px;
+}
+
+.formPedido textarea{
+height:60px;
+resize:none;
 }
 
 .barraProgresso{
@@ -134,12 +161,6 @@ width:0%;
 background:#00c853;
 border-radius:10px;
 transition:width .3s;
-}
-
-input{
-width:100%;
-margin:6px 0;
-padding:8px;
 }
 
 .botoesPedido{
