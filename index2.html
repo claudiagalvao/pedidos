@@ -41,7 +41,7 @@
 <div class="carrinho">
 
 <h2>
-🛒 Pedido
+Pedido
 <span id="contadorItens">(0 itens)</span>
 </h2>
 
@@ -64,19 +64,22 @@ Total B2B: R$ <span id="total">0</span>
 <h3>Dados do Cliente</h3>
 
 <input id="empresa" placeholder="Empresa">
+
 <input id="nome" placeholder="Nome">
+
 <input id="email" placeholder="Email">
+
 <input id="whatsapp" placeholder="WhatsApp do cliente">
 
 <div class="botoesPedido">
 
-<button class="btnEmail" onclick="enviarEmail()">Enviar Email</button>
+<button class="btnEmail" onclick="enviarEmail()">Enviar Pedido por Email</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
 
-<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPdf" onclick="gerarPDF()">Gerar PDF do Pedido</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
 
 </div>
 
@@ -86,23 +89,35 @@ Total B2B: R$ <span id="total">0</span>
 
 <div class="footer">
 
-Crazy Fantasy B2B
+<b>Crazy Fantasy B2B</b>
 
 <br><br>
 
-Descontos progressivos
+Desconto progressivo
 
 <br>
 
-R$200 → 10%
+até R$200 → 10%
 
 <br>
 
-R$500 → 12%
+até R$500 → 12%
 
 <br>
 
-R$1000 → 15%
+até R$1000 → 15%
+
+<br><br>
+
+Pagamento: PIX | Boleto | Cartão
+
+<br>
+
+Frete calculado após envio
+
+<br>
+
+Validade do pedido: 48h
 
 </div>
 

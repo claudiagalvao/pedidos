@@ -1,180 +1,165 @@
-:root{
-
---primary:#4f46e5;
---accent:#7c3aed;
---success:#10b981;
---bg:#f8fafc;
---text:#1e293b;
-
-}
-
 body{
-font-family:Inter,Arial;
-background:var(--bg);
+font-family:Arial;
+background:#f4f6fb;
 margin:0;
-color:var(--text);
 }
 
 .container{
 display:flex;
-max-width:1400px;
-margin:auto;
 }
 
 .catalogo{
 flex:3;
-padding:30px;
+padding:20px;
 }
 
 .banner img{
 width:100%;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+max-height:320px;
+object-fit:cover;
+border-radius:12px;
 }
 
 .barraInfo{
-background:linear-gradient(90deg,var(--primary),var(--accent));
+background:#ff0066;
 color:white;
-padding:12px;
+padding:10px;
 border-radius:10px;
-margin:15px 0;
+margin:10px 0;
 text-align:center;
-font-weight:600;
+}
+
+#menuCategorias{
+margin:10px 0;
+}
+
+#menuCategorias button{
+margin:4px;
+padding:8px 14px;
+border:none;
+border-radius:8px;
+background:#eee;
+cursor:pointer;
 }
 
 .gridProdutos{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:24px;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:20px;
 }
 
 .produto{
 background:white;
 padding:20px;
-border-radius:16px;
-box-shadow:0 8px 24px rgba(0,0,0,0.06);
+border-radius:14px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
 position:relative;
-transition:.25s;
+transition:0.3s;
 }
 
 .produto:hover{
 transform:translateY(-6px);
+box-shadow:0 14px 30px rgba(0,0,0,0.12);
 }
 
 .camera{
 position:absolute;
-top:12px;
-right:12px;
+top:10px;
+right:10px;
 font-size:20px;
 }
 
 .badgeVendido{
 position:absolute;
-top:12px;
-left:12px;
-background:#f59e0b;
+top:10px;
+left:10px;
+background:#ff9800;
 color:white;
-padding:4px 10px;
-border-radius:20px;
-font-size:11px;
-font-weight:700;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
 }
 
 .precoOriginal{
 text-decoration:line-through;
-color:#94a3b8;
-font-size:14px;
+color:#888;
 }
 
 .precoB2B{
-font-size:22px;
-font-weight:800;
-margin:4px 0;
-}
-
-.progressivo{
-font-size:12px;
-color:#64748b;
+color:#1db954;
+font-size:18px;
+font-weight:bold;
 }
 
 .btnAdd{
-background:linear-gradient(135deg,var(--primary),var(--accent));
+background:#ff0055;
 color:white;
 border:none;
 padding:10px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
+border-radius:8px;
+width:100%;
 margin-top:10px;
-}
-
-.btnAdd:hover{
-transform:scale(1.05);
+cursor:pointer;
 }
 
 .carrinho{
 flex:1;
-background:#111827;
+background:#1f2b3a;
 color:white;
-padding:25px;
-position:sticky;
-top:20px;
-height:fit-content;
-border-radius:14px;
+padding:20px;
 }
 
 .barraProgresso{
-height:8px;
-background:#374151;
+width:100%;
+height:10px;
+background:#dfe6ee;
 border-radius:10px;
 margin:10px 0;
 }
 
 #barra{
-height:8px;
+height:10px;
 width:0%;
-background:linear-gradient(90deg,#10b981,#34d399);
+background:#00c853;
 border-radius:10px;
-transition:.3s;
+transition:width .3s;
 }
 
-.economiaPedido{
-color:#22c55e;
-font-weight:600;
-}
-
-input{
-width:100%;
+#sugestoes{
+background:#263445;
 padding:10px;
-margin:6px 0;
 border-radius:8px;
-border:1px solid #e5e7eb;
+margin:10px 0;
+font-size:14px;
 }
 
-.botoesPedido{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-margin-top:10px;
+.removerItem{
+margin-left:8px;
+padding:3px 6px;
+font-size:12px;
+background:#ff4444;
+color:white;
+border:none;
+border-radius:4px;
 }
 
 button{
+margin:6px 0;
 padding:10px;
 border:none;
-border-radius:8px;
+border-radius:6px;
 cursor:pointer;
-font-weight:600;
 }
 
-.btnEmail{background:linear-gradient(135deg,#10b981,#34d399);color:white}
-.btnWhats{background:linear-gradient(135deg,#22c55e,#4ade80);color:white}
-.btnPdf{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:white}
-.btnLimpar{background:linear-gradient(135deg,#ef4444,#f87171);color:white}
+.btnEmail{background:#00c853;color:white}
+.btnWhats{background:#00c853;color:white}
+.btnPdf{background:#ff9800;color:white}
+.btnLimpar{background:#ff4444;color:white}
 
 .footer{
-background:#0f172a;
+background:#111;
 color:white;
-text-align:center;
 padding:30px;
-margin-top:40px;
+text-align:center;
+margin-top:30px;
 }
