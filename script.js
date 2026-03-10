@@ -146,9 +146,9 @@ const input = card.querySelector(".qtdProduto");
 
 if(botao && p.estoque>0){
 
-botao.onclick = () => {
+botao.addEventListener("click", function(){
 
-const qtd = parseInt(input.value);
+const qtd = parseInt(input.value || 0);
 
 if(!qtd || qtd<=0) return;
 
@@ -169,7 +169,21 @@ atualizarCarrinho();
 
 input.value = 0;
 
-};
+/* feedback visual mobile */
+
+const botaoMobile = document.getElementById("botaoCarrinhoMobile");
+
+if(botaoMobile){
+
+botaoMobile.style.background="#27d266";
+
+setTimeout(()=>{
+botaoMobile.style.background="#2f3242";
+},400);
+
+}
+
+});
 
 }
 
@@ -209,6 +223,12 @@ listaPedido.innerHTML+=`
 });
 
 contadorItens.innerText=`(${itens} itens)`;
+
+const contadorMobile = document.getElementById("contadorMobile");
+
+if(contadorMobile){
+contadorMobile.innerText = itens;
+}
 
 totalEl.innerText = total.toFixed(2);
 
