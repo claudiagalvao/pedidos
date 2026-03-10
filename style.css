@@ -5,24 +5,50 @@ margin:0;
 color:#333;
 }
 
-/* container central */
+
+/* HEADER */
+
+.topo{
+
+position:sticky;
+top:0;
+
+z-index:50;
+
+background:#eef1f4;
+
+padding:10px 0;
+
+}
+
+
+/* BANNER */
+
+.bannerTopo{
+
+display:block;
+
+max-width:1200px;
+
+margin:0 auto;
+
+width:100%;
+
+border-radius:14px;
+
+}
+
+
+/* CONTAINER CENTRAL */
 
 .pagina{
 max-width:1200px;
 margin:0 auto;
-padding:20px;
+padding:10px 20px 20px 20px;
 }
 
-/* banner */
 
-.bannerTopo{
-width:100%;
-display:block;
-border-radius:14px;
-margin-bottom:15px;
-}
-
-/* layout principal */
+/* GRID PRINCIPAL */
 
 .container{
 display:grid;
@@ -30,13 +56,15 @@ grid-template-columns:1fr 340px;
 gap:25px;
 }
 
-/* catálogo */
+
+/* CATÁLOGO */
 
 .catalogo{
 width:100%;
 }
 
-/* barra info */
+
+/* BARRA INFO */
 
 .barraInfo{
 background:linear-gradient(135deg,#d5d8dc,#bfc3c9);
@@ -47,7 +75,8 @@ margin:10px 0;
 text-align:center;
 }
 
-/* menu categorias */
+
+/* MENU CATEGORIAS */
 
 #menuCategorias button{
 background:#e5e7ea;
@@ -64,7 +93,8 @@ margin:4px;
 background:#cfd3d8;
 }
 
-/* busca */
+
+/* BUSCA */
 
 #busca{
 width:100%;
@@ -74,7 +104,8 @@ border:1px solid #ccc;
 margin-bottom:15px;
 }
 
-/* grid produtos */
+
+/* GRID PRODUTOS */
 
 .gridProdutos{
 display:grid;
@@ -82,11 +113,12 @@ grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
 gap:20px;
 }
 
-/* card produto */
+
+/* CARD */
 
 .produto{
 background:white;
-padding:24px;
+padding:26px;
 border-radius:16px;
 box-shadow:0 10px 20px rgba(0,0,0,0.08);
 position:relative;
@@ -98,25 +130,30 @@ transform:translateY(-5px);
 box-shadow:0 14px 25px rgba(0,0,0,0.12);
 }
 
-/* selo */
+
+/* SELO MAIS VENDIDO */
 
 .badgeVendido{
+
 position:absolute;
 
 top:18px;
 left:18px;
 
 background:#ff9800;
+
 color:white;
 
-padding:5px 10px;
+padding:6px 12px;
 
 border-radius:8px;
 
 font-size:12px;
+
 }
 
-/* camera */
+
+/* CAMERA */
 
 .camera{
 position:absolute;
@@ -125,16 +162,18 @@ right:18px;
 font-size:18px;
 }
 
-/* titulo produto */
+
+/* TITULO */
 
 .produto h3{
 font-size:15px;
 font-weight:500;
-margin-top:22px;
+margin-top:28px;
 margin-bottom:6px;
 }
 
-/* preços */
+
+/* PREÇOS */
 
 .precoOriginal{
 text-decoration:line-through;
@@ -147,7 +186,8 @@ font-size:17px;
 font-weight:600;
 }
 
-/* progressão */
+
+/* PROGRESSÃO */
 
 .progressivo{
 font-size:12px;
@@ -155,14 +195,16 @@ color:#777;
 margin-top:6px;
 }
 
-/* estoque */
+
+/* ESTOQUE */
 
 .estoque{
 font-size:12px;
 margin-top:4px;
 }
 
-/* input quantidade */
+
+/* QUANTIDADE */
 
 .produto input{
 width:55px;
@@ -173,7 +215,8 @@ text-align:center;
 font-size:14px;
 }
 
-/* botão adicionar */
+
+/* BOTÃO */
 
 .btnAdd{
 background:linear-gradient(135deg,#c7ccd2,#9da3aa);
@@ -201,7 +244,8 @@ background:#ccc;
 cursor:not-allowed;
 }
 
-/* carrinho */
+
+/* CARRINHO */
 
 .carrinho{
 background:#2f3242;
@@ -209,12 +253,13 @@ color:white;
 padding:20px;
 border-radius:12px;
 position:sticky;
-top:20px;
-max-height:calc(100vh - 40px);
+top:120px;
+max-height:calc(100vh - 120px);
 overflow-y:auto;
 }
 
-/* form */
+
+/* FORM */
 
 .formPedido{
 display:grid;
@@ -249,7 +294,8 @@ height:50px;
 resize:none;
 }
 
-/* barra progresso */
+
+/* BARRA PROGRESSO */
 
 .barraProgresso{
 width:100%;
@@ -267,7 +313,8 @@ border-radius:10px;
 transition:width .3s;
 }
 
-/* botões carrinho */
+
+/* BOTÕES */
 
 .botoesPedido{
 display:grid;
@@ -289,7 +336,8 @@ font-weight:500;
 .btnPdf{background:#ff9f43;color:white}
 .btnLimpar{background:#ff6b6b;color:white}
 
-/* rodapé */
+
+/* RODAPÉ */
 
 .footer{
 background:#2f3242;
