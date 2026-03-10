@@ -5,7 +5,7 @@ box-sizing:border-box;
 }
 
 body{
-font-family:Arial, Helvetica, sans-serif;
+font-family:Arial;
 background:#eef1f4;
 color:#333;
 }
@@ -17,8 +17,6 @@ margin:auto;
 gap:25px;
 padding:20px;
 }
-
-/* CATALOGO */
 
 .catalogo{
 flex:3;
@@ -37,23 +35,6 @@ border-radius:8px;
 margin-bottom:12px;
 }
 
-/* MENU */
-
-#menuCategorias{
-margin-bottom:10px;
-}
-
-#menuCategorias button{
-background:#e5e7eb;
-border:none;
-padding:6px 12px;
-border-radius:14px;
-margin-right:5px;
-cursor:pointer;
-}
-
-/* BUSCA */
-
 #busca{
 width:100%;
 padding:10px;
@@ -62,15 +43,11 @@ border-radius:8px;
 border:1px solid #ccc;
 }
 
-/* GRID */
-
 .gridProdutos{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:18px;
 }
-
-/* CARD */
 
 .produto{
 background:white;
@@ -82,12 +59,9 @@ flex-direction:column;
 }
 
 .produto h3{
-font-size:15px;
+font-size:14px;
 font-weight:600;
-margin-bottom:6px;
 }
-
-/* PREÇO */
 
 .precoB2B{
 font-size:22px;
@@ -95,8 +69,6 @@ font-weight:bold;
 color:#1d4ed8;
 margin:6px 0;
 }
-
-/* DESCONTOS */
 
 .progressivo-card{
 font-size:12px;
@@ -106,38 +78,43 @@ border-radius:8px;
 margin:10px 0;
 }
 
-/* INPUT */
-
 .produto input{
 width:100%;
 padding:8px;
 border-radius:6px;
 border:1px solid #ccc;
 text-align:center;
-margin-top:6px;
 }
-
-/* LINHA AÇÕES */
 
 .linhaAcoes{
 display:flex;
 align-items:center;
-justify-content:space-between;
-margin-top:10px;
+gap:10px;
+margin-top:12px;
 }
 
-/* BOTÃO */
+.camera-link{
+font-size:18px;
+text-decoration:none;
+}
+
+.badgeVendido{
+background:#ff9800;
+color:white;
+padding:4px 8px;
+border-radius:6px;
+font-size:11px;
+}
 
 .btnAdd{
+margin-left:auto;
 background:#2f3242;
 color:white;
 border:none;
-padding:8px 12px;
+padding:9px 14px;
 border-radius:8px;
 cursor:pointer;
 }
-
-/* CARRINHO */
 
 .carrinho{
 flex:1;
@@ -150,8 +127,6 @@ top:20px;
 max-height:calc(100vh - 40px);
 overflow-y:auto;
 }
-
-/* BARRA */
 
 .barraFundo{
 background:#444;
@@ -167,16 +142,12 @@ height:8px;
 width:0%;
 }
 
-/* LISTA */
-
 .listaPedido{
 margin-top:14px;
 padding-top:12px;
 border-top:1px solid rgba(255,255,255,0.2);
 font-size:13px;
 }
-
-/* FORM */
 
 .formPedido input,
 .formPedido select,
@@ -189,8 +160,6 @@ margin-bottom:6px;
 font-size:12px;
 }
 
-/* LINHAS */
-
 .linha2{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -202,8 +171,6 @@ display:grid;
 grid-template-columns:1fr 1fr 1fr;
 gap:6px;
 }
-
-/* BOTÕES */
 
 .botoesPedido{
 margin-top:10px;
@@ -229,7 +196,22 @@ border-radius:8px;
 cursor:pointer;
 }
 
-/* FOOTER */
+.tituloFormulario{
+font-size:14px;
+font-weight:600;
+margin:12px 0 8px 0;
+color:#1d4ed8;
+}
+
+.descontoAtual{
+font-size:11px;
+margin-top:4px;
+}
+
+.proximoDesconto{
+font-size:11px;
+margin-bottom:6px;
+}
 
 .footer{
 background:#2f3242;
@@ -244,39 +226,4 @@ margin:auto;
 display:flex;
 justify-content:space-between;
 font-size:13px;
-}
-
-/* MOBILE */
-
-@media (max-width:768px){
-
-.container{
-flex-direction:column;
-padding:10px;
-}
-
-.gridProdutos{
-grid-template-columns:repeat(2,1fr);
-}
-
-.carrinho{
-position:relative;
-top:auto;
-width:100%;
-margin-top:20px;
-}
-
-.footerContent{
-flex-direction:column;
-gap:10px;
-text-align:center;
-}
-
-.btnAdd,
-.btnPedido,
-.btnLimpar{
-padding:12px;
-font-size:14px;
-}
-
 }
