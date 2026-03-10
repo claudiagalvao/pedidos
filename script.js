@@ -103,6 +103,23 @@ produtos.filter(p=>p.nome.toLowerCase().includes(termo))
 
 
 /* ============================= */
+/* FUNÇÃO VARIAÇÃO */
+/* ============================= */
+
+function variacaoValida(v){
+
+if(!v) return false;
+
+let texto = v.toLowerCase().trim();
+
+if(texto === "padrão" || texto === "padrao") return false;
+
+return true;
+
+}
+
+
+/* ============================= */
 /* RENDER PRODUTOS */
 /* ============================= */
 
@@ -133,7 +150,7 @@ card.innerHTML=`
 
 <h3>${p.nome}</h3>
 
-${p.variacao ? `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>` : ""}
+${variacaoValida(p.variacao) ? `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>` : ""}
 
 <div style="text-decoration:line-through;color:#888;font-size:12px">
 R$ ${precoBase}
@@ -230,7 +247,7 @@ carrinho.forEach((item,index)=>{
 
 itens+=item.qtd;
 
-let nomeProduto = item.variacao
+let nomeProduto = variacaoValida(item.variacao)
 ? `${item.nome} - ${item.variacao}`
 : item.nome;
 
@@ -336,7 +353,7 @@ let pedido="";
 
 carrinho.forEach(item=>{
 
-let nomeProduto = item.variacao
+let nomeProduto = variacaoValida(item.variacao)
 ? `${item.nome} - ${item.variacao}`
 : item.nome;
 
@@ -375,7 +392,7 @@ let pedido="";
 
 carrinho.forEach(item=>{
 
-let nomeProduto = item.variacao
+let nomeProduto = variacaoValida(item.variacao)
 ? `${item.nome} - ${item.variacao}`
 : item.nome;
 
@@ -414,7 +431,7 @@ y+=10;
 
 carrinho.forEach(item=>{
 
-let nomeProduto = item.variacao
+let nomeProduto = variacaoValida(item.variacao)
 ? `${item.nome} - ${item.variacao}`
 : item.nome;
 
