@@ -10,7 +10,6 @@
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
         
-        /* BANNER NO TOPO */
         .banner-box { 
             width: 100%; 
             background: var(--primary); 
@@ -18,9 +17,10 @@
             margin-bottom: 20px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            line-height: 0;
+            text-align: center;
         }
-        .banner-box img { width: 100%; height: auto; display: block; }
+        /* Garante que o banner apareça */
+        .banner-box img { width: 100%; height: auto; display: block; min-height: 100px; }
 
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
         h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
@@ -29,4 +29,201 @@
         input, select { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
         
         .filtros-box { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .busca-input { flex: 1; min-width: 250px; border: 2px solid
+        .busca-input { flex: 1; min-width: 250px; border: 2px solid #eee; padding: 12px; border-radius: 8px; font-size: 16px; }
+        .btn-filtro { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #eee; font-weight: bold; }
+        .btn-filtro.active { background: var(--primary); color: white; }
+        
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; z-index: 5; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        
+        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .qtd-input { width: 65px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 5px; font-weight: bold; }
+        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
+        
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
+        .btn-pdf { background: var(--secondary); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .obrigatorio { border: 2px solid var(--secondary) !important; background: #fff5f5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="banner-box">
+        <img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="CRAZY FANTASY" onerror="this.src='https://via.placeholder.com/1000x250/6c2bd9/ffffff?text=CRAZY+FANTASY'">
+    </div>
+
+    <div class="form-box">
+        <h3>📄 Faturamento (Preencha para liberar o PDF)</h3>
+        <div class="grid-faturamento">
+            <div style="grid-column: span 2;"><label>Cliente / Razão Social *</label><input type="text" id="cli_nome"></div>
+            <div><label>CPF / CNPJ *</label><input type="text" id="cli_doc"></div>
+            <div><label>Vendedora *</label><input type="text" id="vendedora"></div>
+        </div>
+    </div>
+
+    <div class="form-box">
+        <div class="filtros-box">
+            <input type="text" id="busca" class="busca-input" placeholder="🔍 Procurar fantasia..." onkeyup="filtrar()">
+            <button class="btn-filtro active" onclick="setCat('todos', this)">Todas</button>
+            <button class="btn-filtro" onclick="setCat('feminino', this)">Feminino</button>
+            <button class="btn-filtro" onclick="setCat('masculino', this)">Masculino</button>
+        </div>
+        <div class="tabela-scroll">
+            <table>
+                <thead><tr><th style="text-align:left; padding-left:20px;">Fantasia</th><th>Tam</th><th>Preço</th><th>Qtd</th></tr></thead>
+                <tbody id="corpo-tabela"></tbody>
+            </table>
+        </div>
+        <div class="total-container">Total: R$ <span id="valor-total">0.00</span></div>
+        <div class="btn-group">
+            <button class="btn-pdf" onclick="gerarPDF()">📄 Salvar Orçamento PDF</button>
+            <button class="btn-whatsapp" onclick="enviarWhatsApp()">🟢 Mandar no WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const empresa = { nome: "Galvão Artigos para Festas Ltda", cnpj: "09.626.903/0001-57", end: "Rua Itália, 170 - Valinhos/SP" };
+    let catAtiva = 'todos';
+
+    const produtos = [
+        {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
+        {n: "Astronauta", p: 199.90, t: "G", est: 2, c: "masculino"},
+        {n: "Exército", p: 180.00, t: "M", est: 1, c: "masculino"},
+        {n: "Policial", p: 199.99, t: "G", est: 2, c: "masculino"},
+        {n: "Médico", p: 169.99, t: "M", est: 2, c: "masculino"},
+        {n: "Médico", p: 169.99, t: "G", est: 2, c: "masculino"},
+        {n: "Bombeiro", p: 229.90, t: "M", est: 1, c: "masculino"},
+        {n: "Bombeiro", p: 229.90, t: "G", est: 2, c: "masculino"},
+        {n: "Pirata", p: 180.00, t: "M", est: 2, c: "masculino"},
+        {n: "Pirata", p: 180.00, t: "G", est: 1, c: "masculino"},
+        {n: "Woody", p: 189.99, t: "M", est: 1, c: "masculino"},
+        {n: "Woody", p: 189.99, t: "G", est: 1, c: "masculino"},
+        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2, c: "feminino"},
+        {n: "Sininho", p: 99.90, t: "M", est: 1, c: "feminino"},
+        {n: "Jessie", p: 129.90, t: "M", est: 1, c: "feminino"},
+        {n: "Astronauta Fem.", p: 199.90, t: "G", est: 1, c: "feminino"},
+        {n: "Médica", p: 180.00, t: "M", est: 2, c: "feminino"},
+        {n: "Médica", p: 180.00, t: "G", est: 2, c: "feminino"},
+        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1, c: "feminino"}
+    ];
+
+    function render() {
+        const corpo = document.getElementById("corpo-tabela");
+        corpo.innerHTML = "";
+        produtos.forEach((p, i) => {
+            let pFinal = p.p > 200 ? p.p * 0.75 : p.p;
+            let precoHtml = p.p > 200 ? `<s>R$ ${p.p.toFixed(2)}</s><br><b style="color:red">R$ ${pFinal.toFixed(2)}</b>` : `<b>R$ ${p.p.toFixed(2)}</b>`;
+            
+            corpo.innerHTML += `<tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
+                <td style="text-align:left; padding-left:15px;">${p.n}</td><td>${p.t}</td><td>${precoHtml}</td>
+                <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="calc()"></td></tr>`;
+        });
+    }
+
+    function calc() {
+        let total = 0;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = parseInt(l.querySelector(".qtd-input").value) || 0;
+            let pVenda = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
+            total += q * pVenda;
+        });
+        document.getElementById("valor-total").innerText = total.toFixed(2);
+    }
+
+    function filtrar() {
+        let b = document.getElementById("busca").value.toLowerCase();
+        document.querySelectorAll(".linha-p").forEach(l => {
+            let m = l.dataset.nome.includes(b) && (catAtiva === 'todos' || l.dataset.cat === catAtiva);
+            l.style.display = m ? "" : "none";
+        });
+    }
+
+    function setCat(c, btn) {
+        catAtiva = c;
+        document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filtrar();
+    }
+
+    function validar() {
+        let campos = ['cli_nome', 'cli_doc', 'vendedora'];
+        let ok = true;
+        campos.forEach(id => {
+            let el = document.getElementById(id);
+            if(!el.value.trim()) { el.classList.add('obrigatorio'); ok = false; }
+            else el.classList.remove('obrigatorio');
+        });
+        if(!ok) alert("Por favor, preencha os campos do cliente e vendedora.");
+        return ok;
+    }
+
+    async function gerarPDF() {
+        if(!validar()) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Cabeçalho Simples e Profissional (Evita erro de imagem)
+        doc.setFillColor(108, 43, 217);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.text("CRAZY FANTASY", 105, 25, {align: "center"});
+        
+        let y = 50;
+        doc.setTextColor(0);
+        doc.setFontSize(10);
+        doc.text(empresa.nome, 105, y, {align:"center"});
+        doc.text(`CNPJ: ${empresa.cnpj} | Valinhos-SP`, 105, y+5, {align:"center"});
+        doc.line(15, y+10, 195, y+10);
+        
+        y += 20;
+        doc.setFont("helvetica", "bold");
+        doc.text(`CLIENTE: ${document.getElementById("cli_nome").value}`, 15, y);
+        doc.text(`VENDEDORA: ${document.getElementById("vendedora").value}`, 120, y);
+        
+        y += 15;
+        doc.text("Item Selecionado", 15, y); doc.text("Qtd", 140, y); doc.text("Subtotal", 175, y);
+        doc.line(15, y+2, 195, y+2);
+        
+        y += 10;
+        doc.setFont("helvetica", "normal");
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) {
+                let pUnit = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
+                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
+                doc.text(q, 142, y);
+                doc.text((q*pUnit).toFixed(2), 175, y);
+                y += 8;
+            }
+        });
+        
+        doc.setFontSize(14); doc.setFont("helvetica", "bold");
+        doc.text(`TOTAL FINAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y+15, {align:"right"});
+        
+        doc.save(`Orcamento_${document.getElementById("cli_nome").value}.pdf`);
+    }
+
+    function enviarWhatsApp() {
+        if(!validar()) return;
+        let msg = `*CRAZY FANTASY - NOVO PEDIDO*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) {
+                let pUnit = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
+                msg += `✅ ${produtos[i].n} x${q} = R$ ${(q*pUnit).toFixed(2)}\n`;
+            }
+        });
+        msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    }
+
+    render();
+</script>
+</body>
+</html>
