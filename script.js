@@ -9,6 +9,7 @@ const contadorItens = document.getElementById("contadorItens");
 
 const barra = document.getElementById("barra");
 const msgMinimo = document.getElementById("msgMinimo");
+const statusDesconto = document.getElementById("statusDesconto");
 
 let produtos = [];
 let carrinho = [];
@@ -110,6 +111,10 @@ produtosDiv.innerHTML="";
 
 lista.forEach(p=>{
 
+const preco10 = (p.preco*0.90).toFixed(2);
+const preco12 = (p.preco*0.88).toFixed(2);
+const preco15 = (p.preco*0.85).toFixed(2);
+
 const card=document.createElement("div");
 card.className="produto";
 
@@ -117,12 +122,30 @@ let botaoHTML = p.estoque > 0
 ? `<button class="btnAdd">Adicionar</button>`
 : `<button class="btnAdd" disabled>Sem estoque</button>`;
 
+let variacaoHTML = "";
+
+if(p.variacao && p.variacao.toLowerCase() !== "padrão"){
+variacaoHTML = `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>`;
+}
+
 card.innerHTML=`
 
 <h3>${p.nome}</h3>
 
+${variacaoHTML}
+
 <div class="precoB2B">
-R$ ${p.preco.toFixed(2)}
+R$ ${preco10}
+</div>
+
+<div class="progressivo-card">
+
+<strong>Descontos B2B</strong><br>
+
+10% (R$200+) → R$ ${preco10}<br>
+12% (R$500+) → R$ ${preco12}<br>
+15% (R$1000+) → R$ ${preco15}
+
 </div>
 
 <div>Estoque: ${p.estoque}</div>
@@ -157,31 +180,31 @@ alert(`Estoque disponível: ${p.estoque}`);
 return;
 }
 
+let existente = carrinho.find(item =>
+item.nome === p.nome &&
+item.variacao === p.variacao
+);
+
+if(existente){
+
+existente.qtd += qtd;
+
+}else{
+
 carrinho.push({
 nome:p.nome,
+variacao:p.variacao,
 preco:p.preco,
 qtd:qtd
 });
+
+}
 
 total += p.preco * qtd;
 
 atualizarCarrinho();
 
 input.value = 0;
-
-/* feedback visual mobile */
-
-const botaoMobile = document.getElementById("botaoCarrinhoMobile");
-
-if(botaoMobile){
-
-botaoMobile.style.background="#27d266";
-
-setTimeout(()=>{
-botaoMobile.style.background="#2f3242";
-},400);
-
-}
 
 });
 
@@ -208,11 +231,17 @@ carrinho.forEach((item,index)=>{
 
 itens+=item.qtd;
 
+let nomeProduto = item.nome;
+
+if(item.variacao && item.variacao.toLowerCase() !== "padrão"){
+nomeProduto += " - " + item.variacao;
+}
+
 listaPedido.innerHTML+=`
 
 <div style="display:flex;justify-content:space-between">
 
-<span>${item.qtd}x ${item.nome}</span>
+<span>${item.qtd}x ${nomeProduto}</span>
 
 <button onclick="removerItem(${index})">✕</button>
 
@@ -224,145 +253,61 @@ listaPedido.innerHTML+=`
 
 contadorItens.innerText=`(${itens} itens)`;
 
-const contadorMobile = document.getElementById("contadorMobile");
+const desconto = calcularDesconto(total);
 
-if(contadorMobile){
-contadorMobile.innerText = itens;
-}
+const totalFinal = total*(1-desconto);
 
-totalEl.innerText = total.toFixed(2);
+const economia = total-totalFinal;
 
-let progresso=(total/pedidoMinimo)*100;
+totalEl.innerText = totalFinal.toFixed(2);
+economiaEl.innerText = economia.toFixed(2);
 
-barra.style.width=Math.min(progresso,100)+"%";
+/* STATUS DESCONTO */
 
-msgMinimo.innerText = total<pedidoMinimo
-?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
-:"Pedido mínimo atingido";
+let mensagem = "";
 
-}
+if(total >= 1000){
 
-
-/* =============================
-REMOVER ITEM
-============================= */
-
-function removerItem(index){
-
-total -= carrinho[index].preco * carrinho[index].qtd;
-
-carrinho.splice(index,1);
-
-atualizarCarrinho();
+mensagem = "Você já atingiu o maior desconto (15%)";
 
 }
 
+else if(total >= 500){
 
-/* =============================
-LIMPAR
-============================= */
+let falta = (1000-total).toFixed(2);
+mensagem = `Você já tem 12% de desconto • Faltam R$ ${falta} para atingir 15%`;
 
-function limparCarrinho(){
+}
 
-carrinho=[];
-total=0;
+else if(total >= 200){
 
-atualizarCarrinho();
+let falta = (500-total).toFixed(2);
+mensagem = `Você já tem 10% de desconto • Faltam R$ ${falta} para atingir 12%`;
 
-document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
-document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
+}
+
+else{
+
+let falta = (200-total).toFixed(2);
+mensagem = `Faltam R$ ${falta} para atingir 10% de desconto`;
+
+}
+
+statusDesconto.innerText = mensagem;
 
 }
 
 
 /* =============================
-WHATSAPP
+DESCONTO
 ============================= */
 
-function enviarWhatsApp(){
+function calcularDesconto(valor){
 
-if(total < pedidoMinimo){
-alert("Pedido mínimo de R$200");
-return;
-}
+if(valor>=1000) return 0.15;
+if(valor>=500) return 0.12;
+if(valor>=200) return 0.10;
 
-let pedido="";
-
-carrinho.forEach(item=>{
-pedido += `${item.qtd}x ${item.nome}\n`;
-});
-
-let texto =
-`Pedido Crazy Fantasy\n\n${pedido}\nTotal: R$ ${total.toFixed(2)}`;
-
-window.open(
-`https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
-"_blank"
-);
-
-}
-
-
-/* =============================
-EMAIL
-============================= */
-
-function enviarEmail(){
-
-if(total < pedidoMinimo){
-alert("Pedido mínimo de R$200");
-return;
-}
-
-let pedido="";
-
-carrinho.forEach(item=>{
-pedido += `${item.qtd}x ${item.nome}\n`;
-});
-
-fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
-
-method:"POST",
-
-headers:{'Content-Type':'application/json'},
-
-body:JSON.stringify({
-pedido:pedido,
-total:total.toFixed(2)
-})
-
-})
-.then(()=>alert("Pedido enviado por email!"));
-
-}
-
-
-/* =============================
-PDF
-============================= */
-
-function gerarPDF(){
-
-const { jsPDF } = window.jspdf;
-
-const doc = new jsPDF();
-
-let y=20;
-
-doc.text("Pedido Crazy Fantasy",20,y);
-
-y+=10;
-
-carrinho.forEach(item=>{
-
-doc.text(`${item.qtd}x ${item.nome}`,20,y);
-
-y+=8;
-
-});
-
-doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
-
-doc.save("pedido.pdf");
+return 0;
 
 }
