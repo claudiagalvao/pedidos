@@ -3,86 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Sistema de Pedidos B2B</title>
+    <title>Crazy Fantasy - Pedido B2B para NF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root { --primary: #6c2bd9; --secondary: #e63946; --whatsapp: #25d366; --bg: #f0f2f5; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; }
         .container { max-width: 1100px; margin: auto; padding: 20px; }
         
-        .banner-container { 
-            width: 100%; 
-            background: var(--primary); 
-            border-radius: 15px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            text-align: center;
-            min-height: 120px;
-        }
+        .banner-container { width: 100%; background: var(--primary); border-radius: 15px; margin-bottom: 20px; overflow: hidden; min-height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-container img { width: 100%; height: auto; display: block; }
 
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
-        h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
         
-        .grid-faturamento { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .grid-nf { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        input { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
+        input, select { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
         
-        .filtros-box { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
-        .busca-input { flex: 1; min-width: 250px; border: 2px solid #eee; padding: 12px; border-radius: 8px; font-size: 16px; outline: none; }
-        
-        .btn-filtro { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #eee; font-weight: bold; }
-        .btn-filtro.active { background: var(--primary); color: white; }
-        
-        .tabela-scroll { max-height: 600px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; z-index: 5; }
-        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        th { background: var(--primary); color: white; padding: 12px; position: sticky; top: 0; z-index: 5; font-size: 13px; }
+        td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
         
-        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .qtd-input { width: 70px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 6px; font-weight: bold; }
+        .estoque-aviso { font-size: 10px; color: #2e7d32; font-weight: bold; display: block; }
+        .qtd-input { width: 65px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 6px; font-weight: bold; }
+        .total-box { padding: 20px; background: #222; color: #fff; border-radius: 12px; text-align: right; margin-top: 15px; }
         
-        .total-box { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; margin-top: 15px; }
-        .tag-b2b { color: #ffeb3b; font-size: 12px; font-weight: bold; display: block; }
-
         .btn-group { display: flex; gap: 15px; margin-top: 20px; justify-content: flex-end; }
-        .acao { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; color: white; }
+        .acao { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
         .btn-pdf { background: var(--secondary); }
         .btn-whatsapp { background: var(--whatsapp); }
+        .obrigatorio { border: 2px solid red !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="banner-container">
-        <img id="imgBanner" src="https://claudiagalvao.github.io/pedidos/banner.png" crossorigin="anonymous" alt="CRAZY FANTASY" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY'">
+        <img src="https://claudia-galvao.github.io/pedidos/banner.png" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY'">
     </div>
 
     <div class="form-box">
-        <h3>📋 Identificação</h3>
-        <div class="grid-faturamento">
-            <div style="grid-column: span 2;"><label>Cliente *</label><input type="text" id="cli_nome" placeholder="Nome da Loja ou Cliente"></div>
-            <div><label>Vendedora *</label><input type="text" id="vendedora" value="Claudia"></div>
+        <h3>📑 Dados para Emissão de NF</h3>
+        <div class="grid-nf">
+            <div style="grid-column: span 2;"><label>Razão Social / Nome Completo *</label><input type="text" id="nf_nome"></div>
+            <div><label>CNPJ / CPF *</label><input type="text" id="nf_doc"></div>
+            <div><label>Inscrição Estadual</label><input type="text" id="nf_ie"></div>
+            <div style="grid-column: span 2;"><label>Endereço de Entrega *</label><input type="text" id="nf_end" placeholder="Rua, Número, Bairro"></div>
+            <div><label>Cidade/UF *</label><input type="text" id="nf_cidade"></div>
+            <div><label>E-mail para XML *</label><input type="email" id="nf_email"></div>
+            <div><label>Vendedora</label><input type="text" id="vendedora" value="Claudia"></div>
         </div>
     </div>
 
     <div class="form-box">
-        <div class="filtros-box">
-            <input type="text" id="busca" class="busca-input" placeholder="🔍 Buscar produto..." onkeyup="filtrar()">
-            <button class="btn-filtro active" onclick="setCat('todos', this)">Todos</button>
-            <button class="btn-filtro" onclick="setCat('feminino', this)">Feminino</button>
-            <button class="btn-filtro" onclick="setCat('masculino', this)">Masculino</button>
-        </div>
+        <h3>🛒 Itens do Pedido</h3>
         <div class="tabela-scroll">
             <table>
                 <thead>
                     <tr>
-                        <th style="text-align:left; padding-left:20px;">Produto</th>
+                        <th style="text-align:left;">Produto</th>
                         <th>Tam</th>
-                        <th>Preço Unit.</th>
+                        <th>Vlr. Unit</th>
+                        <th>Vlr. B2B (-25%)</th>
                         <th>Estoque</th>
-                        <th>Qtd</th>
+                        <th>Qtd Pedida</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela"></tbody>
@@ -90,142 +75,53 @@
         </div>
         
         <div class="total-box">
-            <small>Total com Desconto B2B (25% acima de R$200)</small>
-            <h2 id="valor-total">R$ 0,00</h2>
+            <span style="color: #aaa;">Valor Total do Pedido:</span>
+            <h2 id="valor-total" style="margin:0; color: #fff;">R$ 0,00</h2>
         </div>
 
         <div class="btn-group">
-            <button class="acao btn-pdf" onclick="gerarPDF()">📄 Gerar Orçamento PDF</button>
-            <button class="acao btn-whatsapp" onclick="enviarWhatsApp()">🟢 Enviar WhatsApp</button>
+            <button class="acao btn-pdf" onclick="gerarPDF()">📄 Gerar Documento NF</button>
+            <button class="acao btn-whatsapp" onclick="enviarWhatsApp()">🟢 Enviar via WhatsApp</button>
         </div>
     </div>
 </div>
 
 <script>
-    const empresa = { nome: "Galvão Artigos para Festas Ltda", cnpj: "09.626.903/0001-57" };
-    let catAtiva = 'todos';
-
     const produtos = [
-        {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
-        {n: "Astronauta", p: 199.90, t: "G", est: 2, c: "masculino"},
-        {n: "Exército", p: 180.00, t: "M", est: 1, c: "masculino"},
-        {n: "Policial", p: 199.99, t: "G", est: 2, c: "masculino"},
-        {n: "Bombeiro", p: 229.90, t: "M", est: 1, c: "masculino"},
-        {n: "Bombeiro", p: 229.90, t: "G", est: 2, c: "masculino"},
-        {n: "Flash Longo", p: 319.99, t: "M", est: 1, c: "masculino"},
-        {n: "Catnoir", p: 289.99, t: "M", est: 1, c: "masculino"},
-        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2, c: "feminino"},
-        {n: "Sininho", p: 99.90, t: "M", est: 1, c: "feminino"},
-        {n: "Jessie", p: 129.90, t: "M", est: 1, c: "feminino"},
-        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1, c: "feminino"}
+        {n: "Astronauta", p: 199.90, t: "M", est: 2},
+        {n: "Astronauta", p: 199.90, t: "G", est: 2},
+        {n: "Exército", p: 180.00, t: "M", est: 1},
+        {n: "Policial", p: 199.99, t: "G", est: 2},
+        {n: "Bombeiro", p: 229.90, t: "M", est: 1},
+        {n: "Bombeiro", p: 229.90, t: "G", est: 2},
+        {n: "Flash Longo", p: 319.99, t: "M", est: 1},
+        {n: "Flash Longo", p: 319.99, t: "G", est: 1},
+        {n: "Catnoir", p: 289.99, t: "M", est: 1},
+        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1},
+        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2}
     ];
 
     function render() {
         const corpo = document.getElementById("corpo-tabela");
         corpo.innerHTML = "";
         produtos.forEach((p, i) => {
-            let pFinal = p.p > 200 ? p.p * 0.75 : p.p;
-            let precoHtml = p.p > 200 ? 
-                `<s>R$ ${p.p.toFixed(2)}</s><br><b style="color:var(--secondary)">R$ ${pFinal.toFixed(2)}</b><span class="tag-b2b">Desconto B2B Aplicado</span>` : 
-                `<b>R$ ${p.p.toFixed(2)}</b>`;
-            
+            let pB2B = p.p > 200 ? p.p * 0.75 : p.p;
             corpo.innerHTML += `
-                <tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
-                    <td style="text-align:left; padding-left:20px;">${p.n}</td>
+                <tr>
+                    <td style="text-align:left;"><b>${p.n}</b></td>
                     <td>${p.t}</td>
-                    <td>${precoHtml}</td>
-                    <td><span class="estoque-badge">${p.est} un</span></td>
-                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="atualizarTotal()"></td>
+                    <td>R$ ${p.p.toFixed(2)}</td>
+                    <td style="color:red"><b>R$ ${pB2B.toFixed(2)}</b></td>
+                    <td><span class="estoque-aviso">${p.est} disponíveis</span></td>
+                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="validarEstoque(this)"></td>
                 </tr>`;
         });
     }
 
-    function atualizarTotal() {
-        let total = 0;
-        document.querySelectorAll(".linha-p").forEach((linha, i) => {
-            let q = parseInt(linha.querySelector(".qtd-input").value) || 0;
-            let pVenda = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
-            total += q * pVenda;
-        });
-        document.getElementById("valor-total").innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-    }
-
-    function filtrar() {
-        let busca = document.getElementById("busca").value.toLowerCase();
-        document.querySelectorAll(".linha-p").forEach(linha => {
-            let visivel = linha.dataset.nome.includes(busca) && (catAtiva === 'todos' || linha.dataset.cat === catAtiva);
-            linha.style.display = visivel ? "" : "none";
-        });
-    }
-
-    function setCat(cat, btn) {
-        catAtiva = cat;
-        document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        filtrar();
-    }
-
-    async function gerarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const nomeCli = document.getElementById("cli_nome").value || "Cliente";
-        
-        // Cabeçalho Roxo com Título B2B
-        doc.setFillColor(108, 43, 217);
-        doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255);
-        doc.setFontSize(22);
-        doc.text("CRAZY FANTASY - B2B", 105, 25, {align: "center"});
-
-        let y = 50;
-        doc.setTextColor(0);
-        doc.setFontSize(10);
-        doc.text(`${empresa.nome} | CNPJ: ${empresa.cnpj}`, 105, y, {align: "center"});
-        doc.line(15, y+5, 195, y+5);
-        
-        y += 20;
-        doc.setFont("helvetica", "bold");
-        doc.text(`CLIENTE: ${nomeCli.toUpperCase()}`, 15, y);
-        doc.text(`VENDEDORA: ${document.getElementById("vendedora").value}`, 120, y);
-        
-        y += 15;
-        doc.text("PRODUTO", 15, y); doc.text("QTD", 140, y); doc.text("TOTAL", 175, y);
-        doc.line(15, y+2, 195, y+2);
-        
-        y += 10;
-        doc.setFont("helvetica", "normal");
-        document.querySelectorAll(".linha-p").forEach((linha, i) => {
-            let q = linha.querySelector(".qtd-input").value;
-            if(q > 0) {
-                let pFinal = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
-                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
-                doc.text(q, 142, y);
-                doc.text(`R$ ${(q * pFinal).toFixed(2)}`, 175, y);
-                y += 8;
-            }
-        });
-
-        y += 10;
-        doc.setFontSize(14); doc.setFont("helvetica", "bold");
-        doc.text(`TOTAL COM DESCONTO B2B: ${document.getElementById("valor-total").innerText}`, 195, y, {align: "right"});
-        
-        doc.save(`Pedido_B2B_${nomeCli}.pdf`);
-    }
-
-    function enviarWhatsApp() {
-        let msg = `*CRAZY FANTASY - PEDIDO B2B*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
-        document.querySelectorAll(".linha-p").forEach((linha, i) => {
-            let q = linha.querySelector(".qtd-input").value;
-            if(q > 0) {
-                let pFinal = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
-                msg += `✅ ${produtos[i].n} (${produtos[i].t}) x${q} = R$ ${(q*pFinal).toFixed(2)}\n`;
-            }
-        });
-        msg += `\n*TOTAL B2B: ${document.getElementById("valor-total").innerText}*`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-    }
-
-    render();
-</script>
-</body>
-</html>
+    function validarEstoque(input) {
+        let max = parseInt(input.max);
+        if (parseInt(input.value) > max) {
+            alert("Atenção: Quantidade acima do estoque disponível (" + max + " un)!");
+            input.value = max;
+        }
+        atualizar
