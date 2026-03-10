@@ -45,6 +45,11 @@ padding:8px 16px;
 border-radius:18px;
 margin:4px;
 cursor:pointer;
+transition:0.2s;
+}
+
+#menuCategorias button:hover{
+background:#d6d9dd;
 }
 
 /* BUSCA */
@@ -71,22 +76,26 @@ gap:20px;
 
 background:white;
 
-padding:34px 22px 22px 22px;
+padding:22px;
 
 border-radius:16px;
+
 box-shadow:0 8px 18px rgba(0,0,0,0.08);
 
 position:relative;
 
 transition:0.2s;
 
+display:flex;
+flex-direction:column;
+
 }
 
 .produto:hover{
-transform:translateY(-3px);
+transform:translateY(-4px);
 }
 
-/* TÍTULO */
+/* TITULO */
 
 .produto h3{
 font-size:15px;
@@ -118,46 +127,22 @@ margin:10px 0;
 
 .badgeVendido{
 
-position:absolute;
-
-top:10px;
-left:12px;
+display:inline-block;
 
 background:#ff9800;
 color:white;
 
-padding:3px 7px;
-border-radius:5px;
+padding:4px 8px;
+border-radius:6px;
 
-font-size:10px;
+font-size:11px;
 font-weight:600;
 
-}
-
-/* CAMERA */
-
-.camera-icon{
-
-position:absolute;
-
-top:10px;
-right:12px;
-
-font-size:16px;
-text-decoration:none;
-
-opacity:0.85;
-
-transition:0.2s;
+margin-top:6px;
 
 }
 
-.camera-icon:hover{
-transform:scale(1.15);
-opacity:1;
-}
-
-/* INPUT QTD */
+/* INPUT */
 
 .produto input{
 width:100%;
@@ -165,10 +150,53 @@ padding:10px;
 border-radius:8px;
 border:1px solid #ddd;
 text-align:center;
-margin-top:8px;
+margin-top:10px;
 }
 
-/* BOTÃO ADICIONAR */
+/* LINHA DE AÇÕES */
+
+.linhaAcoes{
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-top:10px;
+
+}
+
+/* CAMERA */
+
+.camera-link{
+
+font-size:18px;
+text-decoration:none;
+
+display:inline-block;
+
+animation:pulseCamera 3s infinite;
+
+transition:0.2s;
+
+}
+
+.camera-link:hover{
+
+transform:scale(1.2);
+
+}
+
+/* ANIMAÇÃO CAMERA */
+
+@keyframes pulseCamera{
+
+0%{transform:scale(1)}
+10%{transform:scale(1.15)}
+20%{transform:scale(1)}
+100%{transform:scale(1)}
+
+}
+
+/* BOTÃO ADD */
 
 .btnAdd{
 background:#2f3242;
@@ -176,9 +204,13 @@ color:white;
 border:none;
 padding:12px;
 border-radius:10px;
-margin-top:10px;
 cursor:pointer;
 font-weight:600;
+transition:0.2s;
+}
+
+.btnAdd:hover{
+background:#44475a;
 }
 
 /* CARRINHO */
@@ -262,6 +294,7 @@ border:none;
 padding:12px;
 border-radius:8px;
 cursor:pointer;
+transition:0.2s;
 }
 
 .btnPedido:hover{
@@ -277,7 +310,7 @@ border-radius:8px;
 cursor:pointer;
 }
 
-/* TÍTULO FORM */
+/* TITULO FORM */
 
 .tituloFormulario{
 font-size:13px;
