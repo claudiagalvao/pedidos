@@ -227,8 +227,8 @@
             tbody.innerHTML = ""; 
             produtos.forEach(p => {
                 let preco = p[1];
-                // ALTERADO: 20% de desconto (multiplicar por 0.8)
-                let desconto = preco > 200 ? preco * 0.8 : preco;
+                // ALTERADO: 25% de desconto (multiplicar por 0.75)
+                let desconto = preco > 200 ? preco * 0.75 : preco;
                 let temDesconto = preco > 200;
 
                 let tr = document.createElement("tr");
@@ -239,7 +239,7 @@
                     <td class="${temDesconto ? 'preco-antigo' : ''}">${preco.toFixed(2)}</td>
                     <td class="preco-desc">
                         ${desconto.toFixed(2)}
-                        ${temDesconto ? '<span class="badge">20% OFF</span>' : ''}
+                        ${temDesconto ? '<span class="badge">25% OFF</span>' : ''}
                     </td>
                     <td><input type="number" min="0" class="qtd" value="0" oninput="calcular()"></td>
                     <td class="subtotal">0.00</td>
