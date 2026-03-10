@@ -164,7 +164,7 @@ R$ ${preco10}
 
 <strong>Descontos B2B</strong><br>
 
-10% (R$200+) → R$ ${preco10}<br>
+10% → R$ ${preco10}<br>
 12% (R$500+) → R$ ${preco12}<br>
 15% (R$1000+) → R$ ${preco15}
 
@@ -215,12 +215,6 @@ totalOriginal += p.preco * qtd;
 atualizarCarrinho();
 
 input.value = 0;
-
-carrinhoUI.classList.add("pulse");
-
-setTimeout(()=>{
-carrinhoUI.classList.remove("pulse");
-},400);
 
 };
 
@@ -287,14 +281,11 @@ Math.round(desconto * 100) + "%";
 
 let msg = "";
 
-if(total < 200){
-msg = `Faltam R$ ${(200-total).toFixed(2)} para atingir 10%`;
-}
-else if(total < 500){
-msg = `Faltam R$ ${(500-total).toFixed(2)} para atingir 12%`;
+if(total < 500){
+msg = `Você já tem 10%. Faltam R$ ${(500-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para atingir 12%`;
 }
 else if(total < 1000){
-msg = `Faltam R$ ${(1000-total).toFixed(2)} para atingir 15%`;
+msg = `Faltam R$ ${(1000-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para atingir 15%`;
 }
 else{
 msg = "Você já atingiu o maior desconto!";
@@ -305,12 +296,12 @@ document.getElementById("msgDesconto").innerText = msg;
 
 /* PROGRESSO */
 
-let progresso=(total/pedidoMinimo)*100;
+let progresso=(total/500)*100;
 
 barra.style.width=Math.min(progresso,100)+"%";
 
 msgMinimo.innerText = total<pedidoMinimo
-?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
+?`Faltam R$ ${(pedidoMinimo-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para pedido mínimo`
 :"Pedido mínimo atingido";
 
 }
@@ -324,9 +315,8 @@ function calcularDesconto(valor){
 
 if(valor >= 1000) return 0.15;
 if(valor >= 500) return 0.12;
-if(valor >= 200) return 0.10;
 
-return 0;
+return 0.10;
 
 }
 
