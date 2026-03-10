@@ -57,6 +57,8 @@ renderProdutos(produtos);
 });
 
 /* ============================= */
+/* CATEGORIAS */
+/* ============================= */
 
 function criarCategorias(){
 
@@ -69,8 +71,6 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 });
 
 }
-
-/* ============================= */
 
 function filtrarCategoria(cat){
 
@@ -109,11 +109,19 @@ lista.forEach(p=>{
 
 const precoBase = p.preco.toFixed(2);
 const preco10 = (p.preco*0.9).toFixed(2);
-const preco12 = (p.preco*0.88).toFixed(2);
-const preco15 = (p.preco*0.85).toFixed(2);
 
 const card=document.createElement("div");
 card.className="produto";
+
+/* BLOQUEAR PRODUTO SEM ESTOQUE */
+
+let estoqueHTML = p.estoque > 0
+? `<div>Estoque: <strong>${p.estoque}</strong></div>`
+: `<div style="color:red;font-weight:bold">Sem estoque</div>`;
+
+let botaoHTML = p.estoque > 0
+? `<button class="btnAdd">Adicionar</button>`
+: `<button class="btnAdd" disabled style="opacity:0.5">Sem estoque</button>`;
 
 card.innerHTML=`
 
@@ -128,16 +136,10 @@ R$ ${preco10}
 </div>
 
 <div class="progressivo-card">
-
-<strong>Descontos B2B</strong><br>
-
-10% (R$200+) → R$ ${preco10}<br>
-12% (R$500+) → R$ ${preco12}<br>
-15% (R$1000+) → R$ ${preco15}
-
+<strong>Descontos B2B</strong>
 </div>
 
-<div>Estoque: <strong>${p.estoque}</strong></div>
+${estoqueHTML}
 
 <input type="number" value="0" min="0" max="${p.estoque}" class="qtdProduto">
 
@@ -147,7 +149,7 @@ R$ ${preco10}
 
 ${p.vendas>70?'<span class="badgeVendido">🔥 Mais vendido</span>':''}
 
-<button class="btnAdd">Adicionar</button>
+${botaoHTML}
 
 </div>
 
@@ -156,11 +158,18 @@ ${p.vendas>70?'<span class="badgeVendido">🔥 Mais vendido</span>':''}
 const botao = card.querySelector(".btnAdd");
 const input = card.querySelector(".qtdProduto");
 
+if(botao && p.estoque>0){
+
 botao.onclick = () => {
 
 const qtd = parseInt(input.value);
 
 if(!qtd || qtd<=0) return;
+
+if(qtd > p.estoque){
+alert(`Estoque disponível: ${p.estoque}`);
+return;
+}
 
 carrinho.push({
 nome:p.nome,
@@ -182,6 +191,8 @@ carrinhoUI.classList.remove("pulse");
 },400);
 
 };
+
+}
 
 produtosDiv.appendChild(card);
 
@@ -217,10 +228,7 @@ listaPedido.innerHTML+=`
 
 });
 
-const desconto = calcularDesconto(total);
-
-const totalFinal = total*(1-desconto);
-
+const totalFinal = total;
 const economia = totalOriginal-totalFinal;
 
 totalEl.innerText = totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2});
@@ -240,18 +248,6 @@ msgMinimo.innerText = total<pedidoMinimo
 
 /* ============================= */
 
-function calcularDesconto(valor){
-
-if(valor>=1000) return 0.15;
-if(valor>=500) return 0.12;
-if(valor>=200) return 0.10;
-
-return 0;
-
-}
-
-/* ============================= */
-
 function removerItem(index){
 
 total -= carrinho[index].preco * carrinho[index].qtd;
@@ -260,5 +256,131 @@ totalOriginal -= carrinho[index].preco * carrinho[index].qtd;
 carrinho.splice(index,1);
 
 atualizarCarrinho();
+
+}
+
+/* ============================= */
+/* VALIDAÇÃO FORM */
+/* ============================= */
+
+function validarFormulario(){
+
+if(total < pedidoMinimo){
+alert("Pedido mínimo de R$200");
+return false;
+}
+
+const campos = document.querySelectorAll(".formPedido input");
+
+for(let campo of campos){
+if(!campo.value.trim()){
+alert("Preencha todos os dados da nota fiscal");
+return false;
+}
+}
+
+return true;
+
+}
+
+/* ============================= */
+/* EMAIL */
+/* ============================= */
+
+function enviarEmail(){
+
+if(!validarFormulario()) return;
+
+let pedido="";
+
+carrinho.forEach(item=>{
+pedido += `${item.qtd}x ${item.nome}\n`;
+});
+
+fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
+
+method:"POST",
+
+headers:{'Content-Type':'application/json'},
+
+body:JSON.stringify({
+
+pedido:pedido,
+total:total.toFixed(2)
+
+})
+
+})
+.then(()=>alert("Pedido enviado por email!"));
+
+}
+
+/* ============================= */
+/* WHATSAPP */
+/* ============================= */
+
+function enviarWhatsApp(){
+
+if(!validarFormulario()) return;
+
+let pedido="";
+
+carrinho.forEach(item=>{
+pedido += `${item.qtd}x ${item.nome}\n`;
+});
+
+let texto =
+`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${total.toFixed(2)}`;
+
+window.open(
+`https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
+"_blank"
+);
+
+}
+
+/* ============================= */
+/* PDF */
+/* ============================= */
+
+function gerarPDF(){
+
+if(!validarFormulario()) return;
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+let y=20;
+
+doc.text("Pedido Crazy Fantasy",20,y);
+
+y+=10;
+
+carrinho.forEach(item=>{
+doc.text(`${item.qtd}x ${item.nome}`,20,y);
+y+=8;
+});
+
+doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
+
+doc.save("pedido.pdf");
+
+}
+
+/* ============================= */
+/* LIMPAR */
+/* ============================= */
+
+function limparCarrinho(){
+
+carrinho=[];
+total=0;
+totalOriginal=0;
+
+atualizarCarrinho();
+
+document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
+document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
 
 }
