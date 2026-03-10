@@ -1,3 +1,4 @@
+/* RESET E ESTRUTURA BASE */
 * {
     margin: 0;
     padding: 0;
@@ -21,9 +22,10 @@ body {
 
 .catalogo {
     flex: 3;
+    padding: 0;
 }
 
-/* BANNER COLADO NAS BORDAS */
+/* BANNER COLADO */
 .bannerTopo {
     width: calc(100% + 40px);
     margin-left: -20px;
@@ -31,6 +33,7 @@ body {
     display: block;
     margin-bottom: 15px;
     border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .barraInfo {
@@ -39,7 +42,7 @@ body {
     border-radius: 10px;
     margin-bottom: 20px;
     text-align: center;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* MENU DE CATEGORIAS */
@@ -48,7 +51,7 @@ body {
 }
 
 #menuCategorias button {
-    background: #e5e7ea;
+    background: #e5e5e7;
     color: #444;
     border: none;
     border-radius: 18px;
@@ -82,23 +85,41 @@ body {
     background: white;
     padding: 24px;
     border-radius: 16px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
-    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    position: relative; /* Importante para o posicionamento absoluto interno */
+    transition: 0.25s;
     display: flex;
     flex-direction: column;
 }
 
-/* SELO MAIS VENDIDO */
+.produto:hover {
+    transform: translateY(-5px);
+}
+
+/* SELO MAIS VENDIDO COM RESPIRO */
 .badgeVendido {
     position: absolute;
-    top: 14px;
+    top: 14px; /* Mais distante do topo para dar respiro */
     left: 14px;
     background: #ff9800;
     color: white;
-    padding: 4px 8px;
+    padding: 5px 10px; /* Aumentado para melhor leitura */
     border-radius: 6px;
     font-size: 11px;
     font-weight: bold;
+    z-index: 2;
+}
+
+/* ÍCONE DA CÂMERA RESTAURADO */
+.camera-icon {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    z-index: 2;
 }
 
 .precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
@@ -107,13 +128,13 @@ body {
     font-size: 11px;
     color: #666;
     background: #f8f9fa;
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
-    margin: 10px 0;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
 }
 
-.estoque-card { font-size: 12px; color: #444; margin-bottom: 10px; }
+.estoque-card { font-size: 12px; color: #444; margin-bottom: 8px; }
 
 /* CARRINHO */
 .carrinho {
@@ -121,7 +142,7 @@ body {
     background: #2f3242;
     color: white;
     padding: 20px;
-    min-width: 350px;
+    min-width: 340px;
     position: sticky;
     top: 20px;
     max-height: calc(100vh - 40px);
@@ -129,32 +150,24 @@ body {
     border-radius: 15px;
 }
 
-.total { font-size: 20px; font-weight: bold; margin: 15px 0; color: #27d266; }
-
 .formPedido input, .formPedido select, .formPedido textarea {
     width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
 }
 
-.linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-.linha3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 5px; }
+.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
 
-.btnWhats { background: #27d266; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-.btnEmail, .btnPdf, .btnLimpar { border: none; padding: 8px; width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
-
-/* BARRA DE PROGRESSO */
-.barraFundo { background: #444; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-.barraProgresso { background: #27d266; height: 100%; width: 0%; transition: 0.5s; }
-
+/* RODAPÉ */
 .footer {
     background: #2f3242;
     color: white;
-    padding: 30px;
+    padding: 40px;
     text-align: center;
     margin-top: 40px;
+    font-size: 14px;
 }
 
 @media (max-width: 1000px) {
     .container { flex-direction: column; padding: 0 10px; }
     .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
-    .carrinho { position: static; width: 100%; min-width: auto; margin-top: 20px; }
+    .carrinho { position: static; width: 100%; min-width: auto; }
 }
