@@ -40,23 +40,51 @@ fetch("produtos.csv")
         renderProdutos(produtos);
     });
 
+function criarCategorias() {
+    const categorias = [...new Set(produtos.map(p => p.categoria))];
+    menuCategorias.innerHTML = `<button onclick="filtrarCategoria('Todos')">Todos</button>`;
+    categorias.forEach(c => {
+        menuCategorias.innerHTML += `<button onclick="filtrarCategoria('${c}')">${c}</button>`;
+    });
+}
+
+function filtrarCategoria(cat) {
+    cat === "Todos" ? renderProdutos(produtos) : renderProdutos(produtos.filter(p => p.categoria === cat));
+}
+
 function renderProdutos(lista) {
     produtosDiv.innerHTML = "";
     lista.forEach(p => {
-        const precoB2B = p.preco * 0.90;
+        const p10 = (p.preco * 0.90).toFixed(2);
+        const p12 = (p.preco * 0.88).toFixed(2);
+        const p15 = (p.preco * 0.85).toFixed(2);
+
         const card = document.createElement("div");
         card.className = "produto";
         card.innerHTML = `
             <h3>${p.nome}</h3>
             <div style="text-decoration:line-through; color:#888; font-size:12px">R$ ${p.preco.toFixed(2)}</div>
-            <div class="precoB2B">R$ ${precoB2B.toFixed(2)}</div>
-            <input type="number" value="0" min="0" style="width:50px; margin-top:10px">
-            <button class="btnAdd">Adicionar</button>
+            <div class="precoB2B">Preço B2B: R$ ${p10}</div>
+            
+            <div class="progressivo-card">
+                <strong>Tabela de Descontos:</strong><br>
+                10% (R$ 200+) → R$ ${p10}<br>
+                12% (R$ 500+) → R$ ${p12}<br>
+                15% (R$ 1000+) → R$ ${p15}
+            </div>
+
+            <div class="estoque-card">Estoque disponível: <strong>${p.estoque}</strong></div>
+
+            <input type="number" value="0" min="0" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; text-align:center;">
+            <button class="btnAdd" style="background:#2f3242; color:white; border:none; padding:10px; border-radius:8px; margin-top:10px; cursor:pointer; font-weight:600;" ${p.estoque <= 0 ? 'disabled' : ''}>
+                ${p.estoque <= 0 ? 'Sem estoque' : 'Adicionar'}
+            </button>
         `;
 
         card.querySelector("button").onclick = () => {
             const qtd = parseInt(card.querySelector("input").value);
             if (qtd > 0) {
+                if (qtd > p.estoque) return alert("Quantidade acima do estoque disponível.");
                 carrinho.push({ nome: p.nome, preco: p.preco, qtd: qtd });
                 total += p.preco * qtd;
                 totalOriginal += p.preco * qtd;
@@ -75,7 +103,7 @@ function atualizarCarrinho() {
         itens += item.qtd;
         listaPedido.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px">
             <span>${item.qtd}x ${item.nome}</span>
-            <button onclick="removerItem(${index})" style="background:none; color:red; border:none; cursor:pointer">✕</button>
+            <button onclick="removerItem(${index})" style="background:none; color:#ff6b6b; border:none; cursor:pointer">✕</button>
         </div>`;
     });
 
@@ -83,16 +111,18 @@ function atualizarCarrinho() {
     const totalFinal = total * (1 - desc);
     const economia = totalOriginal - totalFinal;
 
-    // FORMATAÇÃO TRAVADA EM 2 CASAS DECIMAIS
     totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     economiaEl.innerText = economia.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     contadorItens.innerText = `(${itens} itens)`;
 
     let progresso = (total / pedidoMinimo) * 100;
     barra.style.width = Math.min(progresso, 100) + "%";
-    msgMinimo.innerText = total < pedidoMinimo ? 
-        `Faltam R$ ${(pedidoMinimo - total).toFixed(2).replace('.', ',')} para o mínimo` : 
-        "Pedido mínimo atingido! 🎉";
+    
+    if (total < pedidoMinimo) {
+        msgMinimo.innerText = `Faltam R$ ${(pedidoMinimo - total).toFixed(2).replace('.', ',')} para o mínimo`;
+    } else {
+        msgMinimo.innerText = "Pedido mínimo atingido! 🎉";
+    }
 }
 
 function removerItem(index) {
