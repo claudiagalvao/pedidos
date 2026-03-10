@@ -90,6 +90,18 @@ font-size:18px;
 font-weight:bold;
 }
 
+.progressivo{
+font-size:12px;
+color:#666;
+margin-top:6px;
+}
+
+.estoque{
+font-size:12px;
+color:#444;
+margin-top:4px;
+}
+
 .btnAdd{
 background:#ff0055;
 color:white;
@@ -99,36 +111,6 @@ border-radius:8px;
 width:100%;
 margin-top:10px;
 cursor:pointer;
-transition:0.2s;
-}
-
-.btnAdd:active{
-transform:scale(.95);
-}
-
-.btnAdd.adicionado{
-background:#00c853;
-}
-
-@keyframes pulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.08)}
-100%{transform:scale(1)}
-}
-
-.pulse{
-animation:pulse .35s ease;
-}
-
-@keyframes carrinhoBounce{
-0%{transform:scale(1)}
-40%{transform:scale(1.08)}
-70%{transform:scale(.97)}
-100%{transform:scale(1)}
-}
-
-.carrinhoAnimado{
-animation:carrinhoBounce .45s ease;
 }
 
 .carrinho{
