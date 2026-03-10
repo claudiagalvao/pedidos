@@ -15,17 +15,16 @@ flex:3;
 padding:20px;
 }
 
-.banner{
-margin:0;
-padding:0;
-line-height:0;
+/* BANNER */
+
+.bannerTopo{
+width:100%;
+display:block;
+border-radius:12px;
+margin-bottom:15px;
 }
 
-.banner img{
-display:block;
-width:100%;
-border-radius:12px;
-}
+/* BARRA INFO */
 
 .barraInfo{
 background:linear-gradient(135deg,#d5d8dc,#bfc3c9);
@@ -35,6 +34,8 @@ border-radius:10px;
 margin:10px 0;
 text-align:center;
 }
+
+/* MENU */
 
 #menuCategorias button{
 background:#e5e7ea;
@@ -51,17 +52,21 @@ margin:4px;
 background:#cfd3d8;
 }
 
+/* GRID */
+
 .gridProdutos{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
 gap:20px;
 }
 
+/* CARD */
+
 .produto{
 background:white;
-padding:22px;
-border-radius:14px;
-box-shadow:0 8px 18px rgba(0,0,0,0.08);
+padding:24px;
+border-radius:16px;
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
 position:relative;
 transition:.25s;
 }
@@ -71,10 +76,12 @@ transform:translateY(-5px);
 box-shadow:0 14px 25px rgba(0,0,0,0.12);
 }
 
+/* SELO */
+
 .badgeVendido{
 position:absolute;
-top:12px;
-left:12px;
+top:14px;
+left:14px;
 background:#ff9800;
 color:white;
 padding:4px 8px;
@@ -82,18 +89,25 @@ border-radius:6px;
 font-size:12px;
 }
 
+/* CAMERA */
+
 .camera{
 position:absolute;
-top:12px;
-right:12px;
+top:14px;
+right:14px;
 font-size:18px;
 }
+
+/* TITULO */
 
 .produto h3{
 font-size:15px;
 font-weight:500;
+margin-top:12px;
 margin-bottom:6px;
 }
+
+/* PREÇOS */
 
 .precoOriginal{
 text-decoration:line-through;
@@ -101,10 +115,12 @@ color:#888;
 }
 
 .precoB2B{
-color:#2f7d32;
+color:#000;
 font-size:17px;
 font-weight:600;
 }
+
+/* PROGRESSÃO */
 
 .progressivo{
 font-size:12px;
@@ -117,6 +133,8 @@ font-size:12px;
 margin-top:4px;
 }
 
+/* QUANTIDADE */
+
 .produto input{
 width:55px;
 padding:6px;
@@ -125,6 +143,8 @@ border-radius:6px;
 text-align:center;
 font-size:14px;
 }
+
+/* BOTÃO */
 
 .btnAdd{
 background:linear-gradient(135deg,#c7ccd2,#9da3aa);
@@ -135,12 +155,24 @@ border-radius:8px;
 width:100%;
 margin-top:10px;
 cursor:pointer;
+transition:.2s;
+}
+
+.btnAdd:hover{
+filter:brightness(0.95);
+}
+
+.btnAdd:active{
+filter:brightness(0.85);
+transform:scale(0.97);
 }
 
 .btnAdd:disabled{
 background:#ccc;
 cursor:not-allowed;
 }
+
+/* CARRINHO */
 
 .carrinho{
 flex:1;
@@ -154,6 +186,8 @@ max-height:calc(100vh - 40px);
 overflow-y:auto;
 border-radius:12px;
 }
+
+/* FORM */
 
 .formPedido{
 display:grid;
@@ -188,6 +222,8 @@ height:50px;
 resize:none;
 }
 
+/* BARRA PROGRESSO */
+
 .barraProgresso{
 width:100%;
 height:10px;
@@ -203,6 +239,8 @@ background:#6bc46b;
 border-radius:10px;
 transition:width .3s;
 }
+
+/* BOTÕES */
 
 .botoesPedido{
 display:grid;
@@ -223,6 +261,8 @@ font-weight:500;
 .btnWhats{background:#27d266;color:white}
 .btnPdf{background:#ff9f43;color:white}
 .btnLimpar{background:#ff6b6b;color:white}
+
+/* RODAPÉ */
 
 .footer{
 background:#2f3242;
