@@ -3,51 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Pedido B2B para NF</title>
+    <title>Crazy Fantasy - Sistema B2B Faturamento</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root { --primary: #6c2bd9; --secondary: #e63946; --whatsapp: #25d366; --bg: #f0f2f5; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; }
         .container { max-width: 1100px; margin: auto; padding: 20px; }
         
+        /* BANNER CORRIGIDO */
         .banner-container { width: 100%; background: var(--primary); border-radius: 15px; margin-bottom: 20px; overflow: hidden; min-height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-container img { width: 100%; height: auto; display: block; }
 
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
-        h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
+        h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; font-size: 18px; }
         
-        .grid-nf { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .grid-nf { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
+        input, select { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--primary); }
         
         .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: var(--primary); color: white; padding: 12px; position: sticky; top: 0; z-index: 5; font-size: 13px; }
-        td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        th { background: var(--primary); color: white; padding: 12px; position: sticky; top: 0; z-index: 5; font-size: 12px; text-transform: uppercase; }
+        td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
         
-        .estoque-aviso { font-size: 10px; color: #2e7d32; font-weight: bold; display: block; }
-        .qtd-input { width: 65px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 6px; font-weight: bold; }
-        .total-box { padding: 20px; background: #222; color: #fff; border-radius: 12px; text-align: right; margin-top: 15px; }
+        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px; }
+        .qtd-input { width: 60px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 6px; font-weight: bold; }
         
+        .total-container { padding: 25px; background: #1a1a1a; color: white; border-radius: 12px; text-align: right; margin-top: 15px; }
+        .total-container h2 { margin: 0; font-size: 32px; color: #fff; }
+
         .btn-group { display: flex; gap: 15px; margin-top: 20px; justify-content: flex-end; }
-        .acao { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
+        .acao { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 16px; transition: 0.3s; }
         .btn-pdf { background: var(--secondary); }
         .btn-whatsapp { background: var(--whatsapp); }
-        .obrigatorio { border: 2px solid red !important; }
+        .acao:hover { opacity: 0.8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="banner-container">
-        <img src="https://claudia-galvao.github.io/pedidos/banner.png" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY'">
+        <img src="https://claudia-galvao.github.io/pedidos/banner.png" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY+B2B'">
     </div>
 
     <div class="form-box">
-        <h3>📑 Dados para Emissão de NF</h3>
+        <h3>📑 Dados para Emissão de NF / Entrega</h3>
         <div class="grid-nf">
             <div style="grid-column: span 2;"><label>Razão Social / Nome Completo *</label><input type="text" id="nf_nome"></div>
-            <div><label>CNPJ / CPF *</label><input type="text" id="nf_doc"></div>
+            <div><label>CNPJ / CPF *</label><input type="text" id="nf_doc" placeholder="000.000.000-00"></div>
             <div><label>Inscrição Estadual</label><input type="text" id="nf_ie"></div>
             <div style="grid-column: span 2;"><label>Endereço de Entrega *</label><input type="text" id="nf_end" placeholder="Rua, Número, Bairro"></div>
             <div><label>Cidade/UF *</label><input type="text" id="nf_cidade"></div>
@@ -57,12 +61,12 @@
     </div>
 
     <div class="form-box">
-        <h3>🛒 Itens do Pedido</h3>
+        <h3>🛍️ Itens do Pedido</h3>
         <div class="tabela-scroll">
             <table>
                 <thead>
                     <tr>
-                        <th style="text-align:left;">Produto</th>
+                        <th style="text-align:left; padding-left:15px;">Produto</th>
                         <th>Tam</th>
                         <th>Vlr. Unit</th>
                         <th>Vlr. B2B (-25%)</th>
@@ -74,9 +78,9 @@
             </table>
         </div>
         
-        <div class="total-box">
-            <span style="color: #aaa;">Valor Total do Pedido:</span>
-            <h2 id="valor-total" style="margin:0; color: #fff;">R$ 0,00</h2>
+        <div class="total-container">
+            <small style="color: #888; text-transform: uppercase;">Valor Total do Pedido:</small>
+            <h2 id="valor-total">R$ 0,00</h2>
         </div>
 
         <div class="btn-group">
@@ -87,41 +91,23 @@
 </div>
 
 <script>
+    // BANCO DE DATA EXTRAÍDO DAS IMAGENS
     const produtos = [
+        // MASCULINO
         {n: "Astronauta", p: 199.90, t: "M", est: 2},
         {n: "Astronauta", p: 199.90, t: "G", est: 2},
         {n: "Exército", p: 180.00, t: "M", est: 1},
         {n: "Policial", p: 199.99, t: "G", est: 2},
+        {n: "Medico", p: 169.99, t: "M", est: 2},
+        {n: "Medico", p: 169.99, t: "G", est: 2},
         {n: "Bombeiro", p: 229.90, t: "M", est: 1},
         {n: "Bombeiro", p: 229.90, t: "G", est: 2},
+        {n: "Pirata", p: 180.00, t: "M", est: 2},
+        {n: "Pirata", p: 180.00, t: "G", est: 1},
+        {n: "Woody", p: 189.99, t: "M", est: 1},
+        {n: "Woody", p: 189.99, t: "G", est: 1},
         {n: "Flash Longo", p: 319.99, t: "M", est: 1},
-        {n: "Flash Longo", p: 319.99, t: "G", est: 1},
         {n: "Catnoir", p: 289.99, t: "M", est: 1},
-        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1},
-        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2}
-    ];
-
-    function render() {
-        const corpo = document.getElementById("corpo-tabela");
-        corpo.innerHTML = "";
-        produtos.forEach((p, i) => {
-            let pB2B = p.p > 200 ? p.p * 0.75 : p.p;
-            corpo.innerHTML += `
-                <tr>
-                    <td style="text-align:left;"><b>${p.n}</b></td>
-                    <td>${p.t}</td>
-                    <td>R$ ${p.p.toFixed(2)}</td>
-                    <td style="color:red"><b>R$ ${pB2B.toFixed(2)}</b></td>
-                    <td><span class="estoque-aviso">${p.est} disponíveis</span></td>
-                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="validarEstoque(this)"></td>
-                </tr>`;
-        });
-    }
-
-    function validarEstoque(input) {
-        let max = parseInt(input.max);
-        if (parseInt(input.value) > max) {
-            alert("Atenção: Quantidade acima do estoque disponível (" + max + " un)!");
-            input.value = max;
-        }
-        atualizar
+        // FEMININO
+        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2},
+        {n: "Sininho", p: 99.
