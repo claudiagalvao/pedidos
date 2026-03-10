@@ -1,5 +1,3 @@
-/* BASE */
-
 body{
 font-family:Arial;
 background:#f4f6fb;
@@ -12,7 +10,7 @@ margin:0;
 
 .container{
 display:grid;
-grid-template-columns: 1fr 360px;
+grid-template-columns:minmax(0,1fr) 320px;
 gap:20px;
 padding:20px;
 align-items:start;
@@ -139,7 +137,7 @@ margin-top:6px;
 
 
 
-/* BOTÃO */
+/* BOTÃO ADICIONAR */
 
 .btnAdd{
 background:#ff0055;
@@ -156,6 +154,20 @@ transition:0.3s;
 .btnAdd:hover{
 background:#e6004d;
 transform:scale(1.05);
+}
+
+
+
+/* ANIMAÇÃO CARD */
+
+.pulse{
+animation:pulse 0.4s;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(1)}
 }
 
 
@@ -217,7 +229,7 @@ margin-top:30px;
 
 /* RESPONSIVO */
 
-@media (max-width: 1000px){
+@media (max-width:1100px){
 
 .container{
 grid-template-columns:1fr;
@@ -225,7 +237,6 @@ grid-template-columns:1fr;
 
 .carrinho{
 position:relative;
-top:auto;
 margin-top:20px;
 }
 
