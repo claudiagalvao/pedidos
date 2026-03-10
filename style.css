@@ -1,147 +1,122 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-body{
-background:#f5f6fa;
-padding:20px;
+body {
+    background: #f5f6fa;
+    padding: 10px; /* Reduzi um pouco para telas menores */
 }
 
-.container{
-max-width:1400px;
-margin:auto;
+.container {
+    max-width: 1400px;
+    margin: auto;
 }
 
-.catalogo{
-display:grid;
-grid-template-columns:1fr 360px;
-gap:20px;
-align-items:start;
+/* AJUSTE RESPONSIVO DO GRID PRINCIPAL */
+.catalogo {
+    display: grid;
+    grid-template-columns: 1fr; /* Padrão mobile: uma coluna só */
+    gap: 20px;
+    align-items: start;
 }
 
-.banner img{
-width:100%;
-border-radius:10px;
+/* Desktop: Lado a lado */
+@media (min-width: 992px) {
+    .catalogo {
+        grid-template-columns: 1fr 360px;
+    }
+    
+    .carrinho {
+        position: sticky;
+        top: 20px;
+    }
 }
 
-.barraInfo{
-margin-top:15px;
-background:linear-gradient(90deg,#7b2ff7,#f107a3);
-color:white;
-padding:12px;
-border-radius:8px;
-font-weight:bold;
+.banner img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
 }
 
-.busca{
-margin:15px 0;
+.barraInfo {
+    margin-top: 15px;
+    background: linear-gradient(90deg, #7b2ff7, #f107a3);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
 }
 
-.busca input{
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
+.busca {
+    margin: 15px 0;
 }
 
-.categorias{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-top:15px;
+.busca input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px; /* Evita zoom automático no iPhone */
 }
 
-.categorias button{
-padding:6px 12px;
-border-radius:20px;
-border:1px solid #ccc;
-background:white;
-cursor:pointer;
+.categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
 }
 
-.produtos{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-gap:18px;
-margin-top:20px;
+.categorias button {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.card{
-background:white;
-padding:15px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
+.categorias button:hover {
+    background: #7b2ff7;
+    color: white;
 }
 
-.card h3{
-font-size:15px;
-margin-bottom:8px;
+/* AJUSTE DOS PRODUTOS */
+.produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 20px;
 }
 
-.preco-original{
-text-decoration:line-through;
-color:#999;
-font-size:13px;
+/* AJUSTE DOS CARDS (Alinhamento interno) */
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column; /* Faz o conteúdo empilhar */
+    justify-content: space-between; /* Empurra o botão para o final */
+    min-height: 320px; /* Garante que todos tenham o mesmo tamanho */
+    word-break: break-word; /* Resolve o problema dos links vazando */
 }
 
-.preco-b2b{
-color:#27ae60;
-font-weight:bold;
-font-size:18px;
+.card h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    line-height: 1.3;
 }
 
-.add-btn{
-margin-top:10px;
-background:#7b2ff7;
-color:white;
-border:none;
-padding:8px;
-border-radius:6px;
-cursor:pointer;
-width:100%;
-}
-
-.carrinho{
-background:#0d1b2a;
-color:white;
-padding:20px;
-border-radius:10px;
-position:sticky;
-top:20px;
-}
-
-.progress{
-height:8px;
-background:#2c3e50;
-border-radius:4px;
-margin:10px 0;
-}
-
-.progress-bar{
-height:100%;
-background:#2ecc71;
-width:0%;
-}
-
-.itens{
-margin:10px 0;
-font-size:14px;
-}
-
-.btn{
-padding:10px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-width:100%;
-margin-top:5px;
-}
-
-.btn-whats{background:#25d366;color:white}
-.btn-pdf{background:#3498db;color:white}
-.btn-copiar{background:#f39c12;color:white}
-.btn-limpar{background:#e74c3c;color:white}
+/* Ocultar links longos se necessário, ou apenas formatar */
+.card .estoque-link {
+    font-size: 11px;
+    color: #666;
+    margin: 5px 0;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
