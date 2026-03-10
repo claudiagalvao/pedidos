@@ -20,6 +20,18 @@ const pedidoMinimo = 200;
 
 
 /* ============================= */
+/* FORMATAÇÃO MOEDA */
+/* ============================= */
+
+function moeda(v){
+return v.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+}
+
+
+/* ============================= */
 /* CARREGAR CSV */
 /* ============================= */
 
@@ -129,11 +141,10 @@ produtosDiv.innerHTML="";
 
 lista.forEach(p=>{
 
-const precoBase = p.preco.toFixed(2);
-
-const preco10 = (p.preco*0.90).toFixed(2);
-const preco12 = (p.preco*0.88).toFixed(2);
-const preco15 = (p.preco*0.85).toFixed(2);
+const precoBase = moeda(p.preco);
+const preco10 = moeda(p.preco*0.90);
+const preco12 = moeda(p.preco*0.88);
+const preco15 = moeda(p.preco*0.85);
 
 const card=document.createElement("div");
 card.className="produto";
@@ -265,8 +276,8 @@ const totalFinal = total * (1 - desconto);
 
 const economia = total - totalFinal;
 
-totalEl.innerText = totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2});
-economiaEl.innerText = economia.toLocaleString('pt-BR',{minimumFractionDigits:2});
+totalEl.innerText = moeda(totalFinal);
+economiaEl.innerText = moeda(economia);
 
 contadorItens.innerText=`(${itens} itens)`;
 
@@ -282,10 +293,10 @@ Math.round(desconto * 100) + "%";
 let msg = "";
 
 if(total < 500){
-msg = `Você já tem 10%. Faltam R$ ${(500-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para atingir 12%`;
+msg = `Você já tem 10%. Faltam R$ ${moeda(500-total)} para atingir 12%`;
 }
 else if(total < 1000){
-msg = `Faltam R$ ${(1000-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para atingir 15%`;
+msg = `Faltam R$ ${moeda(1000-total)} para atingir 15%`;
 }
 else{
 msg = "Você já atingiu o maior desconto!";
@@ -301,7 +312,7 @@ let progresso=(total/500)*100;
 barra.style.width=Math.min(progresso,100)+"%";
 
 msgMinimo.innerText = total<pedidoMinimo
-?`Faltam R$ ${(pedidoMinimo-total).toLocaleString('pt-BR',{minimumFractionDigits:2})} para pedido mínimo`
+?`Faltam R$ ${moeda(pedidoMinimo-total)} para pedido mínimo`
 :"Pedido mínimo atingido";
 
 }
@@ -389,7 +400,7 @@ headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
 
 pedido:pedido,
-total:total.toFixed(2)
+total:moeda(total)
 
 })
 
@@ -420,7 +431,7 @@ pedido += `${item.qtd}x ${nomeProduto}\n`;
 });
 
 let texto =
-`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${total.toFixed(2)}`;
+`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${moeda(total)}`;
 
 window.open(
 `https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
@@ -460,7 +471,7 @@ y+=8;
 
 });
 
-doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
+doc.text(`Total: R$ ${moeda(total)}`,20,y+10);
 
 doc.save("pedido.pdf");
 
