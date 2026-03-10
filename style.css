@@ -11,25 +11,24 @@ body {
     color: #333;
 }
 
-/* CONTAINER PRINCIPAL */
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px; /* Zero no topo */
+    padding: 0 20px 20px 20px;
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0; /* Removido padding que afastava o banner */
+    padding: 0;
 }
 
-/* BANNER TOTALMENTE COLADO */
+/* BANNER SEM ESPAÇOS BRANCOS */
 .bannerTopo {
-    width: calc(100% + 40px); /* Expande para compensar o padding do container */
-    margin-left: -20px;       /* Puxa para a borda esquerda */
+    width: calc(100% + 40px);
+    margin-left: -20px;
     height: auto;
     display: block;
     margin-bottom: 15px;
@@ -37,7 +36,6 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* BARRA DE INFORMAÇÕES */
 .barraInfo {
     background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
     padding: 12px;
@@ -47,7 +45,6 @@ body {
     font-weight: 500;
 }
 
-/* GRID DE PRODUTOS */
 .gridProdutos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -56,27 +53,33 @@ body {
 
 .produto {
     background: white;
-    padding: 24px;
+    padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
     position: relative;
-    transition: 0.25s;
+    transition: 0.3s;
     display: flex;
     flex-direction: column;
 }
 
-.produto:hover {
-    transform: translateY(-5px);
+.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
+
+.progressivo-card {
+    font-size: 11px;
+    color: #666;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 8px 0;
+    line-height: 1.4;
 }
 
-.precoB2B {
-    color: #000;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 5px 0;
+.estoque-card {
+    font-size: 12px;
+    color: #444;
+    margin-bottom: 8px;
 }
 
-/* CARRINHO LATERAL */
 .carrinho {
     flex: 1;
     background: #2f3242;
@@ -88,30 +91,15 @@ body {
     max-height: calc(100vh - 40px);
     overflow-y: auto;
     border-radius: 15px;
-    margin-top: 20px; /* Alinha com o início do conteúdo */
+    margin-top: 20px;
 }
 
 .formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: none;
-    margin-bottom: 5px;
-    font-size: 12px;
+    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
 }
 
-.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; margin-top: 5px; cursor: pointer; border: none; }
-.btnLimpar { background: #ff6b6b; color: white; }
+.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; margin-top: 5px; cursor: pointer; border: none; font-weight: 600; }
 
-.footer {
-    background: #2f3242;
-    color: white;
-    padding: 40px;
-    text-align: center;
-    margin-top: 40px;
-}
-
-/* AJUSTE PARA CELULAR */
 @media (max-width: 1000px) {
     .container { flex-direction: column; padding: 0 10px; }
     .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
