@@ -1,4 +1,4 @@
-/* RESET GERAL */
+/* RESET PARA ELIMINAR ESPAÇOS DO NAVEGADOR */
 * {
     margin: 0;
     padding: 0;
@@ -15,20 +15,20 @@ body {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px;
+    padding: 0 20px 20px 20px; /* Zero no topo */
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0;
+    padding: 0; /* Removido o padding para o banner encostar */
 }
 
-/* BANNER SEM ESPAÇOS BRANCOS */
+/* BANNER TOTALMENTE COLADO NAS BORDAS */
 .bannerTopo {
-    width: calc(100% + 40px);
-    margin-left: -20px;
+    width: calc(100% + 40px); /* Compensa o padding do container */
+    margin-left: -20px;       /* Puxa para a esquerda para encostar */
     height: auto;
     display: block;
     margin-bottom: 15px;
@@ -62,8 +62,14 @@ body {
     flex-direction: column;
 }
 
-.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
+.precoB2B { 
+    color: #000; 
+    font-size: 18px; 
+    font-weight: 700; 
+    margin: 5px 0; 
+}
 
+/* TABELA DE DESCONTOS INTERNA */
 .progressivo-card {
     font-size: 11px;
     color: #666;
@@ -80,6 +86,7 @@ body {
     margin-bottom: 8px;
 }
 
+/* CARRINHO LATERAL */
 .carrinho {
     flex: 1;
     background: #2f3242;
@@ -95,10 +102,25 @@ body {
 }
 
 .formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
+    width: 100%; 
+    padding: 8px; 
+    border-radius: 6px; 
+    border: none; 
+    margin-bottom: 5px; 
+    font-size: 12px;
 }
 
-.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; margin-top: 5px; cursor: pointer; border: none; font-weight: 600; }
+.btnWhats { 
+    background: #27d266; 
+    color: white; 
+    width: 100%; 
+    padding: 10px; 
+    border-radius: 8px; 
+    margin-top: 5px; 
+    cursor: pointer; 
+    border: none; 
+    font-weight: 600; 
+}
 
 @media (max-width: 1000px) {
     .container { flex-direction: column; padding: 0 10px; }
