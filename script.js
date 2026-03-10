@@ -493,3 +493,20 @@ document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
 document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
 
 }
+
+
+/* ============================= */
+/* CARRINHO MOBILE */
+/* ============================= */
+
+function abrirCarrinhoMobile(){
+
+const carrinho = document.getElementById("carrinho");
+
+carrinho.classList.toggle("aberto");
+
+if(carrinho.classList.contains("aberto")){
+carrinho.scrollIntoView({behavior:"smooth"});
+}
+
+}
