@@ -14,201 +14,133 @@
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
-
-<!-- ================= CATALOGO ================= -->
-
 <div class="catalogo">
-
 
 <div class="banner">
 <img src="banner.png">
 </div>
 
-
 <div class="barraInfo">
-🔥 Tabela exclusiva para parceiros • Desconto progressivo B2B
+Tabela exclusiva para parceiros • Desconto progressivo B2B
 </div>
 
-
-<div id="menuCategorias" class="menuCategorias"></div>
-
+<div id="menuCategorias"></div>
 
 <input id="busca" placeholder="🔎 Buscar produto ou SKU">
 
-
 <div id="produtos" class="gridProdutos"></div>
-
 
 </div>
 
 
-
-<!-- ================= CARRINHO ================= -->
 
 <div class="carrinho">
 
-
 <h2>
-🛒 Pedido <span id="contadorItens">(0 itens)</span>
+🛒 Pedido
+<span id="contadorItens">(0 itens)</span>
 </h2>
 
-
-<div>
+<div class="total">
 Total B2B: R$ <span id="total">0</span>
 </div>
 
-<div style="color:#22c55e">
+<div class="economiaPedido">
 💰 Economia: R$ <span id="economia">0</span>
 </div>
 
+<div id="proximoDesconto"></div>
 
 <div class="barraProgresso">
 <div id="barra"></div>
 </div>
 
-
 <div id="msgMinimo"></div>
-
 
 <div id="listaPedido"></div>
 
-
-
 <h3>Dados do Cliente</h3>
 
-
 <input id="empresa" placeholder="Empresa / Razão Social">
-
 <input id="cnpj" placeholder="CNPJ">
-
 <input id="ie" placeholder="Inscrição Estadual">
-
-<input id="responsavel" placeholder="Nome do responsável">
-
-<input id="whatsCliente" placeholder="WhatsApp">
-
+<input id="nome" placeholder="Nome do responsável">
+<input id="whatsapp" placeholder="WhatsApp">
 <input id="email" placeholder="Email">
 
 <textarea id="endereco" placeholder="Endereço completo"></textarea>
-
-
 
 <h3>Entrega</h3>
 
 <select id="entrega">
 
 <option value="">Selecione</option>
-
 <option>Correios</option>
-
 <option>Transportadora</option>
-
-<option>Retirada</option>
+<option>Retirada na loja</option>
 
 </select>
-
-
 
 <h3>Pagamento</h3>
 
 <select id="pagamento">
 
 <option value="">Selecione</option>
-
 <option>PIX</option>
-
 <option>Boleto</option>
-
 <option>Cartão</option>
+<option>Transferência bancária</option>
 
 </select>
 
-
-
 <h3>Observações</h3>
 
-<textarea id="obs"></textarea>
+<textarea id="observacoes"></textarea>
 
 
+<div class="botoesPedido">
 
-<div class="botoesCarrinho">
+<button onclick="copiarPedido()">Copiar Pedido (ERP)</button>
 
-<button class="btnEmail" onclick="enviarEmail()">
-Enviar Email
-</button>
+<button onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">
-WhatsApp
-</button>
+<button onclick="gerarPDF()">Gerar PDF</button>
 
-<button class="btnPdf" onclick="gerarPDF()">
-Gerar PDF
-</button>
-
-<button class="btnLimpar" onclick="limparCarrinho()">
-Limpar
-</button>
-
-<button onclick="copiarERP()">
-Copiar Pedido (ERP)
-</button>
+<button onclick="limparCarrinho()">Limpar</button>
 
 </div>
 
-
 </div>
 
-
 </div>
-
-
-
-<!-- ================= FOOTER ================= -->
 
 <div class="footer">
 
-<b>Crazy Fantasy B2B</b>
+Crazy Fantasy B2B
 
 <br><br>
 
-Desconto progressivo
+Descontos progressivos
 
 <br>
 
-até R$200 → 10%
+R$200 → 10%
 
 <br>
 
-até R$500 → 12%
+R$500 → 12%
 
 <br>
 
-até R$1000 → 15%
-
-<br><br>
-
-Pagamento: PIX | Boleto | Cartão
-
-<br>
-
-Frete calculado após envio
-
-<br>
-
-Validade do pedido: 48h
+R$1000 → 15%
 
 </div>
 
-
-
 <script src="script.js"></script>
-
 
 </body>
 </html>
