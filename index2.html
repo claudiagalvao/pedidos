@@ -16,18 +16,14 @@
 
 <body>
 
-<div class="bannerTopo">
-
-<img src="banner.jpg">
-
-</div>
-
 <div class="container">
 
 <div class="catalogo">
 
+<img src="banner.png" class="bannerTopo">
+
 <div class="barraInfo">
-🔥 Portal exclusivo para parceiros • Descontos B2B progressivos
+🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
 </div>
 
 <div id="menuCategorias"></div>
@@ -39,7 +35,7 @@
 </div>
 
 
-<div class="carrinho">
+<div class="carrinho" id="carrinho">
 
 <h2>
 🛒 Pedido
@@ -50,10 +46,16 @@
 Total B2B: R$ <span id="total">0,00</span>
 </div>
 
-<div id="statusDesconto"></div>
+<div class="descontoAtual">
+Desconto aplicado: <span id="descontoAtual">0%</span>
+</div>
+
+<div class="proximoDesconto">
+<span id="msgDesconto"></span>
+</div>
 
 <div id="msgMinimo">
-Pedido mínimo R$200
+Faltam R$ 200,00 para pedido mínimo
 </div>
 
 <div class="barraFundo">
@@ -64,7 +66,7 @@ Pedido mínimo R$200
 Economia com descontos: R$ <span id="economia">0,00</span>
 </div>
 
-<div id="listaPedido"></div>
+<div id="listaPedido" class="listaPedido"></div>
 
 <div class="tituloFormulario">
 Dados para Nota Fiscal
@@ -97,14 +99,14 @@ Dados para Nota Fiscal
 <div class="linha2">
 
 <select id="entrega">
-<option>Forma de entrega</option>
-<option>Retirada</option>
+<option value="">Forma de entrega</option>
+<option>Retirada na loja</option>
 <option>Correios</option>
 <option>Transportadora</option>
 </select>
 
 <select id="pagamento">
-<option>Forma de pagamento</option>
+<option value="">Forma de pagamento</option>
 <option>Pix</option>
 <option>Boleto (sob consulta)</option>
 <option>Cartão</option>
@@ -118,13 +120,13 @@ Dados para Nota Fiscal
 
 <div class="botoesPedido">
 
-<button onclick="enviarEmail()">Enviar Pedido</button>
+<button class="btnPedido" onclick="enviarEmail()">Enviar Pedido</button>
 
-<button onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnPedido" onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPedido" onclick="gerarPDF()">Gerar PDF</button>
 
-<button onclick="limparCarrinho()">Limpar</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
 
 </div>
 
@@ -138,11 +140,12 @@ Dados para Nota Fiscal
 
 <div>
 <strong>Crazy Fantasy</strong><br>
-Portal B2B para lojistas
+Portal de pedidos B2B
 </div>
 
 <div>
-WhatsApp: (19) 99285-0208
+WhatsApp: (19) 99285-0208<br>
+Valinhos – SP
 </div>
 
 </div>
@@ -153,3 +156,4 @@ WhatsApp: (19) 99285-0208
 
 </body>
 </html>
+
