@@ -103,7 +103,7 @@ produtos.filter(p=>p.nome.toLowerCase().includes(termo))
 
 
 /* ============================= */
-/* FUNÇÃO VARIAÇÃO */
+/* VALIDAR VARIAÇÃO */
 /* ============================= */
 
 function variacaoValida(v){
@@ -275,6 +275,35 @@ totalEl.innerText = totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2})
 economiaEl.innerText = economia.toLocaleString('pt-BR',{minimumFractionDigits:2});
 
 contadorItens.innerText=`(${itens} itens)`;
+
+
+/* DESCONTO ATUAL */
+
+document.getElementById("descontoAtual").innerText =
+Math.round(desconto * 100) + "%";
+
+
+/* PRÓXIMO DESCONTO */
+
+let msg = "";
+
+if(total < 200){
+msg = `Faltam R$ ${(200-total).toFixed(2)} para atingir 10%`;
+}
+else if(total < 500){
+msg = `Faltam R$ ${(500-total).toFixed(2)} para atingir 12%`;
+}
+else if(total < 1000){
+msg = `Faltam R$ ${(1000-total).toFixed(2)} para atingir 15%`;
+}
+else{
+msg = "Você já atingiu o maior desconto!";
+}
+
+document.getElementById("msgDesconto").innerText = msg;
+
+
+/* PROGRESSO */
 
 let progresso=(total/pedidoMinimo)*100;
 
