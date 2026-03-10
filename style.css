@@ -14,6 +14,8 @@ margin:0;
 
 display:flex;
 
+align-items:flex-start;
+
 }
 
 
@@ -28,15 +30,31 @@ padding:20px;
 
 
 
+/* BANNER CORRIGIDO */
+
+.banner{
+
+width:100%;
+
+margin-bottom:10px;
+
+}
+
 .banner img{
 
 width:100%;
+
+height:auto;
+
+display:block;
 
 border-radius:12px;
 
 }
 
 
+
+/* BARRA INFO */
 
 .barraInfo{
 
@@ -56,6 +74,8 @@ text-align:center;
 
 
 
+/* GRID PRODUTOS */
+
 .gridProdutos{
 
 display:grid;
@@ -68,33 +88,21 @@ gap:20px;
 
 
 
+/* CARD PRODUTO */
+
 .produto{
-
-
 
 background:linear-gradient(145deg,#ffffff,#f1f3f8);
 
-
-
 padding:20px;
-
-
 
 border-radius:14px;
 
-
-
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
-
-
 
 position:relative;
 
-
-
 transition:0.3s;
-
-
 
 }
 
@@ -102,39 +110,25 @@ transition:0.3s;
 
 .produto:hover{
 
-
-
 transform:translateY(-6px);
 
-
-
 box-shadow:0 14px 30px rgba(0,0,0,0.12);
-
-
 
 }
 
 
 
+/* CAMERA LINK */
+
 .camera{
-
-
 
 position:absolute;
 
-
-
 top:10px;
-
-
 
 right:10px;
 
-
-
 font-size:22px;
-
-
 
 }
 
@@ -142,67 +136,43 @@ font-size:22px;
 
 .camera a{
 
-
-
 text-decoration:none;
-
-
 
 }
 
 
+
+/* BADGE */
 
 .badgeVendido{
 
-
-
 position:absolute;
-
-
 
 top:10px;
 
-
-
 left:10px;
-
-
 
 background:#ff9800;
 
-
-
 color:white;
-
-
 
 padding:4px 8px;
 
-
-
 border-radius:6px;
 
-
-
 font-size:12px;
-
-
 
 }
 
 
 
+/* PREÇOS */
+
 .precoOriginal{
-
-
 
 text-decoration:line-through;
 
-
-
 color:#888;
-
-
 
 }
 
@@ -210,19 +180,11 @@ color:#888;
 
 .precoB2B{
 
-
-
 color:#1db954;
-
-
 
 font-size:18px;
 
-
-
 font-weight:bold;
-
-
 
 }
 
@@ -230,63 +192,37 @@ font-weight:bold;
 
 .progressivo{
 
-
-
 font-size:12px;
-
-
 
 color:#777;
 
-
-
 margin-top:6px;
-
-
 
 }
 
 
 
+/* BOTÃO ADICIONAR */
+
 .btnAdd{
-
-
 
 background:#ff0055;
 
-
-
 color:white;
-
-
 
 border:none;
 
-
-
 padding:10px;
-
-
 
 border-radius:8px;
 
-
-
 width:100%;
-
-
 
 margin-top:10px;
 
-
-
 cursor:pointer;
 
-
-
 transition:0.3s;
-
-
 
 }
 
@@ -294,27 +230,19 @@ transition:0.3s;
 
 .btnAdd:hover{
 
-
-
 background:#e6004d;
 
-
-
 transform:scale(1.05);
-
-
 
 }
 
 
 
+/* ANIMAÇÃO CARD */
+
 .pulse{
 
-
-
 animation:pulse 0.4s;
-
-
 
 }
 
@@ -322,91 +250,71 @@ animation:pulse 0.4s;
 
 @keyframes pulse{
 
-
-
 0%{transform:scale(1)}
-
-
 
 50%{transform:scale(1.1)}
 
-
-
 100%{transform:scale(1)}
-
-
 
 }
 
 
+
+/* CARRINHO */
 
 .carrinho{
 
-
-
 flex:1;
-
-
 
 background:#1f2b3a;
 
-
-
 color:white;
-
-
 
 padding:20px;
 
+position:sticky;
 
+top:0;
+
+height:100vh;
+
+overflow:auto;
 
 }
 
 
+
+/* INPUTS */
 
 input{
 
-
-
 width:100%;
-
-
 
 margin:6px 0;
 
-
-
 padding:8px;
 
+border-radius:6px;
 
+border:none;
 
 }
 
 
 
+/* BOTÕES */
+
 button{
-
-
 
 margin:6px 0;
 
-
-
 padding:10px;
-
-
 
 border:none;
 
-
-
 border-radius:6px;
 
-
-
 cursor:pointer;
-
-
 
 }
 
@@ -422,29 +330,18 @@ cursor:pointer;
 
 
 
+/* FOOTER */
+
 .footer{
-
-
 
 background:#111;
 
-
-
 color:white;
-
-
 
 padding:30px;
 
-
-
 text-align:center;
-
-
 
 margin-top:30px;
 
-
-
 }
-
