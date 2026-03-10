@@ -1,173 +1,432 @@
-/* RESET E ESTRUTURA BASE */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-body {
-    font-family: 'Inter', Arial, sans-serif;
-    background: #eef1f4;
-    color: #333;
+body{
+
+font-family:'Inter',Arial,sans-serif;
+background:#eef1f4;
+color:#333;
+
 }
 
-.container {
-    display: flex;
-    max-width: 1250px;
-    margin: 0 auto;
-    padding: 0 20px 20px 20px;
-    gap: 25px;
-    align-items: flex-start;
+/* CONTAINER PRINCIPAL */
+
+.container{
+
+display:flex;
+max-width:1250px;
+margin:0 auto;
+padding:0 20px 20px 20px;
+gap:25px;
+align-items:flex-start;
+
 }
 
-.catalogo {
-    flex: 3;
-    padding: 0;
+.catalogo{
+
+flex:3;
+
 }
 
-/* BANNER COLADO */
-.bannerTopo {
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    height: auto;
-    display: block;
-    margin-bottom: 15px;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+/* BANNER */
+
+.bannerTopo{
+
+width:100%;
+display:block;
+margin-bottom:15px;
+border-radius:0 0 12px 12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+
 }
 
-.barraInfo {
-    background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: 500;
+/* BARRA INFO */
+
+.barraInfo{
+
+background:linear-gradient(135deg,#d5d8dc,#bfc3c9);
+padding:12px;
+border-radius:10px;
+margin-bottom:20px;
+text-align:center;
+font-weight:500;
+
 }
 
-/* MENU DE CATEGORIAS */
-#menuCategorias {
-    margin-bottom: 15px;
+/* MENU CATEGORIAS */
+
+#menuCategorias{
+
+margin-bottom:15px;
+
 }
 
-#menuCategorias button {
-    background: #e5e5e7;
-    color: #444;
-    border: none;
-    border-radius: 18px;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    margin: 4px;
-    transition: 0.2s;
+#menuCategorias button{
+
+background:#e5e5e7;
+color:#444;
+border:none;
+border-radius:18px;
+padding:8px 16px;
+font-size:13px;
+cursor:pointer;
+margin:4px;
+transition:0.2s;
+
 }
 
-#menuCategorias button:hover {
-    background: #cfd3d8;
+#menuCategorias button:hover{
+
+background:#cfd3d8;
+
 }
 
-#busca {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
+/* BUSCA */
+
+#busca{
+
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+margin-bottom:20px;
+
 }
 
-/* GRID E CARDS */
-.gridProdutos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+/* GRID PRODUTOS */
+
+.gridProdutos{
+
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:20px;
+
 }
 
-.produto {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    position: relative; /* Importante para o posicionamento absoluto interno */
-    transition: 0.25s;
-    display: flex;
-    flex-direction: column;
+/* CARD PRODUTO */
+
+.produto{
+
+background:white;
+padding:24px;
+border-radius:16px;
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
+position:relative;
+transition:0.25s;
+display:flex;
+flex-direction:column;
+
 }
 
-.produto:hover {
-    transform: translateY(-5px);
+.produto:hover{
+
+transform:translateY(-5px);
+
 }
 
-/* SELO MAIS VENDIDO COM RESPIRO */
-.badgeVendido {
-    position: absolute;
-    top: 14px; /* Mais distante do topo para dar respiro */
-    left: 14px;
-    background: #ff9800;
-    color: white;
-    padding: 5px 10px; /* Aumentado para melhor leitura */
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: bold;
-    z-index: 2;
+/* SELO */
+
+.badgeVendido{
+
+position:absolute;
+top:14px;
+left:14px;
+background:#ff9800;
+color:white;
+padding:5px 10px;
+border-radius:6px;
+font-size:11px;
+font-weight:bold;
+z-index:2;
+
 }
 
-/* ÍCONE DA CÂMERA RESTAURADO */
-.camera-icon {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #333;
-    z-index: 2;
+/* CAMERA */
+
+.camera-icon{
+
+position:absolute;
+top:14px;
+right:14px;
+font-size:20px;
+cursor:pointer;
+text-decoration:none;
+color:#333;
+z-index:2;
+
 }
 
-.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
+/* PREÇO */
 
-.progressivo-card {
-    font-size: 11px;
-    color: #666;
-    background: #f8f9fa;
-    padding: 8px;
-    border-radius: 8px;
-    margin: 8px 0;
-    line-height: 1.4;
+.precoB2B{
+
+color:#000;
+font-size:18px;
+font-weight:700;
+margin:5px 0;
+
 }
 
-.estoque-card { font-size: 12px; color: #444; margin-bottom: 8px; }
+/* DESCONTOS */
+
+.progressivo-card{
+
+font-size:11px;
+color:#666;
+background:#f8f9fa;
+padding:8px;
+border-radius:8px;
+margin:8px 0;
+line-height:1.4;
+
+}
+
+/* ESTOQUE */
+
+.estoque-card{
+
+font-size:12px;
+color:#444;
+margin-bottom:8px;
+
+}
+
+/* INPUT CARD */
+
+.produto input{
+
+width:100%;
+padding:8px;
+border:1px solid #ddd;
+border-radius:6px;
+text-align:center;
+
+}
+
+/* BOTÃO ADD */
+
+.btnAdd{
+
+background:#2f3242;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+cursor:pointer;
+transition:0.2s;
+
+}
+
+.btnAdd:hover{
+
+background:#44465c;
+
+}
 
 /* CARRINHO */
-.carrinho {
-    flex: 1;
-    background: #2f3242;
-    color: white;
-    padding: 20px;
-    min-width: 340px;
-    position: sticky;
-    top: 20px;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
-    border-radius: 15px;
+
+.carrinho{
+
+flex:1;
+background:#2f3242;
+color:white;
+padding:20px;
+min-width:340px;
+position:sticky;
+top:20px;
+max-height:calc(100vh - 40px);
+overflow-y:auto;
+border-radius:15px;
+
 }
 
-.formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
+/* TOTAL */
+
+.total{
+
+font-size:18px;
+margin:10px 0;
+
 }
 
-.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
+/* BARRA PROGRESSO */
 
-/* RODAPÉ */
-.footer {
-    background: #2f3242;
-    color: white;
-    padding: 40px;
-    text-align: center;
-    margin-top: 40px;
-    font-size: 14px;
+.progressoContainer{
+
+margin:10px 0;
+
 }
 
-@media (max-width: 1000px) {
-    .container { flex-direction: column; padding: 0 10px; }
-    .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
-    .carrinho { position: static; width: 100%; min-width: auto; }
+.barraFundo{
+
+background:#444;
+border-radius:8px;
+height:10px;
+overflow:hidden;
+
+}
+
+.barraProgresso{
+
+background:#27d266;
+height:10px;
+width:0%;
+
+}
+
+/* ECONOMIA */
+
+.economia{
+
+font-size:13px;
+margin-bottom:10px;
+
+}
+
+/* LISTA PEDIDO */
+
+.listaPedido{
+
+margin-bottom:15px;
+font-size:13px;
+
+}
+
+.listaPedido button{
+
+background:none;
+border:none;
+color:#ff6b6b;
+cursor:pointer;
+
+}
+
+/* FORM */
+
+.formPedido input,
+.formPedido select,
+.formPedido textarea{
+
+width:100%;
+padding:8px;
+border-radius:6px;
+border:none;
+margin-bottom:5px;
+font-size:12px;
+
+}
+
+.linha2{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:5px;
+
+}
+
+.linha3{
+
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:5px;
+
+}
+
+/* BOTÕES */
+
+.botoesPedido{
+
+margin-top:10px;
+display:grid;
+gap:6px;
+
+}
+
+.btnWhats{
+
+background:#27d266;
+color:white;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+.btnEmail{
+
+background:#4b6cb7;
+color:white;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+
+}
+
+.btnPdf{
+
+background:#555;
+color:white;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+
+}
+
+.btnLimpar{
+
+background:#999;
+color:white;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+
+}
+
+/* FOOTER */
+
+.footer{
+
+background:#2f3242;
+color:white;
+padding:40px;
+text-align:center;
+margin-top:40px;
+font-size:14px;
+
+}
+
+/* RESPONSIVO */
+
+@media(max-width:1000px){
+
+.container{
+
+flex-direction:column;
+padding:0 10px;
+
+}
+
+.carrinho{
+
+position:static;
+width:100%;
+min-width:auto;
+
+}
+
 }
