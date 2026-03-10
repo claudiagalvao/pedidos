@@ -18,6 +18,7 @@ let totalOriginal = 0;
 
 const pedidoMinimo = 200;
 
+
 /* ============================= */
 /* CARREGAR CSV */
 /* ============================= */
@@ -56,6 +57,7 @@ renderProdutos(produtos);
 
 });
 
+
 /* ============================= */
 /* CATEGORIAS */
 /* ============================= */
@@ -72,6 +74,7 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 
 }
 
+
 function filtrarCategoria(cat){
 
 if(cat==="Todos"){
@@ -82,6 +85,7 @@ return;
 renderProdutos(produtos.filter(p=>p.categoria===cat));
 
 }
+
 
 /* ============================= */
 /* BUSCA */
@@ -96,6 +100,7 @@ produtos.filter(p=>p.nome.toLowerCase().includes(termo))
 );
 
 });
+
 
 /* ============================= */
 /* RENDER PRODUTOS */
@@ -115,8 +120,6 @@ const preco15 = (p.preco*0.85).toFixed(2);
 
 const card=document.createElement("div");
 card.className="produto";
-
-/* BLOQUEAR PRODUTO SEM ESTOQUE */
 
 let estoqueHTML = p.estoque > 0
 ? `<div>Estoque: <strong>${p.estoque}</strong></div>`
@@ -184,6 +187,7 @@ return;
 
 carrinho.push({
 nome:p.nome,
+variacao:p.variacao,
 preco:p.preco,
 qtd:qtd
 });
@@ -211,6 +215,7 @@ produtosDiv.appendChild(card);
 
 }
 
+
 /* ============================= */
 /* CARRINHO */
 /* ============================= */
@@ -225,11 +230,15 @@ carrinho.forEach((item,index)=>{
 
 itens+=item.qtd;
 
+let nomeProduto = item.variacao
+? `${item.nome} - ${item.variacao}`
+: item.nome;
+
 listaPedido.innerHTML+=`
 
 <div style="display:flex;justify-content:space-between">
 
-<span>${item.qtd}x ${item.nome}</span>
+<span>${item.qtd}x ${nomeProduto}</span>
 
 <button onclick="removerItem(${index})">✕</button>
 
@@ -239,21 +248,14 @@ listaPedido.innerHTML+=`
 
 });
 
-/* CALCULAR DESCONTO */
-
 const desconto = calcularDesconto(total);
 
 const totalFinal = total * (1 - desconto);
 
 const economia = total - totalFinal;
 
-totalEl.innerText = totalFinal.toLocaleString('pt-BR',{
-minimumFractionDigits:2
-});
-
-economiaEl.innerText = economia.toLocaleString('pt-BR',{
-minimumFractionDigits:2
-});
+totalEl.innerText = totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2});
+economiaEl.innerText = economia.toLocaleString('pt-BR',{minimumFractionDigits:2});
 
 contadorItens.innerText=`(${itens} itens)`;
 
@@ -267,6 +269,7 @@ msgMinimo.innerText = total<pedidoMinimo
 
 }
 
+
 /* ============================= */
 /* DESCONTOS */
 /* ============================= */
@@ -274,14 +277,13 @@ msgMinimo.innerText = total<pedidoMinimo
 function calcularDesconto(valor){
 
 if(valor >= 1000) return 0.15;
-
 if(valor >= 500) return 0.12;
-
 if(valor >= 200) return 0.10;
 
 return 0;
 
 }
+
 
 /* ============================= */
 
@@ -295,6 +297,7 @@ carrinho.splice(index,1);
 atualizarCarrinho();
 
 }
+
 
 /* ============================= */
 /* VALIDAÇÃO FORM */
@@ -320,6 +323,7 @@ return true;
 
 }
 
+
 /* ============================= */
 /* EMAIL */
 /* ============================= */
@@ -331,7 +335,13 @@ if(!validarFormulario()) return;
 let pedido="";
 
 carrinho.forEach(item=>{
-pedido += `${item.qtd}x ${item.nome}\n`;
+
+let nomeProduto = item.variacao
+? `${item.nome} - ${item.variacao}`
+: item.nome;
+
+pedido += `${item.qtd}x ${nomeProduto}\n`;
+
 });
 
 fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
@@ -352,6 +362,7 @@ total:total.toFixed(2)
 
 }
 
+
 /* ============================= */
 /* WHATSAPP */
 /* ============================= */
@@ -363,7 +374,13 @@ if(!validarFormulario()) return;
 let pedido="";
 
 carrinho.forEach(item=>{
-pedido += `${item.qtd}x ${item.nome}\n`;
+
+let nomeProduto = item.variacao
+? `${item.nome} - ${item.variacao}`
+: item.nome;
+
+pedido += `${item.qtd}x ${nomeProduto}\n`;
+
 });
 
 let texto =
@@ -375,6 +392,7 @@ window.open(
 );
 
 }
+
 
 /* ============================= */
 /* PDF */
@@ -395,8 +413,15 @@ doc.text("Pedido Crazy Fantasy",20,y);
 y+=10;
 
 carrinho.forEach(item=>{
-doc.text(`${item.qtd}x ${item.nome}`,20,y);
+
+let nomeProduto = item.variacao
+? `${item.nome} - ${item.variacao}`
+: item.nome;
+
+doc.text(`${item.qtd}x ${nomeProduto}`,20,y);
+
 y+=8;
+
 });
 
 doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
@@ -404,6 +429,7 @@ doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
 doc.save("pedido.pdf");
 
 }
+
 
 /* ============================= */
 /* LIMPAR */
