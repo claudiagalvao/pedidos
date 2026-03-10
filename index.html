@@ -11,68 +11,105 @@
         .container { max-width: 1000px; margin: auto; padding: 20px; }
         .banner-box { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-box img { width: 100%; height: auto; display: block; }
-        .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
         h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
         .grid-faturamento { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         label { display: block; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { padding: 10px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
+        input, select { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
         .filtros-box { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .busca-input { flex: 1; min-width: 250px; border: 2px solid #eee; padding: 12px; border-radius: 8px; font-size: 16px; }
         .btn-filtro { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #eee; font-weight: bold; }
         .btn-filtro.active { background: var(--primary); color: white; }
         .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; z-index: 5; }
         td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; }
         .img-produto { width: 45px; height: 45px; border-radius: 5px; object-fit: cover; background: #f9f9f9; vertical-align: middle; margin-right: 10px; }
         .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-        .qtd-input { width: 60px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; }
-        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
+        .qtd-input { width: 65px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 5px; font-weight: bold; }
+        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(108, 43, 217, 0.3); }
         .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
         .btn-pdf { background: var(--secondary); color: white; }
         .btn-whatsapp { background: var(--whatsapp); color: white; }
-        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         button:hover { filter: brightness(0.9); transform: translateY(-2px); }
+        .obrigatorio { border: 2px solid var(--secondary) !important; background: #fff5f5; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="banner-box"><img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="Crazy Fantasy"></div>
+    <div class="banner-box">
+        <img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="Crazy Fantasy Banner">
+    </div>
 
     <div class="form-box">
-        <h3>📄 Dados Fiscais / Nota Fiscal</h3>
+        <h3>📄 Dados para Nota Fiscal / Entrega</h3>
         <div class="grid-faturamento">
-            <div style="grid-column: span 2;"><label>Razão Social / Nome</label><input type="text" id="cli_nome"></div>
-            <div><label>CNPJ / CPF</label><input type="text" id="cli_doc"></div>
-            <div><label>Vendedora</label><input type="text" id="vendedora"></div>
-            <div><label>Forma de Entrega</label>
-                <select id="entrega"><option>Retirada</option><option>Sedex</option><option>PAC</option><option>Motoboy</option></select>
+            <div style="grid-column: span 2;">
+                <label>Razão Social / Nome Completo *</label>
+                <input type="text" id="cli_nome" placeholder="Nome do cliente">
             </div>
-            <div><label>Pagamento</label>
-                <select id="pagamento"><option>PIX</option><option>Boleto Omie</option><option>Cartão</option><option>Dinheiro</option></select>
+            <div>
+                <label>CNPJ / CPF *</label>
+                <input type="text" id="cli_doc" placeholder="000.000.000-00">
+            </div>
+            <div>
+                <label>Vendedora *</label>
+                <input type="text" id="vendedora" placeholder="Seu nome">
+            </div>
+            <div>
+                <label>Forma de Entrega</label>
+                <select id="entrega">
+                    <option>Retirada na Loja</option>
+                    <option>Correios (Sedex)</option>
+                    <option>Correios (PAC)</option>
+                    <option>Motoboy / Transportadora</option>
+                </select>
+            </div>
+            <div>
+                <label>Pagamento</label>
+                <select id="pagamento">
+                    <option>PIX</option>
+                    <option>Boleto Bancário (Omie)</option>
+                    <option>Cartão de Crédito</option>
+                    <option>Dinheiro / Débito</option>
+                </select>
             </div>
         </div>
     </div>
 
     <div class="form-box">
-        <h3>🛍️ Catálogo de Produtos</h3>
+        <h3>🛍️ Catálogo de Fantasias</h3>
         <div class="filtros-box">
-            <input type="text" id="busca" class="busca-input" placeholder="🔍 Buscar fantasia..." onkeyup="filtrar()">
+            <input type="text" id="busca" class="busca-input" placeholder="🔍 Digite o nome da fantasia..." onkeyup="filtrar()">
             <button class="btn-filtro active" onclick="setCat('todos', this)">Todos</button>
             <button class="btn-filtro" onclick="setCat('feminino', this)">Feminino</button>
             <button class="btn-filtro" onclick="setCat('masculino', this)">Masculino</button>
         </div>
+
         <div class="tabela-scroll">
             <table>
-                <thead><tr><th style="text-align:left; padding-left:20px;">Produto</th><th>Tam</th><th>Preço</th><th>Estoque</th><th>Qtd</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th style="text-align:left; padding-left:20px;">Produto</th>
+                        <th>Tam</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Sua Qtd</th>
+                    </tr>
+                </thead>
                 <tbody id="corpo-tabela"></tbody>
             </table>
         </div>
-        <div class="total-container">Total: R$ <span id="valor-total">0.00</span></div>
+
+        <div class="total-container">
+            Total: R$ <span id="valor-total">0.00</span>
+        </div>
+
         <div class="btn-group">
-            <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
-            <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar WhatsApp</button>
+            <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar Orçamento PDF</button>
+            <button class="btn-whatsapp" onclick="enviarWhatsApp()">🟢 Enviar WhatsApp</button>
         </div>
     </div>
 </div>
@@ -83,7 +120,7 @@
     let catAtiva = 'todos';
 
     const produtos = [
-        // MASCULINO (Filtrado das fotos)
+        // MASCULINO
         {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
         {n: "Astronauta", p: 199.90, t: "G", est: 2, c: "masculino"},
         {n: "Exército", p: 180.00, t: "M", est: 1, c: "masculino"},
@@ -96,7 +133,7 @@
         {n: "Pirata", p: 180.00, t: "G", est: 1, c: "masculino"},
         {n: "Woody", p: 189.99, t: "M", est: 1, c: "masculino"},
         {n: "Woody", p: 189.99, t: "G", est: 1, c: "masculino"},
-        // FEMININO (Filtrado das fotos)
+        // FEMININO
         {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2, c: "feminino"},
         {n: "Sininho", p: 99.90, t: "M", est: 1, c: "feminino"},
         {n: "Jessie", p: 129.90, t: "M", est: 1, c: "feminino"},
@@ -112,85 +149,14 @@
     function render() {
         const corpo = document.getElementById("corpo-tabela");
         corpo.innerHTML = "";
-        produtos.forEach(p => {
-            let precoDesc = p.p > 200 ? p.p * 0.9 : p.p;
+        produtos.forEach((p, i) => {
+            let temDesconto = p.p > 200;
+            let pFinal = temDesconto ? p.p * 0.9 : p.p;
+            
+            let precoHtml = temDesconto ? 
+                `<span style="text-decoration:line-through;color:#999;font-size:12px">R$ ${p.p.toFixed(2)}</span><br><b>R$ ${pFinal.toFixed(2)}</b> <small style="color:red">-10%</small>` : 
+                `<b>R$ ${p.p.toFixed(2)}</b>`;
+
             corpo.innerHTML += `
                 <tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
-                    <td style="text-align:left; padding-left:20px;"><img src="${imgPadrao}" class="img-produto"> ${p.n}</td>
-                    <td><strong>${p.t}</strong></td>
-                    <td>R$ ${precoDesc.toFixed(2)}</td>
-                    <td><span class="estoque-badge">${p.est} un.</span></td>
-                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="validar(this)"></td>
-                </tr>`;
-        });
-    }
-
-    function validar(input) {
-        if(parseInt(input.value) > parseInt(input.max)) { 
-            alert("Estoque insuficiente!"); 
-            input.value = input.max; 
-        }
-        let total = 0;
-        document.querySelectorAll(".linha-p").forEach((linha, i) => {
-            let q = parseInt(linha.querySelector(".qtd-input").value) || 0;
-            let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
-            total += q * p;
-        });
-        document.getElementById("valor-total").innerText = total.toFixed(2);
-    }
-
-    function filtrar() {
-        let busca = document.getElementById("busca").value.toLowerCase();
-        document.querySelectorAll(".linha-p").forEach(l => {
-            let match = l.dataset.nome.includes(busca) && (catAtiva === 'todos' || l.dataset.cat === catAtiva);
-            l.style.display = match ? "" : "none";
-        });
-    }
-
-    function setCat(cat, btn) {
-        catAtiva = cat;
-        document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        filtrar();
-    }
-
-    function gerarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFont("helvetica", "bold");
-        doc.text(empresa.nome, 105, 15, {align:"center"});
-        doc.setFontSize(10);
-        doc.text(`CNPJ: ${empresa.cnpj} | ${empresa.end}`, 105, 22, {align:"center"});
-        doc.line(15, 25, 195, 25);
-        doc.text(`Cliente: ${document.getElementById("cli_nome").value}`, 15, 35);
-        doc.text(`Pagamento: ${document.getElementById("pagamento").value}`, 150, 35);
-        doc.text("Item", 15, 45); doc.text("Qtd", 140, 45); doc.text("Subtotal", 170, 45);
-        let y = 52;
-        document.querySelectorAll(".linha-p").forEach((l, i) => {
-            let q = l.querySelector(".qtd-input").value;
-            if(q > 0) {
-                let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
-                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
-                doc.text(q, 142, y);
-                doc.text((q*p).toFixed(2), 172, y);
-                y += 8;
-            }
-        });
-        doc.text(`TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 190, y+10, {align:"right"});
-        doc.save("orcamento_crazy.pdf");
-    }
-
-    function enviarWhatsApp() {
-        let msg = `*CRAZY FANTASY - NOVO PEDIDO*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
-        document.querySelectorAll(".linha-p").forEach((l, i) => {
-            let q = l.querySelector(".qtd-input").value;
-            if(q > 0) msg += `• ${produtos[i].n} (${produtos[i].t}) x${q}\n`;
-        });
-        msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-    }
-
-    render();
-</script>
-</body>
-</html>
+                    <td style="text-align:left; padding-left:20px;"><img src="${imgPadrao}" class="img-produto">${
