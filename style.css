@@ -1,4 +1,4 @@
-/* RESET E ESTRUTURA */
+/* RESET GERAL */
 * {
     margin: 0;
     padding: 0;
@@ -11,60 +11,57 @@ body {
     color: #333;
 }
 
+/* O segredo do banner está aqui */
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 30px 20px; /* Mais respiro no topo já que não tem banner */
+    padding: 0 20px 20px 20px; /* Mantém respiro nas laterais para o conteúdo */
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
+    padding: 0;
 }
 
-/* BARRA DE INFO VIRA O DESTAQUE DO TOPO */
+/* BANNER: Técnica de Margem Negativa para ignorar o padding do container */
+.bannerTopo {
+    width: calc(100% + 40px); /* Aumenta a largura para compensar os 20px de cada lado */
+    margin-left: -20px;       /* Puxa 20px para a esquerda exatamente para a borda */
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    border-radius: 0 0 15px 15px; /* Arredonda apenas embaixo para um visual premium */
+}
+
 .barraInfo {
-    background: linear-gradient(135deg, #2f3242, #44495e);
-    color: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 25px;
+    background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    letter-spacing: 0.5px;
 }
 
-/* MENU DE CATEGORIAS */
-#menuCategorias {
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
+/* BOTÕES DE CATEGORIA */
+#menuCategorias { margin-bottom: 15px; }
 #menuCategorias button {
-    background: white;
+    background: #e5e7ea;
     color: #444;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 8px 18px;
+    border: none;
+    border-radius: 18px;
+    padding: 8px 16px;
     font-size: 13px;
     cursor: pointer;
-    transition: 0.3s;
+    margin: 4px;
 }
 
-#menuCategorias button:hover {
-    background: #2f3242;
-    color: white;
-}
-
-/* CARDS DE PRODUTO */
+/* CARDS E ELEMENTOS INTERNOS */
 .gridProdutos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
 }
 
@@ -72,14 +69,13 @@ body {
     background: white;
     padding: 25px;
     border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid #f0f0f0;
 }
 
-/* SELO E CÂMERA COM DISTANCIAMENTO */
+/* SELO: Posicionado para não sufocar o nome */
 .badgeVendido {
     position: absolute;
     top: 15px;
@@ -88,67 +84,56 @@ body {
     color: white;
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
 }
 
+/* CÂMERA: Restaurada no topo direito */
 .camera-link {
     position: absolute;
-    top: 12px;
+    top: 15px;
     right: 15px;
     text-decoration: none;
-    font-size: 20px;
-    opacity: 0.7;
+    font-size: 18px;
+    filter: grayscale(1);
     transition: 0.2s;
 }
-
-.camera-link:hover { opacity: 1; transform: scale(1.1); }
+.camera-link:hover { filter: grayscale(0); }
 
 .produto h3 {
-    margin-top: 35px; /* Espaço para selo/câmera */
+    margin-top: 25px; /* Cria o distanciamento do selo/câmera */
     font-size: 16px;
-    color: #222;
-    min-height: 40px;
+    margin-bottom: 10px;
 }
 
-.precoB2B { 
-    font-size: 22px; 
-    font-weight: 800; 
-    color: #27d266; 
-    margin: 10px 0; 
-}
+.precoB2B { font-size: 18px; font-weight: 700; color: #000; }
 
 .progressivo-card {
     font-size: 11px;
     color: #666;
-    background: #f9f9f9;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    border: 1px dashed #ddd;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    line-height: 1.5;
 }
 
-.estoque-card { 
-    font-size: 12px; 
-    color: #888; 
-    margin-bottom: 15px; 
-}
+.estoque-card { font-size: 12px; color: #555; margin-bottom: 10px; }
 
 /* CARRINHO */
 .carrinho {
     flex: 1;
     background: #2f3242;
     color: white;
-    padding: 25px;
-    min-width: 350px;
+    padding: 20px;
+    min-width: 340px;
     position: sticky;
     top: 20px;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border-radius: 15px;
 }
 
 @media (max-width: 1000px) {
-    .container { flex-direction: column; padding: 15px; }
-    .carrinho { position: static; width: 100%; margin-top: 25px; }
+    .container { flex-direction: column; padding: 0 10px; }
+    .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
+    .carrinho { position: static; width: 100%; }
 }
