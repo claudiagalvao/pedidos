@@ -31,7 +31,10 @@ fetch("produtos.csv")
             produtos.push({
                 categoria: c[0],
                 nome: c[1],
+                variacao: c[2],
                 preco: parseFloat(c[3]),
+                link: c[4],
+                sku: c[5],
                 estoque: parseInt(c[6]),
                 vendas: Math.floor(Math.random() * 100) // Simulação para o selo
             });
@@ -71,12 +74,14 @@ function renderProdutos(lista) {
         card.className = "produto";
         card.innerHTML = `
             ${selo}
-            <h3>${p.nome}</h3>
-            <div style="text-decoration:line-through; color:#888; font-size:12px">R$ ${p.preco.toFixed(2)}</div>
+            
+            <a href="${p.link}" target="_blank" class="camera-icon" title="Ver detalhes do produto">📸</a>
+
+            <h3 style="margin-top: 30px;">${p.nome}</h3> <div style="text-decoration:line-through; color:#888; font-size:12px">R$ ${p.preco.toFixed(2)}</div>
             <div class="precoB2B">R$ ${p10}</div>
             
             <div class="progressivo-card">
-                <strong>Descontos Progressivos:</strong><br>
+                <strong>Tabela de Descontos:</strong><br>
                 10% (R$ 200+) → R$ ${p10}<br>
                 12% (R$ 500+) → R$ ${p12}<br>
                 15% (R$ 1000+) → R$ ${p15}
@@ -84,9 +89,9 @@ function renderProdutos(lista) {
 
             <div class="estoque-card">Estoque: <strong>${p.estoque}</strong></div>
 
-            <input type="number" value="0" min="0" style="width:60px; padding:6px; margin-top:10px; text-align:center;">
+            <input type="number" value="0" min="0" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; text-align:center;">
             <button class="btnAdd" style="background:#2f3242; color:white; border:none; padding:10px; border-radius:8px; margin-top:10px; cursor:pointer;" ${p.estoque <= 0 ? 'disabled' : ''}>
-                ${p.estoque <= 0 ? 'Esgotado' : 'Adicionar'}
+                ${p.estoque <= 0 ? 'Sem estoque' : 'Adicionar'}
             </button>
         `;
 
@@ -114,7 +119,7 @@ function atualizarCarrinho() {
         itens += item.qtd;
         listaPedido.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
             <span>${item.qtd}x ${item.nome}</span>
-            <button onclick="removerItem(${index})" style="background:none; color:red; border:none; cursor:pointer;">✕</button>
+            <button onclick="removerItem(${index})" style="background:none; color:#ff6b6b; border:none; cursor:pointer">✕</button>
         </div>`;
     });
 
@@ -122,6 +127,7 @@ function atualizarCarrinho() {
     const totalFinal = total * (1 - desc);
     const economia = totalOriginal - totalFinal;
 
+    // FORMATAÇÃO FINANCEIRA CORRIGIDA (2 CASAS)
     totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     economiaEl.innerText = economia.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     contadorItens.innerText = `(${itens} itens)`;
