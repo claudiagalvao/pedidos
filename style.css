@@ -20,6 +20,8 @@ gap:25px;
 padding:20px;
 }
 
+/* CATALOGO */
+
 .catalogo{
 flex:3;
 }
@@ -43,6 +45,10 @@ margin-bottom:12px;
 
 /* MENU CATEGORIAS */
 
+#menuCategorias{
+margin-bottom:10px;
+}
+
 #menuCategorias button{
 background:#e5e7eb;
 border:none;
@@ -61,12 +67,12 @@ background:#d4d6db;
 #busca{
 width:100%;
 padding:10px;
-margin:10px 0 18px 0;
+margin-bottom:18px;
 border-radius:8px;
 border:1px solid #ccc;
 }
 
-/* GRID */
+/* GRID PRODUTOS */
 
 .gridProdutos{
 display:grid;
@@ -77,20 +83,13 @@ gap:18px;
 /* CARD PRODUTO */
 
 .produto{
-
 background:white;
 padding:18px;
-
 border-radius:14px;
-
 box-shadow:0 4px 12px rgba(0,0,0,0.08);
-
 display:flex;
 flex-direction:column;
-
 }
-
-/* TITULO */
 
 .produto h3{
 font-size:15px;
@@ -132,70 +131,48 @@ margin-top:6px;
 /* LINHA DE AÇÕES */
 
 .linhaAcoes{
-
 display:flex;
 align-items:center;
 justify-content:space-between;
-
 gap:8px;
-
 margin-top:10px;
-
 }
 
 /* CAMERA */
 
 .camera-link{
-
 font-size:22px;
-
 width:34px;
 height:34px;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 border-radius:50%;
-
 background:#f2f4f7;
-
 text-decoration:none;
-
 animation:pulseCamera 3s infinite;
-
 }
 
 .camera-link:hover{
 transform:scale(1.15);
 }
 
-/* ANIMAÇÃO */
-
 @keyframes pulseCamera{
-
 0%{transform:scale(1)}
 10%{transform:scale(1.15)}
 20%{transform:scale(1)}
 100%{transform:scale(1)}
-
 }
 
 /* SELO */
 
 .badgeVendido{
-
 background:#ff9800;
 color:white;
-
 padding:3px 7px;
-
 border-radius:5px;
-
 font-size:10px;
-
 white-space:nowrap;
-
 }
 
 /* BOTÃO */
@@ -216,36 +193,22 @@ background:#44475a;
 /* CARRINHO */
 
 .carrinho{
-
 flex:1;
-
 background:#2f3242;
 color:white;
-
 padding:18px;
-
 border-radius:14px;
-
 position:sticky;
 top:20px;
-
 max-height:calc(100vh - 40px);
 overflow-y:auto;
-
 }
 
-/* PULSE CARRINHO */
+/* TOTAL */
 
-.carrinho.pulse{
-animation:pulseCart 0.4s;
-}
-
-@keyframes pulseCart{
-
-0%{transform:scale(1)}
-50%{transform:scale(1.05)}
-100%{transform:scale(1)}
-
+.total{
+margin-top:10px;
+font-size:16px;
 }
 
 /* BARRA PROGRESSO */
@@ -270,17 +233,13 @@ width:0%;
 margin-top:8px;
 }
 
-/* LISTA DE PRODUTOS */
+/* LISTA PEDIDO */
 
 .listaPedido{
-
 margin-top:14px;
 padding-top:12px;
-
 border-top:1px solid rgba(255,255,255,0.2);
-
 font-size:13px;
-
 }
 
 /* FORM */
@@ -288,19 +247,15 @@ font-size:13px;
 .formPedido input,
 .formPedido select,
 .formPedido textarea{
-
 width:100%;
 padding:8px;
 border-radius:6px;
 border:none;
-
 margin-bottom:6px;
-
 font-size:12px;
-
 }
 
-/* LINHAS FORM */
+/* LINHAS */
 
 .linha2{
 display:grid;
@@ -358,7 +313,14 @@ color:#cfd3ff;
 .footer{
 background:#2f3242;
 color:white;
-text-align:center;
-padding:30px;
 margin-top:40px;
+padding:25px;
+}
+
+.footerContent{
+max-width:1200px;
+margin:auto;
+display:flex;
+justify-content:space-between;
+font-size:13px;
 }
