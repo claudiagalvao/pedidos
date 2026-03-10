@@ -10,6 +10,8 @@
 
 <link rel="stylesheet" href="style.css">
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
@@ -35,6 +37,7 @@
 <div id="produtos" class="gridProdutos"></div>
 
 </div>
+
 
 
 <div class="carrinho">
@@ -77,14 +80,13 @@ Total B2B: R$ <span id="total">0</span>
 
 <input id="email" placeholder="Email">
 
-<input id="endereco" placeholder="Endereço completo">
+<input id="endereco" placeholder="Endereço">
 
 <input id="cidade" placeholder="Cidade">
 
 <input id="estado" placeholder="Estado">
 
 <input id="cep" placeholder="CEP">
-
 
 <select id="entrega">
 
@@ -95,17 +97,14 @@ Total B2B: R$ <span id="total">0</span>
 
 </select>
 
-
 <select id="pagamento">
 
 <option value="">Forma de pagamento</option>
 <option>Pix</option>
 <option>Boleto</option>
 <option>Cartão</option>
-<option>Transferência</option>
 
 </select>
-
 
 <textarea id="observacoes" placeholder="Observações"></textarea>
 
@@ -119,7 +118,7 @@ Enviar por Email
 </button>
 
 <button class="btnWhats" onclick="enviarWhatsApp()">
-Enviar por WhatsApp
+WhatsApp
 </button>
 
 <button class="btnPdf" onclick="gerarPDF()">
@@ -133,40 +132,6 @@ Limpar
 </div>
 
 </div>
-
-</div>
-
-<div class="footer">
-
-<b>Crazy Fantasy B2B</b>
-
-<br><br>
-
-Desconto progressivo
-
-<br>
-
-até R$200 → 10%
-
-<br>
-
-até R$500 → 12%
-
-<br>
-
-até R$1000 → 15%
-
-<br><br>
-
-Pagamento: PIX | Boleto | Cartão
-
-<br>
-
-Frete calculado após envio
-
-<br>
-
-Validade do pedido: 48h
 
 </div>
 
