@@ -1,83 +1,40 @@
-/* RESET */
-
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+font-family:Arial;
 }
 
 body{
 background:#f5f6fa;
-color:#333;
 padding:20px;
 }
 
+.container{
+max-width:1400px;
+margin:auto;
+}
 
-/* LAYOUT TOPO */
-
-.topo{
+.catalogo{
 display:grid;
-grid-template-columns: 1fr 360px;
+grid-template-columns:1fr 360px;
 gap:20px;
 align-items:start;
 }
 
-
-/* BANNER */
-
-.banner{
-width:100%;
-}
-
 .banner img{
 width:100%;
-height:auto;
-display:block;
-border-radius:12px;
+border-radius:10px;
 }
 
-
-/* BARRA INFORMATIVA */
-
-.info-bar{
+.barraInfo{
 margin-top:15px;
 background:linear-gradient(90deg,#7b2ff7,#f107a3);
 color:white;
 padding:12px;
 border-radius:8px;
-text-align:center;
 font-weight:bold;
 }
-
-
-/* MENU CATEGORIAS */
-
-.categorias{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin:20px 0;
-}
-
-.categoria-btn{
-padding:8px 14px;
-background:#fff;
-border:1px solid #ddd;
-border-radius:20px;
-cursor:pointer;
-font-size:14px;
-transition:0.2s;
-}
-
-.categoria-btn:hover{
-background:#7b2ff7;
-color:white;
-border-color:#7b2ff7;
-}
-
-
-/* BUSCA */
 
 .busca{
 margin:15px 0;
@@ -88,45 +45,45 @@ width:100%;
 padding:10px;
 border-radius:8px;
 border:1px solid #ccc;
-font-size:14px;
 }
 
+.categorias{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:15px;
+}
 
-/* PRODUTOS GRID */
+.categorias button{
+padding:6px 12px;
+border-radius:20px;
+border:1px solid #ccc;
+background:white;
+cursor:pointer;
+}
 
 .produtos{
 display:grid;
-grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
 gap:18px;
+margin-top:20px;
 }
-
-
-/* CARD PRODUTO */
 
 .card{
 background:white;
-border-radius:10px;
 padding:15px;
+border-radius:10px;
 box-shadow:0 4px 10px rgba(0,0,0,0.05);
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-transition:0.2s;
-}
-
-.card:hover{
-transform:translateY(-4px);
-box-shadow:0 6px 14px rgba(0,0,0,0.08);
 }
 
 .card h3{
-font-size:16px;
+font-size:15px;
 margin-bottom:8px;
 }
 
 .preco-original{
 text-decoration:line-through;
-color:#888;
+color:#999;
 font-size:13px;
 }
 
@@ -134,32 +91,18 @@ font-size:13px;
 color:#27ae60;
 font-weight:bold;
 font-size:18px;
-margin:4px 0;
-}
-
-.estoque{
-font-size:12px;
-color:#666;
-margin-bottom:10px;
 }
 
 .add-btn{
+margin-top:10px;
 background:#7b2ff7;
 color:white;
 border:none;
 padding:8px;
 border-radius:6px;
 cursor:pointer;
-font-size:14px;
-transition:0.2s;
+width:100%;
 }
-
-.add-btn:hover{
-background:#5e1ed6;
-}
-
-
-/* CARRINHO */
 
 .carrinho{
 background:#0d1b2a;
@@ -168,35 +111,13 @@ padding:20px;
 border-radius:10px;
 position:sticky;
 top:20px;
-height:fit-content;
 }
-
-.carrinho h2{
-font-size:18px;
-margin-bottom:10px;
-}
-
-.total{
-font-weight:bold;
-margin:8px 0;
-}
-
-.economia{
-color:#2ecc71;
-font-size:14px;
-margin-bottom:10px;
-}
-
-
-/* BARRA PROGRESSO */
 
 .progress{
-width:100%;
 height:8px;
 background:#2c3e50;
 border-radius:4px;
-overflow:hidden;
-margin-bottom:10px;
+margin:10px 0;
 }
 
 .progress-bar{
@@ -205,61 +126,9 @@ background:#2ecc71;
 width:0%;
 }
 
-
-/* ITENS CARRINHO */
-
 .itens{
 margin:10px 0;
-max-height:200px;
-overflow-y:auto;
 font-size:14px;
-}
-
-.item{
-display:flex;
-justify-content:space-between;
-margin-bottom:6px;
-}
-
-.remove-btn{
-background:none;
-border:none;
-color:#ff6b6b;
-cursor:pointer;
-font-size:12px;
-}
-
-
-/* FORMULÁRIO */
-
-.form{
-margin-top:15px;
-}
-
-.form input,
-.form textarea,
-.form select{
-width:100%;
-padding:8px;
-margin-bottom:8px;
-border-radius:6px;
-border:none;
-font-size:13px;
-}
-
-.form textarea{
-resize:none;
-height:60px;
-}
-
-
-/* BOTÕES AÇÃO */
-
-.acoes{
-display:flex;
-flex-direction:column;
-gap:8px;
-margin-top:10px;
 }
 
 .btn{
@@ -268,39 +137,11 @@ border:none;
 border-radius:6px;
 cursor:pointer;
 font-weight:bold;
+width:100%;
+margin-top:5px;
 }
 
-.btn-whats{
-background:#25d366;
-color:white;
-}
-
-.btn-pdf{
-background:#3498db;
-color:white;
-}
-
-.btn-copiar{
-background:#f39c12;
-color:white;
-}
-
-.btn-limpar{
-background:#e74c3c;
-color:white;
-}
-
-
-/* RESPONSIVO */
-
-@media(max-width:1000px){
-
-.topo{
-grid-template-columns:1fr;
-}
-
-.carrinho{
-position:relative;
-}
-
-}
+.btn-whats{background:#25d366;color:white}
+.btn-pdf{background:#3498db;color:white}
+.btn-copiar{background:#f39c12;color:white}
+.btn-limpar{background:#e74c3c;color:white}
