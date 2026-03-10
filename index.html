@@ -1,102 +1,400 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
-<title>Crazy Fantasy B2B</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+<title>Crazy Fantasy - Catálogo de Produtos</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f5f6fb;
+color:#333;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+/* BANNER */
+
+
+
+.banner-box img{
+width:100%;
+height:auto;
+display:block;
+border-radius:12px;
+}
+
+/* FORM */
+
+.form-box{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:20px;
+}
+
+input{
+padding:12px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+/* TABELA */
+
+.tabela-container{
+max-height:420px;
+overflow-y:auto;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#d8cff8;
+padding:12px;
+}
+
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #eee;
+}
+
+tr:nth-child(even){
+background:#fafafa;
+}
+
+.qtd{
+width:60px;
+}
+
+/* LINHAS COM DESCONTO */
+
+.desconto{
+background:#fff2f4;
+}
+
+.preco-antigo{
+text-decoration:line-through;
+color:#999;
+}
+
+.preco-desc{
+color:#e60023;
+font-weight:bold;
+}
+
+.badge{
+background:#e60023;
+color:white;
+font-size:11px;
+padding:4px 6px;
+border-radius:6px;
+margin-left:6px;
+}
+
+/* TOTAL */
+
+.total{
+font-size:22px;
+text-align:right;
+margin-top:20px;
+font-weight:bold;
+color:#6c2bd9;
+}
+
+/* BOTÕES */
+
+.buttons{
+margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.limpar{background:#444;color:white;}
+.pdf{background:#ff4d6d;color:white;}
+.enviar{background:#00c897;color:white;}
+
+@media(max-width:700px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
 </head>
 
 <body>
 
+<div class="banner-box">
+<img src="banner.png">
+</div>
+
 <div class="container">
 
-<!-- CATALOGO -->
-<div class="catalogo">
+<h2 style="text-align:center;">Pedido para Parceiros & Revendedores</h2>
 
-<div class="banner">
-<img src="banner.jpg">
-</div>
+<form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
 
-<div class="barraInfo">
-🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
-</div>
+<input type="hidden" name="pedido" id="pedido_email">
 
-<input class="busca" placeholder="🔎 Buscar produto..." onkeyup="buscarProduto(this.value)">
+<div class="form-box">
 
-<div class="gridProdutos" id="listaProdutos"></div>
+<div class="grid">
 
-</div>
+<input name="empresa" placeholder="Empresa" required>
+<input name="cnpj" placeholder="CNPJ">
 
-<!-- CARRINHO -->
-<div class="carrinho">
+<input name="contato" placeholder="Nome do contato" required>
+<input name="telefone" placeholder="Telefone">
 
-<h2>Pedido (<span id="contadorItens">0</span> itens)</h2>
-
-<div class="totais">
-<div>Total B2B: <b id="totalPedido">0</b></div>
-<div class="economia">💰 Economia: <span id="economia">0</span></div>
-</div>
-
-<div class="progressBar">
-<div id="progress"></div>
-</div>
-
-<div id="faltam"></div>
-
-<div id="listaCarrinho"></div>
-
-<h3>Dados do Cliente</h3>
-
-<input id="empresa" placeholder="Empresa">
-<input id="nome" placeholder="Nome">
-<input id="email" placeholder="Email">
-
-<button class="btnEmail">Enviar Pedido por Email</button>
-<button class="btnWhats">Enviar por WhatsApp</button>
-<button class="btnPdf">Gerar PDF do Pedido</button>
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
+<input name="email" placeholder="Email" required>
 
 </div>
 
+<div class="tabela-container">
+
+<table id="tabela">
+
+<tr>
+<th>Produto</th>
+<th>Preço</th>
+<th>Preço c/ desconto</th>
+<th>Qtd</th>
+<th>Total</th>
+</tr>
+
+</table>
+
 </div>
 
-<footer class="footer">
-
-<div class="footerGrid">
-
-<div>
-<b>Crazy Fantasy B2B</b><br>
-Portal exclusivo para parceiros
+<div class="total">
+Total: R$ <span id="total">0.00</span>
 </div>
 
-<div>
-<b>Descontos</b><br>
-até R$200 → 10%<br>
-até R$500 → 12%<br>
-até R$1000 → 15%
-</div>
+<div class="buttons">
 
-<div>
-<b>Pagamento</b><br>
-PIX<br>
-Boleto<br>
-Cartão
-</div>
+<button type="button" class="limpar" onclick="limpar()">Limpar</button>
 
-<div>
-<b>Pedido</b><br>
-Frete calculado após envio<br>
-Validade 48h
+<button type="button" class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+
+<button type="submit" class="enviar" onclick="prepararEmail()">Enviar Pedido</button>
+
 </div>
 
 </div>
 
-</footer>
+</form>
 
-<script src="script.js"></script>
+</div>
+
+<script>
+
+const produtos=[
+
+["Arlequina",180],
+["Arlequina de Casaco",180],
+["Mulher Maravilha",125],
+["Barbie",125],
+["Sininho",99.9],
+["Unicornio c/ Led",199.99],
+["Unicornio s/ Led",189.99],
+["Jessie",129.9],
+["Jasmine",120],
+["Doutora",149.9],
+["Medica",180],
+["Astronauta",199.9],
+["Cruela",140],
+["Elsa",269.9],
+["Rapunzel",269.9],
+["Cinderela",269.9],
+["Bela Adormecida",269.9],
+["Moana",269.9],
+["Branca de Neve",269.9],
+["Bela",269.9],
+["Alice",120],
+["Policial",130],
+["Aurora Basica",209.99],
+["Aurora Luxo",299.99],
+["Cinderela Pop",129.99],
+["Bela Pop",129.99],
+["Bela Luxo",299.99],
+["Rapunzel Basica",179.99],
+["Rapunzel Luxo",299.99],
+["Cinderela Basica",179.99],
+["Cinderela Luxo",299.99],
+["Mirabel",239.99],
+["Lady Bug",199.99],
+["Jasmine Luxo",239.99],
+["Mulher Maravilha Luxo",209.99],
+["Ana Pop",109.99],
+["Ana Luxo",269.99],
+["Minnie",239.99]
+
+]
+
+const tabela=document.getElementById("tabela")
+
+produtos.forEach(p=>{
+
+let preco=p[1]
+let desconto=preco>200?preco*0.9:preco
+let temDesconto=preco>200
+
+tabela.innerHTML+=`
+
+<tr class="${temDesconto?'desconto':''}">
+
+<td>${p[0]}</td>
+
+<td class="${temDesconto?'preco-antigo':''}">
+${preco.toFixed(2)}
+</td>
+
+<td class="preco-desc">
+${desconto.toFixed(2)}
+${temDesconto?'<span class="badge">10% OFF</span>':''}
+</td>
+
+<td>
+<input type="number" min="0" class="qtd" onchange="calcular()">
+</td>
+
+<td class="subtotal">0.00</td>
+
+</tr>
+
+`
+
+})
+
+function calcular(){
+
+let total=0
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i===0)return
+
+let preco=parseFloat(linha.children[2].innerText)
+
+let qtd=parseInt(linha.querySelector(".qtd").value)||0
+
+let subtotal=preco*qtd
+
+linha.querySelector(".subtotal").innerText=subtotal.toFixed(2)
+
+total+=subtotal
+
+})
+
+document.getElementById("total").innerText=total.toFixed(2)
+
+}
+
+function limpar(){
+
+document.querySelectorAll(".qtd").forEach(i=>i.value="")
+document.querySelectorAll(".subtotal").forEach(i=>i.innerText="0.00")
+document.getElementById("total").innerText="0.00"
+
+}
+
+function prepararEmail(){
+
+let resumo="Pedido Crazy Fantasy\n\n"
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i===0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+resumo+=produto+" - "+qtd+" unidades\n"
+}
+
+})
+
+resumo+="\nTOTAL: R$ "+document.getElementById("total").innerText
+
+document.getElementById("pedido_email").value=resumo
+
+}
+
+function gerarPDF(){
+
+const {jsPDF}=window.jspdf
+
+let pdf=new jsPDF()
+
+pdf.text("Pedido Crazy Fantasy",20,20)
+
+let y=40
+
+document.querySelectorAll("#tabela tr").forEach((linha,i)=>{
+
+if(i===0)return
+
+let produto=linha.children[0].innerText
+let qtd=linha.querySelector(".qtd").value
+
+if(qtd>0){
+
+pdf.text(produto+" - "+qtd,20,y)
+
+y+=10
+
+}
+
+})
+
+pdf.text("Total: R$ "+document.getElementById("total").innerText,20,y+10)
+
+pdf.save("pedido-crazyfantasy.pdf")
+
+}
+
+</script>
 
 </body>
 </html>
