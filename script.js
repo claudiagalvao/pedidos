@@ -64,36 +64,21 @@ function renderProdutos(lista) {
     produtosDiv.innerHTML = "";
     lista.forEach(p => {
         const desc10 = p.preco * 0.90;
-        const desc12 = p.preco * 0.88;
-        const desc15 = p.preco * 0.85;
-        const selo = p.vendas > 70 ? `<div class="badgeVendido">🔥 Mais vendido</div>` : "";
-
         const card = document.createElement("div");
         card.className = "produto";
         card.innerHTML = `
-            ${selo}
-            <div class="camera"><a href="${p.link}" target="_blank" style="text-decoration:none">📷</a></div>
             <h3>${p.nome}</h3>
-            <div style="text-decoration:line-through; color:#888">R$ ${p.preco.toFixed(2)}</div>
-            <div class="precoB2B">B2B: R$ ${desc10.toFixed(2)}</div>
-            <div class="progressivo">
-                10% → R$ ${desc10.toFixed(2)}<br>
-                12% → R$ ${desc12.toFixed(2)}<br>
-                15% → R$ ${desc15.toFixed(2)}
-            </div>
-            <div style="font-size:12px; margin-top:5px">Estoque: ${p.estoque}</div>
-            <input type="number" value="0" min="0">
-            <button class="btnAdd" ${p.estoque <= 0 ? "disabled" : ""}>
-                ${p.estoque <= 0 ? "Esgotado" : "Adicionar"}
-            </button>
+            <div style="text-decoration:line-through; color:#888; font-size: 13px;">R$ ${p.preco.toFixed(2)}</div>
+            <div class="precoB2B">R$ ${desc10.toFixed(2)}</div>
+            <div class="progressivo">Até 15% de desconto progressivo</div>
+            <input type="number" value="0" min="0" style="width: 60px; padding: 5px; margin-top: 10px;">
+            <button class="btnAdd" ${p.estoque <= 0 ? "disabled" : ""}>Adicionar</button>
         `;
 
         card.querySelector("button").onclick = () => {
             const input = card.querySelector("input");
             const qtd = parseInt(input.value);
             if (qtd <= 0) return alert("Informe a quantidade");
-            if (p.estoque < qtd) return alert("Estoque insuficiente");
-
             carrinho.push({ nome: p.nome, preco: p.preco, qtd: qtd });
             total += p.preco * qtd;
             totalOriginal += p.preco * qtd;
@@ -120,7 +105,7 @@ function atualizarCarrinho() {
     const totalFinal = total * (1 - desc);
     const economia = totalOriginal - totalFinal;
 
-    // TRAVA EM 2 CASAS DECIMAIS (PADRÃO B2B)
+    // FORMATAÇÃO TRAVADA EM 2 CASAS DECIMAIS (PADRÃO BRASILEIRO)
     totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     economiaEl.innerText = economia.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -128,7 +113,7 @@ function atualizarCarrinho() {
     barra.style.width = Math.min(progresso, 100) + "%";
 
     if (total < pedidoMinimo) {
-        msgMinimo.innerHTML = `<small>Faltam R$ ${(pedidoMinimo - total).toFixed(2)} para o mínimo</small>`;
+        msgMinimo.innerHTML = `<small>Faltam R$ ${(pedidoMinimo - total).toFixed(2).replace('.', ',')} para o mínimo</small>`;
     } else {
         msgMinimo.innerHTML = "<small>Pedido mínimo atingido! 🎉</small>";
     }
@@ -139,28 +124,4 @@ function removerItem(index) {
     totalOriginal -= carrinho[index].preco * carrinho[index].qtd;
     carrinho.splice(index, 1);
     atualizarCarrinho();
-}
-
-function limparCarrinho() {
-    carrinho = []; total = 0; totalOriginal = 0;
-    atualizarCarrinho();
-}
-
-function enviarWhatsApp() {
-    if (total < pedidoMinimo) return alert("Pedido mínimo de R$200 não atingido");
-    let texto = `*Pedido Crazy Fantasy B2B*\n\n`;
-    carrinho.forEach(i => texto += `• ${i.qtd}x ${i.nome}\n`);
-    texto += `\n*Total: R$ ${totalEl.innerText}*`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
-}
-
-function gerarPDF() {
-    if (total < pedidoMinimo) return alert("Pedido mínimo de R$200 não atingido");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
-    let y = 20;
-    carrinho.forEach(i => { doc.text(`${i.qtd}x ${i.nome}`, 10, y); y += 10; });
-    doc.text(`Total: R$ ${totalEl.innerText}`, 10, y + 10);
-    doc.save("pedido.pdf");
 }
