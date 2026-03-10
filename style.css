@@ -1,5 +1,3 @@
-/* RESET */
-
 *{
 margin:0;
 padding:0;
@@ -7,426 +5,198 @@ box-sizing:border-box;
 }
 
 body{
-
-font-family:'Inter',Arial,sans-serif;
+font-family:'Inter',Arial;
 background:#eef1f4;
 color:#333;
-
 }
 
-/* CONTAINER PRINCIPAL */
-
 .container{
-
 display:flex;
 max-width:1250px;
-margin:0 auto;
-padding:0 20px 20px 20px;
+margin:auto;
 gap:25px;
-align-items:flex-start;
-
+padding:20px;
 }
 
 .catalogo{
-
 flex:3;
-
 }
-
-/* BANNER */
 
 .bannerTopo{
-
 width:100%;
-display:block;
-margin-bottom:15px;
-border-radius:0 0 12px 12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
-
+margin-bottom:20px;
+border-radius:12px;
 }
 
-/* BARRA INFO */
-
 .barraInfo{
-
-background:linear-gradient(135deg,#d5d8dc,#bfc3c9);
+background:#dfe3e8;
 padding:12px;
 border-radius:10px;
 margin-bottom:20px;
 text-align:center;
-font-weight:500;
-
-}
-
-/* MENU CATEGORIAS */
-
-#menuCategorias{
-
-margin-bottom:15px;
-
 }
 
 #menuCategorias button{
-
 background:#e5e5e7;
-color:#444;
 border:none;
-border-radius:18px;
 padding:8px 16px;
-font-size:13px;
-cursor:pointer;
+border-radius:18px;
 margin:4px;
-transition:0.2s;
-
+cursor:pointer;
 }
-
-#menuCategorias button:hover{
-
-background:#cfd3d8;
-
-}
-
-/* BUSCA */
 
 #busca{
-
 width:100%;
 padding:12px;
+margin:20px 0;
 border-radius:10px;
 border:1px solid #ddd;
-margin-bottom:20px;
-
 }
 
-/* GRID PRODUTOS */
-
 .gridProdutos{
-
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:20px;
-
 }
-
-/* CARD PRODUTO */
 
 .produto{
-
 background:white;
-padding:24px;
+padding:22px;
 border-radius:16px;
-box-shadow:0 10px 20px rgba(0,0,0,0.08);
+box-shadow:0 8px 18px rgba(0,0,0,0.08);
 position:relative;
-transition:0.25s;
-display:flex;
-flex-direction:column;
-
 }
-
-.produto:hover{
-
-transform:translateY(-5px);
-
-}
-
-/* SELO */
-
-.badgeVendido{
-
-position:absolute;
-top:14px;
-left:14px;
-background:#ff9800;
-color:white;
-padding:5px 10px;
-border-radius:6px;
-font-size:11px;
-font-weight:bold;
-z-index:2;
-
-}
-
-/* CAMERA */
-
-.camera-icon{
-
-position:absolute;
-top:14px;
-right:14px;
-font-size:20px;
-cursor:pointer;
-text-decoration:none;
-color:#333;
-z-index:2;
-
-}
-
-/* PREÇO */
 
 .precoB2B{
-
-color:#000;
-font-size:18px;
+font-size:24px;
 font-weight:700;
-margin:5px 0;
-
+color:#000;
+margin:6px 0;
 }
-
-/* DESCONTOS */
 
 .progressivo-card{
-
-font-size:11px;
-color:#666;
-background:#f8f9fa;
-padding:8px;
-border-radius:8px;
-margin:8px 0;
-line-height:1.4;
-
-}
-
-/* ESTOQUE */
-
-.estoque-card{
-
 font-size:12px;
-color:#444;
-margin-bottom:8px;
-
+background:#f4f6f8;
+padding:10px;
+border-radius:8px;
+margin:10px 0;
 }
-
-/* INPUT CARD */
 
 .produto input{
-
 width:100%;
-padding:8px;
+padding:10px;
+border-radius:8px;
 border:1px solid #ddd;
-border-radius:6px;
 text-align:center;
-
+margin-top:8px;
 }
 
-/* BOTÃO ADD */
-
 .btnAdd{
-
 background:#2f3242;
 color:white;
 border:none;
-padding:10px;
-border-radius:8px;
+padding:12px;
+border-radius:10px;
 margin-top:10px;
 cursor:pointer;
-transition:0.2s;
-
+font-weight:600;
 }
-
-.btnAdd:hover{
-
-background:#44465c;
-
-}
-
-/* CARRINHO */
 
 .carrinho{
-
 flex:1;
 background:#2f3242;
 color:white;
 padding:20px;
-min-width:340px;
+border-radius:15px;
 position:sticky;
 top:20px;
 max-height:calc(100vh - 40px);
 overflow-y:auto;
-border-radius:15px;
-
 }
-
-/* TOTAL */
 
 .total{
-
 font-size:18px;
 margin:10px 0;
-
 }
 
-/* BARRA PROGRESSO */
-
 .progressoContainer{
-
-margin:10px 0;
-
+margin:12px 0;
 }
 
 .barraFundo{
-
 background:#444;
-border-radius:8px;
 height:10px;
+border-radius:8px;
 overflow:hidden;
-
 }
 
 .barraProgresso{
-
 background:#27d266;
 height:10px;
 width:0%;
-
 }
-
-/* ECONOMIA */
-
-.economia{
-
-font-size:13px;
-margin-bottom:10px;
-
-}
-
-/* LISTA PEDIDO */
 
 .listaPedido{
-
-margin-bottom:15px;
-font-size:13px;
-
+margin:20px 0;
+padding-bottom:15px;
+border-bottom:1px solid rgba(255,255,255,0.15);
 }
-
-.listaPedido button{
-
-background:none;
-border:none;
-color:#ff6b6b;
-cursor:pointer;
-
-}
-
-/* FORM */
 
 .formPedido input,
 .formPedido select,
 .formPedido textarea{
-
 width:100%;
-padding:8px;
+padding:9px;
 border-radius:6px;
 border:none;
-margin-bottom:5px;
+margin-bottom:6px;
 font-size:12px;
-
 }
 
 .linha2{
-
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:5px;
-
+gap:6px;
 }
 
 .linha3{
-
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
-gap:5px;
-
+gap:6px;
 }
-
-/* BOTÕES */
 
 .botoesPedido{
-
-margin-top:10px;
+margin-top:15px;
 display:grid;
 gap:6px;
-
 }
 
-.btnWhats{
-
-background:#27d266;
+.btnPedido{
+background:#4a4f63;
 color:white;
-width:100%;
-padding:10px;
-border-radius:8px;
 border:none;
+padding:12px;
+border-radius:8px;
 cursor:pointer;
-font-weight:bold;
-
 }
 
-.btnEmail{
-
-background:#4b6cb7;
-color:white;
-width:100%;
-padding:10px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-
-}
-
-.btnPdf{
-
-background:#555;
-color:white;
-width:100%;
-padding:10px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-
+.btnPedido:hover{
+background:#5a6077;
 }
 
 .btnLimpar{
-
-background:#999;
+background:#777;
 color:white;
-width:100%;
-padding:10px;
-border-radius:8px;
 border:none;
+padding:12px;
+border-radius:8px;
 cursor:pointer;
-
 }
-
-/* FOOTER */
 
 .footer{
-
 background:#2f3242;
 color:white;
-padding:40px;
 text-align:center;
+padding:40px;
 margin-top:40px;
-font-size:14px;
-
-}
-
-/* RESPONSIVO */
-
-@media(max-width:1000px){
-
-.container{
-
-flex-direction:column;
-padding:0 10px;
-
-}
-
-.carrinho{
-
-position:static;
-width:100%;
-min-width:auto;
-
-}
-
 }
