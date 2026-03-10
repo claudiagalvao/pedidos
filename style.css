@@ -18,17 +18,23 @@ display:flex;
 
 align-items:flex-start;
 
+gap:20px;
+
 }
 
 
 
-/* CATÁLOGO */
+/* COLUNA CATÁLOGO */
 
 .catalogo{
 
 flex:3;
 
 padding:20px;
+
+display:flex;
+
+flex-direction:column;
 
 }
 
