@@ -5,36 +5,39 @@ body {
     color: #333;
 }
 
-/* CONTAINER CENTRALIZADO */
+/* CONTAINER CENTRALIZADO - REMOVIDO PADDING SUPERIOR */
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px 20px 20px; /* Topo: 0 para encostar o banner */
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
+    padding: 0; /* Remove recuos internos que criam espaços brancos */
 }
 
-/* BANNER RESPONSIVO */
+/* BANNER RESPONSIVO E COLADO */
 .bannerTopo {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 12px;
-    margin-bottom: 15px;
+    border-radius: 0 0 12px 12px; /* Arredondado apenas embaixo para um visual moderno */
+    margin-top: 0;
+    margin-bottom: 5px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+/* BARRA INFO */
 .barraInfo {
     background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
     color: #333;
     padding: 12px;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin: 5px 0 20px 0;
     text-align: center;
     font-weight: 500;
 }
@@ -129,8 +132,6 @@ body {
 .linha3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 5px; }
 
 .botoesPedido { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-.botoesPedido button { font-size: 12px; }
-
 .btnWhats { background: #27d266; color: white; }
 .btnEmail { background: #4a90e2; color: white; }
 .btnPdf { background: #f39c12; color: white; }
@@ -138,9 +139,8 @@ body {
 
 .footer { background: #2f3242; color: white; padding: 40px; text-align: center; margin-top: 40px; }
 
-/* RESPONSIVIDADE (MOBILE) */
+/* RESPONSIVIDADE */
 @media (max-width: 1000px) {
-    .container { flex-direction: column; }
-    .carrinho { position: static; width: 100%; min-width: auto; box-sizing: border-box; }
-    .catalogo { width: 100%; }
+    .container { flex-direction: column; padding-top: 0; }
+    .carrinho { position: static; width: 100%; min-width: auto; }
 }
