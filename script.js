@@ -153,7 +153,9 @@ Estoque: ${p.estoque}
 
 <input type="number" value="0" min="0">
 
-<button class="btnAdd">Adicionar</button>
+<button class="btnAdd" ${p.estoque<=0?"disabled":""}>
+${p.estoque<=0?"Sem estoque":"Adicionar"}
+</button>
 
 `
 
@@ -161,12 +163,18 @@ const btn=card.querySelector("button")
 
 btn.onclick=()=>{
 
-card.classList.add("pulse")
-
 const input = card.querySelector("input")
 const qtd = parseInt(input.value)
 
-if(qtd<=0) return
+if(qtd<=0){
+alert("Informe a quantidade")
+return
+}
+
+if(p.estoque<=0){
+alert("Produto sem estoque")
+return
+}
 
 carrinho.push({nome:p.nome,preco:p.preco,qtd:qtd})
 
@@ -182,5 +190,135 @@ input.value=0
 produtosDiv.appendChild(card)
 
 })
+
+}
+
+
+
+function atualizarCarrinho(){
+
+listaPedido.innerHTML=""
+
+let itens=0
+
+carrinho.forEach((item,index)=>{
+
+itens+=item.qtd
+
+listaPedido.innerHTML+=`${item.nome} x${item.qtd}
+<button onclick="removerItem(${index})">✕</button><br>`
+
+})
+
+contadorItens.innerText=`(${itens} itens)`
+
+const desconto=calcularDesconto(total)
+
+const totalFinal=total*(1-desconto)
+
+totalEl.innerText=totalFinal.toFixed(2)
+
+economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
+
+let progresso=(total/pedidoMinimo)*100
+
+if(progresso>100) progresso=100
+
+barra.style.width=progresso+"%"
+
+if(total<pedidoMinimo){
+msgMinimo.innerText=`Faltam R$ ${(pedidoMinimo-total).toFixed(2)} para pedido mínimo`
+}else{
+msgMinimo.innerText="Pedido mínimo atingido 🎉"
+}
+
+}
+
+
+
+function removerItem(index){
+
+const item=carrinho[index]
+
+total-=item.preco*item.qtd
+totalOriginal-=item.preco*item.qtd
+
+carrinho.splice(index,1)
+
+atualizarCarrinho()
+
+}
+
+
+
+function limparCarrinho(){
+
+carrinho=[]
+total=0
+totalOriginal=0
+
+atualizarCarrinho()
+
+}
+
+
+
+function enviarWhatsApp(){
+
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido")
+return
+
+}
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+texto+=`${i.qtd}x ${i.nome}\n`
+})
+
+window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
+
+}
+
+
+
+function enviarEmail(){
+
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido")
+return
+
+}
+
+alert("Enviar via formulário")
+
+}
+
+
+
+function gerarPDF(){
+
+if(total < pedidoMinimo){
+
+alert("Pedido mínimo de R$200 não atingido")
+return
+
+}
+
+const { jsPDF } = window.jspdf
+
+const doc=new jsPDF()
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+texto+=`${i.qtd}x ${i.nome}\n`
+})
+
+doc.text(texto,10,10)
+doc.save("pedido.pdf")
 
 }
