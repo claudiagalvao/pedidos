@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Catálogo & Estoque Profissional</title>
+    <title>Crazy Fantasy - Catálogo & Estoque</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
-        .banner-box { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #6c2bd9; }
+        .banner-box { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-box img { width: 100%; height: auto; display: block; }
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
@@ -54,13 +54,12 @@
                         <th>Qtd</th>
                     </tr>
                 </thead>
-                <tbody id="corpo-tabela">
-                    </tbody>
+                <tbody id="corpo-tabela"></tbody>
             </table>
         </div>
 
         <div class="total-container">
-            Total: R$ <span id="valor-total">0.00</span>
+            Total do Pedido: R$ <span id="valor-total">0.00</span>
         </div>
 
         <div class="btn-group">
@@ -72,71 +71,123 @@
 </div>
 
 <script>
-    // Configurações da sua Empresa (MUDE AQUI)
     const empresaInfo = {
         nome: "CRAZY FANTASY",
-        cnpj: "00.000.000/0001-00",
-        ie: "123.456.789.111",
-        endereco: "Rua Exemplo, 123 - Bairro - Cidade/UF",
+        cnpj: "00.000.000/0001-00", // Preencha com os dados reais
+        ie: "123.456.789.111",      // Preencha com os dados reais
+        endereco: "Rua Exemplo, 123 - Cidade/UF",
         contato: "(00) 00000-0000"
     };
 
-    const imgTeste = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
+    const imgPadrão = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
 
-    // Exemplo de produtos (Pode replicar para os 80 itens)
-    const feminino = [
-        ["Arlequina", 180, "M"], ["Arlequina de casaco", 180, "G"], ["Mulher Maravilha", 125, "M"], ["Barbie", 125, "M"], ["Barbie", 125, "G"]
-    ];
-    const masculino = [
-        ["Astronauta", 199.90, "M"], ["Policial", 199.99, "G"]
-    ];
+    // Dados extraídos das suas tabelas
+    const catalogo = {
+        feminino: [
+            {nome: "Arlequina", preco: 180, tams: ["M"]},
+            {nome: "Arlequina de casaco", preco: 180, tams: ["G"]},
+            {nome: "Mulher Maravilha", preco: 125, tams: ["M"]},
+            {nome: "Barbie", preco: 125, tams: ["M", "G"]},
+            {nome: "Sininho", preco: 99.90, tams: ["M"]},
+            {nome: "Unicornio c/ Led", preco: 199.99, tams: ["M", "G"]},
+            {nome: "Unicornio s/ Led", preco: 189.99, tams: ["M", "G"]},
+            {nome: "Doutora", preco: 149.90, tams: ["M", "G"]},
+            {nome: "Mirabel", preco: 239.99, tams: ["G"]}
+        ],
+        masculino: [
+            {nome: "Astronauta", preco: 199.90, tams: ["M", "G"]},
+            {nome: "Exercito", preco: 180.00, tams: ["M", "G"]},
+            {nome: "Policial", preco: 199.99, tams: ["G"]},
+            {nome: "Medico", preco: 169.90, tams: ["M", "G"]},
+            {nome: "Woody", preco: 189.99, tams: ["M", "G"]},
+            {nome: "Naruto", preco: 159.97, tams: ["M", "G"]}
+        ]
+    };
 
-    function render() {
+    function renderTabela() {
         const corpo = document.getElementById("corpo-tabela");
+        
         corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👑 MODA FEMININA</td></tr>`;
-        feminino.forEach(p => corpo.innerHTML += criarLinha(p));
+        catalogo.feminino.forEach(p => renderLinhas(p, corpo));
+
         corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👔 MODA MASCULINA</td></tr>`;
-        masculino.forEach(p => corpo.innerHTML += criarLinha(p));
+        catalogo.masculino.forEach(p => renderLinhas(p, corpo));
     }
 
-    function criarLinha(p) {
-        let preco = p[1] > 200 ? p[1] * 0.9 : p[1];
-        return `
-            <tr>
-                <td style="text-align:left"><img src="${imgTeste}" class="img-produto"> ${p[0]}</td>
-                <td><strong>${p[2]}</strong></td>
-                <td>R$ ${preco.toFixed(2)}</td>
-                <td><span class="estoque-badge">1 un.</span></td>
-                <td><input type="number" class="qtd-input" min="0" max="1" onchange="calcular()" data-nome="${p[0]}" data-tam="${p[2]}" data-preco="${preco}"></td>
-            </tr>`;
+    function renderLinhas(p, container) {
+        p.tams.forEach(tam => {
+            let precoDesc = p.preco > 200 ? p.preco * 0.9 : p.preco;
+            container.innerHTML += `
+                <tr>
+                    <td style="text-align:left"><img src="${imgPadrão}" class="img-produto"> ${p.nome}</td>
+                    <td><strong>${tam}</strong></td>
+                    <td>R$ ${precoDesc.toFixed(2)}</td>
+                    <td><span class="estoque-badge">1 un.</span></td>
+                    <td><input type="number" class="qtd-input" min="0" max="1" onchange="calcular()" 
+                        data-nome="${p.nome}" data-tam="${tam}" data-preco="${precoDesc}"></td>
+                </tr>`;
+        });
     }
 
     function calcular() {
         let total = 0;
-        document.querySelectorAll(".qtd-input").forEach(i => total += (parseInt(i.value) || 0) * parseFloat(i.dataset.preco));
+        document.querySelectorAll(".qtd-input").forEach(i => {
+            total += (parseInt(i.value) || 0) * parseFloat(i.dataset.preco);
+        });
         document.getElementById("valor-total").innerText = total.toFixed(2);
     }
 
     function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        let y = 80;
 
-        // 1. Cabeçalho da Empresa
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.setTextColor(108, 43, 217); // Roxo Crazy Fantasy
+        doc.setFontSize(22);
+        doc.setTextColor(108, 43, 217);
         doc.text(empresaInfo.nome, 105, 20, { align: "center" });
 
         doc.setFontSize(10);
-        doc.setTextColor(50, 50, 50);
-        doc.setFont("helvetica", "normal");
-        doc.text(`CNPJ: ${empresaInfo.cnpj} | IE: ${empresaInfo.ie}`, 105, 27, { align: "center" });
-        doc.text(empresaInfo.endereco, 105, 32, { align: "center" });
-        doc.line(15, 37, 195, 37); // Linha divisória
+        doc.setTextColor(50);
+        doc.text(`CNPJ: ${empresaInfo.cnpj} | IE: ${empresaInfo.ie}`, 105, 28, { align: "center" });
+        doc.text(empresaInfo.endereco, 105, 33, { align: "center" });
+        doc.line(15, 38, 195, 38);
 
-        // 2. Dados do Cliente e Vendedora
-        doc.setFont("helvetica", "bold");
-        doc.text("DADOS DO PEDIDO", 15, 45);
+        doc.setFontSize(12);
+        doc.text(`Cliente: ${document.getElementById("cliente").value || "Geral"}`, 15, 50);
+        doc.text(`Vendedora: ${document.getElementById("vendedora").value || "N/A"}`, 15, 57);
+        doc.text(`Data: ${new Date().toLocaleDateString()}`, 150, 50);
+
+        doc.text("Item", 15, 70); doc.text("Tam", 100, 70); doc.text("Qtd", 130, 70); doc.text("Total", 170, 70);
+        doc.line(15, 72, 195, 72);
+
         doc.setFont("helvetica", "normal");
-        doc.text(`Cliente: ${document.getElementById("cliente").value || "Não informado"}`, 15, 52);
-        doc.text(`Vendedora
+        document.querySelectorAll(".qtd-input").forEach(i => {
+            if (parseInt(i.value) > 0) {
+                let sub = parseInt(i.value) * parseFloat(i.dataset.preco);
+                doc.text(i.dataset.nome, 15, y);
+                doc.text(i.dataset.tam, 105, y);
+                doc.text(i.value, 135, y);
+                doc.text(sub.toFixed(2), 175, y);
+                y += 8;
+            }
+        });
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y + 10, { align: "right" });
+        doc.save("orcamento_crazy_fantasy.pdf");
+    }
+
+    function enviarWhatsApp() {
+        let msg = `*PEDIDO CRAZY FANTASY*\nCliente: ${document.getElementById("cliente").value}\n\n`;
+        document.querySelectorAll(".qtd-input").forEach(i => {
+            if(parseInt(i.value) > 0) msg += `• ${i.dataset.nome} (${i.dataset.tam}) x ${i.value}\n`;
+        });
+        msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    }
+
+    renderTabela();
+</script>
+</body>
+</html>
