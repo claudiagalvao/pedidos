@@ -1,110 +1,58 @@
 body{
 
-font-family: Arial, Helvetica, sans-serif;
+font-family:Arial;
 background:#f4f6fb;
 margin:0;
 
 }
 
-
-/* ===== LAYOUT PRINCIPAL ===== */
-
 .container{
 
 display:flex;
-align-items:flex-start;
+gap:20px;
+padding:20px;
 
 }
-
-
-/* ===== CATÁLOGO ===== */
 
 .catalogo{
 
 flex:3;
-padding:30px;
-
-}
-
-
-/* ===== BANNER ===== */
-
-.banner{
-
-width:100%;
-margin-bottom:20px;
 
 }
 
 .banner img{
 
 width:100%;
-height:auto;
-display:block;
-border-radius:12px;
+border-radius:14px;
 
 }
-
-
-/* ===== BARRA INFO ===== */
 
 .barraInfo{
 
-background:linear-gradient(90deg,#5f2eea,#9b51e0);
+background:linear-gradient(90deg,#6c2bd9,#a855f7);
 color:white;
 padding:12px;
 border-radius:10px;
-margin-bottom:20px;
+margin:10px 0;
 text-align:center;
-font-weight:bold;
 
 }
 
-
-/* ===== MENU CATEGORIAS ===== */
-
 .menuCategorias{
 
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-bottom:15px;
+margin:10px 0;
 
 }
 
 .menuCategorias button{
 
-background:#eef1f6;
+margin-right:6px;
+padding:6px 12px;
 border:none;
-padding:8px 14px;
-border-radius:20px;
-cursor:pointer;
-font-size:13px;
-
-}
-
-.menuCategorias button:hover{
-
-background:#dcdfea;
-
-}
-
-
-/* ===== BUSCA ===== */
-
-#busca{
-
-width:100%;
-padding:10px;
 border-radius:8px;
-border:1px solid #ddd;
-margin-bottom:20px;
-font-size:14px;
+cursor:pointer;
 
 }
-
-
-/* ===== GRID PRODUTOS ===== */
 
 .gridProdutos{
 
@@ -114,61 +62,22 @@ gap:20px;
 
 }
 
-
-/* ===== CARD PRODUTO ===== */
-
 .produto{
 
 background:white;
 padding:20px;
 border-radius:14px;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
+box-shadow:0 6px 16px rgba(0,0,0,0.08);
 position:relative;
-transition:0.25s;
+transition:0.3s;
 
 }
 
 .produto:hover{
 
-transform:translateY(-5px);
+transform:translateY(-4px);
 
 }
-
-
-/* ===== ANIMAÇÃO ADD ===== */
-
-.pulse{
-
-animation:pulse 0.35s;
-
-}
-
-@keyframes pulse{
-
-0%{transform:scale(1)}
-50%{transform:scale(1.06)}
-100%{transform:scale(1)}
-
-}
-
-
-/* ===== SELO MAIS VENDIDO ===== */
-
-.badgeVendido{
-
-position:absolute;
-top:10px;
-left:10px;
-background:#ff9800;
-color:white;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
-
-}
-
-
-/* ===== ÍCONE FOTO ===== */
 
 .camera{
 
@@ -178,29 +87,18 @@ right:10px;
 
 }
 
-.camera a{
-
-text-decoration:none;
-font-size:18px;
-
-}
-
-
-/* ===== PREÇOS ===== */
-
 .precoOriginal{
 
 text-decoration:line-through;
 color:#888;
-font-size:13px;
 
 }
 
 .precoB2B{
 
+color:#00a650;
 font-size:20px;
 font-weight:bold;
-color:#16a34a;
 
 }
 
@@ -208,189 +106,95 @@ color:#16a34a;
 
 font-size:12px;
 color:#777;
-margin-top:6px;
 
 }
 
+.estoque{
 
-/* ===== INPUT QUANTIDADE ===== */
+font-size:12px;
+margin-top:4px;
+
+}
 
 .produto input{
 
 width:100%;
+margin-top:6px;
 padding:8px;
-border-radius:6px;
-border:1px solid #ddd;
-margin-top:8px;
 
 }
-
-
-/* ===== BOTÃO ADD ===== */
 
 .btnAdd{
 
-margin-top:10px;
-width:100%;
+background:linear-gradient(90deg,#6c2bd9,#a855f7);
+color:white;
 border:none;
 padding:10px;
 border-radius:8px;
-background:linear-gradient(90deg,#5f2eea,#9b51e0);
-color:white;
-font-weight:bold;
+width:100%;
+margin-top:10px;
 cursor:pointer;
-transition:0.2s;
 
 }
-
-.btnAdd:hover{
-
-opacity:0.9;
-
-}
-
-
-/* ===== CARRINHO ===== */
 
 .carrinho{
 
 flex:1;
-background:#0f172a;
+background:#0f1c2e;
 color:white;
 padding:20px;
-margin:20px;
-border-radius:12px;
+border-radius:14px;
+
 position:sticky;
-top:10px;
+top:20px;
+
 height:fit-content;
-max-width:380px;
+max-height:95vh;
+overflow:auto;
 
 }
-
-
-/* ===== TÍTULO CARRINHO ===== */
-
-.carrinho h2{
-
-margin-top:0;
-
-}
-
-
-/* ===== BARRA PROGRESSO ===== */
-
-.barraProgresso{
-
-width:100%;
-height:8px;
-background:#334155;
-border-radius:10px;
-margin:10px 0;
-
-}
-
-#barra{
-
-height:100%;
-background:#22c55e;
-border-radius:10px;
-width:0%;
-
-}
-
-
-/* ===== FORMULÁRIO CLIENTE ===== */
 
 .carrinho input,
 .carrinho textarea,
 .carrinho select{
 
 width:100%;
-box-sizing:border-box;
-padding:10px;
+margin-bottom:8px;
+padding:8px;
 border-radius:6px;
 border:none;
-margin-bottom:10px;
-font-size:14px;
 
 }
 
-
-/* ===== LABELS ===== */
-
-.carrinho label{
-
-display:block;
-margin-top:10px;
-margin-bottom:4px;
-font-size:13px;
-color:#cbd5e1;
-
-}
-
-
-/* ===== BOTÕES ===== */
-
-.botoesCarrinho{
-
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:10px;
-
-}
-
-.botoesCarrinho button{
+button{
 
 padding:10px;
+margin-top:6px;
 border:none;
-border-radius:8px;
+border-radius:6px;
 cursor:pointer;
-font-weight:bold;
-font-size:13px;
 
 }
 
+.btnEmail{background:#00c853;color:white}
+.btnWhats{background:#00c853;color:white}
+.btnPdf{background:#ff9800;color:white}
+.btnLimpar{background:#ff4444;color:white}
 
-/* ===== CORES BOTÕES ===== */
+.barraProgresso{
 
-.btnEmail{
-
-background:#16a34a;
-color:white;
-
-}
-
-.btnWhats{
-
-background:#22c55e;
-color:white;
+background:#ccc;
+height:8px;
+border-radius:4px;
+margin:10px 0;
 
 }
 
-.btnPdf{
+#barra{
 
-background:#f59e0b;
-color:white;
-
-}
-
-.btnLimpar{
-
-background:#ef4444;
-color:white;
-
-}
-
-
-/* ===== FOOTER ===== */
-
-.footer{
-
-background:#111;
-color:white;
-text-align:center;
-padding:30px;
-margin-top:40px;
+background:#00c853;
+height:100%;
+width:0%;
+border-radius:4px;
 
 }
