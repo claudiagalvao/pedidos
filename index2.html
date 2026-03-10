@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 
 <meta charset="UTF-8">
@@ -24,7 +25,7 @@
 <img class="bannerTopo" src="banner.png">
 
 <div class="barraInfo">
-🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
 </div>
 
 <div id="menuCategorias"></div>
@@ -56,19 +57,26 @@ Faltam R$ 200,00 para pedido mínimo
 </div>
 
 <div class="economia">
-Você está economizando: R$ <span id="economia">0,00</span>
+Economia com descontos: R$ <span id="economia">0,00</span>
 </div>
 
 <div id="listaPedido" class="listaPedido"></div>
 
 <div class="formPedido">
 
+<input id="razao" placeholder="Razão Social">
+
 <div class="linha2">
-<input id="responsavel" placeholder="Responsável">
-<input id="whatsapp" placeholder="WhatsApp">
+<input id="cnpj" placeholder="CNPJ">
+<input id="ie" placeholder="IE">
 </div>
 
+<input id="responsavel" placeholder="Responsável">
+
+<div class="linha2">
+<input id="whatsapp" placeholder="WhatsApp">
 <input id="email" placeholder="Email">
+</div>
 
 <input id="endereco" placeholder="Endereço">
 
@@ -90,7 +98,7 @@ Você está economizando: R$ <span id="economia">0,00</span>
 <select id="pagamento">
 <option value="">Forma de pagamento</option>
 <option>Pix</option>
-<option>Boleto</option>
+<option>Boleto (sob consulta)</option>
 <option>Cartão</option>
 </select>
 
@@ -102,11 +110,11 @@ Você está economizando: R$ <span id="economia">0,00</span>
 
 <div class="botoesPedido">
 
-<button class="btnEmail" onclick="enviarEmail()">Enviar Pedido</button>
+<button class="btnPedido" onclick="enviarEmail()">Enviar Pedido</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnPedido" onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPedido" onclick="gerarPDF()">Gerar PDF</button>
 
 <button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
 
