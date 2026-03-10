@@ -18,7 +18,7 @@ function calcularDesconto(valor) {
     if (valor >= 1000) return 0.15;
     if (valor >= 500) return 0.12;
     if (valor >= 200) return 0.10;
-    return 0; // Sem desconto abaixo do mínimo
+    return 0; 
 }
 
 fetch("produtos.csv")
@@ -74,14 +74,14 @@ function renderProdutos(lista) {
             ${selo}
             <div class="camera"><a href="${p.link}" target="_blank" style="text-decoration:none">📷</a></div>
             <h3>${p.nome}</h3>
-            <div class="precoOriginal">R$ ${p.preco.toFixed(2)}</div>
+            <div style="text-decoration:line-through; color:#888">R$ ${p.preco.toFixed(2)}</div>
             <div class="precoB2B">B2B: R$ ${desc10.toFixed(2)}</div>
             <div class="progressivo">
-                10% → R$ ${desc10.toFixed(2)} (R$200+)<br>
-                12% → R$ ${desc12.toFixed(2)} (R$500+)<br>
-                15% → R$ ${desc15.toFixed(2)} (R$1000+)
+                10% → R$ ${desc10.toFixed(2)}<br>
+                12% → R$ ${desc12.toFixed(2)}<br>
+                15% → R$ ${desc15.toFixed(2)}
             </div>
-            <div class="estoque">Estoque: ${p.estoque}</div>
+            <div style="font-size:12px; margin-top:5px">Estoque: ${p.estoque}</div>
             <input type="number" value="0" min="0">
             <button class="btnAdd" ${p.estoque <= 0 ? "disabled" : ""}>
                 ${p.estoque <= 0 ? "Esgotado" : "Adicionar"}
@@ -111,16 +111,18 @@ function atualizarCarrinho() {
         itens += item.qtd;
         listaPedido.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13px">
             <span>${item.qtd}x ${item.nome}</span>
-            <button onclick="removerItem(${index})" style="background:none; color:#ff6b6b; cursor:pointer">✕</button>
+            <button onclick="removerItem(${index})" style="background:none; color:#ff6b6b; border:none; cursor:pointer">✕</button>
         </div>`;
     });
 
     contadorItens.innerText = `(${itens} itens)`;
     const desc = calcularDesconto(total);
     const totalFinal = total * (1 - desc);
-    
-    totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    economiaEl.innerText = (totalOriginal - totalFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    const economia = totalOriginal - totalFinal;
+
+    // TRAVA EM 2 CASAS DECIMAIS (PADRÃO B2B)
+    totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    economiaEl.innerText = economia.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     let progresso = (total / pedidoMinimo) * 100;
     barra.style.width = Math.min(progresso, 100) + "%";
@@ -149,16 +151,16 @@ function enviarWhatsApp() {
     let texto = `*Pedido Crazy Fantasy B2B*\n\n`;
     carrinho.forEach(i => texto += `• ${i.qtd}x ${i.nome}\n`);
     texto += `\n*Total: R$ ${totalEl.innerText}*`;
-    window.open(`https://wa.me/SEU_NUMERO_AQUI?text=${encodeURIComponent(texto)}`);
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
 }
 
 function gerarPDF() {
     if (total < pedidoMinimo) return alert("Pedido mínimo de R$200 não atingido");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("Resumo do Pedido - Crazy Fantasy B2B", 10, 10);
+    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
     let y = 20;
     carrinho.forEach(i => { doc.text(`${i.qtd}x ${i.nome}`, 10, y); y += 10; });
     doc.text(`Total: R$ ${totalEl.innerText}`, 10, y + 10);
-    doc.save("pedido_crazy_fantasy.pdf");
+    doc.save("pedido.pdf");
 }
