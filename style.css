@@ -5,10 +5,12 @@ box-sizing:border-box;
 }
 
 body{
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 background:#eef1f4;
 color:#333;
 }
+
+/* CONTAINER */
 
 .container{
 display:flex;
@@ -18,9 +20,13 @@ gap:25px;
 padding:20px;
 }
 
+/* CATALOGO */
+
 .catalogo{
 flex:3;
 }
+
+/* BANNER */
 
 .bannerTopo{
 width:100%;
@@ -28,12 +34,47 @@ border-radius:12px;
 margin-bottom:15px;
 }
 
+/* BARRA INFO */
+
 .barraInfo{
 background:#e4e7ec;
 padding:10px;
 border-radius:8px;
 margin-bottom:12px;
 }
+
+/* MENU CATEGORIAS */
+
+#menuCategorias{
+margin-bottom:12px;
+}
+
+#menuCategorias button{
+
+background:#e7ebf0;
+
+border:none;
+
+padding:6px 12px;
+
+border-radius:14px;
+
+margin-right:6px;
+margin-bottom:4px;
+
+cursor:pointer;
+
+font-size:13px;
+
+transition:0.2s;
+
+}
+
+#menuCategorias button:hover{
+background:#d6dbe2;
+}
+
+/* BUSCA */
 
 #busca{
 width:100%;
@@ -43,11 +84,15 @@ border-radius:8px;
 border:1px solid #ccc;
 }
 
+/* GRID PRODUTOS */
+
 .gridProdutos{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:18px;
 }
+
+/* CARD PRODUTO */
 
 .produto{
 background:white;
@@ -58,10 +103,16 @@ display:flex;
 flex-direction:column;
 }
 
+/* TITULO PRODUTO */
+
 .produto h3{
 font-size:14px;
 font-weight:600;
+line-height:1.35;
+margin-bottom:6px;
 }
+
+/* PREÇO */
 
 .precoB2B{
 font-size:22px;
@@ -69,6 +120,8 @@ font-weight:bold;
 color:#1d4ed8;
 margin:6px 0;
 }
+
+/* DESCONTOS */
 
 .progressivo-card{
 font-size:12px;
@@ -78,13 +131,18 @@ border-radius:8px;
 margin:10px 0;
 }
 
+/* INPUT QTD */
+
 .produto input{
 width:100%;
 padding:8px;
 border-radius:6px;
 border:1px solid #ccc;
 text-align:center;
+margin-top:6px;
 }
+
+/* LINHA AÇÕES */
 
 .linhaAcoes{
 display:flex;
@@ -93,28 +151,63 @@ gap:10px;
 margin-top:12px;
 }
 
+/* CAMERA */
+
 .camera-link{
 font-size:18px;
 text-decoration:none;
+display:flex;
+align-items:center;
 }
+
+/* SELO MAIS VENDIDO */
 
 .badgeVendido{
+
 background:#ff9800;
 color:white;
+
 padding:4px 8px;
+
 border-radius:6px;
+
 font-size:11px;
+font-weight:600;
+
+display:inline-flex;
+align-items:center;
+
 }
 
+/* BOTÃO ADICIONAR */
+
 .btnAdd{
+
 margin-left:auto;
+
 background:#2f3242;
 color:white;
+
 border:none;
+
 padding:9px 14px;
+
 border-radius:8px;
+
 cursor:pointer;
+
+font-size:13px;
+font-weight:500;
+
+transition:0.2s;
+
 }
+
+.btnAdd:hover{
+background:#3f4356;
+}
+
+/* CARRINHO */
 
 .carrinho{
 flex:1;
@@ -127,6 +220,29 @@ top:20px;
 max-height:calc(100vh - 40px);
 overflow-y:auto;
 }
+
+/* TOTAL */
+
+.total{
+margin-top:10px;
+font-size:16px;
+}
+
+/* DESCONTO ATUAL */
+
+.descontoAtual{
+font-size:11px;
+margin-top:4px;
+}
+
+/* PRÓXIMO DESCONTO */
+
+.proximoDesconto{
+font-size:11px;
+margin-bottom:6px;
+}
+
+/* BARRA PROGRESSO */
 
 .barraFundo{
 background:#444;
@@ -142,12 +258,22 @@ height:8px;
 width:0%;
 }
 
+/* ECONOMIA */
+
+.economia{
+margin-top:8px;
+}
+
+/* LISTA PEDIDO */
+
 .listaPedido{
 margin-top:14px;
 padding-top:12px;
 border-top:1px solid rgba(255,255,255,0.2);
 font-size:13px;
 }
+
+/* FORM */
 
 .formPedido input,
 .formPedido select,
@@ -160,6 +286,8 @@ margin-bottom:6px;
 font-size:12px;
 }
 
+/* LINHAS FORM */
+
 .linha2{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -171,6 +299,8 @@ display:grid;
 grid-template-columns:1fr 1fr 1fr;
 gap:6px;
 }
+
+/* BOTÕES PEDIDO */
 
 .botoesPedido{
 margin-top:10px;
@@ -187,6 +317,10 @@ border-radius:8px;
 cursor:pointer;
 }
 
+.btnPedido:hover{
+background:#5a6077;
+}
+
 .btnLimpar{
 background:#777;
 color:white;
@@ -196,22 +330,24 @@ border-radius:8px;
 cursor:pointer;
 }
 
+/* TITULO FORM */
+
 .tituloFormulario{
+
 font-size:14px;
 font-weight:600;
-margin:12px 0 8px 0;
-color:#1d4ed8;
+
+margin:14px 0 8px 0;
+
+color:#5fb3ff;
+
+border-top:1px solid rgba(255,255,255,0.25);
+
+padding-top:10px;
+
 }
 
-.descontoAtual{
-font-size:11px;
-margin-top:4px;
-}
-
-.proximoDesconto{
-font-size:11px;
-margin-bottom:6px;
-}
+/* FOOTER */
 
 .footer{
 background:#2f3242;
