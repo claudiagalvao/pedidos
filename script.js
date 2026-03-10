@@ -19,7 +19,7 @@ let totalOriginal = 0;
 const pedidoMinimo = 200;
 
 /* ============================= */
-/* LEITURA DO CSV */
+/* LEITURA CSV */
 /* ============================= */
 
 fetch("produtos.csv")
@@ -32,22 +32,20 @@ linhas.forEach(l => {
 
 if(!l.trim()) return;
 
-/* detecta separador */
-
 let separador = l.includes(";") ? ";" : ",";
 
 const c = l.split(separador);
 
 produtos.push({
 
-categoria: c[0] || "",
-nome: c[1] || "",
-variacao: c[2] || "",
-preco: parseFloat(c[3]) || 0,
-link: c[4] || "",
-sku: c[5] || "",
-estoque: parseInt(c[6]) || 0,
-vendas: Math.floor(Math.random()*100)
+categoria:c[0] || "",
+nome:c[1] || "",
+variacao:c[2] || "",
+preco:parseFloat(c[3]) || 0,
+link:c[4] || "",
+sku:c[5] || "",
+estoque:parseInt(c[6]) || 0,
+vendas:Math.floor(Math.random()*100)
 
 });
 
@@ -59,8 +57,6 @@ renderProdutos(produtos);
 });
 
 /* ============================= */
-/* MENU CATEGORIAS */
-/* ============================= */
 
 function criarCategorias(){
 
@@ -69,12 +65,12 @@ const categorias=[...new Set(produtos.map(p=>p.categoria).filter(Boolean))];
 menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</button>`;
 
 categorias.forEach(c=>{
-
 menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</button>`;
-
 });
 
 }
+
+/* ============================= */
 
 function filtrarCategoria(cat){
 
@@ -96,11 +92,7 @@ busca.addEventListener("keyup",()=>{
 const termo=busca.value.toLowerCase();
 
 renderProdutos(
-
-produtos.filter(p=>
-p.nome.toLowerCase().includes(termo)
-)
-
+produtos.filter(p=>p.nome.toLowerCase().includes(termo))
 );
 
 });
@@ -122,12 +114,9 @@ const preco12 = (p.preco*0.88).toFixed(2);
 const preco15 = (p.preco*0.85).toFixed(2);
 
 const card=document.createElement("div");
-
 card.className="produto";
 
 card.innerHTML=`
-
-${p.vendas>70?'<div class="badgeVendido">🔥 Mais vendido</div>':''}
 
 <h3>${p.nome}</h3>
 
@@ -157,6 +146,8 @@ R$ ${preco10}
 
 <a href="${p.link}" target="_blank" class="camera-link">📸</a>
 
+${p.vendas>70?'<span class="badgeVendido">🔥 Mais vendido</span>':''}
+
 <button class="btnAdd">Adicionar</button>
 
 </div>
@@ -170,7 +161,7 @@ botao.onclick = () => {
 
 const qtd = parseInt(input.value);
 
-if(!qtd || qtd <= 0) return;
+if(!qtd || qtd<=0) return;
 
 carrinho.push({
 nome:p.nome,
@@ -183,11 +174,7 @@ totalOriginal += p.preco * qtd;
 
 atualizarCarrinho();
 
-/* reset input */
-
 input.value = 0;
-
-/* anima carrinho */
 
 carrinhoUI.classList.add("pulse");
 
@@ -204,7 +191,7 @@ produtosDiv.appendChild(card);
 }
 
 /* ============================= */
-/* ATUALIZA CARRINHO */
+/* CARRINHO */
 /* ============================= */
 
 function atualizarCarrinho(){
@@ -233,9 +220,9 @@ listaPedido.innerHTML+=`
 
 const desconto = calcularDesconto(total);
 
-const totalFinal = total * (1 - desconto);
+const totalFinal = total*(1-desconto);
 
-const economia = totalOriginal - totalFinal;
+const economia = totalOriginal-totalFinal;
 
 totalEl.innerText = totalFinal.toLocaleString('pt-BR',{
 minimumFractionDigits:2,
@@ -253,7 +240,7 @@ let progresso=(total/pedidoMinimo)*100;
 
 barra.style.width=Math.min(progresso,100)+"%";
 
-msgMinimo.innerText= total<pedidoMinimo
+msgMinimo.innerText = total<pedidoMinimo
 ?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
 :"Pedido mínimo atingido";
 
@@ -296,12 +283,121 @@ totalOriginal=0;
 
 atualizarCarrinho();
 
-/* limpa formulário */
-
 document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
 document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
 
 document.getElementById("entrega").selectedIndex=0;
 document.getElementById("pagamento").selectedIndex=0;
+
+}
+
+/* ============================= */
+/* VALIDAÇÃO */
+/* ============================= */
+
+function validarFormulario(){
+
+if(total<pedidoMinimo){
+alert("Pedido mínimo de R$200");
+return false;
+}
+
+const campos=document.querySelectorAll(".formPedido input");
+
+for(let campo of campos){
+if(!campo.value.trim()){
+alert("Preencha todos os dados da nota fiscal");
+return false;
+}
+}
+
+return true;
+
+}
+
+/* ============================= */
+/* EMAIL */
+/* ============================= */
+
+function enviarEmail(){
+
+if(!validarFormulario()) return;
+
+let pedido="";
+
+carrinho.forEach(item=>{
+pedido+=`${item.qtd}x ${item.nome}\n`;
+});
+
+fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
+
+method:"POST",
+
+headers:{
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+pedido:pedido,
+total:total.toFixed(2)
+
+})
+
+})
+.then(()=>alert("Pedido enviado por email!"));
+
+}
+
+/* ============================= */
+/* WHATSAPP */
+/* ============================= */
+
+function enviarWhatsApp(){
+
+if(!validarFormulario()) return;
+
+let pedido="";
+
+carrinho.forEach(item=>{
+pedido+=`${item.qtd}x ${item.nome}\n`;
+});
+
+let texto =
+`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${total.toFixed(2)}`;
+
+window.open(
+`https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
+"_blank"
+);
+
+}
+
+/* ============================= */
+/* PDF */
+/* ============================= */
+
+function gerarPDF(){
+
+if(!validarFormulario()) return;
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+let y=20;
+
+doc.text("Pedido Crazy Fantasy",20,y);
+
+y+=10;
+
+carrinho.forEach(item=>{
+doc.text(`${item.qtd}x ${item.nome}`,20,y);
+y+=8;
+});
+
+doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
+
+doc.save("pedido-crazyfantasy.pdf");
 
 }
