@@ -1,313 +1,145 @@
-const produtosDiv = document.getElementById("produtos");
-const menuCategorias = document.getElementById("menuCategorias");
-const busca = document.getElementById("busca");
-
-const listaPedido = document.getElementById("listaPedido");
-const totalEl = document.getElementById("total");
-const economiaEl = document.getElementById("economia");
-const contadorItens = document.getElementById("contadorItens");
-
-const barra = document.getElementById("barra");
-const msgMinimo = document.getElementById("msgMinimo");
-const statusDesconto = document.getElementById("statusDesconto");
-
-let produtos = [];
-let carrinho = [];
-
-let total = 0;
-
-const pedidoMinimo = 200;
-
-
-/* =============================
-CARREGAR CSV
-============================= */
-
-fetch("produtos.csv")
-.then(r => r.text())
-.then(data => {
-
-const linhas = data.split("\n").slice(1);
-
-linhas.forEach(l => {
-
-if(!l.trim()) return;
-
-let separador = l.includes(";") ? ";" : ",";
-
-const c = l.split(separador);
-
-produtos.push({
-
-categoria:c[0],
-nome:c[1],
-variacao:c[2],
-preco:parseFloat(c[3]),
-link:c[4],
-sku:c[5],
-estoque:parseInt(c[6]),
-vendas:Math.floor(Math.random()*100)
-
-});
-
-});
-
-criarCategorias();
-renderProdutos(produtos);
-
-});
-
-
-/* =============================
-CATEGORIAS
-============================= */
-
-function criarCategorias(){
-
-const categorias=[...new Set(produtos.map(p=>p.categoria))];
-
-menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</button>`;
-
-categorias.forEach(c=>{
-menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</button>`;
-});
-
-}
-
-function filtrarCategoria(cat){
-
-if(cat==="Todos"){
-renderProdutos(produtos);
-return;
-}
-
-renderProdutos(produtos.filter(p=>p.categoria===cat));
-
-}
-
-
-/* =============================
-BUSCA
-============================= */
-
-busca.addEventListener("keyup",()=>{
-
-const termo=busca.value.toLowerCase();
-
-renderProdutos(
-produtos.filter(p=>p.nome.toLowerCase().includes(termo))
-);
-
-});
-
-
-/* =============================
-RENDER PRODUTOS
-============================= */
-
-function renderProdutos(lista){
-
-produtosDiv.innerHTML="";
-
-lista.forEach(p=>{
-
-const preco10 = (p.preco*0.90).toFixed(2);
-const preco12 = (p.preco*0.88).toFixed(2);
-const preco15 = (p.preco*0.85).toFixed(2);
-
-const card=document.createElement("div");
-card.className="produto";
-
-let botaoHTML = p.estoque > 0
-? `<button class="btnAdd">Adicionar</button>`
-: `<button class="btnAdd" disabled>Sem estoque</button>`;
-
-let variacaoHTML = "";
-
-if(p.variacao && p.variacao.toLowerCase() !== "padrão"){
-variacaoHTML = `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>`;
-}
-
-card.innerHTML=`
-
-<h3>${p.nome}</h3>
-
-${variacaoHTML}
-
-<div class="precoB2B">
-R$ ${preco10}
-</div>
-
-<div class="progressivo-card">
-
-<strong>Descontos B2B</strong><br>
-
-10% (R$200+) → R$ ${preco10}<br>
-12% (R$500+) → R$ ${preco12}<br>
-15% (R$1000+) → R$ ${preco15}
-
-</div>
-
-<div>Estoque: ${p.estoque}</div>
-
-<input type="number" value="0" min="0" max="${p.estoque}" class="qtdProduto">
-
-<div class="linhaAcoes">
-
-<a href="${p.link}" target="_blank" class="camera-link">📸</a>
-
-${p.vendas>70?'<span class="badgeVendido">🔥 Mais vendido</span>':''}
-
-${botaoHTML}
-
-</div>
-
-`;
-
-const botao = card.querySelector(".btnAdd");
-const input = card.querySelector(".qtdProduto");
-
-if(botao && p.estoque>0){
-
-botao.addEventListener("click", function(){
-
-const qtd = parseInt(input.value || 0);
-
-if(!qtd || qtd<=0) return;
-
-if(qtd > p.estoque){
-alert(`Estoque disponível: ${p.estoque}`);
-return;
-}
-
-let existente = carrinho.find(item =>
-item.nome === p.nome &&
-item.variacao === p.variacao
-);
-
-if(existente){
-
-existente.qtd += qtd;
-
-}else{
-
-carrinho.push({
-nome:p.nome,
-variacao:p.variacao,
-preco:p.preco,
-qtd:qtd
-});
-
-}
-
-total += p.preco * qtd;
-
-atualizarCarrinho();
-
-input.value = 0;
-
-});
-
-}
-
-produtosDiv.appendChild(card);
-
-});
-
-}
-
-
-/* =============================
-CARRINHO
-============================= */
+let carrinho=[]
+let total=0
 
 function atualizarCarrinho(){
 
-listaPedido.innerHTML="";
+const lista=document.getElementById("listaPedido")
+lista.innerHTML=""
 
-let itens=0;
+let itens=0
 
-carrinho.forEach((item,index)=>{
+carrinho.forEach((item,i)=>{
 
-itens+=item.qtd;
+itens+=item.qtd
 
-let nomeProduto = item.nome;
-
-if(item.variacao && item.variacao.toLowerCase() !== "padrão"){
-nomeProduto += " - " + item.variacao;
-}
-
-listaPedido.innerHTML+=`
-
+lista.innerHTML+=`
 <div style="display:flex;justify-content:space-between">
-
-<span>${item.qtd}x ${nomeProduto}</span>
-
-<button onclick="removerItem(${index})">✕</button>
-
+<span>${item.qtd}x ${item.nome}</span>
+<button onclick="removerItem(${i})">✕</button>
 </div>
+`
 
-`;
+})
 
-});
+document.getElementById("contadorItens").innerText=`(${itens} itens)`
 
-contadorItens.innerText=`(${itens} itens)`;
+const desconto=calcularDesconto(total)
 
-const desconto = calcularDesconto(total);
+const totalFinal=total*(1-desconto)
 
-const totalFinal = total*(1-desconto);
+document.getElementById("total").innerText=totalFinal.toFixed(2)
 
-const economia = total-totalFinal;
+document.getElementById("economia").innerText=(total-totalFinal).toFixed(2)
 
-totalEl.innerText = totalFinal.toFixed(2);
-economiaEl.innerText = economia.toFixed(2);
+const progresso=Math.min((total/200)*100,100)
 
-/* STATUS DESCONTO */
+document.getElementById("barra").style.width=progresso+"%"
 
-let mensagem = "";
-
-if(total >= 1000){
-
-mensagem = "Você já atingiu o maior desconto (15%)";
+atualizarStatusDesconto()
 
 }
 
-else if(total >= 500){
+function calcularDesconto(v){
 
-let falta = (1000-total).toFixed(2);
-mensagem = `Você já tem 12% de desconto • Faltam R$ ${falta} para atingir 15%`;
+if(v>=1000) return 0.15
+if(v>=500) return 0.12
+if(v>=200) return 0.10
+
+return 0
 
 }
 
-else if(total >= 200){
+function atualizarStatusDesconto(){
 
-let falta = (500-total).toFixed(2);
-mensagem = `Você já tem 10% de desconto • Faltam R$ ${falta} para atingir 12%`;
+let msg=""
+
+if(total>=1000){
+
+msg="Você já atingiu o maior desconto (15%)"
+
+}
+
+else if(total>=500){
+
+msg=`Você já tem 12% de desconto • faltam R$ ${(1000-total).toFixed(2)} para 15%`
+
+}
+
+else if(total>=200){
+
+msg=`Você já tem 10% de desconto • faltam R$ ${(500-total).toFixed(2)} para 12%`
 
 }
 
 else{
 
-let falta = (200-total).toFixed(2);
-mensagem = `Faltam R$ ${falta} para atingir 10% de desconto`;
+msg=`Faltam R$ ${(200-total).toFixed(2)} para atingir 10%`
 
 }
 
-statusDesconto.innerText = mensagem;
+document.getElementById("statusDesconto").innerText=msg
 
 }
 
+function removerItem(i){
 
-/* =============================
-DESCONTO
-============================= */
+total-=carrinho[i].preco*carrinho[i].qtd
 
-function calcularDesconto(valor){
+carrinho.splice(i,1)
 
-if(valor>=1000) return 0.15;
-if(valor>=500) return 0.12;
-if(valor>=200) return 0.10;
+atualizarCarrinho()
 
-return 0;
+}
+
+function limparCarrinho(){
+
+carrinho=[]
+total=0
+atualizarCarrinho()
+
+}
+
+function enviarWhatsApp(){
+
+let texto="Pedido Crazy Fantasy:%0A"
+
+carrinho.forEach(p=>{
+
+texto+=`${p.qtd}x ${p.nome}%0A`
+
+})
+
+texto+=`Total: R$ ${total.toFixed(2)}`
+
+window.open(`https://wa.me/5519992850208?text=${texto}`)
+
+}
+
+function gerarPDF(){
+
+const {jsPDF}=window.jspdf
+
+let doc=new jsPDF()
+
+let y=20
+
+doc.text("Pedido Crazy Fantasy",20,10)
+
+carrinho.forEach(p=>{
+
+doc.text(`${p.qtd}x ${p.nome}`,20,y)
+y+=8
+
+})
+
+doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10)
+
+doc.save("pedido.pdf")
+
+}
+
+function enviarEmail(){
+
+alert("Email enviado via FormSubmit")
 
 }
