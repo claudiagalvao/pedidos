@@ -16,97 +16,150 @@
 
 <body>
 
+
 <div class="container">
+
+
+<!-- CATALOGO -->
 
 <div class="catalogo">
 
-<img class="bannerTopo" src="banner.png">
+<img src="banner.png" class="bannerTopo">
+
 
 <div class="barraInfo">
 🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
 </div>
 
+
 <div id="menuCategorias"></div>
+
 
 <input id="busca" placeholder="🔎 Buscar produto">
 
+
 <div id="produtos" class="gridProdutos"></div>
+
 
 </div>
 
+
+
+<!-- CARRINHO -->
 
 <div class="carrinho" id="carrinho">
 
-<h2>🛒 Pedido <span id="contadorItens">(0 itens)</span></h2>
 
-<div>
+<h2>
+🛒 Pedido
+<span id="contadorItens">(0 itens)</span>
+</h2>
+
+
+<div class="total">
 Total B2B: R$ <span id="total">0,00</span>
 </div>
+
 
 <div id="msgMinimo">
 Faltam R$ 200,00 para pedido mínimo
 </div>
 
+
 <div class="barraFundo">
 <div id="barra" class="barraProgresso"></div>
 </div>
+
 
 <div class="economia">
 Economia com descontos: R$ <span id="economia">0,00</span>
 </div>
 
+
 <div id="listaPedido" class="listaPedido"></div>
+
 
 
 <div class="tituloFormulario">
 Dados para Nota Fiscal
 </div>
 
+
 <div class="formPedido">
 
 <input id="razao" placeholder="Razão Social">
 
+
 <div class="linha2">
+
 <input id="cnpj" placeholder="CNPJ">
+
 <input id="ie" placeholder="IE">
+
 </div>
+
 
 <input id="responsavel" placeholder="Responsável">
 
+
 <div class="linha2">
+
 <input id="whatsapp" placeholder="WhatsApp">
+
 <input id="email" placeholder="Email">
+
 </div>
+
 
 <input id="endereco" placeholder="Endereço">
 
+
 <div class="linha3">
+
 <input id="cidade" placeholder="Cidade">
+
 <input id="estado" placeholder="Estado">
+
 <input id="cep" placeholder="CEP">
+
 </div>
+
 
 <div class="linha2">
 
 <select id="entrega">
+
 <option value="">Forma de entrega</option>
-<option>Retirada</option>
+
+<option>Retirada na loja</option>
+
 <option>Correios</option>
+
 <option>Transportadora</option>
+
 </select>
 
+
 <select id="pagamento">
+
 <option value="">Forma de pagamento</option>
+
 <option>Pix</option>
+
 <option>Boleto (sob consulta)</option>
+
 <option>Cartão</option>
+
 </select>
 
 </div>
+
 
 <textarea id="observacoes" placeholder="Observações"></textarea>
 
+
 </div>
+
 
 
 <div class="botoesPedido">
@@ -115,13 +168,16 @@ Dados para Nota Fiscal
 Enviar Pedido
 </button>
 
+
 <button class="btnPedido" onclick="enviarWhatsApp()">
 WhatsApp
 </button>
 
+
 <button class="btnPedido" onclick="gerarPDF()">
 Gerar PDF
 </button>
+
 
 <button class="btnLimpar" onclick="limparCarrinho()">
 Limpar
@@ -129,11 +185,38 @@ Limpar
 
 </div>
 
+
 </div>
 
 </div>
+
+
+
+<!-- RODAPÉ -->
+
+<footer class="footer">
+
+<div class="footerContent">
+
+<div>
+<strong>Crazy Fantasy</strong><br>
+Portal de pedidos B2B
+</div>
+
+<div>
+WhatsApp: (19) 99285-0208<br>
+Campinas – SP
+</div>
+
+</div>
+
+</footer>
+
+
 
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
