@@ -1,6 +1,6 @@
 body{
 font-family:'Inter',Arial;
-background:#f5f7fb;
+background:#f6f4fb;
 margin:0;
 color:#333;
 }
@@ -16,13 +16,15 @@ padding:20px;
 }
 
 .banner img{
+display:block;
 width:100%;
+height:auto;
 border-radius:12px;
 }
 
 .barraInfo{
-background:#4f7cff;
-color:white;
+background:linear-gradient(135deg,#e3d7ff,#cbb8ff);
+color:#3a2f63;
 padding:10px;
 border-radius:10px;
 margin:10px 0;
@@ -30,10 +32,10 @@ text-align:center;
 }
 
 #menuCategorias button{
-background:#eef1f7;
-color:#444;
+background:#f3edff;
+color:#5a4d8a;
 border:none;
-border-radius:20px;
+border-radius:18px;
 padding:8px 16px;
 font-size:13px;
 cursor:pointer;
@@ -42,8 +44,8 @@ transition:.2s;
 }
 
 #menuCategorias button:hover{
-background:#4f7cff;
-color:white;
+background:#cbb8ff;
+color:#2f2255;
 }
 
 .gridProdutos{
@@ -57,24 +59,13 @@ background:white;
 padding:20px;
 border-radius:14px;
 box-shadow:0 6px 18px rgba(0,0,0,0.08);
-position:relative;
 }
 
-.camera{
-position:absolute;
-top:10px;
-right:10px;
-}
-
-.badgeVendido{
-position:absolute;
-top:10px;
-left:10px;
-background:#ff9800;
-color:white;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+.produto h3{
+font-size:15px;
+font-weight:500;
+line-height:1.3;
+margin-bottom:6px;
 }
 
 .precoOriginal{
@@ -83,14 +74,14 @@ color:#888;
 }
 
 .precoB2B{
-color:#1db954;
-font-size:18px;
-font-weight:bold;
+color:#6c5ce7;
+font-size:17px;
+font-weight:600;
 }
 
 .progressivo{
 font-size:12px;
-color:#666;
+color:#777;
 margin-top:6px;
 }
 
@@ -100,22 +91,16 @@ margin-top:4px;
 }
 
 .produto input{
-width:60px;
+width:55px;
 padding:6px;
-border:1px solid #d9dee7;
+border:1px solid #ddd;
 border-radius:6px;
 text-align:center;
 font-size:14px;
-outline:none;
-}
-
-.produto input:focus{
-border-color:#4f7cff;
-box-shadow:0 0 0 2px rgba(79,124,255,0.15);
 }
 
 .btnAdd{
-background:linear-gradient(135deg,#5b7cff,#3d5cff);
+background:linear-gradient(135deg,#cbb8ff,#9a86ff);
 color:white;
 border:none;
 padding:10px;
@@ -127,7 +112,7 @@ cursor:pointer;
 
 .carrinho{
 flex:1;
-background:#1f2b3a;
+background:#2f3242;
 color:white;
 padding:20px;
 max-width:360px;
@@ -174,7 +159,7 @@ resize:none;
 .barraProgresso{
 width:100%;
 height:10px;
-background:#dfe6ee;
+background:#ddd;
 border-radius:10px;
 margin:10px 0;
 }
@@ -182,7 +167,7 @@ margin:10px 0;
 #barra{
 height:10px;
 width:0%;
-background:#00c853;
+background:#8bd67a;
 border-radius:10px;
 transition:width .3s;
 }
@@ -199,15 +184,10 @@ padding:10px;
 border:none;
 border-radius:8px;
 cursor:pointer;
-transition:.2s;
 font-weight:500;
 }
 
-button:hover{
-transform:translateY(-1px);
-}
-
-.btnEmail{background:linear-gradient(135deg,#5b7cff,#3d5cff);color:white}
-.btnWhats{background:linear-gradient(135deg,#25d366,#1ebc57);color:white}
-.btnPdf{background:linear-gradient(135deg,#ffb347,#ff8c00);color:white}
-.btnLimpar{background:linear-gradient(135deg,#ff6b6b,#ff3b3b);color:white}
+.btnEmail{background:#7b8cff;color:white}
+.btnWhats{background:#27d266;color:white}
+.btnPdf{background:#ff9f43;color:white}
+.btnLimpar{background:#ff6b6b;color:white}
