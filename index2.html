@@ -1,125 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Portal B2B Crazy Fantasy</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal B2B Crazy Fantasy</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
-
 <body>
+    <div class="container">
+        <div class="catalogo">
+            <div class="vitrine">
+                <div class="banner">
+                    <img src="banner.png" alt="Crazy Fantasy Banner">
+                </div>
 
-<div class="container">
+                <div class="barraInfo">
+                    🔥 Tabela exclusiva para parceiros • Desconto progressivo B2B
+                </div>
 
-<div class="catalogo">
+                <div class="busca">
+                    <input type="text" id="busca" placeholder="🔎 Buscar por nome do produto ou SKU...">
+                </div>
 
-<!-- COLUNA ESQUERDA -->
+                <div class="categorias" id="categorias">
+                    </div>
 
-<div>
+                <div id="produtos" class="produtos">
+                    </div>
+            </div>
 
-<div class="banner">
-<img src="banner.png" alt="Crazy Fantasy">
-</div>
+            <div class="carrinho">
+                <h2>🛒 Pedido (<span id="contador">0</span> itens)</h2>
 
-<div class="barraInfo">
-🔥 Tabela exclusiva para parceiros • Desconto progressivo B2B
-</div>
+                <div class="total-container">
+                    <div class="total">Total B2B: <strong>R$ <span id="total">0.00</span></strong></div>
+                    <div class="economia">💰 Economia: R$ <span id="economia">0.00</span></div>
+                </div>
 
-<div class="categorias" id="categorias"></div>
+                <div class="progress-container">
+                    <small>Progresso do Pedido B2B</small>
+                    <div class="progress">
+                        <div id="barra" class="progress-bar"></div>
+                    </div>
+                </div>
 
-<div class="busca">
-<input type="text" id="busca" placeholder="🔎 Buscar produto ou SKU">
-</div>
+                <div id="itens" class="itens">
+                    </div>
 
-<div id="produtos" class="produtos"></div>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
 
-</div>
+                <h3>Dados do Cliente</h3>
+                <div class="form">
+                    <input id="empresa" placeholder="Empresa / Razão Social">
+                    <div class="row-form">
+                        <input id="cnpj" placeholder="CNPJ">
+                        <input id="ie" placeholder="Inscrição Estadual">
+                    </div>
+                    <input id="responsavel" placeholder="Nome do responsável">
+                    <input id="whatsapp" placeholder="WhatsApp (com DDD)">
+                    <input id="email" placeholder="Email">
+                    <textarea id="endereco" placeholder="Endereço completo de entrega"></textarea>
 
+                    <select id="entrega">
+                        <option value="">Forma de entrega</option>
+                        <option>Retirada na Loja</option>
+                        <option>Transportadora</option>
+                        <option>Correios (PAC/SEDEX)</option>
+                        <option>Motoboy (Região)</option>
+                    </select>
 
-<!-- CARRINHO -->
+                    <select id="pagamento">
+                        <option value="">Forma de pagamento</option>
+                        <option>Pix (5% desc.)</option>
+                        <option>Boleto Bancário</option>
+                        <option>Cartão de Crédito</option>
+                    </select>
 
-<div class="carrinho">
+                    <textarea id="obs" placeholder="Observações adicionais..."></textarea>
+                </div>
 
-<h2>🛒 Pedido (<span id="contador">0</span> itens)</h2>
+                <div class="acoes">
+                    <button class="btn btn-whats" onclick="enviarWhats()">🚀 Enviar para WhatsApp</button>
+                    <button class="btn btn-pdf" onclick="gerarPDF()">📄 Baixar PDF</button>
+                    <div class="row-buttons">
+                        <button class="btn btn-copiar" onclick="copiarPedido()">📋 Copiar</button>
+                        <button class="btn btn-limpar" onclick="limparCarrinho()">🗑️ Limpar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="total">
-Total B2B: R$ <span id="total">0.00</span>
-</div>
-
-<div class="economia">
-💰 Economia: R$ <span id="economia">0.00</span>
-</div>
-
-<div class="progress">
-<div id="barra" class="progress-bar"></div>
-</div>
-
-<div id="itens" class="itens"></div>
-
-
-<h3>Dados do Cliente</h3>
-
-<div class="form">
-
-<input id="empresa" placeholder="Empresa / Razão Social">
-
-<input id="cnpj" placeholder="CNPJ">
-
-<input id="ie" placeholder="Inscrição Estadual">
-
-<input id="responsavel" placeholder="Nome do responsável">
-
-<input id="whatsapp" placeholder="WhatsApp">
-
-<input id="email" placeholder="Email">
-
-<textarea id="endereco" placeholder="Endereço completo"></textarea>
-
-<select id="entrega">
-<option value="">Forma de entrega</option>
-<option>Retirada</option>
-<option>Transportadora</option>
-<option>Correios</option>
-</select>
-
-<select id="pagamento">
-<option value="">Forma de pagamento</option>
-<option>Pix</option>
-<option>Boleto</option>
-<option>Cartão</option>
-</select>
-
-<textarea id="obs" placeholder="Observações"></textarea>
-
-</div>
-
-<div class="acoes">
-
-<button class="btn btn-whats" onclick="enviarWhats()">Enviar WhatsApp</button>
-
-<button class="btn btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
-
-<button class="btn btn-copiar" onclick="copiarPedido()">Copiar Pedido</button>
-
-<button class="btn btn-limpar" onclick="limparCarrinho()">Limpar</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
