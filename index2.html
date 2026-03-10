@@ -70,41 +70,43 @@ Total B2B: R$ <span id="total">0</span>
 
 <input id="empresa" placeholder="Razão Social">
 
+<div class="linha2">
 <input id="cnpj" placeholder="CNPJ">
-
 <input id="ie" placeholder="Inscrição Estadual">
+</div>
 
+<div class="linha2">
 <input id="responsavel" placeholder="Responsável">
-
 <input id="whatsapp" placeholder="WhatsApp">
+</div>
 
 <input id="email" placeholder="Email">
 
 <input id="endereco" placeholder="Endereço">
 
+<div class="linha3">
 <input id="cidade" placeholder="Cidade">
-
 <input id="estado" placeholder="Estado">
-
 <input id="cep" placeholder="CEP">
+</div>
+
+<div class="linha2">
 
 <select id="entrega">
-
 <option value="">Forma de entrega</option>
 <option>Retirada na loja</option>
 <option>Correios</option>
 <option>Transportadora</option>
-
 </select>
 
 <select id="pagamento">
-
 <option value="">Forma de pagamento</option>
 <option>Pix</option>
 <option>Boleto</option>
 <option>Cartão</option>
-
 </select>
+
+</div>
 
 <textarea id="observacoes" placeholder="Observações"></textarea>
 
@@ -113,21 +115,13 @@ Total B2B: R$ <span id="total">0</span>
 
 <div class="botoesPedido">
 
-<button class="btnEmail" onclick="enviarEmail()">
-Enviar por Email
-</button>
+<button class="btnEmail" onclick="enviarEmail()">Enviar por Email</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">
-WhatsApp
-</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
 
-<button class="btnPdf" onclick="gerarPDF()">
-Gerar PDF
-</button>
+<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">
-Limpar
-</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
 
 </div>
 
