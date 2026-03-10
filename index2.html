@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Portal B2B Crazy Fantasy</title>
 
@@ -14,98 +14,106 @@
 
 </head>
 
+
 <body>
 
 <div class="container">
 
 <div class="catalogo">
 
+<!-- COLUNA ESQUERDA -->
+
+<div>
+
 <div class="banner">
-<img src="banner.png">
+<img src="banner.png" alt="Crazy Fantasy">
 </div>
 
 <div class="barraInfo">
 🔥 Tabela exclusiva para parceiros • Desconto progressivo B2B
 </div>
 
-<div id="menuCategorias" class="menuCategorias"></div>
+<div class="categorias" id="categorias"></div>
 
-<input id="busca" placeholder="🔎 Buscar produto ou SKU">
+<div class="busca">
+<input type="text" id="busca" placeholder="🔎 Buscar produto ou SKU">
+</div>
 
-<div id="produtos" class="gridProdutos"></div>
+<div id="produtos" class="produtos"></div>
 
 </div>
 
+
+<!-- CARRINHO -->
 
 <div class="carrinho">
 
-<h2>
-🛒 Pedido
-<span id="contadorItens">(0 itens)</span>
-</h2>
+<h2>🛒 Pedido (<span id="contador">0</span> itens)</h2>
 
 <div class="total">
-Total B2B: R$ <span id="total">0</span>
+Total B2B: R$ <span id="total">0.00</span>
 </div>
 
-<div class="economiaPedido">
-💰 Economia: R$ <span id="economia">0</span>
+<div class="economia">
+💰 Economia: R$ <span id="economia">0.00</span>
 </div>
 
-<div class="barraProgresso">
-<div id="barra"></div>
+<div class="progress">
+<div id="barra" class="progress-bar"></div>
 </div>
 
-<div id="msgMinimo"></div>
+<div id="itens" class="itens"></div>
 
-<div id="listaPedido"></div>
 
 <h3>Dados do Cliente</h3>
 
+<div class="form">
+
 <input id="empresa" placeholder="Empresa / Razão Social">
+
 <input id="cnpj" placeholder="CNPJ">
+
 <input id="ie" placeholder="Inscrição Estadual">
-<input id="nome" placeholder="Nome do responsável">
+
+<input id="responsavel" placeholder="Nome do responsável">
+
 <input id="whatsapp" placeholder="WhatsApp">
+
 <input id="email" placeholder="Email">
 
 <textarea id="endereco" placeholder="Endereço completo"></textarea>
 
-<h3>Entrega</h3>
-
 <select id="entrega">
-<option value="">Selecione</option>
-<option>Correios</option>
-<option>Transportadora</option>
+<option value="">Forma de entrega</option>
 <option>Retirada</option>
+<option>Transportadora</option>
+<option>Correios</option>
 </select>
 
-<h3>Pagamento</h3>
-
 <select id="pagamento">
-<option value="">Selecione</option>
-<option>PIX</option>
+<option value="">Forma de pagamento</option>
+<option>Pix</option>
 <option>Boleto</option>
 <option>Cartão</option>
 </select>
 
-<textarea id="observacoes" placeholder="Observações"></textarea>
+<textarea id="obs" placeholder="Observações"></textarea>
 
-<button onclick="copiarPedido()" class="btnEmail">
-Copiar Pedido (ERP)
-</button>
+</div>
 
-<button onclick="enviarWhatsApp()" class="btnWhats">
-WhatsApp
-</button>
+<div class="acoes">
 
-<button onclick="gerarPDF()" class="btnPdf">
-Gerar PDF
-</button>
+<button class="btn btn-whats" onclick="enviarWhats()">Enviar WhatsApp</button>
 
-<button onclick="limparCarrinho()" class="btnLimpar">
-Limpar
-</button>
+<button class="btn btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
+
+<button class="btn btn-copiar" onclick="copiarPedido()">Copiar Pedido</button>
+
+<button class="btn btn-limpar" onclick="limparCarrinho()">Limpar</button>
+
+</div>
+
+</div>
 
 </div>
 
