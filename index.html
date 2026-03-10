@@ -3,50 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Catálogo de Pedidos</title>
+    <title>Crazy Fantasy - Catálogo & Estoque Profissional</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; color: #333; }
-        .container { max-width: 900px; margin: auto; padding: 20px; }
-        
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; }
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
         .banner-box { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #6c2bd9; }
         .banner-box img { width: 100%; height: auto; display: block; }
-
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        input[type="text"] { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
-        
-        .tabela-scroll { max-height: 500px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #6c2bd9; color: white; padding: 12px; position: sticky; top: 0; z-index: 10; }
-        td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; }
-        
-        .cat-header { background: #f8f0ff; color: #6c2bd9; font-weight: bold; text-align: left; padding: 12px; border-left: 5px solid #6c2bd9; }
+        input[type="text"] { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 16px; }
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: #6c2bd9; color: white; padding: 15px; position: sticky; top: 0; z-index: 10; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        .cat-header { background: #f8f0ff; color: #6c2bd9; font-weight: bold; text-align: left; padding: 15px; border-left: 5px solid #6c2bd9; font-size: 18px; }
+        .img-produto { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; background: #eee; margin-right: 10px; vertical-align: middle; }
+        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .qtd-input { width: 60px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; }
-        
-        .total-container { padding: 20px; background: #6c2bd9; color: white; border-radius: 10px; text-align: right; font-size: 24px; font-weight: bold; margin-top: 10px; }
-        
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
-        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .total-container { padding: 25px; background: #6c2bd9; color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         .btn-pdf { background: #e63946; color: white; }
         .btn-whatsapp { background: #25d366; color: white; }
         .btn-clear { background: #6c757d; color: white; }
-        button:hover { opacity: 0.8; transform: translateY(-2px); }
-
-        @media (max-width: 600px) { .grid-inputs { grid-template-columns: 1fr; } .btn-group { flex-direction: column; } button { width: 100%; } }
+        button:hover { transform: translateY(-2px); filter: brightness(0.9); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="banner-box">
-        <img src="banner.png" alt="Crazy Fantasy Banner">
+        <img src="banner.png" alt="Crazy Fantasy - Banner">
     </div>
 
     <div class="form-box">
         <div class="grid-inputs">
-            <input type="text" id="cliente" placeholder="Nome do Cliente / Loja">
-            <input type="text" id="vendedora" placeholder="Vendedora Responsável">
+            <input type="text" id="cliente" placeholder="Nome do Cliente (Empresa)">
+            <input type="text" id="vendedora" placeholder="Nome da Vendedora">
         </div>
 
         <div class="tabela-scroll">
@@ -55,9 +49,9 @@
                     <tr>
                         <th>Produto</th>
                         <th>Tam</th>
-                        <th>Preço Unit.</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
                         <th>Qtd</th>
-                        <th>Subtotal</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela">
@@ -71,102 +65,78 @@
 
         <div class="btn-group">
             <button class="btn-clear" onclick="window.location.reload()">Limpar Pedido</button>
-            <button class="btn-pdf" onclick="gerarPDF()">Baixar PDF</button>
-            <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar para o Omie (WhatsApp)</button>
+            <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
+            <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar WhatsApp</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Dados completos extraídos das suas imagens
-    const produtosFemininos = [
-        ["Arlequina", 180, "M"], ["Arlequina de casaco", 180, "G"], ["Mulher Maravilha", 125, "M"], ["Barbie", 125, "M"], ["Barbie", 125, "G"], ["Sininho", 99.90, "M"], ["Unicornio c/ Led", 199.99, "M"], ["Unicornio c/ Led", 199.99, "G"], ["Unicornio s/ Led", 189.99, "M"], ["Unicornio s/ Led", 189.99, "G"], ["Jessie", 129.90, "M"], ["Jasmine", 120, "M"], ["Jasmine", 120, "G"], ["Doutora", 149.90, "M"], ["Doutora", 149.90, "G"], ["Medica", 180, "M"], ["Medica", 180, "G"], ["Astronauta", 199.90, "G"], ["Cruela", 140, "M"], ["Cruela", 140, "G"], ["Elsa", 269.90, "M"], ["Rapunzel", 269.90, "M"], ["Rapunzel", 269.90, "G"], ["Cinderela", 269.90, "M"], ["Bela adormecida", 269.90, "M"], ["Bela adormecida", 269.90, "G"], ["Moana", 269.90, "M"], ["Moana", 269.90, "G"], ["Branca de neve", 269.90, "M"], ["Branca de neve", 269.90, "G"], ["Bela", 269.90, "M"], ["Bela", 269.90, "G"], ["Alice", 120, "M"], ["Policial", 130, "M"], ["Aurora Basica", 209.99, "G"], ["Aurora Luxo", 299.99, "M"], ["Aurora Luxo", 299.99, "G"], ["Cinderela Pop", 129.99, "G"], ["Bela Pop", 129.99, "G"], ["Bela Luxo", 299.99, "G"], ["Rapunzel Basica", 179.99, "M"], ["Rapunzel Luxo", 299.99, "M"], ["Rapunzel Luxo", 299.99, "G"], ["Cinderela Basica", 179.99, "M"], ["Cinderela Basica", 179.99, "G"], ["Cinderela Luxo", 299.99, "M"], ["Cinderela Luxo", 299.99, "G"], ["Mirabel", 239.99, "G"], ["Lady Bug", 199.99, "G"], ["Jasmine Luxo", 239.99, "M"], ["Jasmine Luxo", 239.99, "G"], ["Mulher maravilha Luxo", 209.99, "M"], ["Ana pop", 109.99, "M"], ["Ana pop", 109.99, "G"], ["Ana luxo", 269.99, "M"], ["Ana luxo", 269.99, "G"], ["Minnie", 239.99, "M"], ["Minnie", 239.99, "G"]
+    // Configurações da sua Empresa (MUDE AQUI)
+    const empresaInfo = {
+        nome: "CRAZY FANTASY",
+        cnpj: "00.000.000/0001-00",
+        ie: "123.456.789.111",
+        endereco: "Rua Exemplo, 123 - Bairro - Cidade/UF",
+        contato: "(00) 00000-0000"
+    };
+
+    const imgTeste = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
+
+    // Exemplo de produtos (Pode replicar para os 80 itens)
+    const feminino = [
+        ["Arlequina", 180, "M"], ["Arlequina de casaco", 180, "G"], ["Mulher Maravilha", 125, "M"], ["Barbie", 125, "M"], ["Barbie", 125, "G"]
+    ];
+    const masculino = [
+        ["Astronauta", 199.90, "M"], ["Policial", 199.99, "G"]
     ];
 
-    const produtosMasculinos = [
-        ["Astronauta", 199.90, "M"], ["Astronauta", 199.90, "G"], ["Exercito", 180, "M"], ["Exercito", 180, "G"], ["Policial", 199.99, "G"], ["Capitão da Marinha", 180, "M"], ["Capitão da Marinha", 180, "G"], ["Pintor", 159.90, "M"], ["Medico", 169.90, "M"], ["Medico", 169.90, "G"], ["Bombeiro", 229.90, "M"], ["Bombeiro", 229.90, "G"], ["Construtor", 129.90, "G"], ["Pirata", 180, "G"], ["Medieval", 189.99, "M"], ["Medieval", 189.99, "G"], ["Woody", 189.99, "M"], ["Woody", 189.99, "G"], ["Coringa", 199.99, "M"], ["Chaves", 229.99, "M"], ["Tubarão", 229.99, "G"], ["La casa de papel", 100, "M"], ["Mario", 199.90, "M"], ["Cozinheiro", 199.90, "M"], ["Medico (Simples)", 120, "M"], ["Medico (Simples)", 120, "G"], ["Principe", 240, "M"], ["Dolma", 100, "M"], ["Dolma", 100, "G"], ["Bombeiro (Azul)", 130, "M"], ["Bombeiro (Luxo)", 229.99, "G"], ["Magico", 120, "M"], ["Homem Aranha", 129.99, "M"], ["Homem Aranha", 129.99, "G"], ["Batman", 129.99, "M"], ["Batman", 129.99, "G"], ["Hulk", 129.99, "M"], ["Hulk", 129.99, "G"], ["Super Man", 199.99, "G"], ["Flash Curto", 159.99, "M"], ["Flash Curto", 159.99, "G"], ["Flash Longo", 319.99, "M"], ["Flash Longo", 319.99, "G"], ["Catnoir", 289.99, "M"], ["Catnoir", 289.99, "G"], ["Naruto", 159.97, "M"], ["Naruto", 159.97, "G"], ["Minions", 189.99, "M"], ["Buzz", 209.99, "M"], ["Woody com chapeu", 269.99, "G"], ["Homem Aranha Luxo", 269.99, "M"], ["Homem de ferro", 209.99, "G"], ["Thor", 239.99, "G"], ["Batman Longo", 359.99, "G"], ["Woody com mascara", 319.99, "M"], ["Woody com mascara", 319.99, "G"], ["Marsall", 209.99, "M"], ["Chase", 209.99, "M"], ["Enaldinho", 249.99, "M"], ["Enaldinho", 249.99, "G"]
-    ];
-
-    function carregarTabela() {
+    function render() {
         const corpo = document.getElementById("corpo-tabela");
-        corpo.innerHTML = ""; // Limpa antes de carregar
-
-        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">MODA FEMININA</td></tr>`;
-        produtosFemininos.forEach(p => corpo.innerHTML += criarLinha(p));
-
-        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">MODA MASCULINA</td></tr>`;
-        produtosMasculinos.forEach(p => corpo.innerHTML += criarLinha(p));
+        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👑 MODA FEMININA</td></tr>`;
+        feminino.forEach(p => corpo.innerHTML += criarLinha(p));
+        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👔 MODA MASCULINA</td></tr>`;
+        masculino.forEach(p => corpo.innerHTML += criarLinha(p));
     }
 
     function criarLinha(p) {
-        let precoOriginal = p[1];
-        let precoFinal = precoOriginal > 200 ? precoOriginal * 0.9 : precoOriginal;
+        let preco = p[1] > 200 ? p[1] * 0.9 : p[1];
         return `
             <tr>
-                <td style="text-align:left">${p[0]}</td>
+                <td style="text-align:left"><img src="${imgTeste}" class="img-produto"> ${p[0]}</td>
                 <td><strong>${p[2]}</strong></td>
-                <td>R$ ${precoFinal.toFixed(2)}</td>
-                <td><input type="number" class="qtd-input" min="0" onchange="calcular()" data-nome="${p[0]}" data-tam="${p[2]}" data-preco="${precoFinal}"></td>
-                <td class="subtotal">0.00</td>
+                <td>R$ ${preco.toFixed(2)}</td>
+                <td><span class="estoque-badge">1 un.</span></td>
+                <td><input type="number" class="qtd-input" min="0" max="1" onchange="calcular()" data-nome="${p[0]}" data-tam="${p[2]}" data-preco="${preco}"></td>
             </tr>`;
     }
 
     function calcular() {
         let total = 0;
-        document.querySelectorAll(".qtd-input").forEach(input => {
-            let qtd = parseInt(input.value) || 0;
-            let preco = parseFloat(input.dataset.preco);
-            let sub = qtd * preco;
-            input.parentElement.nextElementSibling.innerText = sub.toFixed(2);
-            total += sub;
-        });
+        document.querySelectorAll(".qtd-input").forEach(i => total += (parseInt(i.value) || 0) * parseFloat(i.dataset.preco));
         document.getElementById("valor-total").innerText = total.toFixed(2);
-    }
-
-    function enviarWhatsApp() {
-        let cliente = document.getElementById("cliente").value || "Não informado";
-        let vendedora = document.getElementById("vendedora").value || "Não informado";
-        let texto = `*PEDIDO CRAZY FANTASY*\n*Cliente:* ${cliente}\n*Vendedora:* ${vendedora}\n\n`;
-        
-        let temItens = false;
-        document.querySelectorAll(".qtd-input").forEach(input => {
-            let qtd = parseInt(input.value) || 0;
-            if(qtd > 0) {
-                texto += `• ${input.dataset.nome} (${input.dataset.tam}) x ${qtd} un.\n`;
-                temItens = true;
-            }
-        });
-
-        if(!temItens) return alert("Adicione pelo menos um item!");
-        
-        texto += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
     }
 
     function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(18);
-        doc.text("Resumo do Pedido - Crazy Fantasy", 15, 15);
-        doc.setFontSize(12);
-        doc.text(`Cliente: ${document.getElementById("cliente").value}`, 15, 25);
-        doc.text(`Vendedora: ${document.getElementById("vendedora").value}`, 15, 32);
-        
-        let y = 45;
-        document.querySelectorAll(".qtd-input").forEach(input => {
-            let qtd = parseInt(input.value) || 0;
-            if(qtd > 0) {
-                doc.text(`${input.dataset.nome} (${input.dataset.tam}) - Qtd: ${qtd} - R$ ${input.dataset.preco}`, 15, y);
-                y += 8;
-                if(y > 280) { doc.addPage(); y = 20; }
-            }
-        });
-        doc.setFontSize(14);
-        doc.text(`TOTAL GERAL: R$ ${document.getElementById("valor-total").innerText}`, 15, y + 10);
-        doc.save("pedido-crazy-fantasy.pdf");
-    }
 
-    carregarTabela();
-</script>
-</body>
-</html>
+        // 1. Cabeçalho da Empresa
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.setTextColor(108, 43, 217); // Roxo Crazy Fantasy
+        doc.text(empresaInfo.nome, 105, 20, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(50, 50, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text(`CNPJ: ${empresaInfo.cnpj} | IE: ${empresaInfo.ie}`, 105, 27, { align: "center" });
+        doc.text(empresaInfo.endereco, 105, 32, { align: "center" });
+        doc.line(15, 37, 195, 37); // Linha divisória
+
+        // 2. Dados do Cliente e Vendedora
+        doc.setFont("helvetica", "bold");
+        doc.text("DADOS DO PEDIDO", 15, 45);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Cliente: ${document.getElementById("cliente").value || "Não informado"}`, 15, 52);
+        doc.text(`Vendedora
