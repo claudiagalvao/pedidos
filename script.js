@@ -7,6 +7,7 @@ const menuCategorias = document.getElementById("menuCategorias");
 const busca = document.getElementById("busca");
 const barra = document.getElementById("barra");
 const msgMinimo = document.getElementById("msgMinimo");
+const carrinhoUI = document.getElementById("carrinho");
 
 let produtos = [];
 let carrinho = [];
@@ -142,6 +143,14 @@ totalOriginal+=p.preco*qtd;
 
 atualizarCarrinho();
 
+/* ANIMAÇÃO DO CARRINHO */
+
+carrinhoUI.classList.add("pulse");
+
+setTimeout(()=>{
+carrinhoUI.classList.remove("pulse");
+},400);
+
 };
 
 produtosDiv.appendChild(card);
@@ -195,62 +204,6 @@ msgMinimo.innerText=total<pedidoMinimo
 
 }
 
-function validarFormulario(){
-
-const campos=["razao","cnpj","responsavel","whatsapp","email","endereco","cidade","estado","cep"];
-
-for(let id of campos){
-
-if(!document.getElementById(id).value.trim()){
-
-alert("Preencha todos os campos do formulário");
-return false;
-
-}
-
-}
-
-if(total<pedidoMinimo){
-
-alert("Pedido mínimo R$200");
-return false;
-
-}
-
-return true;
-
-}
-
-function enviarWhatsApp(){
-
-if(!validarFormulario()) return;
-
-window.open(`https://wa.me/5519992850208`);
-
-}
-
-function enviarEmail(){
-
-if(!validarFormulario()) return;
-
-fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com");
-
-}
-
-function gerarPDF(){
-
-if(!validarFormulario()) return;
-
-const {jsPDF}=window.jspdf;
-
-const doc=new jsPDF();
-
-doc.text("Pedido Crazy Fantasy",20,20);
-
-doc.save("pedido.pdf");
-
-}
-
 function limparCarrinho(){
 
 carrinho=[];
@@ -258,5 +211,13 @@ total=0;
 totalOriginal=0;
 
 atualizarCarrinho();
+
+/* LIMPA FORMULÁRIO */
+
+document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
+document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
+
+document.getElementById("entrega").selectedIndex=0;
+document.getElementById("pagamento").selectedIndex=0;
 
 }
