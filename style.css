@@ -62,7 +62,7 @@ border-radius:10px;
 border:1px solid #ddd;
 }
 
-/* GRID */
+/* GRID PRODUTOS */
 
 .gridProdutos{
 display:grid;
@@ -70,7 +70,7 @@ grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:20px;
 }
 
-/* CARD */
+/* CARD PRODUTO */
 
 .produto{
 
@@ -120,7 +120,7 @@ border-radius:8px;
 margin:10px 0;
 }
 
-/* INPUT QTD */
+/* INPUT QUANTIDADE */
 
 .produto input{
 width:100%;
@@ -131,7 +131,7 @@ text-align:center;
 margin-top:10px;
 }
 
-/* LINHA COM CAMERA + SELO + BOTÃO */
+/* LINHA DE AÇÕES */
 
 .linhaAcoes{
 
@@ -204,7 +204,7 @@ white-space:nowrap;
 
 }
 
-/* BOTÃO ADD */
+/* BOTÃO ADICIONAR */
 
 .btnAdd{
 background:#2f3242;
@@ -254,6 +254,7 @@ background:#444;
 height:10px;
 border-radius:8px;
 overflow:hidden;
+margin:8px 0;
 }
 
 .barraProgresso{
@@ -262,7 +263,27 @@ height:10px;
 width:0%;
 }
 
-/* FORM */
+/* ECONOMIA */
+
+.economia{
+margin-top:6px;
+font-weight:500;
+}
+
+/* LISTA DE PRODUTOS DO CARRINHO */
+
+.listaPedido{
+
+margin-top:14px;
+padding-top:14px;
+
+border-top:1px solid rgba(255,255,255,0.2);
+
+font-size:13px;
+
+}
+
+/* FORMULÁRIO */
 
 .formPedido input,
 .formPedido select,
