@@ -1,4 +1,4 @@
-/* RESET PARA ELIMINAR ESPAÇOS DO NAVEGADOR */
+/* RESET E ESTRUTURA BASE */
 * {
     margin: 0;
     padding: 0;
@@ -15,20 +15,20 @@ body {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px; /* Zero no topo */
+    padding: 0 20px 20px 20px;
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0; /* Removido o padding para o banner encostar */
+    padding: 0;
 }
 
-/* BANNER TOTALMENTE COLADO NAS BORDAS */
+/* BANNER COLADO */
 .bannerTopo {
-    width: calc(100% + 40px); /* Compensa o padding do container */
-    margin-left: -20px;       /* Puxa para a esquerda para encostar */
+    width: calc(100% + 40px);
+    margin-left: -20px;
     height: auto;
     display: block;
     margin-bottom: 15px;
@@ -45,31 +45,73 @@ body {
     font-weight: 500;
 }
 
+/* RESTAURANDO O MENU DE CATEGORIAS */
+#menuCategorias {
+    margin-bottom: 15px;
+}
+
+#menuCategorias button {
+    background: #e5e7ea;
+    color: #444;
+    border: none;
+    border-radius: 18px;
+    padding: 8px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    margin: 4px;
+    transition: 0.2s;
+}
+
+#menuCategorias button:hover {
+    background: #cfd3d8;
+}
+
+#busca {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+/* GRID E CARDS */
 .gridProdutos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
 }
 
 .produto {
     background: white;
-    padding: 20px;
+    padding: 24px;
     border-radius: 16px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
     position: relative;
-    transition: 0.3s;
+    transition: 0.25s;
     display: flex;
     flex-direction: column;
 }
 
-.precoB2B { 
-    color: #000; 
-    font-size: 18px; 
-    font-weight: 700; 
-    margin: 5px 0; 
+.produto:hover {
+    transform: translateY(-5px);
 }
 
-/* TABELA DE DESCONTOS INTERNA */
+/* RESTAURANDO O SELO MAIS VENDIDO */
+.badgeVendido {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: #ff9800;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
+
 .progressivo-card {
     font-size: 11px;
     color: #666;
@@ -77,16 +119,11 @@ body {
     padding: 8px;
     border-radius: 8px;
     margin: 8px 0;
-    line-height: 1.4;
 }
 
-.estoque-card {
-    font-size: 12px;
-    color: #444;
-    margin-bottom: 8px;
-}
+.estoque-card { font-size: 12px; color: #444; margin-bottom: 8px; }
 
-/* CARRINHO LATERAL */
+/* CARRINHO */
 .carrinho {
     flex: 1;
     background: #2f3242;
@@ -98,28 +135,23 @@ body {
     max-height: calc(100vh - 40px);
     overflow-y: auto;
     border-radius: 15px;
-    margin-top: 20px;
 }
 
 .formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%; 
-    padding: 8px; 
-    border-radius: 6px; 
-    border: none; 
-    margin-bottom: 5px; 
-    font-size: 12px;
+    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
 }
 
-.btnWhats { 
-    background: #27d266; 
-    color: white; 
-    width: 100%; 
-    padding: 10px; 
-    border-radius: 8px; 
-    margin-top: 5px; 
-    cursor: pointer; 
-    border: none; 
-    font-weight: 600; 
+.btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
+
+/* RESTAURANDO RODAPÉ */
+.footer {
+    background: #2f3242;
+    color: white;
+    padding: 40px;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 @media (max-width: 1000px) {
