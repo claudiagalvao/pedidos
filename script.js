@@ -3,7 +3,20 @@ const menuCategorias = document.getElementById("menuCategorias");
 const busca = document.getElementById("busca");
 const carrinhoUI = document.getElementById("carrinho");
 
+const listaPedido = document.getElementById("listaPedido");
+const totalEl = document.getElementById("total");
+const economiaEl = document.getElementById("economia");
+const contadorItens = document.getElementById("contadorItens");
+const barra = document.getElementById("barra");
+const msgMinimo = document.getElementById("msgMinimo");
+
 let produtos = [];
+let carrinho = [];
+
+let total = 0;
+let totalOriginal = 0;
+
+const pedidoMinimo = 200;
 
 /* ============================= */
 /* LEITURA DO CSV */
@@ -19,7 +32,7 @@ linhas.forEach(l => {
 
 if(!l.trim()) return;
 
-/* detecta separador automaticamente */
+/* detecta separador */
 
 let separador = l.includes(";") ? ";" : ",";
 
@@ -63,15 +76,11 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 
 }
 
-/* ============================= */
-
 function filtrarCategoria(cat){
 
 if(cat==="Todos"){
-
 renderProdutos(produtos);
 return;
-
 }
 
 renderProdutos(produtos.filter(p=>p.categoria===cat));
@@ -120,8 +129,6 @@ card.innerHTML=`
 
 ${p.vendas>70?'<div class="badgeVendido">🔥 Mais vendido</div>':''}
 
-<a href="${p.link}" target="_blank" class="camera-icon">📸</a>
-
 <h3>${p.nome}</h3>
 
 <div style="text-decoration:line-through;color:#888;font-size:12px">
@@ -146,21 +153,39 @@ R$ ${preco10}
 
 <input type="number" value="0" min="0" class="qtdProduto">
 
+<div class="linhaAcoes">
+
+<a href="${p.link}" target="_blank" class="camera-link">📸</a>
+
 <button class="btnAdd">Adicionar</button>
+
+</div>
 
 `;
 
-card.querySelector("button").onclick=()=>{
+const botao = card.querySelector(".btnAdd");
+const input = card.querySelector(".qtdProduto");
 
-const input=card.querySelector(".qtdProduto");
+botao.onclick = () => {
 
-const qtd=parseInt(input.value);
+const qtd = parseInt(input.value);
 
-if(!qtd || qtd<=0) return;
+if(!qtd || qtd <= 0) return;
 
-/* reset quantidade */
+carrinho.push({
+nome:p.nome,
+preco:p.preco,
+qtd:qtd
+});
 
-input.value=0;
+total += p.preco * qtd;
+totalOriginal += p.preco * qtd;
+
+atualizarCarrinho();
+
+/* reset input */
+
+input.value = 0;
 
 /* anima carrinho */
 
@@ -179,13 +204,101 @@ produtosDiv.appendChild(card);
 }
 
 /* ============================= */
-/* LIMPAR CARRINHO + FORM */
+/* ATUALIZA CARRINHO */
+/* ============================= */
+
+function atualizarCarrinho(){
+
+listaPedido.innerHTML="";
+
+let itens=0;
+
+carrinho.forEach((item,index)=>{
+
+itens+=item.qtd;
+
+listaPedido.innerHTML+=`
+
+<div style="display:flex;justify-content:space-between">
+
+<span>${item.qtd}x ${item.nome}</span>
+
+<button onclick="removerItem(${index})">✕</button>
+
+</div>
+
+`;
+
+});
+
+const desconto = calcularDesconto(total);
+
+const totalFinal = total * (1 - desconto);
+
+const economia = totalOriginal - totalFinal;
+
+totalEl.innerText = totalFinal.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+
+economiaEl.innerText = economia.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+
+contadorItens.innerText=`(${itens} itens)`;
+
+let progresso=(total/pedidoMinimo)*100;
+
+barra.style.width=Math.min(progresso,100)+"%";
+
+msgMinimo.innerText= total<pedidoMinimo
+?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
+:"Pedido mínimo atingido";
+
+}
+
+/* ============================= */
+
+function calcularDesconto(valor){
+
+if(valor>=1000) return 0.15;
+if(valor>=500) return 0.12;
+if(valor>=200) return 0.10;
+
+return 0;
+
+}
+
+/* ============================= */
+
+function removerItem(index){
+
+total -= carrinho[index].preco * carrinho[index].qtd;
+totalOriginal -= carrinho[index].preco * carrinho[index].qtd;
+
+carrinho.splice(index,1);
+
+atualizarCarrinho();
+
+}
+
+/* ============================= */
+/* LIMPAR */
 /* ============================= */
 
 function limparCarrinho(){
 
-document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
+carrinho=[];
+total=0;
+totalOriginal=0;
 
+atualizarCarrinho();
+
+/* limpa formulário */
+
+document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
 document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
 
 document.getElementById("entrega").selectedIndex=0;
