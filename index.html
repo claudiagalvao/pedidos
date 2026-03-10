@@ -3,67 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Catálogo & Estoque</title>
+    <title>Crazy Fantasy - Sistema de Pedidos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
+        :root { --primary: #6c2bd9; --secondary: #e63946; --whatsapp: #25d366; --bg: #f0f2f5; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
         .banner-box { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-box img { width: 100%; height: auto; display: block; }
-        .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        input[type="text"] { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 16px; }
-        .tabela-scroll { max-height: 500px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #6c2bd9; color: white; padding: 15px; position: sticky; top: 0; z-index: 10; }
-        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-        .cat-header { background: #f8f0ff; color: #6c2bd9; font-weight: bold; text-align: left; padding: 15px; border-left: 5px solid #6c2bd9; font-size: 18px; }
-        .img-produto { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; background: #eee; margin-right: 10px; vertical-align: middle; }
-        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
+        .grid-faturamento { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        input, select { padding: 10px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
+        .filtros-box { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .busca-input { flex: 1; min-width: 250px; border: 2px solid #eee; padding: 12px; border-radius: 8px; font-size: 16px; }
+        .btn-filtro { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #eee; font-weight: bold; }
+        .btn-filtro.active { background: var(--primary); color: white; }
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        .img-produto { width: 45px; height: 45px; border-radius: 5px; object-fit: cover; background: #f9f9f9; vertical-align: middle; margin-right: 10px; }
+        .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
         .qtd-input { width: 60px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; }
-        .total-container { padding: 25px; background: #6c2bd9; color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
-        .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
-        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
-        .btn-pdf { background: #e63946; color: white; }
-        .btn-whatsapp { background: #25d366; color: white; }
-        .btn-clear { background: #6c757d; color: white; }
-        button:hover { transform: translateY(-2px); filter: brightness(0.9); }
+        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
+        .btn-pdf { background: var(--secondary); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { filter: brightness(0.9); transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="banner-box">
-        <img src="banner.png" alt="Crazy Fantasy - Banner">
+    <div class="banner-box"><img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="Crazy Fantasy"></div>
+
+    <div class="form-box">
+        <h3>📄 Dados Fiscais / Nota Fiscal</h3>
+        <div class="grid-faturamento">
+            <div style="grid-column: span 2;"><label>Razão Social / Nome</label><input type="text" id="cli_nome"></div>
+            <div><label>CNPJ / CPF</label><input type="text" id="cli_doc"></div>
+            <div><label>Vendedora</label><input type="text" id="vendedora"></div>
+            <div><label>Forma de Entrega</label>
+                <select id="entrega"><option>Retirada</option><option>Sedex</option><option>PAC</option><option>Motoboy</option></select>
+            </div>
+            <div><label>Pagamento</label>
+                <select id="pagamento"><option>PIX</option><option>Boleto Omie</option><option>Cartão</option><option>Dinheiro</option></select>
+            </div>
+        </div>
     </div>
 
     <div class="form-box">
-        <div class="grid-inputs">
-            <input type="text" id="cliente" placeholder="Nome do Cliente (Empresa)">
-            <input type="text" id="vendedora" placeholder="Nome da Vendedora">
+        <h3>🛍️ Catálogo de Produtos</h3>
+        <div class="filtros-box">
+            <input type="text" id="busca" class="busca-input" placeholder="🔍 Buscar fantasia..." onkeyup="filtrar()">
+            <button class="btn-filtro active" onclick="setCat('todos', this)">Todos</button>
+            <button class="btn-filtro" onclick="setCat('feminino', this)">Feminino</button>
+            <button class="btn-filtro" onclick="setCat('masculino', this)">Masculino</button>
         </div>
-
         <div class="tabela-scroll">
             <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Tam</th>
-                        <th>Preço</th>
-                        <th>Estoque</th>
-                        <th>Qtd</th>
-                    </tr>
-                </thead>
+                <thead><tr><th style="text-align:left; padding-left:20px;">Produto</th><th>Tam</th><th>Preço</th><th>Estoque</th><th>Qtd</th></tr></thead>
                 <tbody id="corpo-tabela"></tbody>
             </table>
         </div>
-
-        <div class="total-container">
-            Total do Pedido: R$ <span id="valor-total">0.00</span>
-        </div>
-
+        <div class="total-container">Total: R$ <span id="valor-total">0.00</span></div>
         <div class="btn-group">
-            <button class="btn-clear" onclick="window.location.reload()">Limpar Pedido</button>
             <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
             <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar WhatsApp</button>
         </div>
@@ -71,123 +78,119 @@
 </div>
 
 <script>
-    const empresaInfo = {
-        nome: "CRAZY FANTASY",
-        cnpj: "00.000.000/0001-00", // Preencha com os dados reais
-        ie: "123.456.789.111",      // Preencha com os dados reais
-        endereco: "Rua Exemplo, 123 - Cidade/UF",
-        contato: "(00) 00000-0000"
-    };
+    const empresa = { nome: "Galvão Artigos para Festas Ltda", cnpj: "09.626.903/0001-57", end: "Rua Itália, 170 - Valinhos/SP" };
+    const imgPadrao = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
+    let catAtiva = 'todos';
 
-    const imgPadrão = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
+    const produtos = [
+        // MASCULINO (Filtrado das fotos)
+        {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
+        {n: "Astronauta", p: 199.90, t: "G", est: 2, c: "masculino"},
+        {n: "Exército", p: 180.00, t: "M", est: 1, c: "masculino"},
+        {n: "Policial", p: 199.99, t: "G", est: 2, c: "masculino"},
+        {n: "Médico", p: 169.99, t: "M", est: 2, c: "masculino"},
+        {n: "Médico", p: 169.99, t: "G", est: 2, c: "masculino"},
+        {n: "Bombeiro", p: 229.90, t: "M", est: 1, c: "masculino"},
+        {n: "Bombeiro", p: 229.90, t: "G", est: 2, c: "masculino"},
+        {n: "Pirata", p: 180.00, t: "M", est: 2, c: "masculino"},
+        {n: "Pirata", p: 180.00, t: "G", est: 1, c: "masculino"},
+        {n: "Woody", p: 189.99, t: "M", est: 1, c: "masculino"},
+        {n: "Woody", p: 189.99, t: "G", est: 1, c: "masculino"},
+        // FEMININO (Filtrado das fotos)
+        {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2, c: "feminino"},
+        {n: "Sininho", p: 99.90, t: "M", est: 1, c: "feminino"},
+        {n: "Jessie", p: 129.90, t: "M", est: 1, c: "feminino"},
+        {n: "Astronauta", p: 199.90, t: "G", est: 1, c: "feminino"},
+        {n: "Médica", p: 180.00, t: "M", est: 2, c: "feminino"},
+        {n: "Médica", p: 180.00, t: "G", est: 2, c: "feminino"},
+        {n: "Mulher Maravilha (Luxo)", p: 209.99, t: "M", est: 1, c: "feminino"},
+        {n: "Alice", p: 120.00, t: "M", est: 1, c: "feminino"},
+        {n: "Policial", p: 130.00, t: "M", est: 1, c: "feminino"},
+        {n: "Mulher Maravilha (Geral)", p: 299.99, t: "G", est: 2, c: "feminino"}
+    ];
 
-    // Dados extraídos das suas tabelas
-    const catalogo = {
-        feminino: [
-            {nome: "Arlequina", preco: 180, tams: ["M"]},
-            {nome: "Arlequina de casaco", preco: 180, tams: ["G"]},
-            {nome: "Mulher Maravilha", preco: 125, tams: ["M"]},
-            {nome: "Barbie", preco: 125, tams: ["M", "G"]},
-            {nome: "Sininho", preco: 99.90, tams: ["M"]},
-            {nome: "Unicornio c/ Led", preco: 199.99, tams: ["M", "G"]},
-            {nome: "Unicornio s/ Led", preco: 189.99, tams: ["M", "G"]},
-            {nome: "Doutora", preco: 149.90, tams: ["M", "G"]},
-            {nome: "Mirabel", preco: 239.99, tams: ["G"]}
-        ],
-        masculino: [
-            {nome: "Astronauta", preco: 199.90, tams: ["M", "G"]},
-            {nome: "Exercito", preco: 180.00, tams: ["M", "G"]},
-            {nome: "Policial", preco: 199.99, tams: ["G"]},
-            {nome: "Medico", preco: 169.90, tams: ["M", "G"]},
-            {nome: "Woody", preco: 189.99, tams: ["M", "G"]},
-            {nome: "Naruto", preco: 159.97, tams: ["M", "G"]}
-        ]
-    };
-
-    function renderTabela() {
+    function render() {
         const corpo = document.getElementById("corpo-tabela");
-        
-        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👑 MODA FEMININA</td></tr>`;
-        catalogo.feminino.forEach(p => renderLinhas(p, corpo));
-
-        corpo.innerHTML += `<tr><td colspan="5" class="cat-header">👔 MODA MASCULINA</td></tr>`;
-        catalogo.masculino.forEach(p => renderLinhas(p, corpo));
-    }
-
-    function renderLinhas(p, container) {
-        p.tams.forEach(tam => {
-            let precoDesc = p.preco > 200 ? p.preco * 0.9 : p.preco;
-            container.innerHTML += `
-                <tr>
-                    <td style="text-align:left"><img src="${imgPadrão}" class="img-produto"> ${p.nome}</td>
-                    <td><strong>${tam}</strong></td>
+        corpo.innerHTML = "";
+        produtos.forEach(p => {
+            let precoDesc = p.p > 200 ? p.p * 0.9 : p.p;
+            corpo.innerHTML += `
+                <tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
+                    <td style="text-align:left; padding-left:20px;"><img src="${imgPadrao}" class="img-produto"> ${p.n}</td>
+                    <td><strong>${p.t}</strong></td>
                     <td>R$ ${precoDesc.toFixed(2)}</td>
-                    <td><span class="estoque-badge">1 un.</span></td>
-                    <td><input type="number" class="qtd-input" min="0" max="1" onchange="calcular()" 
-                        data-nome="${p.nome}" data-tam="${tam}" data-preco="${precoDesc}"></td>
+                    <td><span class="estoque-badge">${p.est} un.</span></td>
+                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="validar(this)"></td>
                 </tr>`;
         });
     }
 
-    function calcular() {
+    function validar(input) {
+        if(parseInt(input.value) > parseInt(input.max)) { 
+            alert("Estoque insuficiente!"); 
+            input.value = input.max; 
+        }
         let total = 0;
-        document.querySelectorAll(".qtd-input").forEach(i => {
-            total += (parseInt(i.value) || 0) * parseFloat(i.dataset.preco);
+        document.querySelectorAll(".linha-p").forEach((linha, i) => {
+            let q = parseInt(linha.querySelector(".qtd-input").value) || 0;
+            let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
+            total += q * p;
         });
         document.getElementById("valor-total").innerText = total.toFixed(2);
+    }
+
+    function filtrar() {
+        let busca = document.getElementById("busca").value.toLowerCase();
+        document.querySelectorAll(".linha-p").forEach(l => {
+            let match = l.dataset.nome.includes(busca) && (catAtiva === 'todos' || l.dataset.cat === catAtiva);
+            l.style.display = match ? "" : "none";
+        });
+    }
+
+    function setCat(cat, btn) {
+        catAtiva = cat;
+        document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filtrar();
     }
 
     function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        let y = 80;
-
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(108, 43, 217);
-        doc.text(empresaInfo.nome, 105, 20, { align: "center" });
-
+        doc.text(empresa.nome, 105, 15, {align:"center"});
         doc.setFontSize(10);
-        doc.setTextColor(50);
-        doc.text(`CNPJ: ${empresaInfo.cnpj} | IE: ${empresaInfo.ie}`, 105, 28, { align: "center" });
-        doc.text(empresaInfo.endereco, 105, 33, { align: "center" });
-        doc.line(15, 38, 195, 38);
-
-        doc.setFontSize(12);
-        doc.text(`Cliente: ${document.getElementById("cliente").value || "Geral"}`, 15, 50);
-        doc.text(`Vendedora: ${document.getElementById("vendedora").value || "N/A"}`, 15, 57);
-        doc.text(`Data: ${new Date().toLocaleDateString()}`, 150, 50);
-
-        doc.text("Item", 15, 70); doc.text("Tam", 100, 70); doc.text("Qtd", 130, 70); doc.text("Total", 170, 70);
-        doc.line(15, 72, 195, 72);
-
-        doc.setFont("helvetica", "normal");
-        document.querySelectorAll(".qtd-input").forEach(i => {
-            if (parseInt(i.value) > 0) {
-                let sub = parseInt(i.value) * parseFloat(i.dataset.preco);
-                doc.text(i.dataset.nome, 15, y);
-                doc.text(i.dataset.tam, 105, y);
-                doc.text(i.value, 135, y);
-                doc.text(sub.toFixed(2), 175, y);
+        doc.text(`CNPJ: ${empresa.cnpj} | ${empresa.end}`, 105, 22, {align:"center"});
+        doc.line(15, 25, 195, 25);
+        doc.text(`Cliente: ${document.getElementById("cli_nome").value}`, 15, 35);
+        doc.text(`Pagamento: ${document.getElementById("pagamento").value}`, 150, 35);
+        doc.text("Item", 15, 45); doc.text("Qtd", 140, 45); doc.text("Subtotal", 170, 45);
+        let y = 52;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) {
+                let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
+                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
+                doc.text(q, 142, y);
+                doc.text((q*p).toFixed(2), 172, y);
                 y += 8;
             }
         });
-
-        doc.setFont("helvetica", "bold");
-        doc.text(`TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y + 10, { align: "right" });
-        doc.save("orcamento_crazy_fantasy.pdf");
+        doc.text(`TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 190, y+10, {align:"right"});
+        doc.save("orcamento_crazy.pdf");
     }
 
     function enviarWhatsApp() {
-        let msg = `*PEDIDO CRAZY FANTASY*\nCliente: ${document.getElementById("cliente").value}\n\n`;
-        document.querySelectorAll(".qtd-input").forEach(i => {
-            if(parseInt(i.value) > 0) msg += `• ${i.dataset.nome} (${i.dataset.tam}) x ${i.value}\n`;
+        let msg = `*CRAZY FANTASY - NOVO PEDIDO*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) msg += `• ${produtos[i].n} (${produtos[i].t}) x${q}\n`;
         });
         msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
-    renderTabela();
+    render();
 </script>
 </body>
 </html>
