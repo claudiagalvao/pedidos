@@ -130,7 +130,6 @@ produtosDiv.innerHTML="";
 lista.forEach(p=>{
 
 const precoBase = p.preco.toFixed(2);
-
 const preco10 = (p.preco*0.90).toFixed(2);
 const preco12 = (p.preco*0.88).toFixed(2);
 const preco15 = (p.preco*0.85).toFixed(2);
@@ -216,12 +215,6 @@ atualizarCarrinho();
 
 input.value = 0;
 
-carrinhoUI.classList.add("pulse");
-
-setTimeout(()=>{
-carrinhoUI.classList.remove("pulse");
-},400);
-
 };
 
 }
@@ -276,14 +269,8 @@ economiaEl.innerText = economia.toLocaleString('pt-BR',{minimumFractionDigits:2}
 
 contadorItens.innerText=`(${itens} itens)`;
 
-
-/* DESCONTO ATUAL */
-
 document.getElementById("descontoAtual").innerText =
 Math.round(desconto * 100) + "%";
-
-
-/* PRÓXIMO DESCONTO */
 
 let msg = "";
 
@@ -302,9 +289,6 @@ msg = "Você já atingiu o maior desconto!";
 
 document.getElementById("msgDesconto").innerText = msg;
 
-
-/* PROGRESSO */
-
 let progresso=(total/pedidoMinimo)*100;
 
 barra.style.width=Math.min(progresso,100)+"%";
@@ -312,6 +296,8 @@ barra.style.width=Math.min(progresso,100)+"%";
 msgMinimo.innerText = total<pedidoMinimo
 ?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
 :"Pedido mínimo atingido";
+
+atualizarContadorMobile();
 
 }
 
@@ -346,150 +332,40 @@ atualizarCarrinho();
 
 
 /* ============================= */
-/* VALIDAÇÃO FORM */
+/* CONTADOR MOBILE */
 /* ============================= */
 
-function validarFormulario(){
+function atualizarContadorMobile(){
 
-if(total < pedidoMinimo){
-alert("Pedido mínimo de R$200");
-return false;
-}
-
-const campos = document.querySelectorAll(".formPedido input");
-
-for(let campo of campos){
-if(!campo.value.trim()){
-alert("Preencha todos os dados da nota fiscal");
-return false;
-}
-}
-
-return true;
-
-}
-
-
-/* ============================= */
-/* EMAIL */
-/* ============================= */
-
-function enviarEmail(){
-
-if(!validarFormulario()) return;
-
-let pedido="";
+let totalItens = 0;
 
 carrinho.forEach(item=>{
-
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-pedido += `${item.qtd}x ${nomeProduto}\n`;
-
+totalItens += item.qtd;
 });
 
-fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
+const contadorMobile = document.getElementById("contadorMobile");
 
-method:"POST",
-
-headers:{'Content-Type':'application/json'},
-
-body:JSON.stringify({
-
-pedido:pedido,
-total:total.toFixed(2)
-
-})
-
-})
-.then(()=>alert("Pedido enviado por email!"));
+if(contadorMobile){
+contadorMobile.innerText = totalItens;
+}
 
 }
 
 
 /* ============================= */
-/* WHATSAPP */
+/* BOTÃO MOBILE */
 /* ============================= */
 
-function enviarWhatsApp(){
+const botaoMobile = document.getElementById("botaoCarrinhoMobile");
 
-if(!validarFormulario()) return;
+if(botaoMobile){
 
-let pedido="";
+botaoMobile.onclick = function(){
 
-carrinho.forEach(item=>{
-
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-pedido += `${item.qtd}x ${nomeProduto}\n`;
-
+document.getElementById("carrinho").scrollIntoView({
+behavior:"smooth"
 });
 
-let texto =
-`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${total.toFixed(2)}`;
-
-window.open(
-`https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
-"_blank"
-);
-
 }
-
-
-/* ============================= */
-/* PDF */
-/* ============================= */
-
-function gerarPDF(){
-
-if(!validarFormulario()) return;
-
-const { jsPDF } = window.jspdf;
-
-const doc = new jsPDF();
-
-let y=20;
-
-doc.text("Pedido Crazy Fantasy",20,y);
-
-y+=10;
-
-carrinho.forEach(item=>{
-
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-doc.text(`${item.qtd}x ${nomeProduto}`,20,y);
-
-y+=8;
-
-});
-
-doc.text(`Total: R$ ${total.toFixed(2)}`,20,y+10);
-
-doc.save("pedido.pdf");
-
-}
-
-
-/* ============================= */
-/* LIMPAR */
-/* ============================= */
-
-function limparCarrinho(){
-
-carrinho=[];
-total=0;
-totalOriginal=0;
-
-atualizarCarrinho();
-
-document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
-document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
 
 }
