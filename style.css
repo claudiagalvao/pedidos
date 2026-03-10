@@ -1,73 +1,50 @@
-/* RESET GERAL PARA ELIMINAR ESPAÇOS PADRÃO */
+/* RESET GERAL */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     font-family: 'Inter', Arial, sans-serif;
     background: #eef1f4;
     color: #333;
-    line-height: 1.5;
 }
 
-/* CONTAINER CENTRALIZADO - ZERO NO TOPO */
+/* CONTAINER PRINCIPAL */
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px; /* Topo zerado para o banner encostar */
+    padding: 0 20px 20px 20px; /* Zero no topo */
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0; /* Removido o padding de 20px que causava o espaço branco */
+    padding: 0; /* Removido padding que afastava o banner */
 }
 
 /* BANNER TOTALMENTE COLADO */
 .bannerTopo {
-    width: 100%;
+    width: calc(100% + 40px); /* Expande para compensar o padding do container */
+    margin-left: -20px;       /* Puxa para a borda esquerda */
     height: auto;
     display: block;
-    margin: 0; /* Garante que não haja margem em cima ou embaixo */
-    border-radius: 0 0 12px 12px; /* Arredondado apenas embaixo para um look profissional */
+    margin-bottom: 15px;
+    border-radius: 0 0 12px 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* BARRA INFO COM AJUSTE DE MARGEM */
+/* BARRA DE INFORMAÇÕES */
 .barraInfo {
     background: linear-gradient(135deg, #d5d8dc, #bfc3c9);
-    color: #333;
     padding: 12px;
     border-radius: 10px;
-    margin: 15px 0; /* Espaço apenas para separar do banner e do menu */
+    margin-bottom: 20px;
     text-align: center;
     font-weight: 500;
-}
-
-/* MENU E BUSCA */
-#menuCategorias { margin-bottom: 15px; }
-#menuCategorias button {
-    background: #e5e7ea;
-    color: #444;
-    border: none;
-    border-radius: 18px;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    margin: 4px;
-    transition: 0.2s;
-}
-
-#busca {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 20px;
 }
 
 /* GRID DE PRODUTOS */
@@ -79,30 +56,24 @@ body {
 
 .produto {
     background: white;
-    padding: 20px;
+    padding: 24px;
     border-radius: 16px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
     position: relative;
-    transition: 0.3s;
+    transition: 0.25s;
     display: flex;
     flex-direction: column;
 }
 
-.produto:hover { transform: translateY(-5px); }
+.produto:hover {
+    transform: translateY(-5px);
+}
 
-.precoB2B { color: #000; font-size: 18px; font-weight: 700; margin: 5px 0; }
-.progressivo { font-size: 11px; color: #666; }
-
-.btnAdd {
-    background: #2f3242;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    width: 100%;
-    margin-top: 10px;
-    cursor: pointer;
-    font-weight: 600;
+.precoB2B {
+    color: #000;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 5px 0;
 }
 
 /* CARRINHO LATERAL */
@@ -117,19 +88,32 @@ body {
     max-height: calc(100vh - 40px);
     overflow-y: auto;
     border-radius: 15px;
-    margin-top: 20px; /* Alinha o topo do carrinho com o início do catálogo pós-banner */
+    margin-top: 20px; /* Alinha com o início do conteúdo */
 }
 
 .formPedido input, .formPedido select, .formPedido textarea {
-    width: 100%; padding: 8px; border-radius: 6px; border: none; margin-bottom: 5px; font-size: 12px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 5px;
+    font-size: 12px;
 }
 
 .btnWhats { background: #27d266; color: white; width: 100%; padding: 10px; border-radius: 8px; margin-top: 5px; cursor: pointer; border: none; }
+.btnLimpar { background: #ff6b6b; color: white; }
 
-.footer { background: #2f3242; color: white; padding: 40px; text-align: center; margin-top: 40px; }
+.footer {
+    background: #2f3242;
+    color: white;
+    padding: 40px;
+    text-align: center;
+    margin-top: 40px;
+}
 
-/* RESPONSIVIDADE */
+/* AJUSTE PARA CELULAR */
 @media (max-width: 1000px) {
     .container { flex-direction: column; padding: 0 10px; }
+    .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
     .carrinho { position: static; width: 100%; min-width: auto; }
 }
