@@ -1,4 +1,4 @@
-/* RESET GERAL */
+/* RESET PARA ELIMINAR ESPAÇOS DO NAVEGADOR */
 * {
     margin: 0;
     padding: 0;
@@ -11,29 +11,29 @@ body {
     color: #333;
 }
 
-/* O segredo do banner está aqui */
 .container {
     display: flex;
     max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px 20px 20px; /* Mantém respiro nas laterais para o conteúdo */
+    padding: 0 20px 20px 20px; /* Zero no topo */
     gap: 25px;
     align-items: flex-start;
 }
 
 .catalogo {
     flex: 3;
-    padding: 0;
+    padding: 0; /* Removido o padding para o banner encostar */
 }
 
-/* BANNER: Técnica de Margem Negativa para ignorar o padding do container */
+/* BANNER TOTALMENTE COLADO NAS BORDAS */
 .bannerTopo {
-    width: calc(100% + 40px); /* Aumenta a largura para compensar os 20px de cada lado */
-    margin-left: -20px;       /* Puxa 20px para a esquerda exatamente para a borda */
+    width: calc(100% + 40px); /* Compensa o padding do container */
+    margin-left: -20px;       /* Puxa para a esquerda para encostar */
     height: auto;
     display: block;
-    margin-bottom: 20px;
-    border-radius: 0 0 15px 15px; /* Arredonda apenas embaixo para um visual premium */
+    margin-bottom: 15px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .barraInfo {
@@ -42,85 +42,51 @@ body {
     border-radius: 10px;
     margin-bottom: 20px;
     text-align: center;
-    font-weight: 600;
+    font-weight: 500;
 }
 
-/* BOTÕES DE CATEGORIA */
-#menuCategorias { margin-bottom: 15px; }
-#menuCategorias button {
-    background: #e5e7ea;
-    color: #444;
-    border: none;
-    border-radius: 18px;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    margin: 4px;
-}
-
-/* CARDS E ELEMENTOS INTERNOS */
 .gridProdutos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
 }
 
 .produto {
     background: white;
-    padding: 25px;
+    padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
     position: relative;
+    transition: 0.3s;
     display: flex;
     flex-direction: column;
 }
 
-/* SELO: Posicionado para não sufocar o nome */
-.badgeVendido {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: #ff9800;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: bold;
+.precoB2B { 
+    color: #000; 
+    font-size: 18px; 
+    font-weight: 700; 
+    margin: 5px 0; 
 }
 
-/* CÂMERA: Restaurada no topo direito */
-.camera-link {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    text-decoration: none;
-    font-size: 18px;
-    filter: grayscale(1);
-    transition: 0.2s;
-}
-.camera-link:hover { filter: grayscale(0); }
-
-.produto h3 {
-    margin-top: 25px; /* Cria o distanciamento do selo/câmera */
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.precoB2B { font-size: 18px; font-weight: 700; color: #000; }
-
+/* TABELA DE DESCONTOS INTERNA */
 .progressivo-card {
     font-size: 11px;
     color: #666;
     background: #f8f9fa;
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
-    margin: 10px 0;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
 }
 
-.estoque-card { font-size: 12px; color: #555; margin-bottom: 10px; }
+.estoque-card {
+    font-size: 12px;
+    color: #444;
+    margin-bottom: 8px;
+}
 
-/* CARRINHO */
+/* CARRINHO LATERAL */
 .carrinho {
     flex: 1;
     background: #2f3242;
@@ -129,11 +95,35 @@ body {
     min-width: 340px;
     position: sticky;
     top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     border-radius: 15px;
+    margin-top: 20px;
+}
+
+.formPedido input, .formPedido select, .formPedido textarea {
+    width: 100%; 
+    padding: 8px; 
+    border-radius: 6px; 
+    border: none; 
+    margin-bottom: 5px; 
+    font-size: 12px;
+}
+
+.btnWhats { 
+    background: #27d266; 
+    color: white; 
+    width: 100%; 
+    padding: 10px; 
+    border-radius: 8px; 
+    margin-top: 5px; 
+    cursor: pointer; 
+    border: none; 
+    font-weight: 600; 
 }
 
 @media (max-width: 1000px) {
     .container { flex-direction: column; padding: 0 10px; }
     .bannerTopo { width: calc(100% + 20px); margin-left: -10px; }
-    .carrinho { position: static; width: 100%; }
+    .carrinho { position: static; width: 100%; min-width: auto; }
 }
