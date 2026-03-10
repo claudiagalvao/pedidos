@@ -6,152 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crazy Fantasy - Catálogo de Produtos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f6fb;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .banner-box img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 12px;
-        }
-
-        .form-box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            margin-top: 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        input {
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-
-        .tabela-container {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #d8cff8;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        tr:nth-child(even) {
-            background: #fafafa;
-        }
-
-        .qtd {
-            width: 70px;
-            text-align: center;
-        }
-
-        .desconto {
-            background: #fff2f4;
-        }
-
-        .preco-antigo {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 0.9em;
-        }
-
-        .preco-desc {
-            color: #e60023;
-            font-weight: bold;
-        }
-
-        .badge {
-            background: #e60023;
-            color: white;
-            font-size: 11px;
-            padding: 4px 6px;
-            border-radius: 6px;
-            margin-left: 6px;
-        }
-
-        .total {
-            font-size: 24px;
-            text-align: right;
-            margin-top: 20px;
-            font-weight: bold;
-            color: #6c2bd9;
-        }
-
-        .buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        button:hover { opacity: 0.8; }
-
+        body { margin: 0; font-family: Arial, sans-serif; background: #f5f6fb; color: #333; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .banner-box img { width: 100%; height: auto; display: block; border-radius: 12px; margin-bottom: 20px; }
+        .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        input { padding: 12px; border-radius: 6px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
+        .tabela-container { max-height: 600px; overflow-y: auto; border: 1px solid #ddd; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #d8cff8; padding: 12px; position: sticky; top: 0; z-index: 10; }
+        td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; }
+        tr:nth-child(even) { background: #fafafa; }
+        .qtd { width: 70px; text-align: center; }
+        .desconto { background: #fff2f4; }
+        .preco-antigo { text-decoration: line-through; color: #999; font-size: 0.9em; }
+        .preco-desc { color: #e60023; font-weight: bold; }
+        .badge { background: #e60023; color: white; font-size: 10px; padding: 3px 5px; border-radius: 4px; display: block; margin-top: 2px; }
+        .total { font-size: 24px; text-align: right; margin-top: 20px; font-weight: bold; color: #6c2bd9; }
+        .buttons { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
         .limpar { background: #444; color: white; }
         .pdf { background: #ff4d6d; color: white; }
         .enviar { background: #00c897; color: white; }
-
-        @media(max-width:700px) {
-            .grid { grid-template-columns: 1fr; }
-        }
+        .categoria-header { background: #6c2bd9; color: white; font-weight: bold; text-align: left; padding: 10px 20px; }
+        @media(max-width:700px) { .grid { grid-template-columns: 1fr; } .buttons { flex-direction: column; } button { width: 100%; } }
     </style>
 </head>
 
 <body>
 
-    <div class="banner-box">
-        <img src="banner.png" alt="Banner Crazy Fantasy">
-    </div>
-
     <div class="container">
+        <div class="banner-box">
+            <img src="banner.png" alt="Banner Crazy Fantasy">
+        </div>
+
         <h2 style="text-align:center;">Pedido para Parceiros & Revendedores</h2>
 
         <form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
@@ -159,18 +48,17 @@
 
             <div class="form-box">
                 <div class="grid">
-                    <input name="empresa" placeholder="Empresa" required>
-                    <input name="cnpj" placeholder="CNPJ">
-                    <input name="contato" placeholder="Nome do contato" required>
-                    <input name="telefone" placeholder="Telefone">
-                    <input name="email" placeholder="Email" required type="email">
+                    <input name="empresa" placeholder="Empresa / Loja" required>
+                    <input name="contato" placeholder="Vendedora Responsável" required>
+                    <input name="telefone" placeholder="Telefone/WhatsApp">
                 </div>
 
                 <div class="tabela-container">
-                    <table>
+                    <table id="tabela">
                         <thead>
                             <tr>
                                 <th>Produto</th>
+                                <th>Tamanho</th>
                                 <th>Preço Original</th>
                                 <th>Com Desconto</th>
                                 <th>Qtd</th>
@@ -178,17 +66,17 @@
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela">
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
 
                 <div class="total">
-                    Total: R$ <span id="total">0,00</span>
+                    Total do Pedido: R$ <span id="total">0.00</span>
                 </div>
 
                 <div class="buttons">
                     <button type="button" class="limpar" onclick="limpar()">Limpar Tudo</button>
-                    <button type="button" class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+                    <button type="button" class="pdf" onclick="gerarPDF()">Gerar PDF para Cliente</button>
                     <button type="submit" class="enviar" onclick="prepararEmail()">Enviar Pedido por E-mail</button>
                 </div>
             </div>
@@ -196,107 +84,102 @@
     </div>
 
     <script>
-        const produtos = [
-            // --- Feminino / Geral ---
-            ["Arlequina", 180], ["Arlequina de Casaco", 180], ["Mulher Maravilha", 125], ["Barbie", 125],
-            ["Sininho", 99.9], ["Unicornio c/ Led", 199.99], ["Unicornio s/ Led", 189.99], ["Jessie", 129.9],
-            ["Jasmine", 120], ["Doutora", 149.9], ["Medica", 180], ["Astronauta", 199.9], ["Cruela", 140],
-            ["Elsa", 269.9], ["Rapunzel", 269.9], ["Cinderela", 269.9], ["Bela Adormecida", 269.9],
-            ["Moana", 269.9], ["Branca de Neve", 269.9], ["Bela", 269.9], ["Alice", 120], ["Policial", 130],
-            ["Aurora Basica", 209.99], ["Aurora Luxo", 299.99], ["Cinderela Pop", 129.99], ["Bela Pop", 129.99],
-            ["Bela Luxo", 299.99], ["Rapunzel Basica", 179.99], ["Rapunzel Luxo", 299.99], ["Cinderela Basica", 179.99],
-            ["Cinderela Luxo", 299.99], ["Mirabel", 239.99], ["Lady Bug", 199.99], ["Jasmine Luxo", 239.99],
-            ["Mulher Maravilha Luxo", 209.99], ["Ana Pop", 109.99], ["Ana Luxo", 269.99], ["Minnie", 239.99],
-
-            // --- Masculino ---
-            ["Astronauta Masc.", 199.90], ["Exército", 180.00], ["Policial Masc.", 199.99], ["Capitão da Marinha", 180.00],
-            ["Pintor", 159.90], ["Médico (M/G)", 120.00], ["Bombeiro (M/G)", 229.90], ["Construtor", 129.90],
-            ["Pirata", 180.00], ["Medieval", 189.99], ["Woody", 189.99], ["Coringa", 199.99], ["Chaves", 229.99],
-            ["Tubarão", 229.99], ["La casa de papel", 100.00], ["Mario", 99.90], ["Cozinheiro", 199.90],
-            ["Médico (Simples)", 120.00], ["Príncipe", 240.00], ["Dolma", 100.00], ["Bombeiro (M)", 130.00],
-            ["Bombeiro (G)", 229.99], ["Mágico", 120.00], ["Homem Aranha", 129.99], ["Batman", 129.99],
-            ["Hulk", 129.99], ["Super Man", 199.99], ["Flash Curto", 159.99], ["Flash Longo", 319.99],
-            ["Catnoir", 289.99], ["Naruto", 159.97], ["Minions", 189.99], ["Buzz", 209.99], ["Woody com chapéu", 269.99],
-            ["Homem Aranha Luxo", 269.99], ["Homem de Ferro", 209.99], ["Thor", 239.99], ["Batman Longo", 359.99],
-            ["Woody com máscara", 319.99], ["Marsall (Patrulha)", 209.99], ["Chase (Patrulha)", 209.99], ["Enaldinho", 249.99]
+        const produtosFemininos = [
+            ["Arlequina", 180, "M"], ["Arlequina de casaco", 180, "G"], ["Mulher Maravilha", 125, "M"], ["Barbie", 125, "M/G"], ["Sininho", 99.90, "M"], ["Unicornio c/ Led", 199.99, "M/G"], ["Unicornio s/ Led", 189.99, "M/G"], ["Jessie", 129.90, "M"], ["Jasmine", 120, "M/G"], ["Doutora", 149.90, "M/G"], ["Medica", 180, "M/G"], ["Astronauta", 199.90, "G"], ["Cruela", 140, "M/G"], ["Elsa", 269.90, "M"], ["Rapunzel", 269.90, "M/G"], ["Cinderela", 269.90, "M"], ["Bela adormecida", 269.90, "M/G"], ["Moana", 269.90, "M/G"], ["Branca de neve", 269.90, "M/G"], ["Bela", 269.90, "M/G"], ["Alice", 120, "M"], ["Policial", 130, "M"], ["Aurora Basica", 209.99, "G"], ["Aurora Luxo", 299.99, "M/G"], ["Cinderela Pop", 129.99, "G"], ["Bela Pop", 129.99, "G"], ["Bela Luxo", 299.99, "G"], ["Rapunzel Basica", 179.99, "M"], ["Rapunzel Luxo", 299.99, "M/G"], ["Cinderela Basica", 179.99, "M/G"], ["Cinderela Luxo", 299.99, "M/G"], ["Mirabel", 239.99, "G"], ["Lady Bug", 199.99, "G"], ["Jasmine", 239.99, "M/G"], ["Mulher maravilha", 209.99, "M"], ["Ana pop", 109.99, "M/G"], ["Ana luxo", 269.99, "M/G"], ["Minnie", 239.99, "M/G"]
         ];
 
-        const tbody = document.getElementById("corpo-tabela");
+        const produtosMasculinos = [
+            ["Astronauta", 199.90, "M/G"], ["Exercito", 180, "M/G"], ["Policial", 199.99, "G"], ["Capitão da Marinha", 180, "M/G"], ["Pintor", 159.90, "M"], ["Medico", 169.90, "M/G"], ["Bombeiro", 229.90, "M/G"], ["Construtor", 129.90, "G"], ["Pirata", 180, "G"], ["Medieval", 189.99, "M/G"], ["Woody", 189.99, "M/G"], ["Coringa", 199.99, "M"], ["Chaves", 229.99, "M"], ["Tubarão", 229.99, "G"], ["La casa de papel", 100, "M"], ["Mario", 199.90, "M"], ["Cozinheiro", 199.90, "M"], ["Medico (Simples)", 120, "M/G"], ["Principe", 240, "M"], ["Dolma", 100, "M/G"], ["Bombeiro (Azul)", 130, "M"], ["Bombeiro (Luxo)", 229.99, "G"], ["Magico", 120, "M"], ["Homem Aranha", 129.99, "M/G"], ["Batman", 129.99, "M/G"], ["Hulk", 129.99, "M/G"], ["Super Man", 199.99, "G"], ["Flash Curto", 159.99, "MG"], ["Flash Longo", 319.99, "M/G"], ["Catnoir", 289.99, "M/G"], ["Naruto", 159.97, "M/G"], ["Minions", 189.99, "M"], ["Buzz", 209.99, "M"], ["Woody com chapeu", 269.99, "G"], ["Homem Aranha Luxo", 269.99, "M"], ["Homem de ferro", 209.99, "G"], ["Thor", 239.99, "G"], ["Batman Longo", 359.99, "G"], ["Woody com mascara", 319.99, "M/G"], ["Marsall", 209.99, "M"], ["Chase", 209.99, "M"], ["Enaldinho", 249.99, "M/G"]
+        ];
 
-        function renderizarProdutos() {
-            tbody.innerHTML = ""; 
-            produtos.forEach(p => {
-                let preco = p[1];
-                // ALTERADO: 25% de desconto (multiplicar por 0.75)
-                let desconto = preco > 200 ? preco * 0.75 : preco;
-                let temDesconto = preco > 200;
+        function renderizarTabela() {
+            const corpo = document.getElementById("corpo-tabela");
+            
+            corpo.innerHTML += `<tr><td colspan="6" class="categoria-header">MODA FEMININA</td></tr>`;
+            produtosFemininos.forEach(p => corpo.innerHTML += criarLinha(p));
 
-                let tr = document.createElement("tr");
-                if (temDesconto) tr.className = "desconto";
+            corpo.innerHTML += `<tr><td colspan="6" class="categoria-header">MODA MASCULINA</td></tr>`;
+            produtosMasculinos.forEach(p => corpo.innerHTML += criarLinha(p));
+        }
 
-                tr.innerHTML = `
-                    <td>${p[0]}</td>
-                    <td class="${temDesconto ? 'preco-antigo' : ''}">${preco.toFixed(2)}</td>
+        function criarLinha(p) {
+            let preco = p[1];
+            let tamanho = p[2];
+            let desconto = preco > 200 ? preco * 0.9 : preco;
+            let temDesconto = preco > 200;
+
+            return `
+                <tr class="${temDesconto ? 'desconto' : ''}">
+                    <td style="text-align:left;">${p[0]}</td>
+                    <td><strong>${tamanho}</strong></td>
+                    <td class="${temDesconto ? 'preco-antigo' : ''}">R$ ${preco.toFixed(2)}</td>
                     <td class="preco-desc">
-                        ${desconto.toFixed(2)}
-                        ${temDesconto ? '<span class="badge">25% OFF</span>' : ''}
+                        R$ ${desconto.toFixed(2)}
+                        ${temDesconto ? '<span class="badge">10% OFF</span>' : ''}
                     </td>
-                    <td><input type="number" min="0" class="qtd" value="0" oninput="calcular()"></td>
+                    <td><input type="number" min="0" class="qtd" onchange="calcular()"></td>
                     <td class="subtotal">0.00</td>
-                `;
-                tbody.appendChild(tr);
-            });
+                </tr>`;
         }
 
         function calcular() {
-            let totalGeral = 0;
-            tbody.querySelectorAll("tr").forEach(linha => {
-                let precoUnitario = parseFloat(linha.children[2].innerText);
-                let qtd = parseInt(linha.querySelector(".qtd").value) || 0;
-                let subtotal = precoUnitario * qtd;
-                linha.querySelector(".subtotal").innerText = subtotal.toFixed(2);
-                totalGeral += subtotal;
+            let total = 0;
+            document.querySelectorAll("#corpo-tabela tr").forEach(linha => {
+                if (linha.querySelector(".qtd")) {
+                    let precoTxt = linha.querySelector(".preco-desc").innerText.replace("R$ ", "").replace("10% OFF", "");
+                    let preco = parseFloat(precoTxt);
+                    let qtd = parseInt(linha.querySelector(".qtd").value) || 0;
+                    let subtotal = preco * qtd;
+                    linha.querySelector(".subtotal").innerText = subtotal.toFixed(2);
+                    total += subtotal;
+                }
             });
-            document.getElementById("total").innerText = totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById("total").innerText = total.toFixed(2);
         }
 
         function limpar() {
-            document.querySelectorAll(".qtd").forEach(i => i.value = "0");
+            document.querySelectorAll(".qtd").forEach(i => i.value = "");
             document.querySelectorAll(".subtotal").forEach(i => i.innerText = "0.00");
-            document.getElementById("total").innerText = "0,00";
+            document.getElementById("total").innerText = "0.00";
         }
 
         function prepararEmail() {
-            let resumo = "Pedido Crazy Fantasy\n\n";
-            tbody.querySelectorAll("tr").forEach(linha => {
-                let produto = linha.children[0].innerText;
-                let qtd = linha.querySelector(".qtd").value;
-                if (parseInt(qtd) > 0) resumo += `${produto} - ${qtd} unidades\n`;
+            let resumo = "PEDIDO CRAZY FANTASY\n\n";
+            document.querySelectorAll("#corpo-tabela tr").forEach(linha => {
+                let qtdInput = linha.querySelector(".qtd");
+                if (qtdInput && qtdInput.value > 0) {
+                    let produto = linha.children[0].innerText;
+                    let tamanho = linha.children[1].innerText;
+                    resumo += `${produto} (Tam: ${tamanho}) - ${qtdInput.value} un. - R$ ${linha.querySelector(".subtotal").innerText}\n`;
+                }
             });
-            resumo += "\nTOTAL: R$ " + document.getElementById("total").innerText;
+            resumo += "\nTOTAL GERAL: R$ " + document.getElementById("total").innerText;
             document.getElementById("pedido_email").value = resumo;
         }
 
         function gerarPDF() {
             const { jsPDF } = window.jspdf;
             let pdf = new jsPDF();
-            pdf.text("Pedido Crazy Fantasy", 20, 20);
+            pdf.setFontSize(18);
+            pdf.text("Relatório de Pedido - Crazy Fantasy", 20, 20);
+            pdf.setFontSize(12);
             let y = 40;
-            tbody.querySelectorAll("tr").forEach(linha => {
-                let produto = linha.children[0].innerText;
-                let qtd = linha.querySelector(".qtd").value;
-                if (parseInt(qtd) > 0) {
-                    pdf.text(`${produto} - ${qtd} un.`, 20, y);
+            document.querySelectorAll("#corpo-tabela tr").forEach(linha => {
+                let qtdInput = linha.querySelector(".qtd");
+                if (qtdInput && qtdInput.value > 0) {
+                    let produto = linha.children[0].innerText;
+                    let tamanho = linha.children[1].innerText;
+                    pdf.text(`${produto} (${tamanho}) - ${qtdInput.value} un.`, 20, y);
                     y += 10;
                     if (y > 280) { pdf.addPage(); y = 20; }
                 }
             });
+            pdf.setFontSize(14);
             pdf.text("Total: R$ " + document.getElementById("total").innerText, 20, y + 10);
             pdf.save("pedido-crazyfantasy.pdf");
         }
 
-        window.onload = renderizarProdutos;
+        renderizarTabela();
     </script>
 </body>
-
 </html>
