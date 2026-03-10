@@ -1,271 +1,150 @@
-const produtosDiv=document.getElementById("produtos")
-const listaPedido=document.getElementById("listaPedido")
-const totalEl=document.getElementById("total")
-const economiaEl=document.getElementById("economia")
-const contadorItens=document.getElementById("contadorItens")
-const barra=document.getElementById("barra")
-
 let produtos=[]
 let carrinho=[]
 
-let total=0
-let totalOriginal=0
-
-const pedidoMinimo=200
-
-
-function calcularDesconto(valor){
-
-if(valor>=1000)return 0.15
-if(valor>=500)return 0.12
-if(valor>=200)return 0.10
-
-return 0
-
-}
-
-
 fetch("produtos.csv")
-
 .then(r=>r.text())
+.then(texto=>{
 
-.then(data=>{
-
-const linhas=data.split("\n").slice(1)
+let linhas=texto.split("\n").slice(1)
 
 linhas.forEach(l=>{
 
-if(!l.trim())return
-
-const c=l.split(",")
+let c=l.split(",")
 
 produtos.push({
-
-categoria:c[0],
+sku:c[0],
 nome:c[1],
-variacao:c[2],
-preco:parseFloat(c[3]),
-link:c[4],
-sku:c[5],
-estoque:parseInt(c[6]),
-vendas:Math.floor(Math.random()*100)
-
+preco:parseFloat(c[2]),
+preco_b2b:parseFloat(c[3]),
+estoque:c[4],
+categoria:c[5]
 })
 
 })
 
-renderProdutos(produtos)
-criarMenu()
+mostrarProdutos()
 
 })
 
 
-function criarMenu(){
+function mostrarProdutos(){
 
-const menu=document.getElementById("menuCategorias")
+let html=""
 
-const categorias=[...new Set(produtos.map(p=>p.categoria))]
+produtos.forEach((p,i)=>{
 
-menu.innerHTML=`<button onclick="filtrar('todos')">Todos</button>`
-
-categorias.forEach(c=>{
-
-menu.innerHTML+=`<button onclick="filtrar('${c}')">${c}</button>`
-
-})
-
-}
-
-
-function filtrar(cat){
-
-if(cat==="todos"){
-
-renderProdutos(produtos)
-
-}else{
-
-renderProdutos(produtos.filter(p=>p.categoria===cat))
-
-}
-
-}
-
-
-function renderProdutos(lista){
-
-produtosDiv.innerHTML=""
-
-lista.forEach(p=>{
-
-const desconto10=p.preco*0.9
-const desconto12=p.preco*0.88
-const desconto15=p.preco*0.85
-
-const card=document.createElement("div")
-card.className="produto"
-
-card.innerHTML=`
-
-<div class="camera">
-<a href="${p.link}" target="_blank">📸</a>
-</div>
+html+=`
+<div class="card">
 
 <h3>${p.nome}</h3>
 
-<div class="precoOriginal">
-R$ ${p.preco.toFixed(2)}
-</div>
+<div class="preco-original">R$ ${p.preco}</div>
 
-<div class="precoB2B">
-Preço B2B: R$ ${desconto10.toFixed(2)}
-</div>
+<div class="preco-b2b">R$ ${p.preco_b2b}</div>
 
-<div class="progressivo">
+<div>Estoque: ${p.estoque}</div>
 
-10% → ${desconto10.toFixed(2)}<br>
-12% → ${desconto12.toFixed(2)}<br>
-15% → ${desconto15.toFixed(2)}
+<button class="add-btn" onclick="addCarrinho(${i})">Adicionar</button>
 
 </div>
-
-<div class="estoque">
-Estoque: ${p.estoque}
-</div>
-
-<input type="number" value="0" min="0" max="${p.estoque}">
-
-<button class="btnAdd">
-Adicionar
-</button>
-
 `
 
-const btn=card.querySelector("button")
+})
 
-btn.onclick=()=>{
-
-const qtd=parseInt(card.querySelector("input").value)
-
-if(qtd>p.estoque){
-
-alert("Quantidade maior que estoque")
-return
+document.getElementById("produtos").innerHTML=html
 
 }
 
-carrinho.push({
 
-nome:p.nome,
-preco:p.preco,
-qtd:qtd
 
-})
+function addCarrinho(i){
 
-total+=p.preco*qtd
-totalOriginal+=p.preco*qtd
+carrinho.push(produtos[i])
 
 atualizarCarrinho()
-
-}
-
-produtosDiv.appendChild(card)
-
-})
 
 }
 
 
 function atualizarCarrinho(){
 
-listaPedido.innerHTML=""
+let html=""
+let total=0
 
-let itens=0
+carrinho.forEach(p=>{
 
-carrinho.forEach((item,index)=>{
+total+=p.preco_b2b
 
-itens+=item.qtd
-
-const div=document.createElement("div")
-
-div.innerHTML=`${item.nome} x${item.qtd}`
-
-listaPedido.appendChild(div)
+html+=`<div>${p.nome}</div>`
 
 })
 
-contadorItens.innerText=`(${itens} itens)`
-
-const desconto=calcularDesconto(total)
-
-const totalFinal=total*(1-desconto)
-
-totalEl.innerText=totalFinal.toFixed(2)
-
-economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
-
-barra.style.width=Math.min(total/pedidoMinimo*100,100)+"%"
+document.getElementById("itens").innerHTML=html
+document.getElementById("total").innerText=total.toFixed(2)
+document.getElementById("contador").innerText=carrinho.length
 
 }
+
 
 
 function limparCarrinho(){
 
 carrinho=[]
-total=0
-totalOriginal=0
-
 atualizarCarrinho()
 
 }
 
 
-function enviarWhatsApp(){
-
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-carrinho.forEach(i=>{
-
-texto+=`${i.qtd}x ${i.nome}\n`
-
-})
-
-window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
-
-}
-
-
-function gerarPDF(){
-
-const { jsPDF }=window.jspdf
-const doc=new jsPDF()
-
-let texto="Pedido Crazy Fantasy B2B\n\n"
-
-carrinho.forEach(i=>{
-
-texto+=`${i.qtd}x ${i.nome}\n`
-
-})
-
-doc.text(texto,10,10)
-doc.save("pedido.pdf")
-
-}
-
 
 function copiarPedido(){
 
-let texto="Pedido Crazy Fantasy B2B\n\n"
+let texto="Pedido B2B Crazy Fantasy\n\n"
 
-carrinho.forEach(i=>{
-
-texto+=`${i.qtd}x ${i.nome}\n`
-
+carrinho.forEach(p=>{
+texto+=p.nome+"\n"
 })
 
 navigator.clipboard.writeText(texto)
 
 alert("Pedido copiado")
+
+}
+
+
+
+function enviarWhats(){
+
+let texto="Pedido B2B:\n"
+
+carrinho.forEach(p=>{
+texto+=p.nome+"\n"
+})
+
+window.open("https://wa.me/?text="+encodeURIComponent(texto))
+
+}
+
+
+
+function gerarPDF(){
+
+const { jsPDF } = window.jspdf
+let doc=new jsPDF()
+
+let y=20
+
+doc.text("Pedido Crazy Fantasy",20,y)
+
+y+=10
+
+carrinho.forEach(p=>{
+
+doc.text(p.nome,20,y)
+
+y+=10
+
+})
+
+doc.save("pedido.pdf")
 
 }
