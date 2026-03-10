@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Portal B2B Crazy Fantasy</title>
 
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 </head>
 
 <body>
@@ -25,12 +21,12 @@
 </div>
 
 <div class="barraInfo">
-Tabela exclusiva para parceiros • Desconto progressivo B2B
+🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
 </div>
 
 <div id="menuCategorias"></div>
 
-<input id="busca" placeholder="🔎 Buscar produto ou SKU">
+<input id="busca" placeholder="🔎 Buscar produto">
 
 <div id="produtos" class="gridProdutos"></div>
 
@@ -53,8 +49,6 @@ Total B2B: R$ <span id="total">0</span>
 💰 Economia: R$ <span id="economia">0</span>
 </div>
 
-<div id="proximoDesconto"></div>
-
 <div class="barraProgresso">
 <div id="barra"></div>
 </div>
@@ -65,54 +59,24 @@ Total B2B: R$ <span id="total">0</span>
 
 <h3>Dados do Cliente</h3>
 
-<input id="empresa" placeholder="Empresa / Razão Social">
-<input id="cnpj" placeholder="CNPJ">
-<input id="ie" placeholder="Inscrição Estadual">
-<input id="nome" placeholder="Nome do responsável">
-<input id="whatsapp" placeholder="WhatsApp">
+<input id="empresa" placeholder="Empresa">
+<input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
-
-<textarea id="endereco" placeholder="Endereço completo"></textarea>
-
-<h3>Entrega</h3>
-
-<select id="entrega">
-
-<option value="">Selecione</option>
-<option>Correios</option>
-<option>Transportadora</option>
-<option>Retirada na loja</option>
-
-</select>
-
-<h3>Pagamento</h3>
-
-<select id="pagamento">
-
-<option value="">Selecione</option>
-<option>PIX</option>
-<option>Boleto</option>
-<option>Cartão</option>
-<option>Transferência bancária</option>
-
-</select>
-
-<h3>Observações</h3>
-
-<textarea id="observacoes"></textarea>
-
+<input id="whatsapp" placeholder="WhatsApp do cliente">
 
 <div class="botoesPedido">
 
-<button onclick="copiarPedido()">Copiar Pedido (ERP)</button>
+<button class="btnEmail" onclick="enviarEmail()">Enviar Pedido por Email</button>
 
-<button onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
 
-<button onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPdf" onclick="gerarPDF()">Gerar PDF do Pedido</button>
 
-<button onclick="limparCarrinho()">Limpar</button>
+<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
 
 </div>
+
+<div id="historico"></div>
 
 </div>
 
@@ -120,23 +84,35 @@ Total B2B: R$ <span id="total">0</span>
 
 <div class="footer">
 
-Crazy Fantasy B2B
+<b>Crazy Fantasy B2B</b>
 
 <br><br>
 
-Descontos progressivos
+Desconto progressivo
 
 <br>
 
-R$200 → 10%
+até R$200 → 10%
 
 <br>
 
-R$500 → 12%
+até R$500 → 12%
 
 <br>
 
-R$1000 → 15%
+até R$1000 → 15%
+
+<br><br>
+
+Pagamento: PIX | Boleto | Cartão
+
+<br>
+
+Frete calculado após envio
+
+<br>
+
+Validade do pedido: 48h
 
 </div>
 
