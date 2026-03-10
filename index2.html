@@ -10,8 +10,6 @@
 
 <link rel="stylesheet" href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
@@ -36,15 +34,14 @@
 
 </div>
 
+
 <div class="carrinho" id="carrinho">
 
 <h2>🛒 Pedido <span id="contadorItens">(0 itens)</span></h2>
 
-<div class="total">
+<div>
 Total B2B: R$ <span id="total">0,00</span>
 </div>
-
-<div class="progressoContainer">
 
 <div id="msgMinimo">
 Faltam R$ 200,00 para pedido mínimo
@@ -54,15 +51,16 @@ Faltam R$ 200,00 para pedido mínimo
 <div id="barra" class="barraProgresso"></div>
 </div>
 
-</div>
-
 <div class="economia">
 Economia com descontos: R$ <span id="economia">0,00</span>
 </div>
 
 <div id="listaPedido" class="listaPedido"></div>
 
-<div class="tituloFormulario">Dados para Nota Fiscal</div>
+
+<div class="tituloFormulario">
+Dados para Nota Fiscal
+</div>
 
 <div class="formPedido">
 
@@ -92,7 +90,7 @@ Economia com descontos: R$ <span id="economia">0,00</span>
 
 <select id="entrega">
 <option value="">Forma de entrega</option>
-<option>Retirada na loja</option>
+<option>Retirada</option>
 <option>Correios</option>
 <option>Transportadora</option>
 </select>
@@ -110,28 +108,30 @@ Economia com descontos: R$ <span id="economia">0,00</span>
 
 </div>
 
+
 <div class="botoesPedido">
 
-<button class="btnPedido" onclick="enviarEmail()">Enviar Pedido</button>
+<button class="btnPedido" onclick="enviarEmail()">
+Enviar Pedido
+</button>
 
-<button class="btnPedido" onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnPedido" onclick="enviarWhatsApp()">
+WhatsApp
+</button>
 
-<button class="btnPedido" onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPedido" onclick="gerarPDF()">
+Gerar PDF
+</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
+<button class="btnLimpar" onclick="limparCarrinho()">
+Limpar
+</button>
 
 </div>
 
 </div>
 
 </div>
-
-<footer class="footer">
-
-<p>Crazy Fantasy - Portal de Vendas B2B</p>
-<p>© 2026 Todos os direitos reservados</p>
-
-</footer>
 
 <script src="script.js"></script>
 
