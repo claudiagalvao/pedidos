@@ -226,14 +226,12 @@ margin-top:10px;
 font-size:16px;
 }
 
-/* DESCONTO ATUAL */
+/* DESCONTO */
 
 .descontoAtual{
 font-size:11px;
 margin-top:4px;
 }
-
-/* PRÓXIMO DESCONTO */
 
 .proximoDesconto{
 font-size:11px;
@@ -262,7 +260,7 @@ width:0%;
 margin-top:8px;
 }
 
-/* LISTA PEDIDO */
+/* LISTA */
 
 .listaPedido{
 margin-top:14px;
@@ -283,8 +281,6 @@ border:none;
 margin-bottom:6px;
 font-size:12px;
 }
-
-/* LINHAS FORM */
 
 .linha2{
 display:grid;
@@ -313,10 +309,6 @@ border:none;
 padding:10px;
 border-radius:8px;
 cursor:pointer;
-}
-
-.btnPedido:hover{
-background:#5a6077;
 }
 
 .btnLimpar{
@@ -368,10 +360,8 @@ font-size:13px;
 @media (max-width:768px){
 
 .container{
-
 flex-direction:column;
 padding:12px;
-
 }
 
 .catalogo{
@@ -379,10 +369,8 @@ width:100%;
 }
 
 .gridProdutos{
-
 grid-template-columns:repeat(2,1fr);
 gap:12px;
-
 }
 
 .produto{
@@ -391,24 +379,24 @@ padding:14px;
 
 .carrinho{
 
-position:relative;
-top:auto;
+position:fixed;
+bottom:0;
+left:0;
+right:0;
 
-width:100%;
+max-height:70vh;
 
-margin-top:20px;
+border-radius:20px 20px 0 0;
 
-max-height:none;
+overflow-y:auto;
 
 }
 
 .btnAdd,
 .btnPedido,
 .btnLimpar{
-
 padding:12px;
 font-size:14px;
-
 }
 
 #menuCategorias{
@@ -418,12 +406,9 @@ gap:6px;
 }
 
 .footerContent{
-
 flex-direction:column;
 gap:10px;
-
 text-align:center;
-
 }
 
 }
