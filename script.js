@@ -108,7 +108,10 @@ produtosDiv.innerHTML="";
 lista.forEach(p=>{
 
 const precoBase = p.preco.toFixed(2);
-const preco10 = (p.preco*0.9).toFixed(2);
+
+const preco10 = (p.preco*0.90).toFixed(2);
+const preco12 = (p.preco*0.88).toFixed(2);
+const preco15 = (p.preco*0.85).toFixed(2);
 
 const card=document.createElement("div");
 card.className="produto";
@@ -127,6 +130,8 @@ card.innerHTML=`
 
 <h3>${p.nome}</h3>
 
+${p.variacao ? `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>` : ""}
+
 <div style="text-decoration:line-through;color:#888;font-size:12px">
 R$ ${precoBase}
 </div>
@@ -136,7 +141,13 @@ R$ ${preco10}
 </div>
 
 <div class="progressivo-card">
-<strong>Descontos B2B</strong>
+
+<strong>Descontos B2B</strong><br>
+
+10% (R$200+) → R$ ${preco10}<br>
+12% (R$500+) → R$ ${preco12}<br>
+15% (R$1000+) → R$ ${preco15}
+
 </div>
 
 ${estoqueHTML}
@@ -228,11 +239,21 @@ listaPedido.innerHTML+=`
 
 });
 
-const totalFinal = total;
-const economia = totalOriginal-totalFinal;
+/* CALCULAR DESCONTO */
 
-totalEl.innerText = totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2});
-economiaEl.innerText = economia.toLocaleString('pt-BR',{minimumFractionDigits:2});
+const desconto = calcularDesconto(total);
+
+const totalFinal = total * (1 - desconto);
+
+const economia = total - totalFinal;
+
+totalEl.innerText = totalFinal.toLocaleString('pt-BR',{
+minimumFractionDigits:2
+});
+
+economiaEl.innerText = economia.toLocaleString('pt-BR',{
+minimumFractionDigits:2
+});
 
 contadorItens.innerText=`(${itens} itens)`;
 
@@ -243,6 +264,22 @@ barra.style.width=Math.min(progresso,100)+"%";
 msgMinimo.innerText = total<pedidoMinimo
 ?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
 :"Pedido mínimo atingido";
+
+}
+
+/* ============================= */
+/* DESCONTOS */
+/* ============================= */
+
+function calcularDesconto(valor){
+
+if(valor >= 1000) return 0.15;
+
+if(valor >= 500) return 0.12;
+
+if(valor >= 200) return 0.10;
+
+return 0;
 
 }
 
