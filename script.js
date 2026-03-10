@@ -1,118 +1,269 @@
-let produtos = [];
-let carrinho = [];
+const produtosDiv = document.getElementById("produtos")
+const listaPedido = document.getElementById("listaPedido")
+const totalEl = document.getElementById("total")
+const economiaEl = document.getElementById("economia")
+const contadorItens = document.getElementById("contadorItens")
 
-// Carregar Produtos
+let produtos=[]
+let carrinho=[]
+
+let total=0
+let totalOriginal=0
+
+const pedidoMinimo=200
+
+
+
+function calcularDesconto(valor){
+
+if(valor>=1000) return 0.15
+if(valor>=500) return 0.12
+if(valor>=200) return 0.10
+
+return 0.10
+
+}
+
+
+
 fetch("produtos.csv")
-    .then(r => r.text())
-    .then(texto => {
-        // Divide por linha e remove a primeira (cabeçalho)
-        let linhas = texto.trim().split("\n").slice(1);
 
-        produtos = linhas.map(l => {
-            // Usa uma Expressão Regular para lidar com vírgulas dentro de aspas (comum em CSVs)
-            let c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-            
-            return {
-                sku: c[0]?.replace(/"/g, ""),
-                nome: c[1]?.replace(/"/g, ""),
-                preco: parseFloat(c[2]) || 0,
-                preco_b2b: parseFloat(c[3]) || 0,
-                link_estoque: c[4]?.replace(/"/g, ""), // O link gigante
-                categoria: c[5]?.replace(/"/g, "")
-            };
-        });
+.then(r=>r.text())
 
-        mostrarProdutos(produtos);
-    });
+.then(data=>{
 
-// Função para exibir produtos com layout limpo
-function mostrarProdutos(lista) {
-    let html = "";
-    lista.forEach((p, i) => {
-        html += `
-        <div class="card">
-            <div>
-                <small style="color: #999">SKU: ${p.sku}</small>
-                <h3>${p.nome}</h3>
-                <div class="preco-original">De: R$ ${p.preco.toFixed(2)}</div>
-                <div class="preco-b2b">Por: R$ ${p.preco_b2b.toFixed(2)}</div>
-                <a href="${p.link_estoque}" target="_blank" class="estoque-link">🔗 Ver Estoque Real</a>
-            </div>
-            <button class="add-btn" onclick="addCarrinho(${i})">Adicionar ao Pedido</button>
-        </div>`;
-    });
-    document.getElementById("produtos").innerHTML = html;
+const linhas=data.split("\n").slice(1)
+
+linhas.forEach(l=>{
+
+if(!l.trim()) return
+
+const c=l.split(",")
+
+produtos.push({
+
+categoria:c[0],
+nome:c[1],
+variacao:c[2],
+preco:parseFloat(c[3]),
+link:c[4],
+sku:c[5],
+estoque:parseInt(c[6]),
+vendas:Math.floor(Math.random()*100)
+
+})
+
+})
+
+renderProdutos(produtos)
+
+})
+
+
+
+function renderProdutos(lista){
+
+produtosDiv.innerHTML=""
+
+lista.forEach(p=>{
+
+let selo=""
+
+if(p.vendas>70){
+
+selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
+
 }
 
-// Lógica de Busca (Melhoria de UX)
-document.getElementById("busca").addEventListener("input", (e) => {
-    let termo = e.target.value.toLowerCase();
-    let filtrados = produtos.filter(p => 
-        p.nome.toLowerCase().includes(termo) || 
-        p.sku.toLowerCase().includes(termo)
-    );
-    mostrarProdutos(filtrados);
-});
+const desconto10=p.preco*0.90
+const desconto12=p.preco*0.88
+const desconto15=p.preco*0.85
 
-function addCarrinho(i) {
-    carrinho.push(produtos[i]);
-    atualizarCarrinho();
+
+const card=document.createElement("div")
+
+card.className="produto"
+
+card.innerHTML=`
+
+${selo}
+
+<div class="camera">
+<a href="${p.link}" target="_blank">📸</a>
+</div>
+
+<h3>${p.nome}</h3>
+
+<div class="precoOriginal">
+R$ ${p.preco.toFixed(2)}
+</div>
+
+<div class="precoB2B">
+R$ ${desconto10.toFixed(2)}
+</div>
+
+<div class="progressivo">
+
+10% → ${desconto10.toFixed(2)}
+
+<br>
+
+12% → ${desconto12.toFixed(2)}
+
+<br>
+
+15% → ${desconto15.toFixed(2)}
+
+</div>
+
+<div class="sku">
+
+SKU: ${p.sku}
+
+</div>
+
+<div class="estoque">
+
+Estoque: ${p.estoque}
+
+</div>
+
+<input type="number" value="1" min="1">
+
+<button class="btnAdd">
+Adicionar
+</button>
+
+`
+
+const btn=card.querySelector("button")
+
+btn.onclick=()=>{
+
+card.classList.add("pulse")
+
+const qtd=parseInt(card.querySelector("input").value)
+
+carrinho.push({
+
+nome:p.nome,
+preco:p.preco,
+qtd:qtd
+
+})
+
+total+=p.preco*qtd
+totalOriginal+=p.preco*qtd
+
+atualizarCarrinho()
+
 }
 
-function removerDoCarrinho(index) {
-    carrinho.splice(index, 1);
-    atualizarCarrinho();
+produtosDiv.appendChild(card)
+
+})
+
 }
 
-function atualizarCarrinho() {
-    let html = "";
-    let total = 0;
-    
-    carrinho.forEach((p, index) => {
-        total += p.preco_b2b;
-        html += `
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">
-            <span style="font-size:12px;">${p.nome}</span>
-            <button onclick="removerDoCarrinho(${index})" style="background:none; color:#e74c3c; border:none; cursor:pointer;">✕</button>
-        </div>`;
-    });
 
-    document.getElementById("itens").innerHTML = html;
-    document.getElementById("total").innerText = total.toFixed(2);
-    document.getElementById("contador").innerText = carrinho.length;
-    
-    // Atualiza a barra de progresso (ex: meta de R$ 500 para frete grátis ou desconto maior)
-    let meta = 1000; 
-    let progresso = Math.min((total / meta) * 100, 100);
-    document.getElementById("barra").style.width = progresso + "%";
+
+function atualizarCarrinho(){
+
+listaPedido.innerHTML=""
+
+let itens=0
+
+carrinho.forEach((item,index)=>{
+
+itens+=item.qtd
+
+const div=document.createElement("div")
+
+div.innerHTML=`
+
+${item.nome} x${item.qtd}
+
+<button onclick="removerItem(${index})">✕</button>
+
+`
+
+listaPedido.appendChild(div)
+
+})
+
+contadorItens.innerText=`(${itens} itens)`
+
+const desconto=calcularDesconto(total)
+
+const totalFinal=total*(1-desconto)
+
+totalEl.innerText=totalFinal.toFixed(2)
+
+economiaEl.innerText=(totalOriginal-totalFinal).toFixed(2)
+
 }
 
-// --- FUNÇÕES DE SAÍDA (WhatsApp e PDF) ---
 
-function formatarDadosCliente() {
-    return `
---- DADOS DO CLIENTE ---
-Empresa: ${document.getElementById("empresa").value}
-CNPJ: ${document.getElementById("cnpj").value}
-Responsável: ${document.getElementById("responsavel").value}
-Pagamento: ${document.getElementById("pagamento").value}
-Entrega: ${document.getElementById("entrega").value}
-------------------------`;
+
+function removerItem(index){
+
+const item=carrinho[index]
+
+total-=item.preco*item.qtd
+totalOriginal-=item.preco*item.qtd
+
+carrinho.splice(index,1)
+
+atualizarCarrinho()
+
 }
 
-function enviarWhats() {
-    if (carrinho.length === 0) return alert("Carrinho vazio!");
-    
-    let texto = `*Novo Pedido B2B - Crazy Fantasy*\n${formatarDadosCliente()}\n\n*ITENS:*\n`;
-    carrinho.forEach(p => texto += `- ${p.nome} (R$ ${p.preco_b2b.toFixed(2)})\n`);
-    texto += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`;
 
-    window.open("https://wa.me/SEUNUMEROAQUI?text=" + encodeURIComponent(texto));
+
+function limparCarrinho(){
+
+carrinho=[]
+total=0
+totalOriginal=0
+
+atualizarCarrinho()
+
 }
 
-function limparCarrinho() {
-    if(confirm("Deseja limpar todo o pedido?")) {
-        carrinho = [];
-        atualizarCarrinho();
-    }
+
+
+function enviarWhatsApp(){
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+
+texto+=`${i.qtd}x ${i.nome}\n`
+
+})
+
+window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
+
+}
+
+
+
+function gerarPDF(){
+
+const { jsPDF } = window.jspdf
+
+const doc=new jsPDF()
+
+let texto="Pedido Crazy Fantasy B2B\n\n"
+
+carrinho.forEach(i=>{
+
+texto+=`${i.qtd}x ${i.nome}\n`
+
+})
+
+doc.text(texto,10,10)
+
+doc.save("pedido.pdf")
+
 }
