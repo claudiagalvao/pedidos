@@ -1,75 +1,161 @@
 body{
-font-family:Arial;
+
+font-family: Arial, Helvetica, sans-serif;
 background:#f4f6fb;
 margin:0;
+
 }
+
+
+/* ===== LAYOUT PRINCIPAL ===== */
 
 .container{
+
 display:flex;
+align-items:flex-start;
+
 }
 
+
+/* ===== CATÁLOGO ===== */
+
 .catalogo{
+
 flex:3;
-padding:20px;
+padding:30px;
+
+}
+
+
+/* ===== BANNER ===== */
+
+.banner{
+
+width:100%;
+margin-bottom:20px;
+
 }
 
 .banner img{
+
 width:100%;
-max-height:320px;
-object-fit:cover;
+height:auto;
+display:block;
 border-radius:12px;
+
 }
+
+
+/* ===== BARRA INFO ===== */
 
 .barraInfo{
-background:#ff0066;
+
+background:linear-gradient(90deg,#5f2eea,#9b51e0);
 color:white;
-padding:10px;
+padding:12px;
 border-radius:10px;
-margin:10px 0;
+margin-bottom:20px;
 text-align:center;
+font-weight:bold;
+
 }
 
-#menuCategorias{
-margin:10px 0;
+
+/* ===== MENU CATEGORIAS ===== */
+
+.menuCategorias{
+
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:15px;
+
 }
 
-#menuCategorias button{
-margin:4px;
-padding:8px 14px;
+.menuCategorias button{
+
+background:#eef1f6;
 border:none;
-border-radius:8px;
-background:#eee;
+padding:8px 14px;
+border-radius:20px;
 cursor:pointer;
+font-size:13px;
+
 }
+
+.menuCategorias button:hover{
+
+background:#dcdfea;
+
+}
+
+
+/* ===== BUSCA ===== */
+
+#busca{
+
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
+margin-bottom:20px;
+font-size:14px;
+
+}
+
+
+/* ===== GRID PRODUTOS ===== */
 
 .gridProdutos{
+
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 gap:20px;
+
 }
 
+
+/* ===== CARD PRODUTO ===== */
+
 .produto{
+
 background:white;
 padding:20px;
 border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
 position:relative;
-transition:0.3s;
+transition:0.25s;
+
 }
 
 .produto:hover{
-transform:translateY(-6px);
-box-shadow:0 14px 30px rgba(0,0,0,0.12);
+
+transform:translateY(-5px);
+
 }
 
-.camera{
-position:absolute;
-top:10px;
-right:10px;
-font-size:20px;
+
+/* ===== ANIMAÇÃO ADD ===== */
+
+.pulse{
+
+animation:pulse 0.35s;
+
 }
+
+@keyframes pulse{
+
+0%{transform:scale(1)}
+50%{transform:scale(1.06)}
+100%{transform:scale(1)}
+
+}
+
+
+/* ===== SELO MAIS VENDIDO ===== */
 
 .badgeVendido{
+
 position:absolute;
 top:10px;
 left:10px;
@@ -78,88 +164,233 @@ color:white;
 padding:4px 8px;
 border-radius:6px;
 font-size:12px;
+
 }
 
+
+/* ===== ÍCONE FOTO ===== */
+
+.camera{
+
+position:absolute;
+top:10px;
+right:10px;
+
+}
+
+.camera a{
+
+text-decoration:none;
+font-size:18px;
+
+}
+
+
+/* ===== PREÇOS ===== */
+
 .precoOriginal{
+
 text-decoration:line-through;
 color:#888;
+font-size:13px;
+
 }
 
 .precoB2B{
-color:#1db954;
-font-size:18px;
+
+font-size:20px;
 font-weight:bold;
+color:#16a34a;
+
 }
 
+.progressivo{
+
+font-size:12px;
+color:#777;
+margin-top:6px;
+
+}
+
+
+/* ===== INPUT QUANTIDADE ===== */
+
+.produto input{
+
+width:100%;
+padding:8px;
+border-radius:6px;
+border:1px solid #ddd;
+margin-top:8px;
+
+}
+
+
+/* ===== BOTÃO ADD ===== */
+
 .btnAdd{
-background:#ff0055;
-color:white;
+
+margin-top:10px;
+width:100%;
 border:none;
 padding:10px;
 border-radius:8px;
-width:100%;
-margin-top:10px;
+background:linear-gradient(90deg,#5f2eea,#9b51e0);
+color:white;
+font-weight:bold;
 cursor:pointer;
+transition:0.2s;
+
 }
+
+.btnAdd:hover{
+
+opacity:0.9;
+
+}
+
+
+/* ===== CARRINHO ===== */
 
 .carrinho{
+
 flex:1;
-background:#1f2b3a;
+background:#0f172a;
 color:white;
 padding:20px;
+margin:20px;
+border-radius:12px;
+position:sticky;
+top:10px;
+height:fit-content;
+max-width:380px;
+
 }
 
+
+/* ===== TÍTULO CARRINHO ===== */
+
+.carrinho h2{
+
+margin-top:0;
+
+}
+
+
+/* ===== BARRA PROGRESSO ===== */
+
 .barraProgresso{
+
 width:100%;
-height:10px;
-background:#dfe6ee;
+height:8px;
+background:#334155;
 border-radius:10px;
 margin:10px 0;
+
 }
 
 #barra{
-height:10px;
-width:0%;
-background:#00c853;
+
+height:100%;
+background:#22c55e;
 border-radius:10px;
-transition:width .3s;
+width:0%;
+
 }
 
-#sugestoes{
-background:#263445;
+
+/* ===== FORMULÁRIO CLIENTE ===== */
+
+.carrinho input,
+.carrinho textarea,
+.carrinho select{
+
+width:100%;
+box-sizing:border-box;
 padding:10px;
-border-radius:8px;
-margin:10px 0;
-font-size:14px;
-}
-
-.removerItem{
-margin-left:8px;
-padding:3px 6px;
-font-size:12px;
-background:#ff4444;
-color:white;
-border:none;
-border-radius:4px;
-}
-
-button{
-margin:6px 0;
-padding:10px;
-border:none;
 border-radius:6px;
-cursor:pointer;
+border:none;
+margin-bottom:10px;
+font-size:14px;
+
 }
 
-.btnEmail{background:#00c853;color:white}
-.btnWhats{background:#00c853;color:white}
-.btnPdf{background:#ff9800;color:white}
-.btnLimpar{background:#ff4444;color:white}
+
+/* ===== LABELS ===== */
+
+.carrinho label{
+
+display:block;
+margin-top:10px;
+margin-bottom:4px;
+font-size:13px;
+color:#cbd5e1;
+
+}
+
+
+/* ===== BOTÕES ===== */
+
+.botoesCarrinho{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+
+}
+
+.botoesCarrinho button{
+
+padding:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+font-size:13px;
+
+}
+
+
+/* ===== CORES BOTÕES ===== */
+
+.btnEmail{
+
+background:#16a34a;
+color:white;
+
+}
+
+.btnWhats{
+
+background:#22c55e;
+color:white;
+
+}
+
+.btnPdf{
+
+background:#f59e0b;
+color:white;
+
+}
+
+.btnLimpar{
+
+background:#ef4444;
+color:white;
+
+}
+
+
+/* ===== FOOTER ===== */
 
 .footer{
+
 background:#111;
 color:white;
-padding:30px;
 text-align:center;
-margin-top:30px;
+padding:30px;
+margin-top:40px;
+
 }
