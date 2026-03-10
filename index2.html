@@ -37,7 +37,6 @@
 </div>
 
 
-
 <div class="carrinho">
 
 <h2>
@@ -61,22 +60,75 @@ Total B2B: R$ <span id="total">0</span>
 
 <div id="listaPedido"></div>
 
-<h3>Dados do Cliente</h3>
 
-<input id="empresa" placeholder="Empresa">
-<input id="nome" placeholder="Nome">
+<h3>Dados para Nota Fiscal</h3>
+
+<div class="formPedido">
+
+<input id="empresa" placeholder="Razão Social">
+
+<input id="cnpj" placeholder="CNPJ">
+
+<input id="ie" placeholder="Inscrição Estadual">
+
+<input id="responsavel" placeholder="Responsável">
+
+<input id="whatsapp" placeholder="WhatsApp">
+
 <input id="email" placeholder="Email">
-<input id="whatsapp" placeholder="WhatsApp do cliente">
+
+<input id="endereco" placeholder="Endereço completo">
+
+<input id="cidade" placeholder="Cidade">
+
+<input id="estado" placeholder="Estado">
+
+<input id="cep" placeholder="CEP">
+
+
+<select id="entrega">
+
+<option value="">Forma de entrega</option>
+<option>Retirada na loja</option>
+<option>Correios</option>
+<option>Transportadora</option>
+
+</select>
+
+
+<select id="pagamento">
+
+<option value="">Forma de pagamento</option>
+<option>Pix</option>
+<option>Boleto</option>
+<option>Cartão</option>
+<option>Transferência</option>
+
+</select>
+
+
+<textarea id="observacoes" placeholder="Observações"></textarea>
+
+</div>
+
 
 <div class="botoesPedido">
 
-<button class="btnEmail" onclick="enviarEmail()">Enviar Pedido por Email</button>
+<button class="btnEmail" onclick="enviarEmail()">
+Enviar por Email
+</button>
 
-<button class="btnWhats" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+<button class="btnWhats" onclick="enviarWhatsApp()">
+Enviar por WhatsApp
+</button>
 
-<button class="btnPdf" onclick="gerarPDF()">Gerar PDF do Pedido</button>
+<button class="btnPdf" onclick="gerarPDF()">
+Gerar PDF
+</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar Pedido</button>
+<button class="btnLimpar" onclick="limparCarrinho()">
+Limpar
+</button>
 
 </div>
 
