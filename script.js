@@ -73,7 +73,7 @@ function renderProdutos(lista) {
                 15% (R$ 1000+) → R$ ${p15}
             </div>
 
-            <div class="estoque-card">Estoque disponível: <strong>${p.estoque}</strong></div>
+            <div class="estoque-card">Estoque: <strong>${p.estoque}</strong></div>
 
             <input type="number" value="0" min="0" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; text-align:center;">
             <button class="btnAdd" style="background:#2f3242; color:white; border:none; padding:10px; border-radius:8px; margin-top:10px; cursor:pointer; font-weight:600;" ${p.estoque <= 0 ? 'disabled' : ''}>
@@ -82,14 +82,18 @@ function renderProdutos(lista) {
         `;
 
         card.querySelector("button").onclick = () => {
-            const qtd = parseInt(card.querySelector("input").value);
+            const input = card.querySelector("input");
+            const qtd = parseInt(input.value);
             if (qtd > 0) {
-                if (qtd > p.estoque) return alert("Quantidade acima do estoque disponível.");
+                if (qtd > p.estoque) {
+                    alert("Quantidade acima do estoque disponível.");
+                    return;
+                }
                 carrinho.push({ nome: p.nome, preco: p.preco, qtd: qtd });
                 total += p.preco * qtd;
                 totalOriginal += p.preco * qtd;
                 atualizarCarrinho();
-                card.querySelector("input").value = 0;
+                input.value = 0;
             }
         };
         produtosDiv.appendChild(card);
@@ -111,6 +115,7 @@ function atualizarCarrinho() {
     const totalFinal = total * (1 - desc);
     const economia = totalOriginal - totalFinal;
 
+    // FORMATAÇÃO FINANCEIRA CORRIGIDA (2 CASAS)
     totalEl.innerText = totalFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     economiaEl.innerText = economia.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     contadorItens.innerText = `(${itens} itens)`;
