@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Faturamento B2B</title>
+    <title>Crazy Fantasy - B2B Faturamento</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root { --primary: #6c2bd9; --secondary: #e63946; --whatsapp: #25d366; --bg: #f0f2f5; }
@@ -28,18 +28,7 @@
         .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 11px; }
         .qtd-input { width: 60px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 6px; font-weight: bold; }
         
-        /* VALORES LADO A LADO */
-        .resumo-financeiro { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 25px; 
-            background: #1a1a1a; 
-            color: white; 
-            border-radius: 12px; 
-            margin-top: 15px;
-            gap: 20px;
-        }
+        .resumo-financeiro { display: flex; justify-content: space-between; align-items: center; padding: 25px; background: #1a1a1a; color: white; border-radius: 12px; margin-top: 15px; gap: 20px; }
         .bloco-valor { flex: 1; text-align: center; }
         .bloco-valor small { color: #888; text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 5px; }
         .bloco-valor h2 { margin: 0; font-size: 24px; color: #fff; }
@@ -55,7 +44,7 @@
 
 <div class="container">
     <div class="banner-container">
-        <img src="https://claudiagalvao.github.io/pedidos/banner.png" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY+B2B'">
+        <img id="bannerImg" src="https://claudia-galvao.github.io/pedidos/banner.png" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/1100x200/6c2bd9/ffffff?text=CRAZY+FANTASY+B2B'">
     </div>
 
     <div class="form-box">
@@ -89,7 +78,7 @@
         
         <div class="resumo-financeiro">
             <div class="bloco-valor">
-                <small>Subtotal (Preço Base)</small>
+                <small>Subtotal (Sem Desconto)</small>
                 <h2 id="subtotal-cheio">R$ 0,00</h2>
             </div>
             <div class="separador"></div>
@@ -112,13 +101,15 @@
         {n: "Astronauta", p: 199.90, t: "G", est: 2},
         {n: "Exército", p: 180.00, t: "M", est: 1},
         {n: "Policial", p: 199.99, t: "G", est: 2},
+        {n: "Medico", p: 169.99, t: "M", est: 2},
+        {n: "Medico", p: 169.99, t: "G", est: 2},
         {n: "Bombeiro", p: 229.90, t: "M", est: 1},
         {n: "Bombeiro", p: 229.90, t: "G", est: 2},
         {n: "Flash Longo", p: 319.99, t: "M", est: 1},
         {n: "Catnoir", p: 289.99, t: "M", est: 1},
-        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1},
         {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2},
-        {n: "Sininho", p: 99.90, t: "M", est: 1}
+        {n: "Sininho", p: 99.90, t: "M", est: 1},
+        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1}
     ];
 
     function render() {
@@ -133,25 +124,27 @@
                     <td>R$ ${p.p.toFixed(2)}</td>
                     <td style="color:var(--secondary)"><b>R$ ${pB2B.toFixed(2)}</b></td>
                     <td><span class="estoque-badge">${p.est} un</span></td>
-                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="travarQtd(this, ${i})"></td>
+                    <td><input type="number" class="qtd-input" data-index="${i}" min="0" max="${p.est}" value="0" onchange="travarQtd(this)"></td>
                 </tr>`;
         });
     }
 
-    function travarQtd(input, index) {
-        if (parseInt(input.value) > produtos[index].est) {
+    function travarQtd(input) {
+        let idx = input.dataset.index;
+        if (parseInt(input.value) > produtos[idx].est) {
             alert("Estoque insuficiente!");
-            input.value = produtos[index].est;
+            input.value = produtos[idx].est;
         }
         atualizarTotal();
     }
 
     function atualizarTotal() {
         let cheio = 0; let b2b = 0;
-        document.querySelectorAll(".qtd-input").forEach((input, i) => {
+        document.querySelectorAll(".qtd-input").forEach((input) => {
             let q = parseInt(input.value) || 0;
-            cheio += q * produtos[i].p;
-            b2b += q * (produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p);
+            let idx = input.dataset.index;
+            cheio += q * produtos[idx].p;
+            b2b += q * (produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p);
         });
         document.getElementById("subtotal-cheio").innerText = `R$ ${cheio.toFixed(2).replace('.', ',')}`;
         document.getElementById("valor-total").innerText = `R$ ${b2b.toFixed(2).replace('.', ',')}`;
@@ -160,12 +153,65 @@
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("Pedido Crazy Fantasy B2B", 10, 10);
-        doc.save("pedido.pdf");
+        const nomeCli = document.getElementById("nf_nome").value || "Cliente";
+
+        // Cabeçalho
+        doc.setFillColor(108, 43, 217);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255);
+        doc.setFontSize(20);
+        doc.text("SOLICITAÇÃO DE NF - CRAZY FANTASY", 105, 25, {align: "center"});
+
+        doc.setTextColor(0);
+        doc.setFontSize(10);
+        let y = 50;
+        doc.setFont("helvetica", "bold");
+        doc.text("DADOS DO CLIENTE:", 15, y);
+        doc.setFont("helvetica", "normal");
+        y += 6;
+        doc.text(`RAZÃO: ${nomeCli.toUpperCase()}`, 15, y);
+        doc.text(`CNPJ: ${document.getElementById("nf_doc").value}`, 120, y);
+        y += 6;
+        doc.text(`ENDEREÇO: ${document.getElementById("nf_end").value}`, 15, y);
+        doc.text(`E-MAIL: ${document.getElementById("nf_email").value}`, 120, y);
+        
+        y += 15;
+        doc.setFont("helvetica", "bold");
+        doc.text("PRODUTO", 15, y); doc.text("QTD", 130, y); doc.text("VLR. B2B", 155, y); doc.text("TOTAL", 185, y);
+        doc.line(15, y+2, 195, y+2);
+        
+        y += 10;
+        doc.setFont("helvetica", "normal");
+        document.querySelectorAll(".qtd-input").forEach((input) => {
+            let q = parseInt(input.value);
+            if(q > 0) {
+                let idx = input.dataset.index;
+                let pFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
+                doc.text(`${produtos[idx].n} (${produtos[idx].t})`, 15, y);
+                doc.text(q.toString(), 132, y);
+                doc.text(pFinal.toFixed(2), 155, y);
+                doc.text((q*pFinal).toFixed(2), 185, y);
+                y += 7;
+            }
+        });
+
+        doc.setFontSize(14); doc.setFont("helvetica", "bold");
+        doc.text(`TOTAL PEDIDO: ${document.getElementById("valor-total").innerText}`, 195, y+15, {align: "right"});
+        doc.save(`Pedido_NF_${nomeCli}.pdf`);
     }
 
     function enviarWhatsApp() {
-        let msg = `*PEDIDO CRAZY FANTASY*\nTotal: ${document.getElementById("valor-total").innerText}`;
+        let msg = `*CRAZY FANTASY - SOLICITAÇÃO B2B*\n\n`;
+        msg += `*Cliente:* ${document.getElementById("nf_nome").value}\n\n`;
+        document.querySelectorAll(".qtd-input").forEach((input) => {
+            let q = parseInt(input.value);
+            if(q > 0) {
+                let idx = input.dataset.index;
+                let pFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
+                msg += `✅ ${produtos[idx].n} (${produtos[idx].t}) x${q} = R$ ${(q*pFinal).toFixed(2)}\n`;
+            }
+        });
+        msg += `\n*TOTAL: ${document.getElementById("valor-total").innerText}*`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
