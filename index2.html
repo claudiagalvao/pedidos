@@ -20,10 +20,8 @@
 
 <div class="catalogo">
 
-<img src="banner.png" class="bannerTopo">
-
 <div class="barraInfo">
-🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
+🔥 Portal exclusivo para parceiros • Descontos B2B progressivos
 </div>
 
 <div id="menuCategorias"></div>
@@ -46,24 +44,20 @@
 Total B2B: R$ <span id="total">0,00</span>
 </div>
 
-<div class="descontoAtual">
-Desconto aplicado: <span id="descontoAtual">0%</span>
-</div>
-
-<div class="proximoDesconto">
-<span id="msgDesconto"></span>
-</div>
-
-<div id="msgMinimo">
-Faltam R$ 200,00 para pedido mínimo
-</div>
-
-<div class="barraFundo">
-<div id="barra" class="barraProgresso"></div>
+<div class="statusDesconto">
+<span id="statusDesconto"></span>
 </div>
 
 <div class="economia">
 Economia com descontos: R$ <span id="economia">0,00</span>
+</div>
+
+<div id="msgMinimo">
+Pedido mínimo R$200
+</div>
+
+<div class="barraFundo">
+<div id="barra" class="barraProgresso"></div>
 </div>
 
 <div id="listaPedido" class="listaPedido"></div>
@@ -120,13 +114,21 @@ Dados para Nota Fiscal
 
 <div class="botoesPedido">
 
-<button class="btnPedido" onclick="enviarEmail()">Enviar Pedido</button>
+<button class="btnPedido" onclick="enviarEmail()">
+Enviar Pedido
+</button>
 
-<button class="btnPedido" onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btnPedido" onclick="enviarWhatsApp()">
+WhatsApp
+</button>
 
-<button class="btnPedido" onclick="gerarPDF()">Gerar PDF</button>
+<button class="btnPedido" onclick="gerarPDF()">
+Gerar PDF
+</button>
 
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
+<button class="btnLimpar" onclick="limparCarrinho()">
+Limpar
+</button>
 
 </div>
 
@@ -141,20 +143,16 @@ Dados para Nota Fiscal
 
 <div>
 <strong>Crazy Fantasy</strong><br>
-Portal de pedidos B2B
+Portal B2B
 </div>
 
 <div>
-WhatsApp: (19) 99285-0208<br>
-Campinas – SP
+WhatsApp: (19) 99285-0208
 </div>
 
 </div>
 
 </footer>
-
-
-<!-- BOTÃO MOBILE -->
 
 <div id="botaoCarrinhoMobile">
 🛒 Pedido (<span id="contadorMobile">0</span>)
