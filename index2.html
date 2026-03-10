@@ -1,176 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Portal B2B Crazy Fantasy</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portal B2B Crazy Fantasy</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 <body>
 
-
-<header class="topo">
-
-<img src="banner.png" class="bannerTopo">
-
-</header>
-
-
-
-<div class="pagina">
-
 <div class="container">
+    <div class="catalogo">
+        <img class="bannerTopo" src="banner.png" alt="Banner Crazy Fantasy">
 
-<div class="catalogo">
+        <div class="barraInfo">
+            🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+        </div>
 
-<div class="barraInfo">
-🔥 Tabela exclusiva para parceiros | Desconto progressivo B2B
+        <div id="menuCategorias"></div>
+        <input id="busca" placeholder="🔎 Buscar produto">
+        <div id="produtos" class="gridProdutos"></div>
+    </div>
+
+    <div class="carrinho">
+        <h2>🛒 Pedido <span id="contadorItens">(0 itens)</span></h2>
+
+        <div class="total">Total B2B: R$ <span id="total">0.00</span></div>
+        <div class="economiaPedido">💰 Economia: R$ <span id="economia">0.00</span></div>
+
+        <div class="barraProgresso">
+            <div id="barra"></div>
+        </div>
+        <div id="msgMinimo"></div>
+
+        <div id="listaPedido"></div>
+
+        <h3>Dados para Nota Fiscal</h3>
+        <div class="formPedido">
+            <input id="empresa" placeholder="Razão Social">
+            <div class="linha2">
+                <input id="cnpj" placeholder="CNPJ">
+                <input id="ie" placeholder="Inscrição Estadual">
+            </div>
+            <div class="linha2">
+                <input id="responsavel" placeholder="Responsável">
+                <input id="whatsapp" placeholder="WhatsApp">
+            </div>
+            <input id="email" placeholder="Email">
+            <input id="endereco" placeholder="Endereço">
+            <div class="linha3">
+                <input id="cidade" placeholder="Cidade">
+                <input id="estado" placeholder="Estado">
+                <input id="cep" placeholder="CEP">
+            </div>
+            <div class="linha2">
+                <select id="entrega">
+                    <option value="">Forma de entrega</option>
+                    <option>Retirada na loja</option>
+                    <option>Correios</option>
+                    <option>Transportadora</option>
+                </select>
+                <select id="pagamento">
+                    <option value="">Forma de pagamento</option>
+                    <option>Pix</option>
+                    <option>Boleto</option>
+                    <option>Cartão</option>
+                </select>
+            </div>
+            <textarea id="observacoes" placeholder="Observações"></textarea>
+        </div>
+
+        <div class="botoesPedido">
+            <button class="btnEmail" onclick="enviarEmail()">E-mail</button>
+            <button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
+            <button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
+            <button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
+        </div>
+    </div>
 </div>
-
-<div id="menuCategorias"></div>
-
-<input id="busca" placeholder="🔎 Buscar produto">
-
-<div id="produtos" class="gridProdutos"></div>
-
-</div>
-
-
-
-<div class="carrinho">
-
-<h2>
-🛒 Pedido
-<span id="contadorItens">(0 itens)</span>
-</h2>
-
-<div class="total">
-Total B2B: R$ <span id="total">0</span>
-</div>
-
-<div class="economiaPedido">
-💰 Economia: R$ <span id="economia">0</span>
-</div>
-
-<div class="barraProgresso">
-<div id="barra"></div>
-</div>
-
-<div id="msgMinimo"></div>
-
-<div id="listaPedido"></div>
-
-
-<h3>Dados para Nota Fiscal</h3>
-
-<div class="formPedido">
-
-<input id="empresa" placeholder="Razão Social">
-
-<div class="linha2">
-<input id="cnpj" placeholder="CNPJ">
-<input id="ie" placeholder="Inscrição Estadual">
-</div>
-
-<div class="linha2">
-<input id="responsavel" placeholder="Responsável">
-<input id="whatsapp" placeholder="WhatsApp">
-</div>
-
-<input id="email" placeholder="Email">
-
-<input id="endereco" placeholder="Endereço">
-
-<div class="linha3">
-<input id="cidade" placeholder="Cidade">
-<input id="estado" placeholder="Estado">
-<input id="cep" placeholder="CEP">
-</div>
-
-<div class="linha2">
-
-<select id="entrega">
-<option value="">Forma de entrega</option>
-<option>Retirada na loja</option>
-<option>Correios</option>
-<option>Transportadora</option>
-</select>
-
-<select id="pagamento">
-<option value="">Forma de pagamento</option>
-<option>Pix</option>
-<option>Boleto</option>
-<option>Cartão</option>
-</select>
-
-</div>
-
-<textarea id="observacoes" placeholder="Observações"></textarea>
-
-</div>
-
-
-<div class="botoesPedido">
-
-<button class="btnEmail" onclick="enviarEmail()">Enviar por Email</button>
-
-<button class="btnWhats" onclick="enviarWhatsApp()">WhatsApp</button>
-
-<button class="btnPdf" onclick="gerarPDF()">Gerar PDF</button>
-
-<button class="btnLimpar" onclick="limparCarrinho()">Limpar</button>
-
-</div>
-
-</div>
-
-</div>
-
-
 
 <div class="footer">
-
-<b>Crazy Fantasy B2B</b>
-
-<br><br>
-
-Desconto progressivo
-
-<br>
-até R$200 → 10%
-<br>
-até R$500 → 12%
-<br>
-até R$1000 → 15%
-
-<br><br>
-
-Pagamento: PIX | Boleto | Cartão
-
-<br>
-
-Frete calculado após envio
-
-<br>
-
-Validade do pedido: 48h
-
+    <b>Crazy Fantasy B2B</b><br><br>
+    Desconto progressivo: <br>
+    R$200 → 10% | R$500 → 12% | R$1000 → 15% <br><br>
+    Pagamento: PIX | Boleto | Cartão | Validade do pedido: 48h
 </div>
-
-</div>
-
 
 <script src="script.js"></script>
-
 </body>
 </html>
