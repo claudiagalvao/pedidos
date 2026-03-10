@@ -27,12 +27,11 @@
         .img-produto { width: 45px; height: 45px; border-radius: 5px; object-fit: cover; background: #f9f9f9; vertical-align: middle; margin-right: 10px; }
         .estoque-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
         .qtd-input { width: 65px; padding: 8px; text-align: center; border: 2px solid var(--primary); border-radius: 5px; font-weight: bold; }
-        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(108, 43, 217, 0.3); }
+        .total-container { padding: 25px; background: var(--primary); color: white; border-radius: 12px; text-align: right; font-size: 26px; font-weight: bold; margin-top: 15px; }
         .btn-group { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
         .btn-pdf { background: var(--secondary); color: white; }
         .btn-whatsapp { background: var(--whatsapp); color: white; }
         button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
-        button:hover { filter: brightness(0.9); transform: translateY(-2px); }
         .obrigatorio { border: 2px solid var(--secondary) !important; background: #fff5f5; }
     </style>
 </head>
@@ -48,15 +47,15 @@
         <div class="grid-faturamento">
             <div style="grid-column: span 2;">
                 <label>Razão Social / Nome Completo *</label>
-                <input type="text" id="cli_nome" placeholder="Nome do cliente">
+                <input type="text" id="cli_nome">
             </div>
             <div>
                 <label>CNPJ / CPF *</label>
-                <input type="text" id="cli_doc" placeholder="000.000.000-00">
+                <input type="text" id="cli_doc">
             </div>
             <div>
                 <label>Vendedora *</label>
-                <input type="text" id="vendedora" placeholder="Seu nome">
+                <input type="text" id="vendedora">
             </div>
             <div>
                 <label>Forma de Entrega</label>
@@ -64,7 +63,7 @@
                     <option>Retirada na Loja</option>
                     <option>Correios (Sedex)</option>
                     <option>Correios (PAC)</option>
-                    <option>Motoboy / Transportadora</option>
+                    <option>Motoboy</option>
                 </select>
             </div>
             <div>
@@ -73,7 +72,7 @@
                     <option>PIX</option>
                     <option>Boleto Bancário (Omie)</option>
                     <option>Cartão de Crédito</option>
-                    <option>Dinheiro / Débito</option>
+                    <option>Dinheiro</option>
                 </select>
             </div>
         </div>
@@ -103,9 +102,7 @@
             </table>
         </div>
 
-        <div class="total-container">
-            Total: R$ <span id="valor-total">0.00</span>
-        </div>
+        <div class="total-container">Total: R$ <span id="valor-total">0.00</span></div>
 
         <div class="btn-group">
             <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar Orçamento PDF</button>
@@ -119,6 +116,7 @@
     const imgPadrao = "https://cdn-icons-png.flaticon.com/512/8636/8636549.png";
     let catAtiva = 'todos';
 
+    // ESTOQUE REAL EXTRAÍDO DAS FOTOS (FILTRADO > 0)
     const produtos = [
         // MASCULINO
         {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
@@ -140,7 +138,7 @@
         {n: "Astronauta", p: 199.90, t: "G", est: 1, c: "feminino"},
         {n: "Médica", p: 180.00, t: "M", est: 2, c: "feminino"},
         {n: "Médica", p: 180.00, t: "G", est: 2, c: "feminino"},
-        {n: "Mulher Maravilha (Luxo)", p: 209.99, t: "M", est: 1, c: "feminino"},
+        {n: "Mulher Maravilha (Capa)", p: 209.99, t: "M", est: 1, c: "feminino"},
         {n: "Alice", p: 120.00, t: "M", est: 1, c: "feminino"},
         {n: "Policial", p: 130.00, t: "M", est: 1, c: "feminino"},
         {n: "Mulher Maravilha (Geral)", p: 299.99, t: "G", est: 2, c: "feminino"}
@@ -150,13 +148,119 @@
         const corpo = document.getElementById("corpo-tabela");
         corpo.innerHTML = "";
         produtos.forEach((p, i) => {
-            let temDesconto = p.p > 200;
-            let pFinal = temDesconto ? p.p * 0.9 : p.p;
-            
-            let precoHtml = temDesconto ? 
-                `<span style="text-decoration:line-through;color:#999;font-size:12px">R$ ${p.p.toFixed(2)}</span><br><b>R$ ${pFinal.toFixed(2)}</b> <small style="color:red">-10%</small>` : 
+            let pFinal = p.p > 200 ? p.p * 0.9 : p.p;
+            let precoHtml = p.p > 200 ? 
+                `<span style="text-decoration:line-through;color:#999;font-size:12px">R$ ${p.p.toFixed(2)}</span><br><b>R$ ${pFinal.toFixed(2)}</b>` : 
                 `<b>R$ ${p.p.toFixed(2)}</b>`;
 
             corpo.innerHTML += `
                 <tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
-                    <td style="text-align:left; padding-left:20px;"><img src="${imgPadrao}" class="img-produto">${
+                    <td style="text-align:left; padding-left:20px;"><img src="${imgPadrao}" class="img-produto">${p.n}</td>
+                    <td>${p.t}</td>
+                    <td>${precoHtml}</td>
+                    <td><span class="estoque-badge">${p.est} un.</span></td>
+                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="validar(this)"></td>
+                </tr>`;
+        });
+    }
+
+    function validar(input) {
+        if(parseInt(input.value) > parseInt(input.max)) { 
+            alert(`⚠️ Só temos ${input.max} un. no estoque!`); 
+            input.value = input.max; 
+        }
+        let total = 0;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = parseInt(l.querySelector(".qtd-input").value) || 0;
+            let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
+            total += q * p;
+        });
+        document.getElementById("valor-total").innerText = total.toFixed(2);
+    }
+
+    function filtrar() {
+        let b = document.getElementById("busca").value.toLowerCase();
+        document.querySelectorAll(".linha-p").forEach(l => {
+            let m = l.dataset.nome.includes(b) && (catAtiva === 'todos' || l.dataset.cat === catAtiva);
+            l.style.display = m ? "" : "none";
+        });
+    }
+
+    function setCat(c, btn) {
+        catAtiva = c;
+        document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filtrar();
+    }
+
+    function validarCampos() {
+        const obrigatorios = ['cli_nome', 'cli_doc', 'vendedora'];
+        let erro = false;
+        obrigatorios.forEach(id => {
+            let el = document.getElementById(id);
+            if(!el.value.trim()) { el.classList.add('obrigatorio'); erro = true; } 
+            else { el.classList.remove('obrigatorio'); }
+        });
+        if(erro) alert("Preencha Nome, CPF e Vendedora!");
+        return !erro;
+    }
+
+    async function gerarPDF() {
+        if(!validarCampos()) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const logoUrl = "https://claudia-galvao.github.io/pedidos/banner.png";
+        try { doc.addImage(logoUrl, 'PNG', 15, 10, 180, 40); } catch(e) {}
+
+        let y = 65;
+        doc.setFontSize(10);
+        doc.text(empresa.nome, 105, y, {align:"center"});
+        doc.text(`CNPJ: ${empresa.cnpj} | ${empresa.end}`, 105, y+5, {align:"center"});
+        doc.line(15, y+10, 195, y+10);
+        
+        y += 20;
+        doc.setFont("helvetica", "bold");
+        doc.text(`CLIENTE: ${document.getElementById("cli_nome").value}`, 15, y);
+        doc.text(`VENDEDORA: ${document.getElementById("vendedora").value}`, 120, y);
+        
+        y += 15;
+        doc.text("Item", 15, y); doc.text("Qtd", 140, y); doc.text("Total", 175, y);
+        doc.line(15, y+2, 195, y+2);
+        
+        y += 10;
+        doc.setFont("helvetica", "normal");
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) {
+                let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
+                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
+                doc.text(q, 142, y);
+                doc.text((q*p).toFixed(2), 175, y);
+                y += 8;
+            }
+        });
+        
+        doc.setFontSize(14); doc.setFont("helvetica", "bold");
+        doc.text(`TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y+15, {align:"right"});
+        doc.save(`Orcamento_${document.getElementById("cli_nome").value}.pdf`);
+    }
+
+    function enviarWhatsApp() {
+        if(!validarCampos()) return;
+        let msg = `*CRAZY FANTASY - NOVO PEDIDO*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
+        document.querySelectorAll(".linha-p").forEach((l, i) => {
+            let q = l.querySelector(".qtd-input").value;
+            if(q > 0) {
+                let p = produtos[i].p > 200 ? produtos[i].p * 0.9 : produtos[i].p;
+                msg += `✅ ${produtos[i].n} (${produtos[i].t}) x${q} = R$ ${(q*p).toFixed(2)}\n`;
+            }
+        });
+        msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    }
+
+    render();
+</script>
+</body>
+</html>
