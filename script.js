@@ -1,41 +1,21 @@
 const produtosDiv = document.getElementById("produtos");
-const listaPedido = document.getElementById("listaPedido");
-const totalEl = document.getElementById("total");
-const economiaEl = document.getElementById("economia");
-const contadorItens = document.getElementById("contadorItens");
 const menuCategorias = document.getElementById("menuCategorias");
 const busca = document.getElementById("busca");
-const barra = document.getElementById("barra");
-const msgMinimo = document.getElementById("msgMinimo");
 const carrinhoUI = document.getElementById("carrinho");
 
 let produtos = [];
-let carrinho = [];
-
-let total = 0;
-let totalOriginal = 0;
-
-const pedidoMinimo = 200;
-
-function calcularDesconto(valor){
-
-if(valor >= 1000) return 0.15;
-if(valor >= 500) return 0.12;
-if(valor >= 200) return 0.10;
-
-return 0;
-
-}
 
 fetch("produtos.csv")
-.then(r=>r.text())
-.then(data=>{
+.then(r => r.text())
+.then(data => {
 
-const linhas=data.split("\n").slice(1);
+const linhas = data.split("\n").slice(1);
 
-linhas.forEach(l=>{
+linhas.forEach(l => {
 
-const c=l.split(",");
+if(!l.trim()) return;
+
+const c = l.split(";");
 
 produtos.push({
 
@@ -45,7 +25,8 @@ variacao:c[2],
 preco:parseFloat(c[3]),
 link:c[4],
 sku:c[5],
-estoque:parseInt(c[6])
+estoque:parseInt(c[6]),
+vendas:Math.floor(Math.random()*100)
 
 });
 
@@ -72,9 +53,14 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 
 function filtrarCategoria(cat){
 
-cat==="Todos"
-?renderProdutos(produtos)
-:renderProdutos(produtos.filter(p=>p.categoria===cat));
+if(cat==="Todos"){
+
+renderProdutos(produtos);
+return;
+
+}
+
+renderProdutos(produtos.filter(p=>p.categoria===cat));
 
 }
 
@@ -93,14 +79,16 @@ produtosDiv.innerHTML="";
 lista.forEach(p=>{
 
 const p10=(p.preco*0.90).toFixed(2);
-const p12=(p.preco*0.88).toFixed(2);
-const p15=(p.preco*0.85).toFixed(2);
 
 const card=document.createElement("div");
 
 card.className="produto";
 
 card.innerHTML=`
+
+${p.vendas>70?'<div class="badgeVendido">🔥 Mais vendido</div>':''}
+
+<a href="${p.link}" target="_blank" class="camera-icon">📸</a>
 
 <h3>${p.nome}</h3>
 
@@ -113,18 +101,13 @@ R$ ${p10}
 </div>
 
 <div class="progressivo-card">
-
 <strong>Descontos B2B</strong><br>
-
-10% (R$200+) → R$ ${p10}<br>
-12% (R$500+) → R$ ${p12}<br>
-15% (R$1000+) → R$ ${p15}
-
+10% (R$200+) → R$ ${p10}
 </div>
 
 <div>Estoque: <strong>${p.estoque}</strong></div>
 
-<input type="number" value="0" min="0">
+<input type="number" value="0" min="0" class="qtdProduto">
 
 <button class="btnAdd">Adicionar</button>
 
@@ -132,23 +115,20 @@ R$ ${p10}
 
 card.querySelector("button").onclick=()=>{
 
-const qtd=parseInt(card.querySelector("input").value);
+const input=card.querySelector(".qtdProduto");
+
+const qtd=parseInt(input.value);
 
 if(!qtd) return;
 
-carrinho.push({nome:p.nome,preco:p.preco,qtd:qtd});
-
-total+=p.preco*qtd;
-totalOriginal+=p.preco*qtd;
-
-atualizarCarrinho();
-
-/* ANIMAÇÃO DO CARRINHO */
+input.value=0;
 
 carrinhoUI.classList.add("pulse");
 
 setTimeout(()=>{
+
 carrinhoUI.classList.remove("pulse");
+
 },400);
 
 };
@@ -156,68 +136,5 @@ carrinhoUI.classList.remove("pulse");
 produtosDiv.appendChild(card);
 
 });
-
-}
-
-function atualizarCarrinho(){
-
-listaPedido.innerHTML="";
-
-let itens=0;
-
-carrinho.forEach((item,index)=>{
-
-itens+=item.qtd;
-
-listaPedido.innerHTML+=`
-
-<div style="display:flex;justify-content:space-between">
-
-<span>${item.qtd}x ${item.nome}</span>
-
-<button onclick="removerItem(${index})">✕</button>
-
-</div>
-
-`;
-
-});
-
-const desc=calcularDesconto(total);
-
-const totalFinal=total*(1-desc);
-
-const economia=totalOriginal-totalFinal;
-
-totalEl.innerText=totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2});
-economiaEl.innerText=economia.toLocaleString('pt-BR',{minimumFractionDigits:2});
-
-contadorItens.innerText=`(${itens} itens)`;
-
-let progresso=(total/pedidoMinimo)*100;
-
-barra.style.width=Math.min(progresso,100)+"%";
-
-msgMinimo.innerText=total<pedidoMinimo
-?`Faltam R$ ${(pedidoMinimo-total).toFixed(2)}`
-:"Pedido mínimo atingido";
-
-}
-
-function limparCarrinho(){
-
-carrinho=[];
-total=0;
-totalOriginal=0;
-
-atualizarCarrinho();
-
-/* LIMPA FORMULÁRIO */
-
-document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
-document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
-
-document.getElementById("entrega").selectedIndex=0;
-document.getElementById("pagamento").selectedIndex=0;
 
 }
