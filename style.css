@@ -10,6 +10,8 @@ margin:0;
 
 
 
+/* CONTAINER PRINCIPAL */
+
 .container{
 
 display:flex;
@@ -19,6 +21,8 @@ align-items:flex-start;
 }
 
 
+
+/* CATÁLOGO */
 
 .catalogo{
 
@@ -30,7 +34,7 @@ padding:20px;
 
 
 
-/* BANNER CORRIGIDO */
+/* BANNER */
 
 .banner{
 
@@ -142,7 +146,7 @@ text-decoration:none;
 
 
 
-/* BADGE */
+/* BADGE MAIS VENDIDO */
 
 .badgeVendido{
 
