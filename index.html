@@ -17,10 +17,12 @@
             margin-bottom: 20px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            text-align: center;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        /* Garante que o banner apareça */
-        .banner-box img { width: 100%; height: auto; display: block; min-height: 100px; }
+        .banner-box img { width: 100%; height: auto; display: block; }
 
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
         h3 { color: var(--primary); border-bottom: 2px solid #f8f0ff; padding-bottom: 10px; margin-top: 0; }
@@ -53,11 +55,11 @@
 
 <div class="container">
     <div class="banner-box">
-        <img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="CRAZY FANTASY" onerror="this.src='https://via.placeholder.com/1000x250/6c2bd9/ffffff?text=CRAZY+FANTASY'">
+        <img src="https://claudia-galvao.github.io/pedidos/banner.png" alt="CRAZY FANTASY" onerror="this.parentElement.innerHTML='<h1 style=color:white>CRAZY FANTASY</h1>'">
     </div>
 
     <div class="form-box">
-        <h3>📄 Faturamento (Preencha para liberar o PDF)</h3>
+        <h3>📄 Dados Obrigatórios</h3>
         <div class="grid-faturamento">
             <div style="grid-column: span 2;"><label>Cliente / Razão Social *</label><input type="text" id="cli_nome"></div>
             <div><label>CPF / CNPJ *</label><input type="text" id="cli_doc"></div>
@@ -67,21 +69,29 @@
 
     <div class="form-box">
         <div class="filtros-box">
-            <input type="text" id="busca" class="busca-input" placeholder="🔍 Procurar fantasia..." onkeyup="filtrar()">
+            <input type="text" id="busca" class="busca-input" placeholder="🔍 Buscar fantasia..." onkeyup="filtrar()">
             <button class="btn-filtro active" onclick="setCat('todos', this)">Todas</button>
             <button class="btn-filtro" onclick="setCat('feminino', this)">Feminino</button>
             <button class="btn-filtro" onclick="setCat('masculino', this)">Masculino</button>
         </div>
         <div class="tabela-scroll">
             <table>
-                <thead><tr><th style="text-align:left; padding-left:20px;">Fantasia</th><th>Tam</th><th>Preço</th><th>Qtd</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th style="text-align:left; padding-left:15px;">Fantasia</th>
+                        <th>Tam</th>
+                        <th>Preço Unit.</th>
+                        <th>Estoque</th>
+                        <th>Sua Qtd</th>
+                    </tr>
+                </thead>
                 <tbody id="corpo-tabela"></tbody>
             </table>
         </div>
-        <div class="total-container">Total: R$ <span id="valor-total">0.00</span></div>
+        <div class="total-container">Total Pedido: R$ <span id="valor-total">0.00</span></div>
         <div class="btn-group">
-            <button class="btn-pdf" onclick="gerarPDF()">📄 Salvar Orçamento PDF</button>
-            <button class="btn-whatsapp" onclick="enviarWhatsApp()">🟢 Mandar no WhatsApp</button>
+            <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
+            <button class="btn-whatsapp" onclick="enviarWhatsApp()">🟢 WhatsApp</button>
         </div>
     </div>
 </div>
@@ -90,6 +100,7 @@
     const empresa = { nome: "Galvão Artigos para Festas Ltda", cnpj: "09.626.903/0001-57", end: "Rua Itália, 170 - Valinhos/SP" };
     let catAtiva = 'todos';
 
+    // Lista de produtos com estoque baseado nas suas fotos
     const produtos = [
         {n: "Astronauta", p: 199.90, t: "M", est: 2, c: "masculino"},
         {n: "Astronauta", p: 199.90, t: "G", est: 2, c: "masculino"},
@@ -106,7 +117,6 @@
         {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2, c: "feminino"},
         {n: "Sininho", p: 99.90, t: "M", est: 1, c: "feminino"},
         {n: "Jessie", p: 129.90, t: "M", est: 1, c: "feminino"},
-        {n: "Astronauta Fem.", p: 199.90, t: "G", est: 1, c: "feminino"},
         {n: "Médica", p: 180.00, t: "M", est: 2, c: "feminino"},
         {n: "Médica", p: 180.00, t: "G", est: 2, c: "feminino"},
         {n: "Bela Adormecida", p: 269.90, t: "G", est: 1, c: "feminino"}
@@ -116,16 +126,28 @@
         const corpo = document.getElementById("corpo-tabela");
         corpo.innerHTML = "";
         produtos.forEach((p, i) => {
+            // Regra de 25% de desconto para itens acima de 200
             let pFinal = p.p > 200 ? p.p * 0.75 : p.p;
-            let precoHtml = p.p > 200 ? `<s>R$ ${p.p.toFixed(2)}</s><br><b style="color:red">R$ ${pFinal.toFixed(2)}</b>` : `<b>R$ ${p.p.toFixed(2)}</b>`;
+            let precoHtml = p.p > 200 ? 
+                `<s>R$ ${p.p.toFixed(2)}</s><br><b style="color:red">R$ ${pFinal.toFixed(2)}</b>` : 
+                `<b>R$ ${p.p.toFixed(2)}</b>`;
             
-            corpo.innerHTML += `<tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
-                <td style="text-align:left; padding-left:15px;">${p.n}</td><td>${p.t}</td><td>${precoHtml}</td>
-                <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="calc()"></td></tr>`;
+            corpo.innerHTML += `
+                <tr class="linha-p" data-nome="${p.n.toLowerCase()}" data-cat="${p.c}">
+                    <td style="text-align:left; padding-left:15px;">${p.n}</td>
+                    <td>${p.t}</td>
+                    <td>${precoHtml}</td>
+                    <td><span class="estoque-badge">${p.est} un.</span></td>
+                    <td><input type="number" class="qtd-input" min="0" max="${p.est}" value="0" onchange="calc(this)"></td>
+                </tr>`;
         });
     }
 
-    function calc() {
+    function calc(input) {
+        if(input && parseInt(input.value) > parseInt(input.max)) {
+            alert("Quantidade acima do estoque disponível!");
+            input.value = input.max;
+        }
         let total = 0;
         document.querySelectorAll(".linha-p").forEach((l, i) => {
             let q = parseInt(l.querySelector(".qtd-input").value) || 0;
@@ -158,36 +180,34 @@
             if(!el.value.trim()) { el.classList.add('obrigatorio'); ok = false; }
             else el.classList.remove('obrigatorio');
         });
-        if(!ok) alert("Por favor, preencha os campos do cliente e vendedora.");
         return ok;
     }
 
     async function gerarPDF() {
-        if(!validar()) return;
+        if(!validar()) { alert("Preencha os dados do cliente!"); return; }
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Cabeçalho Simples e Profissional (Evita erro de imagem)
+        // Cabeçalho roxo elegante
         doc.setFillColor(108, 43, 217);
-        doc.rect(0, 0, 210, 40, 'F');
+        doc.rect(0, 0, 210, 35, 'F');
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(22);
-        doc.text("CRAZY FANTASY", 105, 25, {align: "center"});
+        doc.text("CRAZY FANTASY - ORÇAMENTO", 105, 22, {align: "center"});
         
-        let y = 50;
+        let y = 45;
         doc.setTextColor(0);
-        doc.setFontSize(10);
-        doc.text(empresa.nome, 105, y, {align:"center"});
-        doc.text(`CNPJ: ${empresa.cnpj} | Valinhos-SP`, 105, y+5, {align:"center"});
-        doc.line(15, y+10, 195, y+10);
-        
-        y += 20;
-        doc.setFont("helvetica", "bold");
-        doc.text(`CLIENTE: ${document.getElementById("cli_nome").value}`, 15, y);
-        doc.text(`VENDEDORA: ${document.getElementById("vendedora").value}`, 120, y);
+        doc.setFontSize(9);
+        doc.text(`${empresa.nome} | CNPJ: ${empresa.cnpj}`, 105, y, {align:"center"});
+        doc.line(15, y+5, 195, y+5);
         
         y += 15;
-        doc.text("Item Selecionado", 15, y); doc.text("Qtd", 140, y); doc.text("Subtotal", 175, y);
+        doc.setFont("helvetica", "bold");
+        doc.text(`CLIENTE: ${document.getElementById("cli_nome").value.toUpperCase()}`, 15, y);
+        doc.text(`VENDEDORA: ${document.getElementById("vendedora").value.toUpperCase()}`, 120, y);
+        
+        y += 12;
+        doc.text("PRODUTO", 15, y); doc.text("TAM", 100, y); doc.text("QTD", 130, y); doc.text("TOTAL", 175, y);
         doc.line(15, y+2, 195, y+2);
         
         y += 10;
@@ -196,27 +216,27 @@
             let q = l.querySelector(".qtd-input").value;
             if(q > 0) {
                 let pUnit = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
-                doc.text(`${produtos[i].n} (${produtos[i].t})`, 15, y);
-                doc.text(q, 142, y);
-                doc.text((q*pUnit).toFixed(2), 175, y);
+                doc.text(produtos[i].n, 15, y);
+                doc.text(produtos[i].t, 100, y);
+                doc.text(q, 132, y);
+                doc.text((q * pUnit).toFixed(2), 175, y);
                 y += 8;
             }
         });
         
         doc.setFontSize(14); doc.setFont("helvetica", "bold");
-        doc.text(`TOTAL FINAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y+15, {align:"right"});
-        
-        doc.save(`Orcamento_${document.getElementById("cli_nome").value}.pdf`);
+        doc.text(`VALOR TOTAL: R$ ${document.getElementById("valor-total").innerText}`, 195, y+15, {align:"right"});
+        doc.save(`Pedido_${document.getElementById("cli_nome").value}.pdf`);
     }
 
     function enviarWhatsApp() {
-        if(!validar()) return;
+        if(!validar()) { alert("Preencha os dados do cliente!"); return; }
         let msg = `*CRAZY FANTASY - NOVO PEDIDO*\nCliente: ${document.getElementById("cli_nome").value}\n\n`;
         document.querySelectorAll(".linha-p").forEach((l, i) => {
             let q = l.querySelector(".qtd-input").value;
             if(q > 0) {
                 let pUnit = produtos[i].p > 200 ? produtos[i].p * 0.75 : produtos[i].p;
-                msg += `✅ ${produtos[i].n} x${q} = R$ ${(q*pUnit).toFixed(2)}\n`;
+                msg += `✅ ${produtos[i].n} (${produtos[i].t}) x${q} = R$ ${(q*pUnit).toFixed(2)}\n`;
             }
         });
         msg += `\n*TOTAL: R$ ${document.getElementById("valor-total").innerText}*`;
