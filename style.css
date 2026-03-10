@@ -64,7 +64,6 @@ background:white;
 padding:22px;
 border-radius:16px;
 box-shadow:0 8px 18px rgba(0,0,0,0.08);
-position:relative;
 }
 
 .precoB2B{
@@ -102,6 +101,8 @@ cursor:pointer;
 font-weight:600;
 }
 
+/* CARRINHO */
+
 .carrinho{
 flex:1;
 background:#2f3242;
@@ -112,6 +113,20 @@ position:sticky;
 top:20px;
 max-height:calc(100vh - 40px);
 overflow-y:auto;
+}
+
+/* ANIMAÇÃO PULSE */
+
+.carrinho.pulse{
+animation:pulseCart 0.4s;
+}
+
+@keyframes pulseCart{
+
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+
 }
 
 .total{
