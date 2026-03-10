@@ -1,8 +1,4 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
 font-family:'Inter',Arial;
@@ -18,9 +14,7 @@ gap:25px;
 padding:20px;
 }
 
-.catalogo{
-flex:3;
-}
+.catalogo{flex:3;}
 
 .bannerTopo{
 width:100%;
@@ -64,12 +58,19 @@ background:white;
 padding:22px;
 border-radius:16px;
 box-shadow:0 8px 18px rgba(0,0,0,0.08);
+position:relative;
+}
+
+.produto h3{
+font-size:15px;
+font-weight:600;
+margin-bottom:6px;
 }
 
 .precoB2B{
 font-size:24px;
 font-weight:700;
-color:#000;
+color:#1d4ed8;
 margin:6px 0;
 }
 
@@ -79,6 +80,25 @@ background:#f4f6f8;
 padding:10px;
 border-radius:8px;
 margin:10px 0;
+}
+
+.badgeVendido{
+position:absolute;
+top:12px;
+left:12px;
+background:#ff9800;
+color:white;
+padding:4px 8px;
+border-radius:6px;
+font-size:11px;
+}
+
+.camera-icon{
+position:absolute;
+top:12px;
+right:12px;
+font-size:20px;
+text-decoration:none;
 }
 
 .produto input{
@@ -101,8 +121,6 @@ cursor:pointer;
 font-weight:600;
 }
 
-/* CARRINHO */
-
 .carrinho{
 flex:1;
 background:#2f3242;
@@ -115,27 +133,14 @@ max-height:calc(100vh - 40px);
 overflow-y:auto;
 }
 
-/* ANIMAÇÃO PULSE */
-
 .carrinho.pulse{
 animation:pulseCart 0.4s;
 }
 
 @keyframes pulseCart{
-
 0%{transform:scale(1)}
 50%{transform:scale(1.05)}
 100%{transform:scale(1)}
-
-}
-
-.total{
-font-size:18px;
-margin:10px 0;
-}
-
-.progressoContainer{
-margin:12px 0;
 }
 
 .barraFundo{
@@ -149,12 +154,6 @@ overflow:hidden;
 background:#27d266;
 height:10px;
 width:0%;
-}
-
-.listaPedido{
-margin:20px 0;
-padding-bottom:15px;
-border-bottom:1px solid rgba(255,255,255,0.15);
 }
 
 .formPedido input,
@@ -195,10 +194,6 @@ border-radius:8px;
 cursor:pointer;
 }
 
-.btnPedido:hover{
-background:#5a6077;
-}
-
 .btnLimpar{
 background:#777;
 color:white;
@@ -206,6 +201,13 @@ border:none;
 padding:12px;
 border-radius:8px;
 cursor:pointer;
+}
+
+.tituloFormulario{
+font-size:13px;
+font-weight:600;
+margin:10px 0 6px 0;
+color:#cfd3ff;
 }
 
 .footer{
