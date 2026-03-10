@@ -133,28 +133,41 @@ padding:20px;
 max-width:360px;
 position:sticky;
 top:20px;
-height:fit-content;
+max-height:calc(100vh - 40px);
+overflow-y:auto;
+border-radius:12px;
 }
 
 .formPedido{
 display:grid;
-grid-template-columns:1fr;
-gap:6px;
+gap:8px;
 margin-top:10px;
+}
+
+.linha2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+.linha3{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+gap:8px;
 }
 
 .formPedido input,
 .formPedido select,
 .formPedido textarea{
 width:100%;
-padding:8px;
+padding:7px;
 border-radius:6px;
 border:none;
 font-size:13px;
 }
 
 .formPedido textarea{
-height:60px;
+height:50px;
 resize:none;
 }
 
