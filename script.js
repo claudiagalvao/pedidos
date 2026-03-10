@@ -62,7 +62,6 @@ vendas:Math.floor(Math.random()*100)
 })
 
 criarCategorias()
-
 renderProdutos(produtos)
 
 })
@@ -88,13 +87,9 @@ menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</butt
 function filtrarCategoria(cat){
 
 if(cat==="Todos"){
-
 renderProdutos(produtos)
-
 }else{
-
 renderProdutos(produtos.filter(p=>p.categoria===cat))
-
 }
 
 }
@@ -106,9 +101,7 @@ busca.addEventListener("keyup",()=>{
 const termo=busca.value.toLowerCase()
 
 renderProdutos(produtos.filter(p=>
-
 p.nome.toLowerCase().includes(termo)
-
 ))
 
 })
@@ -121,29 +114,14 @@ produtosDiv.innerHTML=""
 
 lista.forEach(p=>{
 
-let selo=""
-
-if(p.vendas>70){
-
-selo=`<div class="badgeVendido">🔥 Mais vendido</div>`
-
-}
-
 const desconto10=p.preco*0.90
 const desconto12=p.preco*0.88
 const desconto15=p.preco*0.85
 
 const card=document.createElement("div")
-
 card.className="produto"
 
 card.innerHTML=`
-
-${selo}
-
-<div class="camera">
-<a href="${p.link}" target="_blank">📸</a>
-</div>
 
 <h3>${p.nome}</h3>
 
@@ -152,18 +130,12 @@ ${selo}
 <div class="precoB2B">Preço B2B: R$ ${desconto10.toFixed(2)}</div>
 
 <div class="progressivo">
-
 10% → ${desconto10.toFixed(2)}<br>
 12% → ${desconto12.toFixed(2)}<br>
 15% → ${desconto15.toFixed(2)}
-
 </div>
 
-<div class="estoque">
-
-Estoque: ${p.estoque}
-
-</div>
+<div class="estoque">Estoque: ${p.estoque}</div>
 
 <input type="number" value="0" min="0">
 
@@ -180,13 +152,7 @@ const qtd = parseInt(input.value)
 
 if(qtd<=0) return
 
-carrinho.push({
-
-nome:p.nome,
-preco:p.preco,
-qtd:qtd
-
-})
+carrinho.push({nome:p.nome,preco:p.preco,qtd:qtd})
 
 total+=p.preco*qtd
 totalOriginal+=p.preco*qtd
@@ -282,9 +248,7 @@ function enviarWhatsApp(){
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome}\n`
-
 })
 
 window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`)
@@ -298,9 +262,7 @@ function enviarEmail(){
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome}\n`
-
 })
 
 const assunto="Pedido Crazy Fantasy"
@@ -320,13 +282,10 @@ const doc=new jsPDF()
 let texto="Pedido Crazy Fantasy B2B\n\n"
 
 carrinho.forEach(i=>{
-
 texto+=`${i.qtd}x ${i.nome}\n`
-
 })
 
 doc.text(texto,10,10)
-
 doc.save("pedido.pdf")
 
 }
