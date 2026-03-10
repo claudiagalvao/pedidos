@@ -45,7 +45,7 @@ padding:8px 16px;
 border-radius:18px;
 margin:4px;
 cursor:pointer;
-transition:0.2s;
+transition:.2s;
 }
 
 #menuCategorias button:hover{
@@ -75,16 +75,13 @@ gap:20px;
 .produto{
 
 background:white;
-
 padding:22px;
 
 border-radius:16px;
 
 box-shadow:0 8px 18px rgba(0,0,0,0.08);
 
-position:relative;
-
-transition:0.2s;
+transition:.2s;
 
 display:flex;
 flex-direction:column;
@@ -123,26 +120,7 @@ border-radius:8px;
 margin:10px 0;
 }
 
-/* SELO */
-
-.badgeVendido{
-
-display:inline-block;
-
-background:#ff9800;
-color:white;
-
-padding:4px 8px;
-border-radius:6px;
-
-font-size:11px;
-font-weight:600;
-
-margin-top:6px;
-
-}
-
-/* INPUT */
+/* INPUT QTD */
 
 .produto input{
 width:100%;
@@ -153,13 +131,16 @@ text-align:center;
 margin-top:10px;
 }
 
-/* LINHA DE AÇÕES */
+/* LINHA COM CAMERA + SELO + BOTÃO */
 
 .linhaAcoes{
 
 display:flex;
 align-items:center;
 justify-content:space-between;
+
+gap:8px;
+
 margin-top:10px;
 
 }
@@ -168,21 +149,30 @@ margin-top:10px;
 
 .camera-link{
 
-font-size:18px;
+font-size:22px;
+
+width:36px;
+height:36px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:50%;
+
+background:#f2f4f7;
+
 text-decoration:none;
 
-display:inline-block;
+transition:.2s;
 
 animation:pulseCamera 3s infinite;
-
-transition:0.2s;
 
 }
 
 .camera-link:hover{
-
-transform:scale(1.2);
-
+transform:scale(1.15);
+background:#e6e9ee;
 }
 
 /* ANIMAÇÃO CAMERA */
@@ -196,17 +186,35 @@ transform:scale(1.2);
 
 }
 
+/* SELO MAIS VENDIDO */
+
+.badgeVendido{
+
+background:#ff9800;
+color:white;
+
+padding:3px 7px;
+
+border-radius:5px;
+
+font-size:10px;
+font-weight:600;
+
+white-space:nowrap;
+
+}
+
 /* BOTÃO ADD */
 
 .btnAdd{
 background:#2f3242;
 color:white;
 border:none;
-padding:12px;
+padding:10px 14px;
 border-radius:10px;
 cursor:pointer;
 font-weight:600;
-transition:0.2s;
+transition:.2s;
 }
 
 .btnAdd:hover{
@@ -230,7 +238,7 @@ overflow-y:auto;
 /* PULSE CARRINHO */
 
 .carrinho.pulse{
-animation:pulseCart 0.4s;
+animation:pulseCart .4s;
 }
 
 @keyframes pulseCart{
@@ -294,7 +302,7 @@ border:none;
 padding:12px;
 border-radius:8px;
 cursor:pointer;
-transition:0.2s;
+transition:.2s;
 }
 
 .btnPedido:hover{
