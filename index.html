@@ -1,158 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - Pedido Detalhado</title>
+    <title>Crazy Fantasy - Pedido de Vendas</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
-        .container { max-width: 1000px; margin: auto; padding: 20px; }
-        .header-info { text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; color: #333; }
+        .container { max-width: 900px; margin: auto; padding: 20px; }
+        
+        /* BANNER CORRIGIDO */
+        .banner-container { 
+            width: 100%; 
+            height: 200px; 
+            background: #6c2bd9; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .banner-container img { width: 100%; height: 100%; object-fit: cover; }
+
         .form-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        input[type="text"], input[type="tel"] { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
-        .tabela-container { max-height: 550px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: #6c2bd9; color: white; padding: 15px; position: sticky; top: 0; z-index: 10; font-size: 14px; }
-        td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        tr:hover { background-color: #f9f7ff; }
-        .qtd { width: 60px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: center; font-weight: bold; }
-        .tamanho-badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-weight: bold; color: #555; }
-        .categoria-row { background: #f4f4f4; font-weight: bold; text-align: left; padding: 10px 20px; color: #6c2bd9; border-left: 5px solid #6c2bd9; }
-        .total-box { background: #6c2bd9; color: white; padding: 20px; border-radius: 12px; text-align: right; font-size: 22px; font-weight: bold; }
+        input[type="text"] { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
+        
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #6c2bd9; color: white; padding: 12px; position: sticky; top: 0; }
+        td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        
+        .cat-header { background: #f8f0ff; color: #6c2bd9; font-weight: bold; text-align: left; padding: 10px; border-left: 4px solid #6c2bd9; }
+        .qtd-input { width: 50px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .total-container { margin-top: 20px; padding: 20px; background: #6c2bd9; color: white; border-radius: 10px; text-align: right; font-size: 22px; font-weight: bold; }
+        
         .btn-group { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
-        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-pdf { background: #e63946; color: white; }
-        .btn-send { background: #2a9d8f; color: white; }
-        .btn-clear { background: #6c757d; color: white; }
-        button:hover { opacity: 0.8; transform: translateY(-2px); }
-        @media (max-width: 600px) { .grid-inputs { grid-template-columns: 1fr; } .btn-group { flex-direction: column; } }
+        .btn-whatsapp { background: #25d366; color: white; }
     </style>
 </head>
-
 <body>
 
-    <div class="container">
-        <div class="header-info">
-            <h1 style="color: #6c2bd9; margin: 0;">Crazy Fantasy</h1>
-            <p>Catálogo de Pedidos - Selecione os tamanhos desejados</p>
-        </div>
-
-        <form action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST" onsubmit="return prepararEnvio()">
-            <div class="form-box">
-                <div class="grid-inputs">
-                    <input type="text" name="Loja" placeholder="Nome da Loja/Cliente" required>
-                    <input type="text" name="Vendedora" placeholder="Vendedora Responsável" required>
-                </div>
-
-                <div class="tabela-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Tamanho</th>
-                                <th>Preço Unit.</th>
-                                <th>Quantidade</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lista-produtos">
-                            </tbody>
-                    </table>
-                </div>
-
-                <div class="total-box">
-                    Total: R$ <span id="valor-total">0.00</span>
-                </div>
-
-                <input type="hidden" name="_next" value="https://seusite.com/obrigado">
-                <input type="hidden" name="Resumo_Pedido" id="resumo_pedido">
-
-                <div class="btn-group">
-                    <button type="button" class="btn-clear" onclick="window.location.reload()">Limpar Pedido</button>
-                    <button type="button" class="btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
-                    <button type="submit" class="btn-send">Enviar Pedido por E-mail</button>
-                </div>
-            </div>
-        </form>
+<div class="container">
+    <div class="banner-container">
+        <img src="https://img.freepik.com/vetores-gratis/banner-de-venda-de-carnaval-plana_23-2149232930.jpg" alt="Banner Crazy Fantasy">
     </div>
 
-    <script>
-        // Lista de produtos com tamanhos desmembrados (cada tamanho uma linha)
-        const produtos = [
-            { cat: "FEMININO", itens: [
-                ["Arlequina", "M", 180], ["Arlequina de casaco", "G", 180], ["Mulher Maravilha", "M", 125], ["Barbie", "M", 125], ["Barbie", "G", 125], ["Sininho", "M", 99.90], ["Unicornio c/ Led", "M", 199.99], ["Unicornio c/ Led", "G", 199.99], ["Unicornio s/ Led", "M", 189.99], ["Unicornio s/ Led", "G", 189.99], ["Jessie", "M", 129.90], ["Jasmine", "M", 120], ["Jasmine", "G", 120], ["Doutora", "M", 149.90], ["Doutora", "G", 149.90], ["Medica", "M", 180], ["Medica", "G", 180], ["Astronauta", "G", 199.90], ["Cruela", "M", 140], ["Cruela", "G", 140], ["Elsa", "M", 269.90], ["Rapunzel", "M", 269.90], ["Rapunzel", "G", 269.90], ["Cinderela", "M", 269.90], ["Bela Adormecida", "M", 269.90], ["Bela Adormecida", "G", 269.90], ["Moana", "M", 269.90], ["Moana", "G", 269.90], ["Branca de Neve", "M", 269.90], ["Branca de Neve", "G", 269.90], ["Bela", "M", 269.90], ["Bela", "G", 269.90], ["Alice", "M", 120], ["Policial", "M", 130], ["Aurora Basica", "G", 209.99], ["Aurora Luxo", "M", 299.99], ["Aurora Luxo", "G", 299.99], ["Cinderela Pop", "G", 129.99], ["Bela Pop", "G", 129.99], ["Bela Luxo", "G", 299.99], ["Rapunzel Basica", "M", 179.99], ["Rapunzel Luxo", "M", 299.99], ["Rapunzel Luxo", "G", 299.99], ["Cinderela Basica", "M", 179.99], ["Cinderela Basica", "G", 179.99], ["Cinderela Luxo", "M", 299.99], ["Cinderela Luxo", "G", 299.99], ["Mirabel", "G", 239.99], ["Lady Bug", "G", 199.99], ["Jasmine (Luxo)", "M", 239.99], ["Jasmine (Luxo)", "G", 239.99], ["Mulher Maravilha (Luxo)", "M", 209.99], ["Ana Pop", "M", 109.99], ["Ana Pop", "G", 109.99], ["Ana Luxo", "M", 269.99], ["Ana Luxo", "G", 269.99], ["Minnie", "M", 239.99], ["Minnie", "G", 239.99]
-            ]},
-            { cat: "MASCULINO", itens: [
-                ["Astronauta", "M", 199.90], ["Astronauta", "G", 199.90], ["Exercito", "M", 180], ["Exercito", "G", 180], ["Policial", "G", 199.99], ["Capitão Marinha", "M", 180], ["Capitão Marinha", "G", 180], ["Pintor", "M", 159.90], ["Medico", "M", 169.90], ["Medico", "G", 169.90], ["Bombeiro", "M", 229.90], ["Bombeiro", "G", 229.90], ["Construtor", "G", 129.90], ["Pirata", "G", 180], ["Medieval", "M", 189.99], ["Medieval", "G", 189.99], ["Woody", "M", 189.99], ["Woody", "G", 189.99], ["Coringa", "M", 199.99], ["Chaves", "M", 229.99], ["Tubarão", "G", 229.99], ["La Casa de Papel", "M", 100], ["Mario", "M", 199.90], ["Cozinheiro", "M", 199.90], ["Medico (Simples)", "M", 120], ["Medico (Simples)", "G", 120], ["Principe", "M", 240], ["Dolma", "M", 100], ["Dolma", "G", 100], ["Bombeiro (Azul)", "M", 130], ["Bombeiro (Luxo)", "G", 229.99], ["Magico", "M", 120], ["Homem Aranha", "M", 129.99], ["Homem Aranha", "G", 129.99], ["Batman", "M", 129.99], ["Batman", "G", 129.99], ["Hulk", "M", 129.99], ["Hulk", "G", 129.99], ["Super Man", "G", 199.99], ["Flash Curto", "M", 159.99], ["Flash Curto", "G", 159.99], ["Flash Longo", "M", 319.99], ["Flash Longo", "G", 319.99], ["Catnoir", "M", 289.99], ["Catnoir", "G", 289.99], ["Naruto", "M", 159.97], ["Naruto", "G", 159.97], ["Minions", "M", 189.99], ["Buzz", "M", 209.99], ["Woody c/ Chapéu", "G", 269.99], ["Homem Aranha Luxo", "M", 269.99], ["Homem de Ferro", "G", 209.99], ["Thor", "G", 239.99], ["Batman Longo", "G", 359.99], ["Woody c/ Máscara", "M", 319.99], ["Woody c/ Máscara", "G", 319.99], ["Marshall (Patrulha)", "M", 209.99], ["Chase (Patrulha)", "M", 209.99], ["Enaldinho", "M", 249.99], ["Enaldinho", "G", 249.99]
-            ]}
-        ];
+    <div class="form-box">
+        <div class="grid-inputs">
+            <input type="text" id="cliente" placeholder="Nome do Cliente / Loja">
+            <input type="text" id="vendedora" placeholder="Vendedora Responsável">
+        </div>
 
-        function carregarTabela() {
-            const tbody = document.getElementById("lista-produtos");
-            produtos.forEach(categoria => {
-                tbody.innerHTML += `<tr><td colspan="5" class="categoria-row">${categoria.cat}</td></tr>`;
-                categoria.itens.forEach(item => {
-                    let precoFinal = item[2];
-                    if(precoFinal > 200) precoFinal = precoFinal * 0.9; // Aplicando os 10% que calculamos antes para produtos caros
+        <div class="tabela-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Tam</th>
+                        <th>Preço (c/ desc)</th>
+                        <th>Qtd</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    </tbody>
+            </table>
+        </div>
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="text-align:left;">${item[0]}</td>
-                            <td><span class="tamanho-badge">${item[1]}</span></td>
-                            <td>R$ ${precoFinal.toFixed(2)}</td>
-                            <td><input type="number" min="0" class="qtd" onchange="atualizarTotal()" data-nome="${item[0]}" data-tam="${item[1]}" data-preco="${precoFinal}"></td>
-                            <td class="subtotal">0.00</td>
-                        </tr>
-                    `;
-                });
-            });
-        }
+        <div class="total-container">
+            Total: R$ <span id="valor-total">0.00</span>
+        </div>
 
-        function atualizarTotal() {
-            let totalGeral = 0;
-            document.querySelectorAll(".qtd").forEach(input => {
-                let qtd = parseInt(input.value) || 0;
-                let preco = parseFloat(input.dataset.preco);
-                let subtotal = qtd * preco;
-                input.parentElement.nextElementSibling.innerText = subtotal.toFixed(2);
-                totalGeral += subtotal;
-            });
-            document.getElementById("valor-total").innerText = totalGeral.toFixed(2);
-        }
+        <div class="btn-group">
+            <button class="btn-pdf" onclick="gerarPDF()">Baixar PDF</button>
+            <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar para o Omie (WhatsApp)</button>
+        </div>
+    </div>
+</div>
 
-        function prepararEnvio() {
-            let resumo = "";
-            document.querySelectorAll(".qtd").forEach(input => {
-                let qtd = parseInt(input.value) || 0;
-                if(qtd > 0) {
-                    resumo += `${input.dataset.nome} (${input.dataset.tam}) - Qtd: ${qtd} - Unit: R$ ${input.dataset.preco}\n`;
-                }
-            });
-            resumo += "\nTOTAL DO PEDIDO: R$ " + document.getElementById("valor-total").innerText;
-            document.getElementById("resumo_pedido").value = resumo;
-            return true;
-        }
-
-        function gerarPDF() {
-            const { jsPDF } = window.jspdf;
-            let doc = new jsPDF();
-            doc.text("Resumo do Pedido - Crazy Fantasy", 10, 10);
-            let y = 20;
-            document.querySelectorAll(".qtd").forEach(input => {
-                let qtd = parseInt(input.value) || 0;
-                if(qtd > 0) {
-                    doc.text(`${input.dataset.nome} (${input.dataset.tam}) x ${qtd} = R$ ${ (qtd * input.dataset.preco).toFixed(2) }`, 10, y);
-                    y += 10;
-                }
-            });
-            doc.text("Total: R$ " + document.getElementById("valor-total").innerText, 10, y + 10);
-            doc.save("pedido.pdf");
-        }
-
-        carregarTabela();
-    </script>
-</body>
-</html>
+<script>
+    const produtosRaw = [
+        { nome: "Arlequina", tam: ["M"], preco: 180 },
+        {
