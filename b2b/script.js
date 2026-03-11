@@ -37,7 +37,8 @@ maximumFractionDigits:2
 /* CARREGAR CSV */
 /* ============================= */
 
-fetch("produtos.csv")
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vR8gu10gzZqp2JlQSYpwoLO_xtuvMlKeV2FVDN3jqrnSkqhXGI0PIvWrs-dszgn4Sx7K6IbtjA_eCF_/pub?gid=0&single=true&output=csv")
+  
 .then(r => r.text())
 .then(data => {
 
