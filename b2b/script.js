@@ -1,16 +1,21 @@
+const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"; //
+const STORE_ID = 840344; //
+const VALOR_MINIMO = 200.00;
+
 let todosProdutos = [];
 let carrinho = [];
-const VALOR_MINIMO = 200.00;
 
 async function carregarProdutos() {
     try {
-        // Importante: use "api.php" para evitar erros de conexão (CORS)
-        const resposta = await fetch("api.php"); 
+        // Altere para "api.php" se estiver em hospedagem PHP para evitar erro CORS
+        const url = `https://api.tiendanube.com/v1/${STORE_ID}/products`;
+        const resposta = await fetch(url, {
+            headers: { "Authentication": "bearer " + TOKEN, "Content-Type": "application/json" }
+        });
         todosProdutos = await resposta.json();
         renderizarProdutos(todosProdutos);
-    } catch (erro) {
-        console.error("Erro:", erro);
-        document.getElementById("produtos").innerHTML = "<p>Erro ao carregar catálogo. Verifique a conexão.</p>";
+    } catch (e) {
+        console.error("Erro ao carregar produtos:", e);
     }
 }
 
@@ -22,7 +27,7 @@ function renderizarProdutos(lista) {
         const principal = prod.variants[0];
         const precoVarejo = parseFloat(principal.price);
         
-        // Cálculo da Tabela Progressiva
+        // Tabela Progressiva [cite: 1]
         const b2b10 = precoVarejo * 0.90;
         const b2b12 = precoVarejo * 0.88;
         const b2b15 = precoVarejo * 0.85;
@@ -36,17 +41,17 @@ function renderizarProdutos(lista) {
                 <span class="preco-b2b">R$ ${b2b10.toFixed(2)}</span>
 
                 <div class="tabela-desc">
-                    <strong>Descontos B2B:</strong><br>
+                    <strong>Tabela B2B:</strong><br>
                     10% (Padrão) → R$ ${b2b10.toFixed(2)}<br>
                     12% (R$ 500+) → R$ ${b2b12.toFixed(2)}<br>
                     15% (R$ 1000+) → R$ ${b2b15.toFixed(2)}
                 </div>
 
-                <p class="estoque">Estoque: ${estoqueTotal}</p>
+                <p class="estoque">Estoque disponível: ${estoqueTotal}</p>
                 
                 <div class="qtd-add">
                     <input type="number" id="qtd-${prod.id}" value="1" min="1">
-                    <button onclick="addCarrinho('${prod.id}', '${prod.name.pt}', ${b2b10})">Adicionar</button>
+                    <button onclick="addCarrinho('${prod.id}', '${prod.name.pt.replace(/'/g, "")}', ${b2b10})">Adicionar</button>
                 </div>
             </div>
         `;
@@ -55,7 +60,9 @@ function renderizarProdutos(lista) {
 
 function addCarrinho(id, nome, preco) {
     const qtd = parseInt(document.getElementById(`qtd-${id}`).value);
-    for(let i=0; i < qtd; i++) { carrinho.push({ nome, preco }); }
+    for(let i=0; i < qtd; i++) {
+        carrinho.push({ nome, preco });
+    }
     atualizarCarrinho();
 }
 
