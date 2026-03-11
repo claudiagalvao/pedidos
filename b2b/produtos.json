@@ -3,18 +3,18 @@
 "id":1,
 "name":"Fantasia Mulher Maravilha",
 "preco":120,
-"imagem":"https://via.placeholder.com/300"
+"imagem":"https://images.unsplash.com/photo-1608889175123-8ee362201f81"
 },
 {
 "id":2,
 "name":"Fantasia Batman",
 "preco":150,
-"imagem":"https://via.placeholder.com/300"
+"imagem":"https://images.unsplash.com/photo-1608889175515-b6c8a64a96b5"
 },
 {
 "id":3,
 "name":"Fantasia Coringa",
 "preco":180,
-"imagem":"https://via.placeholder.com/300"
+"imagem":"https://images.unsplash.com/photo-1598514982901-1d7c7e0f91e0"
 }
 ]
