@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal B2B Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Portal B2B Crazy Fantasy</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-    <div class="container">
-        <img src="banner.png" class="banner-principal">
 
-        <div class="topo">
-            <div class="mensagem">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</div>
-            
-            <div class="categorias-menu">
-                <button class="active" onclick="filtrar('Todos')">Todos</button>
-                <button onclick="filtrar('Kits')">Kits</button>
-                <button onclick="filtrar('Perucas')">Perucas</button>
-                <button onclick="filtrar('Maquiagens e Sprays')">Maquiagens e Sprays</button>
-            </div>
+<div class="container">
 
-            <input type="text" id="busca" placeholder="🔎 Buscar produto..." onkeyup="buscar()">
-        </div>
+<img src="banner.png" class="banner">
 
-        <div id="produtos"></div>
-    </div>
+<div class="mensagem">
+🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
+</div>
 
-    <div class="carrinho">
-        <h2>🛒 Pedido (0 itens)</h2>
-        <p>Total B2B: R$ 0,00</p>
-        <p id="msg-minimo">Faltam R$ 200,00 para pedido mínimo</p>
-        <div class="progresso-container">
-            <div class="barra" id="barra-progresso"></div>
-        </div>
-        <hr>
-        <h3>Dados para Nota Fiscal</h3>
-        <input placeholder="Razão Social">
-        <div class="linha">
-            <input placeholder="CNPJ">
-            <input placeholder="IE">
-        </div>
-        <input placeholder="WhatsApp">
-        <button class="btn-wpp">Enviar via WhatsApp</button>
-        <button class="btn-limpar" onclick="limparCarrinho()">Limpar Carrinho</button>
-    </div>
+<div id="categorias"></div>
 
-    <script src="script.js"></script>
+<input
+type="text"
+id="busca"
+placeholder="🔎 Buscar produto..."
+>
+
+<div id="produtos"></div>
+
+</div>
+
+
+<div class="carrinho">
+
+<h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+
+<p id="total">Total B2B: R$ 0,00</p>
+
+<hr>
+
+<button onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
+
+<button onclick="limparCarrinho()">Limpar Carrinho</button>
+
+<div id="listaCarrinho"></div>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
