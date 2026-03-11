@@ -6,47 +6,59 @@ let carrinho = []
 
 async function carregarProdutos() {
 
-  const resposta = await fetch(
-    `https://api.tiendanube.com/v1/${STORE_ID}/products`,
-    {
-      headers: {
-        "Authentication": `bearer ${TOKEN}`,
-        "Content-Type": "application/json"
+  try {
+
+    const response = await fetch(
+      `https://api.tiendanube.com/v1/${STORE_ID}/products`,
+      {
+        headers: {
+          "Authentication": `bearer ${TOKEN}`,
+          "User-Agent": "CrazyFantasyB2B (contato@crazyfantasy.com.br)",
+          "Content-Type": "application/json"
+        }
       }
-    }
-  )
+    )
 
-  const data = await resposta.json()
+    const data = await response.json()
 
-  produtos = []
+    produtos = []
 
-  data.forEach(produto => {
+    data.forEach(produto => {
 
-    if (!produto.variants) return
+      if (!produto.variants) return
 
-    produto.variants.forEach(variant => {
+      produto.variants.forEach(variant => {
 
-      produtos.push({
-        categoria: produto.categories ? produto.categories[0]?.name?.pt : "",
-        nome: produto.name.pt,
-        variacao: variant.option_values.map(v => v.pt).join(" / "),
-        preco: variant.price,
-        sku: variant.sku,
-        estoque: variant.stock,
-        link: produto.canonical_url
+        produtos.push({
+          nome: produto.name.pt,
+          variacao: variant.option_values.map(v => v.pt).join(" / "),
+          preco: parseFloat(variant.price),
+          sku: variant.sku,
+          estoque: variant.stock,
+          imagem: produto.images?.[0]?.src || "",
+          link: produto.canonical_url
+        })
+
       })
 
     })
 
-  })
+    renderizarProdutos()
 
-  renderizarProdutos()
+  } catch (erro) {
+
+    console.error("Erro ao carregar produtos", erro)
+
+  }
 
 }
 
 function renderizarProdutos() {
 
   const container = document.getElementById("produtos")
+
+  if (!container) return
+
   container.innerHTML = ""
 
   produtos.forEach((p, index) => {
@@ -55,14 +67,22 @@ function renderizarProdutos() {
     card.className = "produto-card"
 
     card.innerHTML = `
-      <h3>${p.nome}</h3>
-      <p>${p.variacao}</p>
-      <p>SKU: ${p.sku}</p>
-      <p>Estoque: ${p.estoque}</p>
-      <p class="preco">R$ ${p.preco}</p>
-      <button onclick="adicionarCarrinho(${index})">
-        adicionar
-      </button>
+
+      <div class="produto-img">
+        <img src="${p.imagem}" />
+      </div>
+
+      <div class="produto-info">
+        <h3>${p.nome}</h3>
+        <p>${p.variacao}</p>
+        <p class="sku">SKU: ${p.sku}</p>
+        <p class="estoque">Estoque: ${p.estoque}</p>
+        <p class="preco">R$ ${p.preco.toFixed(2)}</p>
+
+        <button onclick="adicionarCarrinho(${index})">
+          adicionar
+        </button>
+      </div>
     `
 
     container.appendChild(card)
@@ -98,6 +118,8 @@ function atualizarCarrinho() {
 
   const container = document.getElementById("carrinho")
 
+  if (!container) return
+
   container.innerHTML = ""
 
   let total = 0
@@ -107,6 +129,8 @@ function atualizarCarrinho() {
     total += p.preco * p.qtd
 
     const item = document.createElement("div")
+
+    item.className = "carrinho-item"
 
     item.innerHTML = `
       ${p.nome} ${p.variacao}
@@ -118,7 +142,9 @@ function atualizarCarrinho() {
 
   })
 
-  document.getElementById("total").innerText = total.toFixed(2)
+  const totalEl = document.getElementById("total")
+
+  if (totalEl) totalEl.innerText = total.toFixed(2)
 
 }
 
@@ -140,7 +166,9 @@ function limparCarrinho() {
 
 function gerarPedidoWhats() {
 
-  let texto = "Pedido B2B:%0A%0A"
+  if (carrinho.length === 0) return
+
+  let texto = "Pedido B2B Crazy Fantasy:%0A%0A"
 
   carrinho.forEach(p => {
 
@@ -154,7 +182,9 @@ function gerarPedidoWhats() {
 
 function gerarPDF() {
 
-  let texto = "PEDIDO B2B\n\n"
+  if (carrinho.length === 0) return
+
+  let texto = "PEDIDO B2B - CRAZY FANTASY\n\n"
 
   carrinho.forEach(p => {
 
