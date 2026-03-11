@@ -1,37 +1,23 @@
 [
 {
 "id":1,
-"name":"Fantasia Mulher Maravilha",
-"preco":120,
+"name":"Fantasia Barbie Luxo",
+"preco":220,
 "categoria":"Kits",
-"imagem":"https://images.unsplash.com/photo-1608889175123-8ee362201f81"
+"imagem":"img/barbie.jpg"
 },
 {
 "id":2,
-"name":"Fantasia Batman",
-"preco":150,
-"categoria":"Kits",
-"imagem":"https://images.unsplash.com/photo-1608889175515-b6c8a64a96b5"
+"name":"Peruca Neon Rosa",
+"preco":85,
+"categoria":"Perucas",
+"imagem":"img/peruca-neon.jpg"
 },
 {
 "id":3,
-"name":"Fantasia Coringa",
-"preco":180,
-"categoria":"Kits",
-"imagem":"https://images.unsplash.com/photo-1598514982901-1d7c7e0f91e0"
-},
-{
-"id":4,
-"name":"Peruca Harley Quinn",
-"preco":80,
-"categoria":"Perucas",
-"imagem":"https://images.unsplash.com/photo-1596464716127-f2a82984de30"
-},
-{
-"id":5,
-"name":"Máscara Coringa",
-"preco":45,
+"name":"Máscara LED Halloween",
+"preco":60,
 "categoria":"Acessórios",
-"imagem":"https://images.unsplash.com/photo-1596464716127-f2a82984de30"
+"imagem":"img/mascara-led.jpg"
 }
 ]
