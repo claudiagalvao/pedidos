@@ -1,6 +1,6 @@
 async function carregarProdutos(){
 
-const url = "https://api.allorigins.win/raw?url=https://crazyfantasy.com.br/google_shopping.xml"
+const url = "https://api.codetabs.com/v1/proxy?quest=https://crazyfantasy.com.br/google_shopping.xml"
 
 try{
 
