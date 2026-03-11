@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Portal B2B Crazy Fantasy</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="./style.css">
 
 </head>
 
@@ -13,23 +15,29 @@
 
 <div class="container">
 
-<!-- BANNER -->
-<div class="banner">
-<img src="banner.jpg" alt="Crazy Fantasy">
-</div>
+<!-- TOPO -->
+<div class="topo">
 
-<!-- AVISO -->
-<div class="alerta">
+<img src="logo.png" class="logo">
+
+<div class="mensagem">
 🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
 </div>
 
-<!-- BUSCA -->
-<input type="text" id="busca" placeholder="🔎 Buscar produto">
+<input
+type="text"
+id="busca"
+placeholder="🔎 Buscar produto"
+>
 
-<!-- PRODUTOS -->
+</div>
+
+
+<!-- LISTA DE PRODUTOS -->
 <div id="produtos"></div>
 
 </div>
+
 
 
 <!-- CARRINHO -->
@@ -49,12 +57,16 @@
 
 <h3>Dados para Nota Fiscal</h3>
 
+<div class="form">
+
 <input placeholder="Razão Social">
 <input placeholder="CNPJ">
 <input placeholder="IE">
+
 <input placeholder="Responsável">
 <input placeholder="WhatsApp">
 <input placeholder="Email">
+
 <input placeholder="Endereço">
 
 <div class="linha">
@@ -73,15 +85,17 @@
 
 <textarea placeholder="Observações"></textarea>
 
-<button>Enviar Pedido</button>
-<button>WhatsApp</button>
-<button>Gerar PDF</button>
-<button class="limpar">Limpar</button>
+<button id="btnEnviar">Enviar Pedido</button>
+<button id="btnWhatsapp">WhatsApp</button>
+<button id="btnPDF">Gerar PDF</button>
+<button id="btnLimpar">Limpar</button>
+
+</div>
 
 </div>
 
 
-<script src="script.js"></script>
+<script src="./script.js"></script>
 
 </body>
 </html>
