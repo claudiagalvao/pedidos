@@ -1,30 +1,19 @@
 console.log("Portal B2B iniciado")
 
-async function carregarProdutos(){
+let carrinho = []
 
-console.log("Carregando produtos...")
+async function carregarProdutos(){
 
 try{
 
-const resposta = await fetch(
-"https://crazyfantasy.lojavirtualnuvem.com.br/products.json"
-)
-
-if(!resposta.ok){
-throw new Error("Erro ao carregar produtos")
-}
-
-const data = await resposta.json()
-
-const produtos = data.products
-
-console.log("Produtos recebidos:", produtos)
+const resposta = await fetch("produtos.json")
+const produtos = await resposta.json()
 
 renderizarProdutos(produtos)
 
 }catch(erro){
 
-console.error("Erro:", erro)
+console.error("Erro ao carregar produtos:", erro)
 
 }
 
@@ -38,21 +27,17 @@ container.innerHTML = ""
 
 produtos.forEach(prod => {
 
-let imagem = ""
-
-if(prod.images && prod.images.length){
-imagem = prod.images[0].src
-}
-
 container.innerHTML += `
 
 <div class="produto">
 
-<img src="${imagem}" />
+<img src="${prod.imagem}">
 
 <h3>${prod.name}</h3>
 
-<button onclick="addProduto('${prod.name}')">
+<p>R$ ${prod.preco}</p>
+
+<button onclick="addProduto(${prod.id})">
 Adicionar
 </button>
 
@@ -62,10 +47,30 @@ Adicionar
 
 })
 
+window.listaProdutos = produtos
+
 }
 
-function addProduto(nome){
-alert(nome + " adicionado ao pedido")
+function addProduto(id){
+
+const produto = window.listaProdutos.find(p => p.id === id)
+
+carrinho.push(produto)
+
+atualizarCarrinho()
+
 }
 
-window.addEventListener("load", carregarProdutos)
+function atualizarCarrinho(){
+
+const total = carrinho.reduce((soma, item) => soma + item.preco, 0)
+
+document.querySelector(".carrinho h2").innerText =
+`🛒 Pedido (${carrinho.length} itens)`
+
+document.querySelector(".carrinho p").innerText =
+`Total B2B: R$ ${total.toFixed(2)}`
+
+}
+
+window.onload = carregarProdutos
