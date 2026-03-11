@@ -1,5 +1,3 @@
-
-
 const produtosDiv = document.getElementById("produtos");
 const menuCategorias = document.getElementById("menuCategorias");
 const busca = document.getElementById("busca");
@@ -38,11 +36,11 @@ maximumFractionDigits:2
 /* ============================= */
 
 fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vR8gu10gzZqp2JlQSYpwoLO_xtuvMlKeV2FVDN3jqrnSkqhXGI0PIvWrs-dszgn4Sx7K6IbtjA_eCF_/pub?gid=0&single=true&output=csv")
-  
+
 .then(r => r.text())
 .then(data => {
 
-const linhas = data.split("\n").slice(1);
+const linhas = data.replace(/\r/g,'').split("\n").slice(1);
 
 linhas.forEach(l => {
 
@@ -54,14 +52,14 @@ const c = l.split(separador);
 
 produtos.push({
 
-categoria:c[0],
-nome:c[1],
-variacao:c[2],
-preco:parseFloat(c[3]),
-link:c[4],
-sku:c[5],
-estoque:parseInt(c[6]),
-vendas:Math.floor(Math.random()*100)
+categoria: c[0] || "",
+nome: c[1] || "",
+variacao: c[2] || "",
+preco: parseFloat(c[3]) || 0,
+link: c[4] || "#",
+sku: c[5] || "",
+estoque: parseInt(c[6]) || 0,
+vendas: Math.floor(Math.random()*100)
 
 });
 
@@ -284,14 +282,8 @@ economiaEl.innerText = moeda(economia);
 
 contadorItens.innerText=`(${itens} itens)`;
 
-
-/* DESCONTO ATUAL */
-
 document.getElementById("descontoAtual").innerText =
 Math.round(desconto * 100) + "%";
-
-
-/* PRÓXIMO DESCONTO */
 
 let msg = "";
 
@@ -306,9 +298,6 @@ msg = "Você já atingiu o maior desconto!";
 }
 
 document.getElementById("msgDesconto").innerText = msg;
-
-
-/* PROGRESSO */
 
 let progresso=(total/500)*100;
 
