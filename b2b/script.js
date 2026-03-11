@@ -3,15 +3,14 @@ let carrinho = [];
 const VALOR_MINIMO = 200.00;
 
 async function carregarProdutos() {
-    const container = document.getElementById("produtos");
     try {
-        // Importante: use "api.php" para que funcione para todos os clientes
+        // Importante: use "api.php" para evitar erros de conexão (CORS)
         const resposta = await fetch("api.php"); 
         todosProdutos = await resposta.json();
         renderizarProdutos(todosProdutos);
     } catch (erro) {
-        console.error("Erro ao carregar:", erro);
-        container.innerHTML = "<p>Erro ao carregar produtos. Verifique a conexão com a API.</p>";
+        console.error("Erro:", erro);
+        document.getElementById("produtos").innerHTML = "<p>Erro ao carregar catálogo. Verifique a conexão.</p>";
     }
 }
 
@@ -23,23 +22,22 @@ function renderizarProdutos(lista) {
         const principal = prod.variants[0];
         const precoVarejo = parseFloat(principal.price);
         
-        // Cálculo dos Descontos Progressivos
+        // Cálculo da Tabela Progressiva
         const b2b10 = precoVarejo * 0.90;
         const b2b12 = precoVarejo * 0.88;
         const b2b15 = precoVarejo * 0.85;
-
         const estoqueTotal = prod.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
 
         container.innerHTML += `
             <div class="produto">
-                <img src="${prod.images[0]?.src || 'placeholder.png'}" alt="${prod.name.pt}">
+                <img src="${prod.images[0]?.src || ''}" alt="${prod.name.pt}">
                 <h3>${prod.name.pt}</h3>
-                <span class="preco-de">De: R$ ${precoVarejo.toFixed(2)}</span>
+                <span class="preco-varejo">R$ ${precoVarejo.toFixed(2)}</span>
                 <span class="preco-b2b">R$ ${b2b10.toFixed(2)}</span>
 
                 <div class="tabela-desc">
                     <strong>Descontos B2B:</strong><br>
-                    10% → R$ ${b2b10.toFixed(2)}<br>
+                    10% (Padrão) → R$ ${b2b10.toFixed(2)}<br>
                     12% (R$ 500+) → R$ ${b2b12.toFixed(2)}<br>
                     15% (R$ 1000+) → R$ ${b2b15.toFixed(2)}
                 </div>
@@ -57,9 +55,7 @@ function renderizarProdutos(lista) {
 
 function addCarrinho(id, nome, preco) {
     const qtd = parseInt(document.getElementById(`qtd-${id}`).value);
-    for(let i=0; i < qtd; i++) {
-        carrinho.push({ nome, preco });
-    }
+    for(let i=0; i < qtd; i++) { carrinho.push({ nome, preco }); }
     atualizarCarrinho();
 }
 
@@ -73,13 +69,10 @@ function atualizarCarrinho() {
     
     const msg = document.getElementById("msg-minimo");
     msg.innerText = faltam > 0 ? `Faltam R$ ${faltam.toFixed(2)} para pedido mínimo` : "✅ Pedido mínimo atingido!";
-    msg.style.color = faltam > 0 ? "#ff9800" : "#4CAF50";
-
     document.getElementById("barra-progresso").style.width = `${porcentagem}%`;
 }
 
 function filtrar(categoria) {
-    // Remove classe ativa de todos e adiciona no clicado
     document.querySelectorAll(".categorias-menu button").forEach(btn => btn.classList.remove("active"));
     event.target.classList.add("active");
 
