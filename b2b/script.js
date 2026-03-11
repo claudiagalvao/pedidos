@@ -1,31 +1,60 @@
-console.log("Portal B2B iniciado")
-
+let produtos = []
 let carrinho = []
+let categoriaAtual = "Todos"
 
 async function carregarProdutos(){
 
-try{
-
 const resposta = await fetch("produtos.json")
-const produtos = await resposta.json()
 
-renderizarProdutos(produtos)
+produtos = await resposta.json()
 
-}catch(erro){
+criarCategorias()
 
-console.error("Erro ao carregar produtos:", erro)
-
-}
+renderizarProdutos()
 
 }
 
-function renderizarProdutos(produtos){
+function criarCategorias(){
+
+const container = document.getElementById("categorias")
+
+const categorias = [...new Set(produtos.map(p => p.categoria))]
+
+container.innerHTML = `<button onclick="filtrar('Todos')">Todos</button>`
+
+categorias.forEach(cat => {
+
+container.innerHTML += `
+<button onclick="filtrar('${cat}')">${cat}</button>
+`
+
+})
+
+}
+
+function filtrar(cat){
+
+categoriaAtual = cat
+
+renderizarProdutos()
+
+}
+
+function renderizarProdutos(){
 
 const container = document.getElementById("produtos")
 
+let lista = produtos
+
+if(categoriaAtual !== "Todos"){
+
+lista = produtos.filter(p => p.categoria === categoriaAtual)
+
+}
+
 container.innerHTML = ""
 
-produtos.forEach(prod => {
+lista.forEach(prod => {
 
 container.innerHTML += `
 
@@ -37,7 +66,7 @@ container.innerHTML += `
 
 <p>R$ ${prod.preco}</p>
 
-<button onclick="addProduto(${prod.id})">
+<button onclick="addCarrinho(${prod.id})">
 Adicionar
 </button>
 
@@ -47,13 +76,11 @@ Adicionar
 
 })
 
-window.listaProdutos = produtos
-
 }
 
-function addProduto(id){
+function addCarrinho(id){
 
-const produto = window.listaProdutos.find(p => p.id === id)
+const produto = produtos.find(p => p.id === id)
 
 carrinho.push(produto)
 
@@ -63,14 +90,46 @@ atualizarCarrinho()
 
 function atualizarCarrinho(){
 
-const total = carrinho.reduce((soma, item) => soma + item.preco, 0)
+const lista = document.getElementById("listaCarrinho")
 
-document.querySelector(".carrinho h2").innerText =
+const total = carrinho.reduce((soma,p)=> soma+p.preco,0)
+
+document.getElementById("tituloCarrinho").innerText =
 `🛒 Pedido (${carrinho.length} itens)`
 
-document.querySelector(".carrinho p").innerText =
+document.getElementById("total").innerText =
 `Total B2B: R$ ${total.toFixed(2)}`
+
+lista.innerHTML=""
+
+carrinho.forEach(p =>{
+
+lista.innerHTML += `<p>${p.name} - R$ ${p.preco}</p>`
+
+})
 
 }
 
-window.onload = carregarProdutos
+function limparCarrinho(){
+
+carrinho=[]
+
+atualizarCarrinho()
+
+}
+
+function enviarWhatsapp(){
+
+let mensagem="Pedido Crazy Fantasy:%0A"
+
+carrinho.forEach(p=>{
+
+mensagem+=`${p.name} - R$ ${p.preco}%0A`
+
+})
+
+window.open(`https://wa.me/?text=${mensagem}`)
+
+}
+
+carregarProdutos()
