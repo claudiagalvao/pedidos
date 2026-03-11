@@ -1,1 +1,20 @@
-
+[
+{
+"id":1,
+"name":"Fantasia Mulher Maravilha",
+"preco":120,
+"imagem":"https://via.placeholder.com/300"
+},
+{
+"id":2,
+"name":"Fantasia Batman",
+"preco":150,
+"imagem":"https://via.placeholder.com/300"
+},
+{
+"id":3,
+"name":"Fantasia Coringa",
+"preco":180,
+"imagem":"https://via.placeholder.com/300"
+}
+]
