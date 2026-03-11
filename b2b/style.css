@@ -1,39 +1,44 @@
 body { font-family: 'Segoe UI', Arial; margin: 0; background: #f0f2f5; display: flex; }
-.container { width: 70%; padding: 20px; float: left; }
+.container { width: 70%; padding: 20px; }
 
-/* Banner e Topo */
-.banner-principal { width: 100%; height: auto; border-radius: 12px; margin-bottom: 20px; display: block; }
+/* Banner Ajustado */
+.banner-principal { 
+    width: 100%; 
+    height: auto; 
+    border-radius: 12px; 
+    margin-bottom: 20px; 
+    display: block; 
+}
+
 .topo { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
 .mensagem { background: #fff; padding: 15px; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
 /* Menu Categorias */
 .categorias-menu { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
 .categorias-menu button { padding: 8px 18px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; white-space: nowrap; }
-.categorias-menu button.active { background: #2e3446; color: white; }
+.categorias-menu button.active { background: #2e3446; color: white; border-color: #2e3446; }
 
 #busca { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
 
-/* Grade de Produtos */
+/* Cards de Produto */
 #produtos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
-.produto { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: center; }
-.produto img { width: 100%; height: 180px; object-fit: contain; }
+.produto { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: center; display: flex; flex-direction: column; }
+.produto img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 10px; }
 .preco-varejo { text-decoration: line-through; color: #999; font-size: 12px; }
-.preco-b2b { color: #2d5cf7; font-size: 22px; font-weight: bold; display: block; margin: 5px 0; }
+.preco-b2b { color: #2d5cf7; font-size: 22px; font-weight: bold; margin: 5px 0; display: block; }
 
-/* Tabela de Descontos no Card */
-.tabela-desc { background: #f8f9fa; padding: 8px; border-radius: 6px; font-size: 11px; text-align: left; margin: 10px 0; color: #666; }
-.estoque { font-size: 12px; font-weight: bold; color: #555; margin-bottom: 10px; }
+.tabela-desc { background: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 11px; text-align: left; margin: 10px 0; color: #555; }
+.estoque { font-size: 12px; font-weight: bold; color: #666; margin-bottom: 10px; }
 
-/* Botão Adicionar */
-.qtd-add { display: flex; gap: 5px; }
+.qtd-add { display: flex; gap: 5px; margin-top: auto; }
 .qtd-add input { width: 50px; text-align: center; border: 1px solid #ddd; border-radius: 4px; }
-.qtd-add button { background: #2e3446; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; flex: 1; }
+.qtd-add button { background: #2e3446; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; }
 
-/* Lateral Carrinho */
-.carrinho { width: 28%; height: 100vh; position: fixed; right: 0; background: #2e3446; color: white; padding: 20px; overflow-y: auto; box-sizing: border-box; }
+/* Carrinho Lateral */
+.carrinho { width: 28%; height: 100vh; position: fixed; right: 0; background: #2e3446; color: white; padding: 25px; overflow-y: auto; box-sizing: border-box; }
 .carrinho input, .carrinho textarea { width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 6px; border: none; }
 .linha { display: flex; gap: 10px; }
 .progresso-container { background: #444; height: 10px; border-radius: 5px; margin: 15px 0; }
 .barra { height: 100%; width: 0%; background: #4CAF50; transition: 0.5s; border-radius: 5px; }
-.btn-wpp { background: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; }
-.btn-limpar { background: #ff4444; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; margin-top: 10px; cursor: pointer; }
+.btn-wpp { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.btn-limpar { background: #ff4444; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
