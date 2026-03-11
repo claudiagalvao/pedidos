@@ -1,103 +1,97 @@
-console.log("Portal B2B iniciado")
+// CONFIGURAÇÕES DA API
+const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1";
+const STORE_ID = 840344;
 
-// TOKEN DA API
-const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"
+/**
+ * Carrega os produtos da API da Nuvemshop
+ */
+async function carregarProdutos() {
+    const container = document.getElementById("produtos");
+    console.log("Iniciando busca de produtos...");
 
-// ID DA LOJA
-const STORE_ID = 840344
+    try {
+        const resposta = await fetch(
+            `https://api.tiendanube.com/v1/${STORE_ID}/products`,
+            {
+                method: "GET",
+                headers: {
+                    "Authentication": "bearer " + TOKEN, // Autenticação corrigida
+                    "Content-Type": "application/json",
+                    // A Nuvemshop exige um User-Agent identificado para chamadas de API
+                    "User-Agent": "PortalB2B_CrazyFantasy (seu-email@dominio.com)"
+                }
+            }
+        );
 
+        if (!resposta.ok) {
+            const erroCorpo = await resposta.text();
+            throw new Error(`Erro na API (${resposta.status}): ${erroCorpo}`);
+        }
 
+        const produtos = await resposta.json();
+        console.log("Produtos recebidos com sucesso:", produtos);
+        renderizarProdutos(produtos);
 
-async function carregarProdutos(){
-
-console.log("Carregando produtos...")
-
-try{
-
-const resposta = await fetch(
-`https://api.tiendanube.com/v1/${STORE_ID}/products`,
-{
-headers:{
-"Authentication": "bearer " + TOKEN,
-"Content-Type": "application/json"
-}
-}
-)
-
-if(!resposta.ok){
-throw new Error("Erro API")
-}
-
-const produtos = await resposta.json()
-
-console.log("Produtos recebidos:", produtos)
-
-renderizarProdutos(produtos)
-
-}catch(erro){
-
-console.error("Erro ao carregar produtos:", erro)
-
-}
-
-}
-
-
-
-function renderizarProdutos(produtos){
-
-const container = document.getElementById("produtos")
-
-if(!container){
-
-console.error("Container #produtos não encontrado")
-
-return
-
+    } catch (erro) {
+        console.error("Falha ao carregar produtos:", erro);
+        
+        if (container) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; padding: 20px; color: #ff4444; background: #fff; border-radius: 8px;">
+                    <strong>Erro ao carregar catálogo:</strong><br>
+                    Certifique-se de que o Token está ativo ou se há um bloqueio de CORS.
+                </div>
+            `;
+        }
+    }
 }
 
-container.innerHTML = ""
+/**
+ * Renderiza os produtos na grade do portal
+ */
+function renderizarProdutos(produtos) {
+    const container = document.getElementById("produtos");
+    if (!container) return;
 
-produtos.forEach(prod => {
+    container.innerHTML = "";
 
-let imagem = ""
+    if (produtos.length === 0) {
+        container.innerHTML = "<p>Nenhum produto encontrado.</p>";
+        return;
+    }
 
-if(prod.images && prod.images.length){
+    produtos.forEach(prod => {
+        // Verifica se existe imagem, caso contrário usa um placeholder
+        const imagem = (prod.images && prod.images.length > 0) 
+            ? prod.images[0].src 
+            : "https://via.placeholder.com/200?text=Sem+Foto";
 
-imagem = prod.images[0].src
+        // Pega o nome em português
+        const nome = prod.name.pt || "Produto sem nome";
+        
+        // Formatação básica de preço (se houver no JSON)
+        const precoOriginal = prod.variants[0]?.price || "0.00";
 
+        container.innerHTML += `
+            <div class="produto">
+                <img src="${imagem}" alt="${nome}" loading="lazy">
+                <h3>${nome}</h3>
+                <p>Preço sugerido: R$ ${precoOriginal}</p>
+                <button onclick="addProduto('${nome.replace(/'/g, "\\'")}')">
+                    Adicionar ao Pedido
+                </button>
+            </div>
+        `;
+    });
 }
 
-container.innerHTML += `
-
-<div class="produto">
-
-<img src="${imagem}" />
-
-<h3>${prod.name.pt}</h3>
-
-<button onclick="addProduto('${prod.name.pt}')">
-
-Adicionar
-
-</button>
-
-</div>
-
-`
-
-})
-
+/**
+ * Função para adicionar produto ao carrinho (Placeholder)
+ */
+function addProduto(nome) {
+    console.log("Adicionando:", nome);
+    alert(`${nome} adicionado ao pedido!`);
 }
 
-
-
-function addProduto(nome){
-
-alert(nome + " adicionado ao pedido")
-
-}
-
-
-
-window.addEventListener("load", carregarProdutos)
+// Inicia a carga quando o DOM estiver pronto
+document.addEventListener("DOMContentLoaded", carregarProdutos);
