@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
 
 const TOKEN = "SEU_TOKEN_NUVEMSHOP"
-const STORE_ID = "SEU_STORE_ID"
+const STORE_ID = "840344"
 
 const resposta = await fetch(
 `https://api.tiendanube.com/v1/${STORE_ID}/products`,
