@@ -1,95 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Portal B2B Crazy Fantasy</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal B2B Crazy Fantasy</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <div class="container">
+        <div class="topo">
+            <img src="banner.png" class="logo">
+            <div class="mensagem">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</div>
+        </div>
 
-<div class="container">
+        <div class="categorias-menu" id="menu-categorias">
+            <button class="active" onclick="filtrar('Todos')">Todos</button>
+            <button onclick="filtrar('Kits')">Kits</button>
+            <button onclick="filtrar('Barbas e Bigodes')">Barbas e Bigodes</button>
+            <button onclick="filtrar('Perucas')">Perucas</button>
+            <button onclick="filtrar('Acessórios')">Acessórios</button>
+            <button onclick="filtrar('Maquiagens e Sprays')">Maquiagens e Sprays</button>
+        </div>
 
-<div class="topo">
+        <input type="text" id="busca" placeholder="🔎 Buscar produto..." onkeyup="buscar()">
 
-<img src="banner.png" class="logo">
+        <div id="produtos"></div>
+    </div>
 
-<div class="mensagem">
-🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
-</div>
+    <div class="carrinho">
+        <h2>🛒 Pedido (0 itens)</h2>
+        <p>Total B2B: R$ 0,00</p>
+        <p>Desconto aplicado: 0%</p>
+        <p id="msg-minimo">Faltam R$ 200,00 para pedido mínimo</p>
+        <div class="progresso-container">
+            <div class="barra" id="barra-progresso"></div>
+        </div>
+        <p>Economia com descontos: R$ 0,00</p>
+        <hr>
+        <h3>Dados para Nota Fiscal</h3>
+        <input placeholder="Razão Social">
+        <div class="linha">
+            <input placeholder="CNPJ">
+            <input placeholder="IE">
+        </div>
+        <input placeholder="Responsável">
+        <div class="linha">
+            <input placeholder="WhatsApp">
+            <input placeholder="Email">
+        </div>
+        <input placeholder="Endereço">
+        <div class="linha">
+            <input placeholder="Cidade">
+            <input placeholder="Estado">
+            <input placeholder="CEP">
+        </div>
+        <select><option>Forma de entrega</option></select>
+        <select><option>Forma de pagamento</option></select>
+        <textarea placeholder="Observações"></textarea>
+        <button class="btn-enviar">Enviar Pedido</button>
+        <button class="btn-wpp">WhatsApp</button>
+        <button class="btn-pdf">Gerar PDF</button>
+        <button class="btn-limpar" onclick="limparCarrinho()">Limpar</button>
+    </div>
 
-<input
-type="text"
-id="busca"
-placeholder="🔎 Buscar produto"
->
-
-</div>
-
-<!-- PRODUTOS -->
-<div id="produtos"></div>
-
-</div>
-
-
-
-<div class="carrinho">
-
-<h2>🛒 Pedido (0 itens)</h2>
-
-<p>Total B2B: R$ 0,00</p>
-<p>Desconto aplicado: 0%</p>
-<p>Faltam R$ 200,00 para pedido mínimo</p>
-
-<div class="barra"></div>
-
-<p>Economia com descontos: R$ 0,00</p>
-
-<hr>
-
-<h3>Dados para Nota Fiscal</h3>
-
-<input placeholder="Razão Social">
-<input placeholder="CNPJ">
-<input placeholder="IE">
-
-<input placeholder="Responsável">
-<input placeholder="WhatsApp">
-<input placeholder="Email">
-
-<input placeholder="Endereço">
-
-<div class="linha">
-
-<input placeholder="Cidade">
-<input placeholder="Estado">
-<input placeholder="CEP">
-
-</div>
-
-<select>
-<option>Forma de entrega</option>
-</select>
-
-<select>
-<option>Forma de pagamento</option>
-</select>
-
-<textarea placeholder="Observações"></textarea>
-
-<button>Enviar Pedido</button>
-<button>WhatsApp</button>
-<button>Gerar PDF</button>
-<button>Limpar</button>
-
-</div>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
