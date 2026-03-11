@@ -1,6 +1,6 @@
 <?php
-$token = "4966605d15cf0988f02e0674bcd1e596e272eca1"; //
-$store_id = "840344"; //
+$token = "4966605d15cf0988f02e0674bcd1e596e272eca1";
+$store_id = "840344";
 $url = "https://api.tiendanube.com/v1/$store_id/products";
 
 $ch = curl_init($url);
