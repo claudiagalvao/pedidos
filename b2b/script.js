@@ -1,134 +1,38 @@
-let produtos = []
-let carrinho = []
-let categoriaAtual = "Todos"
-
 async function carregarProdutos(){
 
-const resposta = await fetch("produtos.json")
+const resposta = await fetch("https://crazyfantasy.com.br/google_shopping.xml")
+const texto = await resposta.text()
 
-produtos = await resposta.json()
+const parser = new DOMParser()
+const xml = parser.parseFromString(texto,"text/xml")
 
-criarCategorias()
-
-renderizarProdutos()
-
-}
-
-function criarCategorias(){
-
-const container = document.getElementById("categorias")
-
-const categorias = [...new Set(produtos.map(p => p.categoria))]
-
-container.innerHTML = `<button onclick="filtrar('Todos')">Todos</button>`
-
-categorias.forEach(cat => {
-
-container.innerHTML += `
-<button onclick="filtrar('${cat}')">${cat}</button>
-`
-
-})
-
-}
-
-function filtrar(cat){
-
-categoriaAtual = cat
-
-renderizarProdutos()
-
-}
-
-function renderizarProdutos(){
+const items = xml.querySelectorAll("item")
 
 const container = document.getElementById("produtos")
 
-let lista = produtos
+container.innerHTML=""
 
-if(categoriaAtual !== "Todos"){
+items.forEach(item=>{
 
-lista = produtos.filter(p => p.categoria === categoriaAtual)
+const nome = item.querySelector("title")?.textContent
+const preco = item.querySelector("g\\:price")?.textContent
+const imagem = item.querySelector("g\\:image_link")?.textContent
+const link = item.querySelector("link")?.textContent
 
-}
+const card = document.createElement("div")
 
-container.innerHTML = ""
+card.innerHTML=`
 
-lista.forEach(prod => {
-
-container.innerHTML += `
-
-<div class="produto">
-
-<img src="${prod.imagem}">
-
-<h3>${prod.name}</h3>
-
-<p>R$ ${prod.preco}</p>
-
-<button onclick="addCarrinho(${prod.id})">
-Adicionar
-</button>
-
-</div>
+<img src="${imagem}" width="150">
+<h3>${nome}</h3>
+<p>${preco}</p>
+<a href="${link}" target="_blank">Ver produto</a>
 
 `
 
-})
-
-}
-
-function addCarrinho(id){
-
-const produto = produtos.find(p => p.id === id)
-
-carrinho.push(produto)
-
-atualizarCarrinho()
-
-}
-
-function atualizarCarrinho(){
-
-const lista = document.getElementById("listaCarrinho")
-
-const total = carrinho.reduce((soma,p)=> soma+p.preco,0)
-
-document.getElementById("tituloCarrinho").innerText =
-`🛒 Pedido (${carrinho.length} itens)`
-
-document.getElementById("total").innerText =
-`Total B2B: R$ ${total.toFixed(2)}`
-
-lista.innerHTML=""
-
-carrinho.forEach(p =>{
-
-lista.innerHTML += `<p>${p.name} - R$ ${p.preco}</p>`
+container.appendChild(card)
 
 })
-
-}
-
-function limparCarrinho(){
-
-carrinho=[]
-
-atualizarCarrinho()
-
-}
-
-function enviarWhatsapp(){
-
-let mensagem="Pedido Crazy Fantasy:%0A"
-
-carrinho.forEach(p=>{
-
-mensagem+=`${p.name} - R$ ${p.preco}%0A`
-
-})
-
-window.open(`https://wa.me/?text=${mensagem}`)
 
 }
 
