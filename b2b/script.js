@@ -1,14 +1,16 @@
-console.log("JS carregado")
+console.log("Portal B2B iniciado")
 
-// COLE SEU TOKEN AQUI
+// TOKEN DA API
 const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"
 
-// ID DA SUA LOJA
+// ID DA LOJA
 const STORE_ID = 840344
 
 
 
 async function carregarProdutos(){
+
+console.log("Carregando produtos...")
 
 try{
 
@@ -22,42 +24,15 @@ headers:{
 }
 )
 
+if(!resposta.ok){
+throw new Error("Erro API")
+}
+
 const produtos = await resposta.json()
 
-console.log("Produtos carregados:", produtos)
+console.log("Produtos recebidos:", produtos)
 
-const container = document.getElementById("produtos")
-
-if(!container){
-console.error("Container #produtos não encontrado")
-return
-}
-
-container.innerHTML = ""
-
-produtos.forEach(prod => {
-
-let imagem = ""
-
-if(prod.images && prod.images.length){
-imagem = prod.images[0].src
-}
-
-container.innerHTML += `
-<div class="produto">
-
-<img src="${imagem}" />
-
-<h3>${prod.name.pt}</h3>
-
-<button onclick="adicionarProduto('${prod.name.pt}')">
-Adicionar
-</button>
-
-</div>
-`
-
-})
+renderizarProdutos(produtos)
 
 }catch(erro){
 
@@ -69,7 +44,55 @@ console.error("Erro ao carregar produtos:", erro)
 
 
 
-function adicionarProduto(nome){
+function renderizarProdutos(produtos){
+
+const container = document.getElementById("produtos")
+
+if(!container){
+
+console.error("Container #produtos não encontrado")
+
+return
+
+}
+
+container.innerHTML = ""
+
+produtos.forEach(prod => {
+
+let imagem = ""
+
+if(prod.images && prod.images.length){
+
+imagem = prod.images[0].src
+
+}
+
+container.innerHTML += `
+
+<div class="produto">
+
+<img src="${imagem}" />
+
+<h3>${prod.name.pt}</h3>
+
+<button onclick="addProduto('${prod.name.pt}')">
+
+Adicionar
+
+</button>
+
+</div>
+
+`
+
+})
+
+}
+
+
+
+function addProduto(nome){
 
 alert(nome + " adicionado ao pedido")
 
@@ -77,4 +100,4 @@ alert(nome + " adicionado ao pedido")
 
 
 
-window.onload = carregarProdutos
+window.addEventListener("load", carregarProdutos)
