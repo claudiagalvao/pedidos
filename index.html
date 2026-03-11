@@ -20,7 +20,7 @@
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
         input { padding: 12px; border-radius: 6px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; outline: none; }
         
-        .tabela-scroll { max-height: 450px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; }
+        .tabela-scroll { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; background: white; }
         th { background: var(--primary); color: white; padding: 12px; position: sticky; top: 0; z-index: 5; font-size: 11px; text-transform: uppercase; }
         td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
@@ -67,7 +67,7 @@
                         <th style="text-align:left; padding-left:15px;">Produto</th>
                         <th>Tam</th>
                         <th>Vlr. Unit.</th>
-                        <th>Vlr. B2B (-25%)</th>
+                        <th>Vlr. B2B (-25% > R$200)</th>
                         <th>Estoque</th>
                         <th>Qtd</th>
                     </tr>
@@ -78,7 +78,7 @@
         
         <div class="resumo-financeiro">
             <div class="bloco-valor">
-                <small>Subtotal (Sem Desconto)</small>
+                <small>Subtotal (Preço Cheio)</small>
                 <h2 id="subtotal-cheio">R$ 0,00</h2>
             </div>
             <div class="separador"></div>
@@ -96,35 +96,148 @@
 </div>
 
 <script>
+    // Banco de dados integrado das tabelas Masculino e Feminino
     const produtos = [
-        {n: "Astronauta", p: 199.90, t: "M", est: 2},
-        {n: "Astronauta", p: 199.90, t: "G", est: 2},
+        // --- MASCULINO ---
+        {n: "Astronauta (Masc)", p: 199.90, t: "M", est: 2},
+        {n: "Astronauta (Masc)", p: 199.90, t: "G", est: 2},
         {n: "Exército", p: 180.00, t: "M", est: 1},
-        {n: "Policial", p: 199.99, t: "G", est: 2},
-        {n: "Medico", p: 169.99, t: "M", est: 2},
-        {n: "Medico", p: 169.99, t: "G", est: 2},
+        {n: "Exército", p: 180.00, t: "G", est: 1},
+        {n: "Policial (Masc)", p: 199.99, t: "G", est: 2},
+        {n: "Capitão da Marinha", p: 180.00, t: "M", est: 1},
+        {n: "Capitão da Marinha", p: 180.00, t: "G", est: 1},
+        {n: "Pintor", p: 159.90, t: "M", est: 2},
+        {n: "Médico", p: 169.99, t: "M", est: 2},
+        {n: "Médico", p: 169.99, t: "G", est: 2},
         {n: "Bombeiro", p: 229.90, t: "M", est: 1},
         {n: "Bombeiro", p: 229.90, t: "G", est: 2},
+        {n: "Construtor", p: 129.90, t: "G", est: 1},
+        {n: "Pirata", p: 180.00, t: "M", est: 2},
+        {n: "Pirata", p: 180.00, t: "G", est: 1},
+        {n: "Medieval", p: 189.99, t: "M", est: 1},
+        {n: "Medieval", p: 189.99, t: "G", est: 1},
+        {n: "Woody", p: 189.99, t: "M", est: 1},
+        {n: "Woody", p: 189.99, t: "G", est: 1},
+        {n: "Coringa", p: 199.99, t: "M", est: 1},
+        {n: "Chaves", p: 229.99, t: "M", est: 1},
+        {n: "Tubarão", p: 229.99, t: "M", est: 1},
+        {n: "La Casa de Papel", p: 100.00, t: "M", est: 1},
+        {n: "Mario", p: 99.90, t: "M", est: 1},
+        {n: "Cozinheiro", p: 199.90, t: "M", est: 1},
+        {n: "Cozinheiro", p: 199.90, t: "G", est: 1},
+        {n: "Médico (Promo)", p: 120.00, t: "M", est: 1},
+        {n: "Médico (Promo)", p: 120.00, t: "G", est: 1},
+        {n: "Príncipe", p: 240.00, t: "M", est: 1},
+        {n: "Dolma", p: 100.00, t: "M", est: 1},
+        {n: "Dolma", p: 100.00, t: "G", est: 1},
+        {n: "Bombeiro (V2)", p: 130.00, t: "M", est: 1},
+        {n: "Bombeiro (G2)", p: 229.99, t: "G", est: 1},
+        {n: "Mágico", p: 120.00, t: "M", est: 1},
+        {n: "Homem Aranha", p: 129.99, t: "M", est: 3},
+        {n: "Homem Aranha", p: 129.99, t: "G", est: 5},
+        {n: "Batman", p: 129.99, t: "M", est: 1},
+        {n: "Batman", p: 129.99, t: "G", est: 2},
+        {n: "Hulk", p: 129.99, t: "M", est: 1},
+        {n: "Hulk", p: 129.99, t: "G", est: 1},
+        {n: "Super Man", p: 199.99, t: "G", est: 1},
+        {n: "Flash Curto", p: 159.99, t: "M", est: 1},
+        {n: "Flash Curto", p: 159.99, t: "G", est: 1},
         {n: "Flash Longo", p: 319.99, t: "M", est: 1},
-        {n: "Catnoir", p: 289.99, t: "M", est: 1},
+        {n: "Flash Longo", p: 319.99, t: "G", est: 1},
+        {n: "Catnoir", p: 289.99, t: "M", est: 2},
+        {n: "Catnoir", p: 289.99, t: "G", est: 1},
+        {n: "Naruto", p: 159.97, t: "M", est: 1},
+        {n: "Naruto", p: 159.97, t: "G", est: 1},
+        {n: "Minions", p: 189.99, t: "M", est: 1},
+        {n: "Buzz", p: 209.99, t: "M", est: 1},
+        {n: "Woody c/ Chapéu", p: 269.99, t: "G", est: 1},
+        {n: "Homem Aranha (Premium)", p: 269.99, t: "M", est: 1},
+        {n: "Homem de Ferro", p: 209.99, t: "G", est: 1},
+        {n: "Thor", p: 239.99, t: "G", est: 1},
+        {n: "Batman Longo", p: 359.99, t: "G", est: 2},
+        {n: "Woody c/ Máscara", p: 319.99, t: "M", est: 1},
+        {n: "Woody c/ Máscara", p: 319.99, t: "G", est: 1},
+        {n: "Marshall", p: 209.99, t: "M", est: 1},
+        {n: "Chase", p: 209.99, t: "M", est: 1},
+        {n: "Enaldinho", p: 249.99, t: "M", est: 1},
+        {n: "Enaldinho", p: 249.99, t: "G", est: 1},
+
+        // --- FEMININO ---
+        {n: "Arlequina", p: 180.00, t: "M", est: 1},
+        {n: "Arlequina c/ Casaco", p: 180.00, t: "G", est: 1},
         {n: "Mulher Maravilha", p: 125.00, t: "M", est: 2},
+        {n: "Barbie", p: 125.00, t: "M", est: 1},
+        {n: "Barbie", p: 125.00, t: "G", est: 1},
         {n: "Sininho", p: 99.90, t: "M", est: 1},
-        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1}
+        {n: "Jessie", p: 129.90, t: "M", est: 1},
+        {n: "Astronauta (Fem)", p: 199.90, t: "G", est: 1},
+        {n: "Elsa", p: 269.90, t: "M", est: 1},
+        {n: "Unicórnio c/ Led", p: 199.99, t: "M", est: 1},
+        {n: "Unicórnio c/ Led", p: 199.99, t: "G", est: 1},
+        {n: "Unicórnio s/ Led", p: 189.99, t: "M", est: 3},
+        {n: "Unicórnio s/ Led", p: 189.99, t: "G", est: 2},
+        {n: "Jasmine", p: 120.00, t: "M", est: 1},
+        {n: "Jasmine", p: 120.00, t: "G", est: 1},
+        {n: "Doutora", p: 149.90, t: "M", est: 1},
+        {n: "Doutora", p: 149.90, t: "G", est: 1},
+        {n: "Médica", p: 180.00, t: "M", est: 2},
+        {n: "Médica", p: 180.00, t: "G", est: 2},
+        {n: "Cruela", p: 140.00, t: "M", est: 1},
+        {n: "Cruela", p: 140.00, t: "G", est: 1},
+        {n: "Rapunzel", p: 269.90, t: "M", est: 1},
+        {n: "Rapunzel", p: 269.90, t: "G", est: 1},
+        {n: "Bela Adormecida", p: 269.90, t: "M", est: 2},
+        {n: "Bela Adormecida", p: 269.90, t: "G", est: 1},
+        {n: "Moana", p: 269.90, t: "M", est: 2},
+        {n: "Moana", p: 269.90, t: "G", est: 1},
+        {n: "Branca de Neve", p: 269.90, t: "M", est: 3},
+        {n: "Branca de Neve", p: 269.90, t: "G", est: 1},
+        {n: "Bela", p: 269.90, t: "M", est: 1},
+        {n: "Bela", p: 269.90, t: "G", est: 1},
+        {n: "Aurora Luxo", p: 299.99, t: "M", est: 1},
+        {n: "Aurora Luxo", p: 299.99, t: "G", est: 1},
+        {n: "Rapunzel Luxo", p: 299.99, t: "M", est: 2},
+        {n: "Rapunzel Luxo", p: 299.99, t: "G", est: 2},
+        {n: "Cinderela Básica", p: 179.99, t: "M", est: 1},
+        {n: "Cinderela Básica", p: 179.99, t: "G", est: 1},
+        {n: "Cinderela Luxo", p: 299.99, t: "M", est: 1},
+        {n: "Cinderela Luxo", p: 299.99, t: "G", est: 2},
+        {n: "Mirabel", p: 239.99, t: "G", est: 1},
+        {n: "Lady Bug", p: 199.99, t: "G", est: 1},
+        {n: "Jasmine (V2)", p: 239.99, t: "M", est: 1},
+        {n: "Jasmine (V2)", p: 239.99, t: "G", est: 1},
+        {n: "Mulher Maravilha (V2)", p: 209.99, t: "M", est: 1},
+        {n: "Ana Pop", p: 109.99, t: "M", est: 1},
+        {n: "Ana Pop", p: 109.99, t: "G", est: 1},
+        {n: "Ana Luxo", p: 269.99, t: "M", est: 1},
+        {n: "Ana Luxo", p: 269.99, t: "G", est: 1},
+        {n: "Minnie", p: 239.99, t: "M", est: 1},
+        {n: "Minnie", p: 239.99, t: "G", est: 2},
+        {n: "Rapunzel Básica", p: 179.99, t: "M", est: 1},
+        {n: "Cinderela Pop", p: 129.99, t: "G", est: 1},
+        {n: "Bela Pop", p: 129.99, t: "M", est: 1},
+        {n: "Bela Luxo", p: 299.99, t: "G", est: 1},
+        {n: "Alice", p: 120.00, t: "M", est: 1},
+        {n: "Policial (Fem)", p: 130.00, t: "M", est: 1},
+        {n: "Aurora Básica", p: 209.99, t: "G", est: 1},
+        {n: "Cinderela", p: 269.90, t: "M", est: 2},
+        {n: "Mulher Maravilha (Luxo)", p: 299.99, t: "G", est: 2}
     ];
 
     function render() {
         const corpo = document.getElementById("corpo-tabela");
         corpo.innerHTML = "";
-        produtos.forEach((p, i) => {
+        produtos.sort((a, b) => a.n.localeCompare(b.n)).forEach((p, i) => {
+            // Regra: se valor > 200, desconto de 25% no B2B
             let pB2B = p.p > 200 ? p.p * 0.75 : p.p;
             corpo.innerHTML += `
                 <tr>
                     <td style="text-align:left; padding-left:15px;"><b>${p.n}</b></td>
                     <td>${p.t}</td>
-                    <td>R$ ${p.p.toFixed(2)}</td>
-                    <td style="color:var(--secondary)"><b>R$ ${pB2B.toFixed(2)}</b></td>
+                    <td>R$ ${p.p.toFixed(2).replace('.', ',')}</td>
+                    <td style="color:var(--secondary)"><b>R$ ${pB2B.toFixed(2).replace('.', ',')}</b></td>
                     <td><span class="estoque-badge">${p.est} un</span></td>
-                    <td><input type="number" class="qtd-input" data-index="${i}" min="0" max="${p.est}" value="0" onchange="travarQtd(this)"></td>
+                    <td><input type="number" class="qtd-input" data-index="${produtos.indexOf(p)}" min="0" max="${p.est}" value="0" onchange="travarQtd(this)"></td>
                 </tr>`;
         });
     }
@@ -132,7 +245,7 @@
     function travarQtd(input) {
         let idx = input.dataset.index;
         if (parseInt(input.value) > produtos[idx].est) {
-            alert("Estoque insuficiente!");
+            alert("Estoque insuficiente para este item!");
             input.value = produtos[idx].est;
         }
         atualizarTotal();
@@ -144,10 +257,11 @@
             let q = parseInt(input.value) || 0;
             let idx = input.dataset.index;
             cheio += q * produtos[idx].p;
-            b2b += q * (produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p);
+            let vFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
+            b2b += q * vFinal;
         });
-        document.getElementById("subtotal-cheio").innerText = `R$ ${cheio.toFixed(2).replace('.', ',')}`;
-        document.getElementById("valor-total").innerText = `R$ ${b2b.toFixed(2).replace('.', ',')}`;
+        document.getElementById("subtotal-cheio").innerText = `R$ ${cheio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("valor-total").innerText = `R$ ${b2b.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     }
 
     async function gerarPDF() {
@@ -155,15 +269,13 @@
         const doc = new jsPDF();
         const nomeCli = document.getElementById("nf_nome").value || "Cliente";
 
-        // Cabeçalho
         doc.setFillColor(108, 43, 217);
         doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255);
         doc.setFontSize(20);
         doc.text("SOLICITAÇÃO DE NF - CRAZY FANTASY", 105, 25, {align: "center"});
 
-        doc.setTextColor(0);
-        doc.setFontSize(10);
+        doc.setTextColor(0); doc.setFontSize(10);
         let y = 50;
         doc.setFont("helvetica", "bold");
         doc.text("DADOS DO CLIENTE:", 15, y);
@@ -177,7 +289,7 @@
         
         y += 15;
         doc.setFont("helvetica", "bold");
-        doc.text("PRODUTO", 15, y); doc.text("QTD", 130, y); doc.text("VLR. B2B", 155, y); doc.text("TOTAL", 185, y);
+        doc.text("PRODUTO", 15, y); doc.text("QTD", 120, y); doc.text("VLR. B2B", 145, y); doc.text("TOTAL", 180, y);
         doc.line(15, y+2, 195, y+2);
         
         y += 10;
@@ -186,32 +298,37 @@
             let q = parseInt(input.value);
             if(q > 0) {
                 let idx = input.dataset.index;
-                let pFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
+                let vFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
                 doc.text(`${produtos[idx].n} (${produtos[idx].t})`, 15, y);
-                doc.text(q.toString(), 132, y);
-                doc.text(pFinal.toFixed(2), 155, y);
-                doc.text((q*pFinal).toFixed(2), 185, y);
+                doc.text(q.toString(), 122, y);
+                doc.text(vFinal.toFixed(2), 145, y);
+                doc.text((q*vFinal).toFixed(2), 180, y);
                 y += 7;
+                if(y > 275) { doc.addPage(); y = 20; }
             }
         });
 
         doc.setFontSize(14); doc.setFont("helvetica", "bold");
-        doc.text(`TOTAL PEDIDO: ${document.getElementById("valor-total").innerText}`, 195, y+15, {align: "right"});
-        doc.save(`Pedido_NF_${nomeCli}.pdf`);
+        doc.text(`TOTAL FINAL: ${document.getElementById("valor-total").innerText}`, 195, y+15, {align: "right"});
+        doc.save(`Pedido_B2B_${nomeCli.replace(/\s+/g, '_')}.pdf`);
     }
 
     function enviarWhatsApp() {
-        let msg = `*CRAZY FANTASY - SOLICITAÇÃO B2B*\n\n`;
-        msg += `*Cliente:* ${document.getElementById("nf_nome").value}\n\n`;
+        let nome = document.getElementById("nf_nome").value || "Não informado";
+        let msg = `*CRAZY FANTASY - NOVO PEDIDO B2B*\n\n`;
+        msg += `*Cliente:* ${nome}\n`;
+        msg += `*Doc:* ${document.getElementById("nf_doc").value}\n\n`;
+        
         document.querySelectorAll(".qtd-input").forEach((input) => {
             let q = parseInt(input.value);
             if(q > 0) {
                 let idx = input.dataset.index;
-                let pFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
-                msg += `✅ ${produtos[idx].n} (${produtos[idx].t}) x${q} = R$ ${(q*pFinal).toFixed(2)}\n`;
+                let vFinal = produtos[idx].p > 200 ? produtos[idx].p * 0.75 : produtos[idx].p;
+                msg += `✅ ${produtos[idx].n} (${produtos[idx].t}) x${q} = R$ ${(q*vFinal).toFixed(2).replace('.', ',')}\n`;
             }
         });
-        msg += `\n*TOTAL: ${document.getElementById("valor-total").innerText}*`;
+        
+        msg += `\n*VALOR TOTAL: ${document.getElementById("valor-total").innerText}*`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
