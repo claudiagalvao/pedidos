@@ -1,505 +1,177 @@
-const produtosDiv = document.getElementById("produtos");
-const menuCategorias = document.getElementById("menuCategorias");
-const busca = document.getElementById("busca");
-const carrinhoUI = document.getElementById("carrinho");
+const STORE_ID = 840344
+const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"
 
-const listaPedido = document.getElementById("listaPedido");
-const totalEl = document.getElementById("total");
-const economiaEl = document.getElementById("economia");
-const contadorItens = document.getElementById("contadorItens");
-const barra = document.getElementById("barra");
-const msgMinimo = document.getElementById("msgMinimo");
+let produtos = []
+let carrinho = []
 
-let produtos = [];
-let carrinho = [];
+async function carregarProdutos() {
 
-let total = 0;
-let totalOriginal = 0;
+  const resposta = await fetch(
+    `https://api.tiendanube.com/v1/${STORE_ID}/products`,
+    {
+      headers: {
+        "Authentication": `bearer ${TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  )
 
-const pedidoMinimo = 200;
+  const data = await resposta.json()
 
+  produtos = []
 
-/* ============================= */
-/* FORMATAÇÃO MOEDA */
-/* ============================= */
+  data.forEach(produto => {
 
-function moeda(v){
-return v.toLocaleString('pt-BR',{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-});
-}
+    if (!produto.variants) return
 
+    produto.variants.forEach(variant => {
 
-/* ============================= */
-/* CARREGAR CSV */
-/* ============================= */
+      produtos.push({
+        categoria: produto.categories ? produto.categories[0]?.name?.pt : "",
+        nome: produto.name.pt,
+        variacao: variant.option_values.map(v => v.pt).join(" / "),
+        preco: variant.price,
+        sku: variant.sku,
+        estoque: variant.stock,
+        link: produto.canonical_url
+      })
 
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vR8gu10gzZqp2JlQSYpwoLO_xtuvMlKeV2FVDN3jqrnSkqhXGI0PIvWrs-dszgn4Sx7K6IbtjA_eCF_/pub?gid=0&single=true&output=csv")
+    })
 
-.then(r => r.text())
-.then(data => {
+  })
 
-const linhas = data.replace(/\r/g,'').split("\n").slice(1);
-
-linhas.forEach(l => {
-
-if(!l.trim()) return;
-
-let separador = l.includes(";") ? ";" : ",";
-
-const c = l.split(separador);
-
-produtos.push({
-
-categoria: c[0] || "",
-nome: c[1] || "",
-variacao: c[2] || "",
-preco: parseFloat(c[3]) || 0,
-link: c[4] || "#",
-sku: c[5] || "",
-estoque: parseInt(c[6]) || 0,
-vendas: Math.floor(Math.random()*100)
-
-});
-
-});
-
-criarCategorias();
-renderProdutos(produtos);
-
-});
-
-
-/* ============================= */
-/* CATEGORIAS */
-/* ============================= */
-
-function criarCategorias(){
-
-const categorias=[...new Set(produtos.map(p=>p.categoria))];
-
-menuCategorias.innerHTML=`<button onclick="filtrarCategoria('Todos')">Todos</button>`;
-
-categorias.forEach(c=>{
-menuCategorias.innerHTML+=`<button onclick="filtrarCategoria('${c}')">${c}</button>`;
-});
+  renderizarProdutos()
 
 }
 
+function renderizarProdutos() {
 
-function filtrarCategoria(cat){
+  const container = document.getElementById("produtos")
+  container.innerHTML = ""
 
-if(cat==="Todos"){
-renderProdutos(produtos);
-return;
-}
+  produtos.forEach((p, index) => {
 
-renderProdutos(produtos.filter(p=>p.categoria===cat));
+    const card = document.createElement("div")
+    card.className = "produto-card"
 
-}
+    card.innerHTML = `
+      <h3>${p.nome}</h3>
+      <p>${p.variacao}</p>
+      <p>SKU: ${p.sku}</p>
+      <p>Estoque: ${p.estoque}</p>
+      <p class="preco">R$ ${p.preco}</p>
+      <button onclick="adicionarCarrinho(${index})">
+        adicionar
+      </button>
+    `
 
+    container.appendChild(card)
 
-/* ============================= */
-/* BUSCA */
-/* ============================= */
-
-busca.addEventListener("keyup",()=>{
-
-const termo=busca.value.toLowerCase();
-
-renderProdutos(
-produtos.filter(p=>p.nome.toLowerCase().includes(termo))
-);
-
-});
-
-
-/* ============================= */
-/* VALIDAR VARIAÇÃO */
-/* ============================= */
-
-function variacaoValida(v){
-
-if(!v) return false;
-
-let texto = v.toLowerCase().trim();
-
-if(texto === "padrão" || texto === "padrao") return false;
-
-return true;
+  })
 
 }
 
+function adicionarCarrinho(index) {
 
-/* ============================= */
-/* RENDER PRODUTOS */
-/* ============================= */
+  const produto = produtos[index]
 
-function renderProdutos(lista){
+  const existente = carrinho.find(p => p.sku === produto.sku)
 
-produtosDiv.innerHTML="";
+  if (existente) {
 
-lista.forEach(p=>{
+    existente.qtd++
 
-const precoBase = moeda(p.preco);
-const preco10 = moeda(p.preco*0.90);
-const preco12 = moeda(p.preco*0.88);
-const preco15 = moeda(p.preco*0.85);
+  } else {
 
-const card=document.createElement("div");
-card.className="produto";
+    carrinho.push({
+      ...produto,
+      qtd: 1
+    })
 
-let estoqueHTML = p.estoque > 0
-? `<div>Estoque: <strong>${p.estoque}</strong></div>`
-: `<div style="color:red;font-weight:bold">Sem estoque</div>`;
+  }
 
-let botaoHTML = p.estoque > 0
-? `<button class="btnAdd">Adicionar</button>`
-: `<button class="btnAdd" disabled style="opacity:0.5">Sem estoque</button>`;
-
-card.innerHTML=`
-
-<h3>${p.nome}</h3>
-
-${variacaoValida(p.variacao) ? `<div style="font-size:12px;color:#666">Variação: ${p.variacao}</div>` : ""}
-
-<div style="text-decoration:line-through;color:#888;font-size:12px">
-R$ ${precoBase}
-</div>
-
-<div class="precoB2B">
-R$ ${preco10}
-</div>
-
-<div class="progressivo-card">
-
-<strong>Descontos B2B</strong><br>
-
-10% → R$ ${preco10}<br>
-12% (R$500+) → R$ ${preco12}<br>
-15% (R$1000+) → R$ ${preco15}
-
-</div>
-
-${estoqueHTML}
-
-<input type="number" value="0" min="0" max="${p.estoque}" class="qtdProduto">
-
-<div class="linhaAcoes">
-
-<a href="${p.link}" target="_blank" class="camera-link">📸</a>
-
-${p.vendas>70?'<span class="badgeVendido">🔥 Mais vendido</span>':''}
-
-${botaoHTML}
-
-</div>
-
-`;
-
-const botao = card.querySelector(".btnAdd");
-const input = card.querySelector(".qtdProduto");
-
-if(botao && p.estoque>0){
-
-botao.onclick = () => {
-
-const qtd = parseInt(input.value);
-
-if(!qtd || qtd<=0) return;
-
-if(qtd > p.estoque){
-alert(`Estoque disponível: ${p.estoque}`);
-return;
-}
-
-carrinho.push({
-nome:p.nome,
-variacao:p.variacao,
-preco:p.preco,
-qtd:qtd
-});
-
-total += p.preco * qtd;
-totalOriginal += p.preco * qtd;
-
-atualizarCarrinho();
-
-input.value = 0;
-
-};
+  atualizarCarrinho()
 
 }
 
-produtosDiv.appendChild(card);
+function atualizarCarrinho() {
 
-});
+  const container = document.getElementById("carrinho")
 
-}
+  container.innerHTML = ""
 
+  let total = 0
 
-/* ============================= */
-/* CARRINHO */
-/* ============================= */
+  carrinho.forEach((p, i) => {
 
-function atualizarCarrinho(){
+    total += p.preco * p.qtd
 
-listaPedido.innerHTML="";
+    const item = document.createElement("div")
 
-let itens=0;
+    item.innerHTML = `
+      ${p.nome} ${p.variacao}
+      x${p.qtd}
+      <button onclick="removerCarrinho(${i})">x</button>
+    `
 
-carrinho.forEach((item,index)=>{
+    container.appendChild(item)
 
-itens+=item.qtd;
+  })
 
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-listaPedido.innerHTML+=`
-
-<div style="display:flex;justify-content:space-between">
-
-<span>${item.qtd}x ${nomeProduto}</span>
-
-<button onclick="removerItem(${index})">✕</button>
-
-</div>
-
-`;
-
-});
-
-const desconto = calcularDesconto(total);
-
-const totalFinal = total * (1 - desconto);
-
-const economia = total - totalFinal;
-
-totalEl.innerText = moeda(totalFinal);
-economiaEl.innerText = moeda(economia);
-
-contadorItens.innerText=`(${itens} itens)`;
-
-document.getElementById("descontoAtual").innerText =
-Math.round(desconto * 100) + "%";
-
-let msg = "";
-
-if(total < 500){
-msg = `Você já tem 10%. Faltam R$ ${moeda(500-total)} para atingir 12%`;
-}
-else if(total < 1000){
-msg = `Faltam R$ ${moeda(1000-total)} para atingir 15%`;
-}
-else{
-msg = "Você já atingiu o maior desconto!";
-}
-
-document.getElementById("msgDesconto").innerText = msg;
-
-let progresso=(total/500)*100;
-
-barra.style.width=Math.min(progresso,100)+"%";
-
-msgMinimo.innerText = total<pedidoMinimo
-?`Faltam R$ ${moeda(pedidoMinimo-total)} para pedido mínimo`
-:"Pedido mínimo atingido";
+  document.getElementById("total").innerText = total.toFixed(2)
 
 }
 
+function removerCarrinho(index) {
 
-/* ============================= */
-/* DESCONTOS */
-/* ============================= */
+  carrinho.splice(index, 1)
 
-function calcularDesconto(valor){
-
-if(valor >= 1000) return 0.15;
-if(valor >= 500) return 0.12;
-
-return 0.10;
+  atualizarCarrinho()
 
 }
 
+function limparCarrinho() {
 
-/* ============================= */
+  carrinho = []
 
-function removerItem(index){
-
-total -= carrinho[index].preco * carrinho[index].qtd;
-totalOriginal -= carrinho[index].preco * carrinho[index].qtd;
-
-carrinho.splice(index,1);
-
-atualizarCarrinho();
+  atualizarCarrinho()
 
 }
 
+function gerarPedidoWhats() {
 
-/* ============================= */
-/* VALIDAÇÃO FORM */
-/* ============================= */
+  let texto = "Pedido B2B:%0A%0A"
 
-function validarFormulario(){
+  carrinho.forEach(p => {
 
-if(total < pedidoMinimo){
-alert("Pedido mínimo de R$200");
-return false;
-}
+    texto += `${p.nome} ${p.variacao} - ${p.qtd} un.%0A`
 
-const campos = document.querySelectorAll(".formPedido input");
+  })
 
-for(let campo of campos){
-if(!campo.value.trim()){
-alert("Preencha todos os dados da nota fiscal");
-return false;
-}
-}
-
-return true;
+  window.open(`https://wa.me/?text=${texto}`)
 
 }
 
+function gerarPDF() {
 
-/* ============================= */
-/* EMAIL */
-/* ============================= */
+  let texto = "PEDIDO B2B\n\n"
 
-function enviarEmail(){
+  carrinho.forEach(p => {
 
-if(!validarFormulario()) return;
+    texto += `${p.nome} ${p.variacao} - ${p.qtd}\n`
 
-let pedido="";
+  })
 
-carrinho.forEach(item=>{
+  const blob = new Blob([texto], { type: "text/plain" })
 
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
+  const a = document.createElement("a")
 
-pedido += `${item.qtd}x ${nomeProduto}\n`;
+  a.href = URL.createObjectURL(blob)
 
-});
+  a.download = "pedido.txt"
 
-fetch("https://formsubmit.co/ajax/lojacrazyfantasy@hotmail.com",{
-
-method:"POST",
-
-headers:{'Content-Type':'application/json'},
-
-body:JSON.stringify({
-
-pedido:pedido,
-total:moeda(total)
-
-})
-
-})
-.then(()=>alert("Pedido enviado por email!"));
+  a.click()
 
 }
 
-
-/* ============================= */
-/* WHATSAPP */
-/* ============================= */
-
-function enviarWhatsApp(){
-
-if(!validarFormulario()) return;
-
-let pedido="";
-
-carrinho.forEach(item=>{
-
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-pedido += `${item.qtd}x ${nomeProduto}\n`;
-
-});
-
-let texto =
-`Pedido B2B Crazy Fantasy\n\n${pedido}\nTotal: R$ ${moeda(total)}`;
-
-window.open(
-`https://wa.me/5519992850208?text=${encodeURIComponent(texto)}`,
-"_blank"
-);
-
-}
-
-
-/* ============================= */
-/* PDF */
-/* ============================= */
-
-function gerarPDF(){
-
-if(!validarFormulario()) return;
-
-const { jsPDF } = window.jspdf;
-
-const doc = new jsPDF();
-
-let y=20;
-
-doc.text("Pedido Crazy Fantasy",20,y);
-
-y+=10;
-
-carrinho.forEach(item=>{
-
-let nomeProduto = variacaoValida(item.variacao)
-? `${item.nome} - ${item.variacao}`
-: item.nome;
-
-doc.text(`${item.qtd}x ${nomeProduto}`,20,y);
-
-y+=8;
-
-});
-
-doc.text(`Total: R$ ${moeda(total)}`,20,y+10);
-
-doc.save("pedido.pdf");
-
-}
-
-
-/* ============================= */
-/* LIMPAR */
-/* ============================= */
-
-function limparCarrinho(){
-
-carrinho=[];
-total=0;
-totalOriginal=0;
-
-atualizarCarrinho();
-
-document.querySelectorAll(".formPedido input").forEach(i=>i.value="");
-document.querySelectorAll(".formPedido textarea").forEach(i=>i.value="");
-
-}
-
-
-/* ============================= */
-/* CARRINHO MOBILE */
-/* ============================= */
-
-function abrirCarrinhoMobile(){
-
-const carrinho = document.getElementById("carrinho");
-
-carrinho.classList.toggle("aberto");
-
-if(carrinho.classList.contains("aberto")){
-carrinho.scrollIntoView({behavior:"smooth"});
-}
-
-}
+carregarProdutos()
