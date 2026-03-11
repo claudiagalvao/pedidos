@@ -1,11 +1,5 @@
 console.log("Portal B2B iniciado")
 
-// TOKEN DA API
-const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"
-
-// ID DA LOJA
-const STORE_ID = 840344
-
 async function carregarProdutos(){
 
 console.log("Carregando produtos...")
@@ -13,20 +7,16 @@ console.log("Carregando produtos...")
 try{
 
 const resposta = await fetch(
-`https://api.tiendanube.com/v1/${STORE_ID}/products`,
-{
-headers:{
-"Authentication": "bearer " + TOKEN,
-"Content-Type": "application/json"
-}
-}
+"https://crazyfantasy.lojavirtualnuvem.com.br/products.json"
 )
 
 if(!resposta.ok){
-throw new Error("Erro API")
+throw new Error("Erro ao carregar produtos")
 }
 
-const produtos = await resposta.json()
+const data = await resposta.json()
+
+const produtos = data.products
 
 console.log("Produtos recebidos:", produtos)
 
@@ -34,7 +24,7 @@ renderizarProdutos(produtos)
 
 }catch(erro){
 
-console.error("Erro ao carregar produtos:", erro)
+console.error("Erro:", erro)
 
 }
 
@@ -43,11 +33,6 @@ console.error("Erro ao carregar produtos:", erro)
 function renderizarProdutos(produtos){
 
 const container = document.getElementById("produtos")
-
-if(!container){
-console.error("Container #produtos não encontrado")
-return
-}
 
 container.innerHTML = ""
 
