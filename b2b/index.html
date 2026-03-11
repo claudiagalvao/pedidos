@@ -8,21 +8,24 @@
 </head>
 <body>
     <div class="container">
+        <img src="banner.png" class="banner-principal">
+
         <div class="topo">
-            <img src="banner.png" class="logo">
-            <div class="mensagem">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</div>
-        </div>
+            <div class="mensagem">
+                🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
+            </div>
+            
+            <div class="categorias-menu">
+                <button class="active" onclick="filtrar('Todos')">Todos</button>
+                <button onclick="filtrar('Kits')">Kits</button>
+                <button onclick="filtrar('Barbas e Bigodes')">Barbas e Bigodes</button>
+                <button onclick="filtrar('Perucas')">Perucas</button>
+                <button onclick="filtrar('Acessórios')">Acessórios</button>
+                <button onclick="filtrar('Maquiagens e Sprays')">Maquiagens e Sprays</button>
+            </div>
 
-        <div class="categorias-menu" id="menu-categorias">
-            <button class="active" onclick="filtrar('Todos')">Todos</button>
-            <button onclick="filtrar('Kits')">Kits</button>
-            <button onclick="filtrar('Barbas e Bigodes')">Barbas e Bigodes</button>
-            <button onclick="filtrar('Perucas')">Perucas</button>
-            <button onclick="filtrar('Acessórios')">Acessórios</button>
-            <button onclick="filtrar('Maquiagens e Sprays')">Maquiagens e Sprays</button>
+            <input type="text" id="busca" placeholder="🔎 Buscar produto..." onkeyup="buscar()">
         </div>
-
-        <input type="text" id="busca" placeholder="🔎 Buscar produto..." onkeyup="buscar()">
 
         <div id="produtos"></div>
     </div>
@@ -35,7 +38,6 @@
         <div class="progresso-container">
             <div class="barra" id="barra-progresso"></div>
         </div>
-        <p>Economia com descontos: R$ 0,00</p>
         <hr>
         <h3>Dados para Nota Fiscal</h3>
         <input placeholder="Razão Social">
@@ -43,24 +45,11 @@
             <input placeholder="CNPJ">
             <input placeholder="IE">
         </div>
-        <input placeholder="Responsável">
-        <div class="linha">
-            <input placeholder="WhatsApp">
-            <input placeholder="Email">
-        </div>
-        <input placeholder="Endereço">
-        <div class="linha">
-            <input placeholder="Cidade">
-            <input placeholder="Estado">
-            <input placeholder="CEP">
-        </div>
-        <select><option>Forma de entrega</option></select>
-        <select><option>Forma de pagamento</option></select>
+        <input placeholder="WhatsApp">
+        <input placeholder="Email">
         <textarea placeholder="Observações"></textarea>
-        <button class="btn-enviar">Enviar Pedido</button>
-        <button class="btn-wpp">WhatsApp</button>
-        <button class="btn-pdf">Gerar PDF</button>
-        <button class="btn-limpar" onclick="limparCarrinho()">Limpar</button>
+        <button class="btn-wpp">Enviar via WhatsApp</button>
+        <button class="btn-limpar" onclick="limparCarrinho()">Limpar Carrinho</button>
     </div>
 
     <script src="script.js"></script>
