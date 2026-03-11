@@ -1,68 +1,64 @@
-// CONFIGURAÇÕES DA API
-const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"; //
-const STORE_ID = 840344; //
-
-// URL do Proxy (Necessário para GitHub Pages)
-const PROXY = "https://cors-anywhere.herokuapp.com/";
-const URL_NUVEM = `https://api.tiendanube.com/v1/${STORE_ID}/products`;
-
-// ESTADO DO CARRINHO
+// CONFIGURAÇÕES
+const DESCONTO_B2B = 0.20; // 20% de desconto para parceiros
+const VALOR_MINIMO = 200.00; //
 let carrinho = [];
-const VALOR_MINIMO = 200.00;
 
-/**
- * Carrega produtos da Nuvemshop
- */
 async function carregarProdutos() {
     const container = document.getElementById("produtos");
     try {
-        const resposta = await fetch(PROXY + URL_NUVEM, {
-            headers: {
-                "Authentication": "bearer " + TOKEN,
-                "Content-Type": "application/json",
-                "User-Agent": "PortalB2B (contato@crazyfantasy.com.br)"
-            }
-        });
-
-        if (!resposta.ok) throw new Error("Erro ao acessar API");
-
+        const resposta = await fetch("api.php");
         const produtos = await resposta.json();
         renderizarProdutos(produtos);
     } catch (erro) {
-        console.error(erro);
-        if (container) container.innerHTML = "<p>Erro ao carregar. Ative o proxy em cors-anywhere.herokuapp.com/corsdemo</p>";
+        console.error("Erro ao carregar:", erro);
     }
 }
 
-/**
- * Renderiza a vitrine de produtos
- */
 function renderizarProdutos(produtos) {
     const container = document.getElementById("produtos");
     if (!container) return;
-
     container.innerHTML = "";
+
     produtos.forEach(prod => {
         const imagem = prod.images?.[0]?.src || "";
         const nome = prod.name.pt;
-        const preco = parseFloat(prod.variants[0]?.price || 0);
+        
+        // Puxando a primeira variação para o preço base
+        const variacaoPrincipal = prod.variants[0];
+        const precoVarejo = parseFloat(variacaoPrincipal.price);
+        const precoB2B = precoVarejo * (1 - DESCONTO_B2B);
+        const estoqueTotal = prod.variants.reduce((sum, v) => sum + (v.stock || 0), 0);
+        
+        // Criando seletor de variações se houver mais de uma
+        let seletorVariacoes = "";
+        if (prod.variants.length > 1) {
+            seletorVariacoes = `<select class="v-select">
+                ${prod.variants.map(v => `<option value="${v.price}">${v.values[0].pt} (Estoque: ${v.stock || 0})</option>`).join('')}
+            </select>`;
+        } else {
+            seletorVariacoes = `<p><small>Estoque disponível: ${estoqueTotal}</small></p>`;
+        }
 
         container.innerHTML += `
             <div class="produto">
                 <img src="${imagem}" alt="${nome}">
                 <h3>${nome}</h3>
-                <p><strong>R$ ${preco.toFixed(2)}</strong></p>
-                <button onclick="addAoCarrinho('${nome.replace(/'/g, "\\'")}', ${preco})">
-                    Adicionar
+                
+                <div class="precos">
+                    <span style="text-decoration: line-through; color: #999; font-size: 12px;">De: R$ ${precoVarejo.toFixed(2)}</span><br>
+                    <strong style="color: #27ae60; font-size: 18px;">B2B: R$ ${precoB2B.toFixed(2)}</strong>
+                </div>
+
+                ${seletorVariacoes}
+
+                <button onclick="addAoCarrinho('${nome.replace(/'/g, "\\'")}', ${precoB2B})">
+                    Adicionar ao Pedido
                 </button>
             </div>
         `;
     });
 }
 
-/**
- * Lógica do Carrinho B2B
- */
 function addAoCarrinho(nome, preco) {
     carrinho.push({ nome, preco });
     atualizarCarrinho();
@@ -71,27 +67,16 @@ function addAoCarrinho(nome, preco) {
 function atualizarCarrinho() {
     const total = carrinho.reduce((sum, item) => sum + item.preco, 0);
     const faltam = Math.max(0, VALOR_MINIMO - total);
+    
+    document.querySelector(".carrinho h2").innerText = `🛒 Pedido (${carrinho.length} itens)`;
+    document.querySelector(".carrinho p:nth-of-type(1)").innerText = `Total B2B: R$ ${total.toFixed(2)}`;
+    
+    const msgMinimo = document.querySelector(".carrinho p:nth-of-type(3)");
+    msgMinimo.innerText = faltam > 0 ? `Faltam R$ ${faltam.toFixed(2)} para pedido mínimo` : "✅ Pedido mínimo atingido!";
+    
+    // Atualiza a barra visual
     const porcentagem = Math.min(100, (total / VALOR_MINIMO) * 100);
-
-    // Atualiza os textos no HTML
-    const secaoCarrinho = document.querySelector(".carrinho");
-    if (secaoCarrinho) {
-        secaoCarrinho.querySelector("h2").innerText = `🛒 Pedido (${carrinho.length} itens)`;
-        secaoCarrinho.querySelector("p:nth-of-type(1)").innerText = `Total B2B: R$ ${total.toFixed(2)}`;
-        secaoCarrinho.querySelector("p:nth-of-type(3)").innerText = 
-            faltam > 0 ? `Faltam R$ ${faltam.toFixed(2)} para pedido mínimo` : "✅ Pedido mínimo atingido!";
-        
-        // Atualiza a barra de progresso
-        const barra = document.querySelector(".barra");
-        if (barra) {
-            barra.style.width = `${porcentagem}%`;
-            barra.style.background = total >= VALOR_MINIMO ? "#4CAF50" : "#ff9800";
-            barra.style.height = "10px";
-            barra.style.borderRadius = "5px";
-            barra.style.marginTop = "10px";
-        }
-    }
+    document.querySelector(".barra").style.width = `${porcentagem}%`;
 }
 
-// Inicialização
 window.addEventListener("load", carregarProdutos);
