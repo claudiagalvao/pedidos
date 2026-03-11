@@ -1,207 +1,80 @@
-const STORE_ID = 840344
+console.log("JS carregado")
+
+// COLE SEU TOKEN AQUI
 const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"
 
-let produtos = []
-let carrinho = []
+// ID DA SUA LOJA
+const STORE_ID = 840344
 
-async function carregarProdutos() {
 
-  try {
 
-    const response = await fetch(
-      `https://api.tiendanube.com/v1/${STORE_ID}/products`,
-      {
-        headers: {
-          "Authentication": `bearer ${TOKEN}`,
-          "User-Agent": "CrazyFantasyB2B (contato@crazyfantasy.com.br)",
-          "Content-Type": "application/json"
-        }
-      }
-    )
+async function carregarProdutos(){
 
-    const data = await response.json()
+try{
 
-    produtos = []
+const resposta = await fetch(
+`https://api.tiendanube.com/v1/${STORE_ID}/products`,
+{
+headers:{
+"Authentication": "bearer " + TOKEN,
+"Content-Type": "application/json"
+}
+}
+)
 
-    data.forEach(produto => {
+const produtos = await resposta.json()
 
-      if (!produto.variants) return
+console.log("Produtos carregados:", produtos)
 
-      produto.variants.forEach(variant => {
+const container = document.getElementById("produtos")
 
-        produtos.push({
-          nome: produto.name.pt,
-          variacao: variant.option_values.map(v => v.pt).join(" / "),
-          preco: parseFloat(variant.price),
-          sku: variant.sku,
-          estoque: variant.stock,
-          imagem: produto.images?.[0]?.src || "",
-          link: produto.canonical_url
-        })
+if(!container){
+console.error("Container #produtos não encontrado")
+return
+}
 
-      })
+container.innerHTML = ""
 
-    })
+produtos.forEach(prod => {
 
-    renderizarProdutos()
+let imagem = ""
 
-  } catch (erro) {
+if(prod.images && prod.images.length){
+imagem = prod.images[0].src
+}
 
-    console.error("Erro ao carregar produtos", erro)
+container.innerHTML += `
+<div class="produto">
 
-  }
+<img src="${imagem}" />
+
+<h3>${prod.name.pt}</h3>
+
+<button onclick="adicionarProduto('${prod.name.pt}')">
+Adicionar
+</button>
+
+</div>
+`
+
+})
+
+}catch(erro){
+
+console.error("Erro ao carregar produtos:", erro)
 
 }
 
-function renderizarProdutos() {
+}
 
-  const container = document.getElementById("produtos")
 
-  if (!container) return
 
-  container.innerHTML = ""
+function adicionarProduto(nome){
 
-  produtos.forEach((p, index) => {
-
-    const card = document.createElement("div")
-    card.className = "produto-card"
-
-    card.innerHTML = `
-
-      <div class="produto-img">
-        <img src="${p.imagem}" />
-      </div>
-
-      <div class="produto-info">
-        <h3>${p.nome}</h3>
-        <p>${p.variacao}</p>
-        <p class="sku">SKU: ${p.sku}</p>
-        <p class="estoque">Estoque: ${p.estoque}</p>
-        <p class="preco">R$ ${p.preco.toFixed(2)}</p>
-
-        <button onclick="adicionarCarrinho(${index})">
-          adicionar
-        </button>
-      </div>
-    `
-
-    container.appendChild(card)
-
-  })
+alert(nome + " adicionado ao pedido")
 
 }
 
-function adicionarCarrinho(index) {
 
-  const produto = produtos[index]
 
-  const existente = carrinho.find(p => p.sku === produto.sku)
-
-  if (existente) {
-
-    existente.qtd++
-
-  } else {
-
-    carrinho.push({
-      ...produto,
-      qtd: 1
-    })
-
-  }
-
-  atualizarCarrinho()
-
-}
-
-function atualizarCarrinho() {
-
-  const container = document.getElementById("carrinho")
-
-  if (!container) return
-
-  container.innerHTML = ""
-
-  let total = 0
-
-  carrinho.forEach((p, i) => {
-
-    total += p.preco * p.qtd
-
-    const item = document.createElement("div")
-
-    item.className = "carrinho-item"
-
-    item.innerHTML = `
-      ${p.nome} ${p.variacao}
-      x${p.qtd}
-      <button onclick="removerCarrinho(${i})">x</button>
-    `
-
-    container.appendChild(item)
-
-  })
-
-  const totalEl = document.getElementById("total")
-
-  if (totalEl) totalEl.innerText = total.toFixed(2)
-
-}
-
-function removerCarrinho(index) {
-
-  carrinho.splice(index, 1)
-
-  atualizarCarrinho()
-
-}
-
-function limparCarrinho() {
-
-  carrinho = []
-
-  atualizarCarrinho()
-
-}
-
-function gerarPedidoWhats() {
-
-  if (carrinho.length === 0) return
-
-  let texto = "Pedido B2B Crazy Fantasy:%0A%0A"
-
-  carrinho.forEach(p => {
-
-    texto += `${p.nome} ${p.variacao} - ${p.qtd} un.%0A`
-
-  })
-
-  window.open(`https://wa.me/?text=${texto}`)
-
-}
-
-function gerarPDF() {
-
-  if (carrinho.length === 0) return
-
-  let texto = "PEDIDO B2B - CRAZY FANTASY\n\n"
-
-  carrinho.forEach(p => {
-
-    texto += `${p.nome} ${p.variacao} - ${p.qtd}\n`
-
-  })
-
-  const blob = new Blob([texto], { type: "text/plain" })
-
-  const a = document.createElement("a")
-
-  a.href = URL.createObjectURL(blob)
-
-  a.download = "pedido.txt"
-
-  a.click()
-
-}
-
-carregarProdutos()
+window.onload = carregarProdutos
