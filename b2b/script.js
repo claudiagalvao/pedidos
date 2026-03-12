@@ -1,6 +1,6 @@
 let todosProdutos = [];
 let carrinho = [];
-let metaCelebrada = false;
+let metaAtingida = false;
 
 async function carregarProdutos() {
     try {
@@ -13,7 +13,7 @@ async function carregarProdutos() {
 
 window.onscroll = () => {
     const header = document.querySelector(".header-b2b");
-    if (header) window.pageYOffset > 50 ? header.classList.add("scrolled") : header.classList.remove("scrolled");
+    window.pageYOffset > 50 ? header.classList.add("scrolled") : header.classList.remove("scrolled");
 };
 
 function renderizarMenu() {
@@ -30,16 +30,16 @@ function renderizarProdutos(lista) {
         <div class="produto-card">
             <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
             <h3>${p.name}</h3>
-            <div style="font-weight:bold; color:#ff00ff; font-size:0.9rem">R$ ${(v.preco * 0.9).toFixed(2)}</div>
-            <select id="var-${index}" style="width:100%; margin:8px 0; padding:5px; border-radius:5px; border:1px solid #ddd; font-size:0.75rem">
+            <div style="font-weight:bold; color:#ff00ff">R$ ${(v.preco * 0.9).toFixed(2)}</div>
+            <select id="var-${index}" class="select-crazy" style="margin:8px 0; font-size:0.75rem">
                 ${p.variacoes.map(vi => {
-                    const n = (vi.nome.toLowerCase() === 'padrão') ? 'Única' : vi.nome;
-                    return `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${n}</option>`;
+                    const n = (vi.nome.toLowerCase() === 'padrão' || vi.nome.toLowerCase() === 'default') ? 'Única' : vi.nome;
+                    return `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${n} (Estoque: ${vi.estoque})</option>`;
                 }).join('')}
             </select>
             <div style="display:flex; gap:5px">
-                <input type="number" id="qtd-${index}" value="0" min="0" style="width:40px; text-align:center; border:1px solid #ddd; border-radius:5px">
-                <button onclick="adicionar(${index}, '${p.name}')" style="flex:1; background:#0b0f15; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-size:0.7rem; font-weight:bold">ADD</button>
+                <input type="number" id="qtd-${index}" value="0" min="0" style="width:45px; text-align:center; border:1px solid #ddd; border-radius:5px">
+                <button onclick="adicionar(${index}, '${p.name}')" style="flex:1; background:#0b0f15; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold">Adicionar</button>
             </div>
         </div>`;
     }).join('');
@@ -67,70 +67,63 @@ function atualizarInterface() {
     document.getElementById("subtotal").innerText = `Subtotal: R$ ${subtotal.toFixed(2)}`;
     document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
     document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}% (B2B)`;
-    document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
 
-    // CELEBRAÇÃO DA META
+    // TRAVA DE MÍNIMO E ALEGRIA
+    const falta = 200 - total;
+    const aviso = document.getElementById("aviso-minimo");
+    const btnZap = document.getElementById("btn-zap");
+    const btnPdf = document.getElementById("btn-pdf");
+
     if (total >= 200) {
-        if (!metaCelebrada) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 }, colors: ['#ff00ff', '#00ffff', '#ccff00'] });
-            metaCelebrada = true;
+        aviso.innerText = "✅ Pedido Mínimo Atingido!";
+        aviso.style.color = "#22c55e";
+        btnZap.className = "btn-whatsapp-ativo";
+        btnPdf.className = "btn-pdf-ativo";
+        if(!metaAtingida) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff00ff', '#00ffff', '#ccff00'] });
+            metaAtingida = true;
         }
-    } else { metaCelebrada = false; }
+    } else {
+        aviso.innerText = `Faltam R$ ${falta.toFixed(2)} para o mínimo`;
+        aviso.style.color = "#ef4444";
+        btnZap.className = "btn-desativado";
+        btnPdf.className = "btn-desativado";
+        metaAtingida = false;
+    }
 
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
-        <div class="mini-item" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155; font-size:0.75rem">
-            <span>${i.qtd}x ${i.name} ${i.variacao.toLowerCase()==='padrão'?'':`(${i.variacao})`}</span>
-            <button onclick="remover(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer">×</button>
+        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #334155; font-size:0.75rem">
+            <span>${i.qtd}x ${i.name}</span>
+            <button onclick="remover(${idx})" style="background:none; border:none; color:red; cursor:pointer">×</button>
         </div>`).join('');
 }
 
-function remover(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
+function validarFormulario() {
+    const campos = ['razao-social', 'cnpj', 'whatsapp', 'forma-pagamento', 'forma-envio'];
+    for (let id of campos) {
+        if (!document.getElementById(id).value) return false;
+    }
+    return true;
+}
 
 function enviarWhatsapp() {
-    if (carrinho.length === 0) return alert("Carrinho vazio!");
-    const p = document.getElementById("forma-pagamento").value || "A definir";
-    const e = document.getElementById("forma-envio").value || "A definir";
-    const cliente = document.getElementById("razao-social").value || "Cliente";
-
-    const texto = `*PEDIDO B2B - CRAZY FANTASY*\nCliente: ${cliente}\nTotal: ${document.getElementById("total-final").innerText}\nPagamento: ${p}\nEnvio: ${e}\n\n` + 
-                  carrinho.map(i => `• ${i.qtd}x ${i.name} ${i.variacao.toLowerCase()==='padrão'?'':`(${i.variacao})`}`).join('\n');
+    if (!metaAtingida) return alert("Pedido mínimo não atingido!");
+    if (!validarFormulario()) return alert("Preencha todos os campos obrigatórios (*)");
+    
+    const texto = `*NOVO PEDIDO B2B - CRAZY FANTASY*\n\n` + 
+                  carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') +
+                  `\n\n*Total:* ${document.getElementById("total-final").innerText}`;
     window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
 
 function gerarPDF() {
+    if (!metaAtingida || !validarFormulario()) return alert("Atinga o mínimo e preencha o formulário!");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
-    // CABEÇALHO CRAZY FANTASY
-    doc.setFontSize(14); doc.setTextColor(255, 0, 255);
-    doc.text("GALVAO ARTIGOS PARA FESTAS LTDA - ME (CRAZY FANTASY)", 10, 15);
-    doc.setFontSize(8); doc.setTextColor(80, 80, 80);
-    doc.text("CNPJ: 09.626.903/0001-57 | IE: 708.211.823.110 | Valinhos, SP", 10, 20);
-    doc.line(10, 25, 200, 25);
-
-    // DADOS CLIENTE
-    doc.setFontSize(10); doc.setTextColor(0, 0, 0);
-    const r = document.getElementById("razao-social").value || "Não informado";
-    doc.text(`Cliente: ${r}`, 10, 35);
-    doc.text(`Pagamento: ${document.getElementById("forma-pagamento").value || 'A combinar'}`, 10, 40);
-    doc.text(`Envio: ${document.getElementById("forma-envio").value || 'A combinar'}`, 110, 40);
-
-    // TABELA
-    let y = 55;
-    doc.setFont("helvetica", "bold"); doc.text("Qtd", 10, y); doc.text("Produto", 30, y); doc.text("Total", 180, y);
-    doc.line(10, y+2, 200, y+2); y += 10;
-    
-    doc.setFont("helvetica", "normal");
-    carrinho.forEach(i => {
-        doc.text(`${i.qtd}x`, 10, y);
-        doc.text(`${i.name.substring(0, 40)}`, 30, y);
-        doc.text(`R$ ${(i.preco * i.qtd).toFixed(2)}`, 180, y);
-        y += 8;
-    });
-
-    doc.setFont("helvetica", "bold"); doc.setTextColor(255, 0, 255);
-    doc.text(`TOTAL FINAL: ${document.getElementById("total-final").innerText}`, 130, y + 10);
-    doc.save(`Orcamento_Crazy_${r}.pdf`);
+    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
+    doc.text(`Cliente: ${document.getElementById("razao-social").value}`, 10, 20);
+    doc.text(`Total: ${document.getElementById("total-final").innerText}`, 10, 30);
+    doc.save("pedido.pdf");
 }
 
 function abrirModal(src) { document.getElementById("modal-foto").style.display = "block"; document.getElementById("foto-ampliada").src = src; }
@@ -140,10 +133,5 @@ function filtrar(cat, btn) {
     btn.classList.add('active');
     renderizarProdutos(cat === "Todos" ? todosProdutos : todosProdutos.filter(p => p.categoria === cat));
 }
-function filtrarBusca() {
-    const t = document.getElementById("busca").value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
-}
-function limparCarrinho() { if(confirm("Limpar carrinho?")) { carrinho = []; atualizarInterface(); } }
-
+function limparCarrinho() { if(confirm("Limpar?")) { carrinho = []; atualizarInterface(); } }
 document.addEventListener("DOMContentLoaded", carregarProdutos);
