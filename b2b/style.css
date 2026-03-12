@@ -1,253 +1,45 @@
-/* Configurações Gerais */
-body { 
-    background: #0b0f15; 
-    color: white; 
-    font-family: 'Roboto', sans-serif; 
-    margin: 0; 
-    padding: 0;
-}
+body { background: #0b0f15; color: white; font-family: 'Roboto', sans-serif; margin: 0; }
+.banner-img { width: 100%; display: block; }
+.main-layout { display: flex; gap: 20px; padding: 20px; max-width: 1500px; margin: 0 auto; align-items: flex-start; }
 
-.banner-img { 
-    width: 100%; 
-    display: block; 
-}
+.catalogo-section { flex: 3; min-width: 0; }
+.btn-cat { padding: 8px 15px; margin: 5px; border-radius: 20px; border: none; background: #ff00ff; color: white; cursor: pointer; font-weight: bold; }
+.busca-container input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #3d4b5f; background: #1a202c; color: white; margin: 20px 0; }
 
-/* Layout Principal em Duas Colunas */
-.main-layout { 
-    display: flex; 
-    gap: 20px; 
-    padding: 20px; 
-    max-width: 1500px; 
-    margin: 0 auto; 
-    align-items: flex-start;
-}
+.produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
+.produto-card { background: #fff; color: #333; padding: 15px; border-radius: 12px; text-align: center; }
+.produto-card img { width: 100%; border-radius: 8px; }
+.produto-card h3 { font-size: 0.9rem; height: 40px; overflow: hidden; }
 
-/* Coluna do Catálogo */
-.catalogo-section { 
-    flex: 3; 
-    min-width: 0; 
-}
+.riscado { text-decoration: line-through; color: #888; font-size: 0.85rem; }
+.destaque-b2b { color: #ff00ff; font-weight: bold; font-size: 1.1rem; margin-left: 10px; }
+.tabela-b2b { font-size: 0.75rem; color: #00ffff; background: #111; padding: 8px; border-radius: 6px; margin: 8px 0; }
+.select-variacao { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
+.controles { display: flex; gap: 5px; }
+.controles input { width: 50px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; }
+.controles button { flex: 1; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-.categorias-grid {
-    margin-bottom: 20px;
-}
+.checkout-section { flex: 1; background: #1a202c; padding: 20px; border-radius: 12px; position: sticky; top: 10px; border: 1px solid #3d4b5f; }
+.resumo-financeiro { background: #0b0f15; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
 
-.btn-cat {
-    padding: 8px 15px;
-    margin: 5px;
-    border-radius: 20px;
-    border: none;
-    background: #ff00ff;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s;
-}
-
-.btn-cat:hover {
-    transform: scale(1.05);
-}
-
-.busca-container input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #3d4b5f;
-    background: #1a202c;
-    color: white;
-    margin-bottom: 20px;
-}
-
-/* Grid de Produtos */
-.produtos-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
-    gap: 15px; 
-}
-
-.produto-card { 
-    background: #ffffff; 
-    color: #333333; 
-    padding: 15px; 
-    border-radius: 12px; 
-    text-align: center; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.produto-card img { 
-    width: 100%; 
-    border-radius: 8px; 
-    margin-bottom: 10px; 
-}
-
-.produto-card h3 { 
-    font-size: 0.95rem; 
-    margin: 10px 0;
-    height: 45px;
-    overflow: hidden;
-}
-
-/* Estilo de Preços B2B */
-.precos-b2b {
-    margin: 10px 0;
-}
-
-.riscado { 
-    text-decoration: line-through; 
-    color: #888; 
-    font-size: 0.9rem; 
-}
-
-.destaque-b2b { 
-    color: #ff00ff; 
-    font-weight: bold; 
-    font-size: 1.2rem; 
-    margin-left: 10px; 
-}
-
-.tabela-b2b { 
-    font-size: 0.8rem; 
-    color: #00ffff; 
-    background: #121212; 
-    padding: 8px; 
-    border-radius: 6px; 
-    margin: 10px 0; 
-    line-height: 1.4;
-}
-
-/* Variações e Controles */
-select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.controles {
-    display: flex;
-    gap: 5px;
-}
-
-.controles input {
-    width: 60px;
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.controles button {
-    flex: 1;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* Coluna de Checkout (Lateral Fixa) */
-.checkout-section { 
-    flex: 1; 
-    background: #1a202c; 
-    padding: 20px; 
-    border-radius: 12px; 
-    position: sticky; 
-    top: 10px; 
-    border: 1px solid #3d4b5f;
-    max-height: 95vh;
-    overflow-y: auto;
-}
-
-.resumo-financeiro {
-    background: #111827;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.barra-progresso-container { 
-    background: #374151; 
-    height: 10px; 
-    border-radius: 5px; 
-    margin: 10px 0; 
-    overflow: hidden; 
-}
-
-.barra-progresso { 
+/* BARRA NEON ATUALIZADA */
+.barra-progresso-container { background: #222; height: 12px; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid #444; }
+.barra-neon { 
+    height: 100%; width: 0%; 
     background: linear-gradient(90deg, #ff00ff, #00ffff); 
-    height: 100%; 
-    width: 0%; 
-    transition: width 0.4s ease; 
+    box-shadow: 0 0 15px #ff00ff; 
+    transition: width 0.5s ease-in-out; 
 }
 
-.mini-lista {
-    margin: 15px 0;
-    max-height: 200px;
-    overflow-y: auto;
-}
+.mini-item { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; font-size: 0.8rem; }
+.mini-item button { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 1.2rem; }
 
-.mini-item { 
-    border-bottom: 1px solid #2d3748; 
-    padding: 8px 0; 
-    font-size: 0.85rem; 
-    display: flex;
-    justify-content: space-between;
-}
+.dados-nf input { width: 100%; padding: 10px; margin: 4px 0; background: #2d3748; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
+.row { display: flex; gap: 5px; }
 
-/* Dados da Nota Fiscal */
-.dados-nf input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    background: #2d3748;
-    color: white;
-    border: 1px solid #4a5568;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
+.btn-email { background: #1e40af; color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.btn-whatsapp { background: #166534; color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+.btn-pdf { background: #991b1b; color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+.btn-limpar { background: #4b5563; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
 
-.row { 
-    display: flex; 
-    gap: 8px; 
-}
-
-/* Botões de Finalização */
-.botoes-finalizacao {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.botoes-finalizacao button { 
-    width: 100%; 
-    padding: 14px; 
-    border-radius: 8px; 
-    border: none; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: opacity 0.2s;
-}
-
-.btn-email { background: #3b82f6; color: white; }
-.btn-whatsapp { background: #22c55e; color: white; }
-.btn-pdf { background: #ef4444; color: white; }
-.btn-limpar { background: #4b5563; color: white; }
-
-.botoes-finalizacao button:hover {
-    opacity: 0.9;
-}
-
-/* Responsividade */
-@media (max-width: 1100px) {
-    .main-layout { 
-        flex-direction: column; 
-    }
-    .checkout-section { 
-        width: 100%; 
-        position: static; 
-        box-sizing: border-box;
-    }
-}
+@media (max-width: 1000px) { .main-layout { flex-direction: column; } .checkout-section { width: 100%; position: static; } }
