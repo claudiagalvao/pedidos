@@ -1,6 +1,6 @@
 let todosProdutos = [];
 let carrinho = [];
-let metaAtingida = false;
+let nivelAlcancado = 0;
 
 async function carregarProdutos() {
     try {
@@ -16,31 +16,35 @@ window.onscroll = () => {
     window.pageYOffset > 50 ? header.classList.add("scrolled") : header.classList.remove("scrolled");
 };
 
-function renderizarMenu() {
-    const menu = document.getElementById("menu-categorias");
-    const categorias = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
-    menu.innerHTML = categorias.map(cat => `<button class="btn-cat" onclick="filtrar('${cat}', this)">${cat}</button>`).join('');
-}
-
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     container.innerHTML = lista.map((p, index) => {
         const v = p.variacoes[0];
+        const estoqueTotal = p.variacoes.reduce((acc, vi) => acc + parseInt(vi.estoque), 0);
+        
         return `
-        <div class="produto-card">
+        <div class="produto-card" style="${estoqueTotal <= 0 ? 'opacity:0.6' : ''}">
             <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
             <h3>${p.name}</h3>
-            <div style="font-weight:bold; color:#ff00ff">R$ ${(v.preco * 0.9).toFixed(2)}</div>
-            <select id="var-${index}" class="select-crazy" style="margin:8px 0; font-size:0.75rem">
-                ${p.variacoes.map(vi => {
-                    const n = (vi.nome.toLowerCase() === 'padrão' || vi.nome.toLowerCase() === 'default') ? 'Única' : vi.nome;
-                    return `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${n} (Estoque: ${vi.estoque})</option>`;
-                }).join('')}
-            </select>
-            <div style="display:flex; gap:5px">
-                <input type="number" id="qtd-${index}" value="0" min="0" style="width:45px; text-align:center; border:1px solid #ddd; border-radius:5px">
-                <button onclick="adicionar(${index}, '${p.name}')" style="flex:1; background:#0b0f15; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold">Adicionar</button>
+            
+            <div class="mini-tabela-desconto">
+                <div>10% (B2B) ➔ R$ ${(v.preco * 0.9).toFixed(2)}</div>
+                <div style="opacity:0.6">12% (R$500+) ➔ R$ ${(v.preco * 0.88).toFixed(2)}</div>
+                <div style="opacity:0.6">15% (R$1000+) ➔ R$ ${(v.preco * 0.85).toFixed(2)}</div>
             </div>
+
+            ${estoqueTotal <= 0 ? '<div style="color:red; font-weight:bold; text-align:center; padding:10px">REPOSIÇÃO EM BREVE</div>' : `
+                <select id="var-${index}" class="select-crazy">
+                    ${p.variacoes.map(vi => {
+                        const n = (vi.nome.toLowerCase() === 'padrão' || vi.nome.toLowerCase() === 'default') ? 'Única' : vi.nome;
+                        return `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${n} (Estoque: ${vi.estoque})</option>`;
+                    }).join('')}
+                </select>
+                <div style="display:flex; gap:5px; margin-top:5px">
+                    <input type="number" id="qtd-${index}" value="0" min="0" style="width:50px; text-align:center; border-radius:6px; border:1px solid #ccc">
+                    <button onclick="adicionar(${index}, '${p.name}')" style="flex:1; background:#ff00ff; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold">ADICIONAR</button>
+                </div>
+            `}
         </div>`;
     }).join('');
 }
@@ -61,77 +65,53 @@ function adicionar(index, nome) {
 
 function atualizarInterface() {
     const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    let desc = subtotal >= 1000 ? 15 : subtotal >= 500 ? 12 : 10;
-    const total = subtotal * (1 - desc/100);
+    let perc = 0, proximoPerc = 10, metaLocal = 200;
 
-    document.getElementById("subtotal").innerText = `Subtotal: R$ ${subtotal.toFixed(2)}`;
-    document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
-    document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}% (B2B)`;
+    if (subtotal >= 200 && subtotal < 500) { perc = 10; proximoPerc = 12; metaLocal = 500; }
+    else if (subtotal >= 500 && subtotal < 1000) { perc = 12; proximoPerc = 15; metaLocal = 1000; }
+    else if (subtotal >= 1000) { perc = 15; proximoPerc = 15; metaLocal = 1000; }
 
-    // TRAVA DE MÍNIMO E ALEGRIA
-    const falta = 200 - total;
-    const aviso = document.getElementById("aviso-minimo");
-    const btnZap = document.getElementById("btn-zap");
-    const btnPdf = document.getElementById("btn-pdf");
+    if (perc === 10 && nivelAlcancado < 1) { dispararConfete('#22c55e'); nivelAlcancado = 1; }
+    if (perc === 12 && nivelAlcancado < 2) { dispararConfete('#00ffff'); nivelAlcancado = 2; }
+    if (perc === 15 && nivelAlcancado < 3) { dispararConfete('#ff00ff'); nivelAlcancado = 3; }
+    if (subtotal < 200) nivelAlcancado = 0;
 
-    if (total >= 200) {
-        aviso.innerText = "✅ Pedido Mínimo Atingido!";
-        aviso.style.color = "#22c55e";
-        btnZap.className = "btn-whatsapp-ativo";
-        btnPdf.className = "btn-pdf-ativo";
-        if(!metaAtingida) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff00ff', '#00ffff', '#ccff00'] });
-            metaAtingida = true;
-        }
-    } else {
-        aviso.innerText = `Faltam R$ ${falta.toFixed(2)} para o mínimo`;
-        aviso.style.color = "#ef4444";
-        btnZap.className = "btn-desativado";
-        btnPdf.className = "btn-desativado";
-        metaAtingida = false;
-    }
+    const totalFinal = subtotal * (1 - perc/100);
+    const economia = subtotal - totalFinal;
+    const progresso = (subtotal / metaLocal) * 100;
 
+    let statusHTML = `<p>Total B2B: <b>R$ ${totalFinal.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></p>
+                      <p>Desconto aplicado: <b>${perc}%</b></p>`;
+    if (perc < 15) statusHTML += `<p>Você já tem ${perc}%. Faltam <b>R$ ${(metaLocal - subtotal).toFixed(2)}</b> para ${proximoPerc}%</p>`;
+    else statusHTML += `<p>🚀 <b>DESCONTO MÁXIMO ATINGIDO!</b></p>`;
+
+    document.getElementById("status-carrinho").innerHTML = statusHTML;
+    document.getElementById("barra-fill").style.width = `${Math.min(progresso, 100)}%`;
+    document.getElementById("valor-economia").innerText = `R$ ${economia.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
+
+    const pronto = totalFinal >= 200;
+    document.getElementById("btn-zap").className = pronto ? "btn-whatsapp-ativo" : "btn-desativado";
+    document.getElementById("btn-pdf").className = pronto ? "btn-pdf-ativo" : "btn-desativado";
+    
+    renderizarItensCarrinho();
+}
+
+function renderizarItensCarrinho() {
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
-        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #334155; font-size:0.75rem">
-            <span>${i.qtd}x ${i.name}</span>
-            <button onclick="remover(${idx})" style="background:none; border:none; color:red; cursor:pointer">×</button>
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155; font-size:0.75rem">
+            <span>${i.qtd}x ${i.name} (${i.variacao})</span>
+            <button onclick="remover(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold">×</button>
         </div>`).join('');
 }
 
-function validarFormulario() {
-    const campos = ['razao-social', 'cnpj', 'whatsapp', 'forma-pagamento', 'forma-envio'];
-    for (let id of campos) {
-        if (!document.getElementById(id).value) return false;
+function remover(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
+function esvaziarCarrinhoTotal() { if(confirm("Esvaziar carrinho?")) { carrinho = []; atualizarInterface(); } }
+function limparFormulario() {
+    if(confirm("Limpar dados do formulário?")) {
+        ['razao-social','cnpj','ie','whatsapp','email-nf','endereco'].forEach(id => document.getElementById(id).value = "");
+        ['forma-pagamento','forma-envio'].forEach(id => document.getElementById(id).selectedIndex = 0);
     }
-    return true;
 }
-
-function enviarWhatsapp() {
-    if (!metaAtingida) return alert("Pedido mínimo não atingido!");
-    if (!validarFormulario()) return alert("Preencha todos os campos obrigatórios (*)");
-    
-    const texto = `*NOVO PEDIDO B2B - CRAZY FANTASY*\n\n` + 
-                  carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') +
-                  `\n\n*Total:* ${document.getElementById("total-final").innerText}`;
-    window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
-}
-
-function gerarPDF() {
-    if (!metaAtingida || !validarFormulario()) return alert("Atinga o mínimo e preencha o formulário!");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
-    doc.text(`Cliente: ${document.getElementById("razao-social").value}`, 10, 20);
-    doc.text(`Total: ${document.getElementById("total-final").innerText}`, 10, 30);
-    doc.save("pedido.pdf");
-}
-
-function abrirModal(src) { document.getElementById("modal-foto").style.display = "block"; document.getElementById("foto-ampliada").src = src; }
-function fecharModal() { document.getElementById("modal-foto").style.display = "none"; }
-function filtrar(cat, btn) {
-    document.querySelectorAll('.btn-cat').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderizarProdutos(cat === "Todos" ? todosProdutos : todosProdutos.filter(p => p.categoria === cat));
-}
-function limparCarrinho() { if(confirm("Limpar?")) { carrinho = []; atualizarInterface(); } }
+function dispararConfete(cor) { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: [cor, '#ffffff'] }); }
 document.addEventListener("DOMContentLoaded", carregarProdutos);
