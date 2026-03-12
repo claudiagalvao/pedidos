@@ -1,5 +1,11 @@
 body { background: #0b0f15; color: white; font-family: 'Roboto', sans-serif; margin: 0; }
 
+/* MODAL FOTO GRANDE */
+.modal { display: none; position: fixed; z-index: 1000; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
+.modal-conteudo { margin: auto; display: block; width: 80%; max-width: 600px; border-radius: 10px; }
+#legenda-foto { margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; font-weight: bold; }
+.fechar { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
+
 /* Cabeçalho Compacto */
 .header-b2b { background: #0b0f15; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 .banner-container { width: 100%; max-height: 180px; overflow: hidden; }
@@ -17,21 +23,19 @@ body { background: #0b0f15; color: white; font-family: 'Roboto', sans-serif; mar
 /* Grid de Produtos */
 .catalogo-section { flex: 3; }
 .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-.produto-card { 
-    background: #fff; color: #333; padding: 12px; border-radius: 10px; text-align: center; 
-    position: relative; display: flex; flex-direction: column; 
-}
-
+.produto-card { background: #fff; color: #333; padding: 12px; border-radius: 10px; text-align: center; position: relative; display: flex; flex-direction: column; }
 .selo-popular { position: absolute; top: 5px; left: 5px; background: #ff8c00; color: white; font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; font-weight: bold; z-index: 2; }
-.produto-card img { width: 100%; border-radius: 6px; height: 160px; object-fit: contain; margin-bottom: 8px; }
+.produto-card img { width: 100%; border-radius: 6px; height: 160px; object-fit: contain; margin-bottom: 8px; transition: 0.3s; }
+.produto-card img:hover { opacity: 0.8; }
 
 .produto-card h3 { font-size: 0.8rem; height: 3em; line-height: 1.1; margin: 5px 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-
 .riscado { text-decoration: line-through; color: #aaa; font-size: 0.75rem; }
 .destaque-b2b { color: #ff00ff; font-weight: bold; font-size: 1.1rem; }
 .tabela-b2b { font-size: 0.65rem; background: #f1f1f1; padding: 5px; border-radius: 4px; margin: 8px 0; color: #444; }
 
-.select-variacao { width: 100%; padding: 5px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.8rem; }
+.select-variacao { width: 100%; padding: 5px; margin-bottom: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.8rem; }
+.estoque-info { font-size: 0.7rem; color: #666; margin-bottom: 10px; font-weight: bold; }
+
 .controles { display: flex; gap: 4px; margin-top: auto; }
 .controles input { width: 45px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 4px; }
 .controles button { flex: 1; background: #0b0f15; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
@@ -39,7 +43,6 @@ body { background: #0b0f15; color: white; font-family: 'Roboto', sans-serif; mar
 /* Pedido Lateral */
 .checkout-section { flex: 1; background: #1a202c; padding: 15px; border-radius: 10px; position: sticky; top: 220px; height: fit-content; border: 1px solid #3d4b5f; }
 .resumo-financeiro { background: #0b0f15; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
-
 .barra-progresso-container { background: #333; height: 8px; border-radius: 5px; margin: 8px 0; overflow: hidden; }
 .barra-neon { height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff); box-shadow: 0 0 10px #ff00ff; width: 0%; transition: 0.4s; }
 
