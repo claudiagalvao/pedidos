@@ -12,11 +12,11 @@
 
     <header class="header-b2b">
         <div class="banner-container">
-            <img src="https://claudiagalvao.github.io/pedidos/banner-b2b.jpg" class="banner-img" alt="Banner Crazy Fantasy">
+            <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
         </div>
         
         <nav class="nav-bar">
-            <div id="menu-categorias" class="botoes-pulas"></div>
+            <div id="menu-categorias"></div>
             <div class="busca-container">
                 <input type="text" id="busca" placeholder="🔍 Buscar produto..." onkeyup="filtrarBusca()">
             </div>
@@ -25,6 +25,12 @@
 
     <main class="main-layout">
         <section class="catalogo-section">
+            <div class="tabela-descontos">
+                <span>🔥 <b>B2B Progressivo:</b></span>
+                <span>Até R$ 499 (10%)</span>
+                <span>R$ 500+ (12%)</span>
+                <span>R$ 1000+ (15%)</span>
+            </div>
             <div id="produtos" class="produtos-grid"></div>
         </section>
 
@@ -35,9 +41,7 @@
                 <p id="subtotal">Subtotal: R$ 0,00</p>
                 <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
                 <h3 id="total-final">R$ 0,00</h3>
-                <div class="meta-container">
-                    <p id="meta-texto" style="font-size: 0.7rem; color: #888;">Pedido mínimo: R$ 200,00</p>
-                </div>
+                <p id="aviso-minimo" style="color: #ef4444; font-size: 0.75rem; font-weight: bold;">Faltam R$ 200,00 para o mínimo</p>
             </div>
 
             <div class="formulario-scroll">
@@ -57,7 +61,7 @@
                     <textarea id="endereco" placeholder="Endereço Completo de Entrega *"></textarea>
 
                     <h4>Pagamento e Envio</h4>
-                    <select id="forma-pagamento">
+                    <select id="forma-pagamento" class="select-crazy">
                         <option value="" disabled selected>Forma de Pagamento *</option>
                         <option value="PIX">PIX</option>
                         <option value="TED">TED / Transferência</option>
@@ -65,7 +69,7 @@
                         <option value="Boleto">Boleto (Sob Consulta)</option>
                     </select>
 
-                    <select id="forma-envio">
+                    <select id="forma-envio" class="select-crazy">
                         <option value="" disabled selected>Forma de Envio *</option>
                         <option value="Transportadora">Transportadora</option>
                         <option value="Correios">Correios (PAC/SEDEX)</option>
@@ -75,22 +79,22 @@
             </div>
 
             <div class="botoes-finalizacao">
-                <button class="btn-whatsapp" onclick="enviarWhatsapp()">FINALIZAR WHATSAPP</button>
+                <button id="btn-zap" class="btn-desativado" onclick="enviarWhatsapp()">FINALIZAR WHATSAPP</button>
                 <div class="row">
-                    <button class="btn-pdf" onclick="gerarPDF()">GERAR PDF</button>
+                    <button id="btn-pdf" class="btn-desativado" onclick="gerarPDF()">GERAR PDF</button>
                     <button class="btn-limpar" onclick="limparCarrinho()">LIMPAR</button>
                 </div>
             </div>
         </aside>
     </main>
 
-    <footer>
+    <footer class="footer-crazy">
         <div class="footer-content">
             <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
             <p>CNPJ: 09.626.903/0001-57 | IE: 708.211.823.110</p>
             <p>Rua Itália, 170 - Centro - Valinhos, SP | CEP: 13270-170</p>
             <p>Telefone: (19) 99285-0208 | E-mail: lojacrazyfantasy@hotmail.com</p>
-            <p style="margin-top:20px; font-size: 0.7rem; opacity: 0.5;">Ativa desde 2007 - Atendimento B2B de Segunda a Sexta.</p>
+            <p style="margin-top:10px; font-size: 0.7rem; opacity: 0.6;">Ativa desde 2007 - Atendimento B2B de Segunda a Sexta.</p>
         </div>
     </footer>
 
