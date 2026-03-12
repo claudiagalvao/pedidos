@@ -7,28 +7,30 @@ export default async function handler(req, res) {
             `https://api.tiendanube.com/v1/${STORE_ID}/products`,
             {
                 headers: {
-                    "Authentication": `bearer ${TOKEN.trim()}`, // Adicionado .trim() para evitar espaços invisíveis
-                    "User-Agent": "PortalB2B (cgborin@gmail.com)", // Identificação obrigatória para algumas APIs
-                    "Content-Type": "application/json"
+                    "Authentication": `bearer ${TOKEN.trim()}`,
+                    "Content-Type": "application/json",
+                    "User-Agent": "PortalB2B (cgborin@gmail.com)"
                 }
             }
         );
 
         if (!resposta.ok) {
-            const erroTexto = await resposta.text();
-            return res.status(resposta.status).json({ error: `Nuvemshop respondeu: ${resposta.status}`, detalhe: erroTexto });
+            const textoErro = await resposta.text();
+            return res.status(resposta.status).json({ 
+                error: `Erro Nuvemshop: ${resposta.status}`,
+                detalhe: textoErro 
+            });
         }
 
         const produtos = await resposta.json();
-        const lista = produtos.map(p => ({
+        const listaFormatada = produtos.map(p => ({
             name: p.name.pt || p.name,
             imagem: p.images?.[0]?.src || "",
             preco: p.variants?.[0]?.price || 0
         }));
 
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.status(200).json(lista);
+        res.status(200).json(listaFormatada);
     } catch (error) {
-        res.status(500).json({ error: "Falha interna no servidor", mensagem: error.message });
+        res.status(500).json({ error: "Erro interno", mensagem: error.message });
     }
 }
