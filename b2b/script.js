@@ -1,7 +1,7 @@
 let todosProdutos = [];
 let carrinho = [];
 
-// Carrega produtos da API
+// 1. CARREGAMENTO E INICIALIZAÇÃO
 async function carregarProdutos() {
     try {
         const res = await fetch('/api/produtos');
@@ -9,11 +9,11 @@ async function carregarProdutos() {
         renderizarMenu();
         renderizarProdutos(todosProdutos);
     } catch (err) {
-        console.error("Erro ao carregar produtos:", err);
+        console.error("Erro ao carregar os produtos:", err);
     }
 }
 
-// Monitora o Scroll para encolher o banner
+// 2. EFEITO DO BANNER AO ROLAR (Sticky Header Animado)
 window.onscroll = function() {
     const header = document.querySelector(".header-b2b");
     if (window.pageYOffset > 50) {
@@ -23,23 +23,26 @@ window.onscroll = function() {
     }
 };
 
+// 3. RENDERIZAR MENU DE CATEGORIAS
 function renderizarMenu() {
     const menu = document.getElementById("menu-categorias");
     const categorias = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
     menu.innerHTML = categorias.map(cat => 
-        `<button class="btn-cat" onclick="filtrar('${cat}')">${cat}</button>`
+        `<button class="btn-cat ${cat === 'Todos' ? 'active' : ''}" onclick="filtrar('${cat}', this)">${cat}</button>`
     ).join('');
 }
 
+// 4. RENDERIZAR CARDS DE PRODUTOS
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (lista.length === 0) {
-        container.innerHTML = "<p style='color:white; padding:20px;'>Nenhum produto encontrado...</p>";
+        container.innerHTML = "<p style='color:white; padding:20px;'>Nenhum item encontrado...</p>";
         return;
     }
 
     container.innerHTML = lista.map((p, index) => {
         const vPrincipal = p.variacoes[0];
+        // Selo dinâmico para itens em destaque ou linha de sprays
         const selo = (p.name.includes("Tinta") || index < 2) ? `<span class="selo-popular">🔥 Mais Vendido</span>` : '';
 
         return `
@@ -59,7 +62,7 @@ function renderizarProdutos(lista) {
             <select id="var-${index}" class="select-variacao" onchange="atualizarEstoqueVisivel(${index})">
                 ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join('')}
             </select>
-            <p class="estoque-info">Estoque: <span id="est-val-${index}">${vPrincipal.estoque}</span> un</p>
+            <p class="estoque-info">EST: <span id="est-val-${index}">${vPrincipal.estoque}</span> un</p>
             <div class="controles">
                 <input type="number" id="qtd-${index}" value="0" min="0">
                 <button onclick="adicionar(${index}, '${p.name}')">Adicionar</button>
@@ -76,6 +79,7 @@ function atualizarEstoqueVisivel(index) {
     display.parentElement.classList.toggle('estoque-baixo', parseInt(estoque) < 5);
 }
 
+// 5. LÓGICA DO CARRINHO (Agrupamento e Trava de Estoque)
 function adicionar(index, nomeOriginal) {
     const input = document.getElementById(`qtd-${index}`);
     const select = document.getElementById(`var-${index}`);
@@ -85,12 +89,13 @@ function adicionar(index, nomeOriginal) {
 
     if (qtdSolicitada <= 0) return;
 
-    // LÓGICA DE AGRUPAMENTO E BUG DO ESTOQUE
+    // Busca se já existe o mesmo produto e variação no carrinho para agrupar
     const itemExistente = carrinho.find(item => item.name === nomeOriginal && item.variacao === vNome);
-    const qtdAtualNoCarrinho = itemExistente ? itemExistente.qtd : 0;
+    const qtdNoCarrinho = itemExistente ? itemExistente.qtd : 0;
 
-    if ((qtdAtualNoCarrinho + qtdSolicitada) > estoqueReal) {
-        alert(`Bloqueio de Estoque!\nVocê já tem ${qtdAtualNoCarrinho} no carrinho.\nDisponível: ${estoqueReal}`);
+    // Valida estoque real considerando o que já foi lançado
+    if ((qtdNoCarrinho + qtdSolicitada) > estoqueReal) {
+        alert(`Bloqueio: Estoque insuficiente!\nVocê já tem ${qtdNoCarrinho} no carrinho.\nDisponível: ${estoqueReal}`);
         return;
     }
 
@@ -116,9 +121,12 @@ function atualizarInterface() {
     else if (subtotal >= 500) desc = 12;
 
     const total = subtotal * (1 - desc/100);
+    const economia = subtotal - total;
+
     document.getElementById("subtotal").innerText = `Subtotal: R$ ${subtotal.toFixed(2)}`;
     document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
     document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}% (B2B)`;
+    document.getElementById("economia-valor").innerText = `Economia: R$ ${economia.toFixed(2)}`;
     document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
 
     const barra = document.getElementById("barra-progresso");
@@ -148,17 +156,20 @@ function remover(idx) {
     atualizarInterface();
 }
 
+// 6. FILTROS E MODAL
+function filtrar(cat, btn) {
+    document.querySelectorAll('.btn-cat').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+
+    if (cat === "Todos") renderizarProdutos(todosProdutos);
+    else renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
+}
+
 function filtrarBusca() {
     const termo = document.getElementById("busca").value.toLowerCase();
     renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(termo)));
 }
 
-function filtrar(cat) {
-    if (cat === "Todos") renderizarProdutos(todosProdutos);
-    else renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
-}
-
-// MODAL
 function abrirModal(src, nome) {
     const modal = document.getElementById("modal-foto");
     const img = document.getElementById("foto-ampliada");
@@ -166,21 +177,18 @@ function abrirModal(src, nome) {
     img.src = src;
     document.getElementById("legenda-foto").innerHTML = nome;
 }
-function fecharModal() { document.getElementById("modal-foto").style.display = "none"; }
 
-// FINALIZAÇÃO
-function enviarWhatsapp() {
-    if (carrinho.length === 0) return;
-    const texto = `*NOVO PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n\n` + 
-                  carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
-    window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
+function fecharModal() {
+    document.getElementById("modal-foto").style.display = "none";
 }
 
-function enviarEmail() {
+// 7. FINALIZAÇÃO
+function enviarWhatsapp() {
     if (carrinho.length === 0) return;
-    const corpo = `Pedido B2B\nTotal: ${document.getElementById("total-final").innerText}\n\nItens:\n` + 
-                  carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
-    window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
+    const texto = `*NOVO PEDIDO B2B - CRAZY FANTASY*\n` + 
+                  `Total: ${document.getElementById("total-final").innerText}\n\n` + 
+                  carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
+    window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
