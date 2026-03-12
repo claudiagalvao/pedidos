@@ -24,14 +24,14 @@
 
     <main class="main-layout">
         <section class="catalogo-section">
+            <h2 class="titulo-b2b-destaque">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</h2>
             <div id="produtos" class="produtos-grid"></div>
         </section>
 
         <aside class="checkout-section">
             <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
             
-            <div id="status-carrinho" class="status-carrinho">
-                </div>
+            <div id="status-carrinho" class="status-carrinho"></div>
 
             <div class="barra-progresso-bg">
                 <div id="barra-fill" class="barra-progresso-fill"></div>
@@ -41,15 +41,15 @@
                 Economia com descontos: <span id="valor-economia">R$ 0,00</span>
             </div>
 
-            <div class="formulario-scroll">
+            <div class="checkout-scroll-area">
                 <div id="lista-itens-carrinho" class="mini-lista"></div>
                 
-                <div style="text-align: right; margin-bottom: 10px;">
-                    <a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" style="color: #888; font-size: 0.65rem; text-decoration: underline;">Esvaziar Carrinho</a>
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" class="link-esvaziar">Esvaziar Carrinho</a>
                 </div>
 
                 <div class="dados-nf">
-                    <h4>Dados para Nota Fiscal</h4>
+                    <h4>Dados para Faturamento</h4>
                     <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
                     <div class="row">
                         <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
@@ -62,20 +62,21 @@
                     <textarea id="endereco" placeholder="Endereço Completo de Entrega *"></textarea>
 
                     <h4>Pagamento e Envio</h4>
-                    <select id="forma-pagamento" class="select-crazy">
-                        <option value="" disabled selected>Forma de Pagamento *</option>
-                        <option value="PIX">PIX</option>
-                        <option value="TED">TED</option>
-                        <option value="Cartão">Cartão de Crédito</option>
-                        <option value="Boleto">Boleto</option>
-                    </select>
-
-                    <select id="forma-envio" class="select-crazy">
-                        <option value="" disabled selected>Forma de Envio *</option>
-                        <option value="Transportadora">Transportadora</option>
-                        <option value="Correios">Correios</option>
-                        <option value="Retirada">Retirada em Valinhos/SP</option>
-                    </select>
+                    <div class="row">
+                        <select id="forma-pagamento" class="select-crazy">
+                            <option value="" disabled selected>Pagamento *</option>
+                            <option value="PIX">PIX</option>
+                            <option value="TED">TED</option>
+                            <option value="Cartão">Cartão</option>
+                            <option value="Boleto">Boleto</option>
+                        </select>
+                        <select id="forma-envio" class="select-crazy">
+                            <option value="" disabled selected>Envio *</option>
+                            <option value="Transportadora">Transportadora</option>
+                            <option value="Correios">Correios</option>
+                            <option value="Retirada">Retirada</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -90,16 +91,9 @@
     </main>
 
     <footer class="footer-crazy">
-        <div class="footer-content">
-            <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
-            <p>CNPJ: 09.626.903/0001-57 | Rua Itália, 170 - Centro - Valinhos, SP</p>
-        </div>
+        <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
+        <p>CNPJ: 09.626.903/0001-57 | Rua Itália, 170 - Centro - Valinhos, SP</p>
     </footer>
-
-    <div id="modal-foto" class="modal" onclick="fecharModal()">
-        <span class="fechar">&times;</span>
-        <img class="modal-conteudo" id="foto-ampliada">
-    </div>
 
     <script src="script.js"></script>
 </body>
