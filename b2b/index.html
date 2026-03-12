@@ -10,15 +10,19 @@
 </head>
 <body>
     <header class="header-b2b">
-        <img src="banner.png" alt="Banner Crazy Fantasy" class="banner-img">
+        <div class="banner-container">
+            <img src="banner.png" alt="Banner Crazy Fantasy" class="banner-img">
+        </div>
+        <div class="nav-bar">
+            <div id="menu-categorias" class="categorias-grid"></div>
+            <div class="busca-container">
+                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome..." onkeyup="filtrarBusca()">
+            </div>
+        </div>
     </header>
 
     <div class="main-layout">
         <section class="catalogo-section">
-            <div id="menu-categorias" class="categorias-grid"></div>
-            <div class="busca-container">
-                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome...">
-            </div>
             <div id="produtos" class="produtos-grid"></div>
         </section>
 
@@ -32,31 +36,35 @@
                     <div class="barra-progresso-container">
                         <div id="barra-progresso" class="barra-neon"></div>
                     </div>
-                    <p id="meta-alerta" class="alerta">Faltam R$ 200,00 para o mínimo</p>
-                    <h3 id="total-final">Total: R$ 0,00</h3>
+                    <p id="meta-alerta" class="alerta erro">Faltam R$ 200,00 para o mínimo</p>
+                    <h3 id="total-final">R$ 0,00</h3>
                 </div>
 
                 <div id="lista-itens-carrinho" class="mini-lista"></div>
 
                 <div class="dados-nf">
                     <h3>Dados para Nota Fiscal</h3>
-                    <input type="text" id="razao-social" placeholder="Razão Social (Obrigatório)">
+                    <input type="text" id="razao-social" placeholder="Razão Social *">
                     <div class="row">
-                        <input type="text" id="cnpj" placeholder="CNPJ (Obrigatório)">
+                        <input type="text" id="cnpj" placeholder="CNPJ *">
                         <input type="text" id="ie" placeholder="IE">
                     </div>
                     <input type="text" id="responsavel" placeholder="Responsável">
                     <div class="row">
-                        <input type="text" id="whatsapp" placeholder="WhatsApp (Obrigatório)">
-                        <input type="text" id="email" placeholder="E-mail (Obrigatório)">
+                        <input type="text" id="whatsapp" placeholder="WhatsApp *">
+                        <input type="text" id="email" placeholder="E-mail *">
                     </div>
-                    <input type="text" id="endereco" placeholder="Endereço Completo">
+                    <input type="text" id="endereco" placeholder="Endereço">
+                    <div class="row">
+                        <input type="text" id="cidade" placeholder="Cidade">
+                        <input type="text" id="estado" placeholder="UF">
+                    </div>
                 </div>
 
                 <div class="botoes-finalizacao">
                     <button class="btn-email" onclick="enviarEmail()">Enviar por E-mail</button>
                     <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>
-                    <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
+                    <button class="btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
                     <button class="btn-limpar" onclick="limparFormulario()">Limpar Pedido</button>
                 </div>
             </div>
