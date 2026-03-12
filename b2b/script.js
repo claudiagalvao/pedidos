@@ -1,179 +1,91 @@
-async function carregarProdutos(){
+let produtosDados = [];
+let carrinho = [];
+let total = 0;
 
-const url = "https://api.codetabs.com/v1/proxy?quest=https://crazyfantasy.com.br/google_shopping.xml"
-
-try{
-
-const response = await fetch(url)
-const xmlText = await response.text()
-
-const parser = new DOMParser()
-const xml = parser.parseFromString(xmlText,"text/xml")
-
-const items = xml.querySelectorAll("item")
-async function carregarProdutos(){
-
-try{
-
-const response = await fetch("/api/produtos")
-const produtos = await response.json()
-
-const container = document.getElementById("produtos")
-
-if(!container){
-console.error("Div produtos não encontrada")
-return
+async function carregarProdutos() {
+    const container = document.getElementById("produtos");
+    try {
+        const response = await fetch('/api/produtos');
+        produtosDados = await response.json();
+        renderizarProdutos(produtosDados);
+    } catch (e) {
+        console.error("Erro ao carregar produtos:", e);
+    }
 }
 
-container.innerHTML=""
+function renderizarProdutos(lista) {
+    const container = document.getElementById("produtos");
+    container.innerHTML = "";
 
-produtos.forEach(produto=>{
-
-const card = document.createElement("div")
-
-card.className="produto"
-
-card.innerHTML=`
-
-<img src="${produto.imagem}">
-<h3>${produto.name}</h3>
-<p>R$ ${produto.preco}</p>
-
-<button onclick="addCarrinho('${produto.name}','${produto.preco}')">
-Adicionar
-</button>
-
-`
-
-container.appendChild(card)
-
-})
-
-}catch(e){
-
-console.error("Erro ao carregar produtos",e)
-
+    lista.forEach(p => {
+        const temEstoque = p.estoque > 0 || p.estoque === null;
+        const card = document.createElement("div");
+        card.className = "produto";
+        card.innerHTML = `
+            <img src="${p.imagem}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>R$ ${parseFloat(p.preco).toFixed(2)}</p>
+            <small>${temEstoque ? 'Disponível' : 'Esgotado'}</small>
+            <button onclick="addCarrinho('${p.name}', ${p.preco})" ${!temEstoque ? 'disabled style="background:#ccc"' : ''}>
+                ${temEstoque ? 'Adicionar' : 'Indisponível'}
+            </button>
+        `;
+        container.appendChild(card);
+    });
 }
 
+function addCarrinho(nome, preco) {
+    carrinho.push({ nome, preco: parseFloat(preco) });
+    atualizarCarrinho();
 }
 
+function atualizarCarrinho() {
+    const listaDiv = document.getElementById("listaCarrinho");
+    const totalP = document.getElementById("total");
+    const titulo = document.getElementById("tituloCarrinho");
 
+    listaDiv.innerHTML = "";
+    total = carrinho.reduce((acc, item) => acc + item.preco, 0);
 
-let carrinho=[]
-let total=0
+    carrinho.forEach((item, index) => {
+        const p = document.createElement("p");
+        p.innerHTML = `${item.nome} - R$ ${item.preco.toFixed(2)} 
+                       <span onclick="removerItem(${index})" style="cursor:pointer;color:#ff4b4b;float:right">✖</span>`;
+        listaDiv.appendChild(p);
+    });
 
-function addCarrinho(nome,preco){
-
-let valor=parseFloat(preco)
-
-carrinho.push({nome,valor})
-
-total+=valor
-
-document.getElementById("total").innerText="Total B2B: R$ "+total.toFixed(2)
-
-const lista=document.getElementById("listaCarrinho")
-
-const item=document.createElement("p")
-
-item.innerText=`${nome} - R$ ${valor.toFixed(2)}`
-
-lista.appendChild(item)
-
+    totalP.innerText = `Total B2B: R$ ${total.toFixed(2)}`;
+    titulo.innerText = `🛒 Pedido (${carrinho.length} itens)`;
 }
 
-
-
-function limparCarrinho(){
-
-carrinho=[]
-total=0
-
-document.getElementById("listaCarrinho").innerHTML=""
-document.getElementById("total").innerText="Total B2B: R$ 0,00"
-
+function removerItem(index) {
+    carrinho.splice(index, 1);
+    atualizarCarrinho();
 }
 
-
-
-function enviarWhatsapp(){
-
-let texto="Pedido B2B Crazy Fantasy:%0A"
-
-carrinho.forEach(p=>{
-texto+=`${p.nome} - R$ ${p.valor}%0A`
-})
-
-texto+=`Total: R$ ${total.toFixed(2)}`
-
-window.open(`https://wa.me/?text=${texto}`)
-
+function limparCarrinho() {
+    carrinho = [];
+    atualizarCarrinho();
 }
 
-
-
-document.addEventListener("DOMContentLoaded",carregarProdutos)const container = document.getElementById("produtos")
-
-if(!container){
-console.error("Div produtos não encontrada")
-return
+function enviarWhatsapp() {
+    if (carrinho.length === 0) return alert("O carrinho está vazio!");
+    
+    let mensagem = "*Novo Pedido B2B - Crazy Fantasy*\n\n";
+    carrinho.forEach(item => {
+        mensagem += `• ${item.nome}: R$ ${item.preco.toFixed(2)}\n`;
+    });
+    mensagem += `\n*Total: R$ ${total.toFixed(2)}*`;
+    
+    const fone = "5511XXXXXXXXX"; // Coloque seu número aqui
+    window.open(`https://wa.me/${fone}?text=${encodeURIComponent(mensagem)}`);
 }
 
-container.innerHTML=""
+// Filtro de busca automática
+document.getElementById("busca").addEventListener("input", (e) => {
+    const termo = e.target.value.toLowerCase();
+    const filtrados = produtosDados.filter(p => p.name.toLowerCase().includes(termo));
+    renderizarProdutos(filtrados);
+});
 
-items.forEach(item=>{
-
-const nome = item.querySelector("title")?.textContent
-const preco = item.querySelector("g\\:price")?.textContent
-const imagem = item.querySelector("g\\:image_link")?.textContent
-
-const card = document.createElement("div")
-
-card.className="card-produto"
-
-card.innerHTML=`
-
-<img src="${imagem}" style="width:100%">
-<h3>${nome}</h3>
-<p>${preco}</p>
-
-<button onclick="addCarrinho('${nome}','${preco}')">
-Adicionar
-</button>
-
-`
-
-container.appendChild(card)
-
-})
-
-}catch(e){
-
-console.error("Erro ao carregar produtos",e)
-
-}
-
-}
-
-
-
-
-let carrinho=[]
-let total=0
-
-function addCarrinho(nome,preco){
-
-let valor=parseFloat(preco.replace("BRL","").trim())
-
-carrinho.push({nome,valor})
-
-total+=valor
-
-document.getElementById("total").innerText="R$ "+total.toFixed(2)
-
-}
-
-
-
-
-document.addEventListener("DOMContentLoaded",carregarProdutos)
+document.addEventListener("DOMContentLoaded", carregarProdutos);
