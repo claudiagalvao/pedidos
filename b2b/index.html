@@ -1,56 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Portal B2B Crazy Fantasy</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal B2B Crazy Fantasy</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <div class="container">
+        <img src="banner.png" class="banner" alt="B2B Crazy Fantasy">
+        <div class="mensagem">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</div>
+        <input type="text" id="busca" placeholder="🔎 Buscar produto por nome...">
+        <div id="produtos"></div>
+    </div>
 
-<div class="container">
-
-<img src="banner.png" class="banner">
-
-<div class="mensagem">
-🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos
-</div>
-
-<div id="categorias"></div>
-
-<input
-type="text"
-id="busca"
-placeholder="🔎 Buscar produto..."
->
-
-<div id="produtos"></div>
-
-</div>
-
-
-<div class="carrinho">
-
-<h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-
-<p id="total">Total B2B: R$ 0,00</p>
-
-<hr>
-
-<button onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
-
-<button onclick="limparCarrinho()">Limpar Carrinho</button>
-
-<div id="listaCarrinho"></div>
-
-</div>
-
-<script src="script.js"></script>
-
+    <div class="carrinho">
+        <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+        <p id="total">Total B2B: R$ 0,00</p>
+        <hr>
+        <button onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
+        <button onclick="limparCarrinho()">Limpar Carrinho</button>
+        <div id="listaCarrinho"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
