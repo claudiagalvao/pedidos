@@ -1,87 +1,193 @@
+/* 1. CONFIGURAÇÕES GERAIS E FONTES */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+* { box-sizing: border-box; }
 
 body { 
     background: #0b0f15; 
     color: #e2e8f0; 
     font-family: 'Inter', sans-serif; 
     margin: 0; 
+    overflow-x: hidden;
 }
 
-/* MENU DE CATEGORIAS - ESTILO PÍLULA NEON */
-.nav-bar { 
-    background: #11151c;
-    padding: 15px 20px; 
-    display: flex; 
-    flex-wrap: wrap;
-    align-items: center; 
-    gap: 10px;
-    border-bottom: 2px solid #ff00ff;
+/* 2. HEADER E BANNER ANIMADO */
+.header-b2b { 
+    background: #0b0f15; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.banner-container { 
+    width: 100%; 
+    height: 180px; /* Altura inicial */
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: height 0.4s ease;
+    background: #000;
+}
+
+.banner-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    object-position: center; 
+}
+
+/* Estado Encolhido (ao rolar a página) */
+.header-b2b.scrolled .banner-container {
+    height: 80px;
+}
+
+/* 3. MENU DE NAVEGAÇÃO E BUSCA */
+.nav-bar { 
+    background: #11151c; 
+    padding: 12px 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 15px; 
+    border-bottom: 2px solid #ff00ff; 
+    flex-wrap: wrap;
+}
+
+#menu-categorias { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .btn-cat { 
     padding: 8px 18px; 
-    border-radius: 50px; /* Estilo pílula */
+    border-radius: 50px; 
     border: 1px solid #ff00ff; 
     background: transparent; 
     color: #ff00ff; 
     font-weight: 700; 
     cursor: pointer; 
     transition: 0.3s;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
 }
 
 .btn-cat:hover, .btn-cat.active { 
     background: #ff00ff; 
     color: #fff; 
-    box-shadow: 0 0 15px #ff00ff;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
 }
 
-/* GRID E CARDS - CORREÇÃO DE ALTURA */
+.busca-container { flex-grow: 1; max-width: 300px; }
+.busca-container input { 
+    width: 100%; 
+    padding: 10px 15px; 
+    border-radius: 20px; 
+    border: 1px solid #3d4b5f; 
+    background: #0b0f15; 
+    color: white; 
+    outline: none; 
+}
+
+/* 4. LAYOUT PRINCIPAL */
+.main-layout { 
+    display: flex; 
+    gap: 20px; 
+    padding: 20px; 
+    max-width: 1600px; 
+    margin: 0 auto; 
+}
+
+/* 5. GRID DE PRODUTOS E CARDS */
+.catalogo-section { flex: 3; }
 .produtos-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
     gap: 20px; 
-    padding: 20px;
 }
 
 .produto-card { 
-    background: #fff; 
+    background: #ffffff; 
     color: #1a202c; 
     padding: 15px; 
-    border-radius: 12px; 
-    transition: transform 0.3s ease;
-    display: flex;
+    border-radius: 16px; 
+    text-align: center; 
+    position: relative; 
+    display: flex; 
     flex-direction: column;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .produto-card:hover { 
-    transform: translateY(-5px); 
-    box-shadow: 0 10px 20px rgba(0,255,255,0.2);
+    transform: translateY(-8px); 
+    box-shadow: 0 12px 24px rgba(0, 255, 255, 0.15);
+    border-color: #00ffff;
 }
 
 .produto-card img { 
     width: 100%; 
-    height: 200px; /* Fixa a altura para não quebrar o card */
+    height: 180px; 
     object-fit: contain; 
+    margin-bottom: 10px; 
+    cursor: zoom-in;
     background: #f8f8f8;
     border-radius: 8px;
-    cursor: zoom-in;
 }
 
-/* MODAL - FOTO GRANDE (CORREÇÃO DE OVERFLOW) */
-.modal { 
-    display: none; 
-    position: fixed; 
-    z-index: 9999; 
-    left: 0; top: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.9); 
+.produto-card h3 { 
+    font-size: 0.85rem; 
+    height: 3.2em; 
+    margin: 8px 0; 
+    overflow: hidden; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical; 
+    font-weight: 700;
 }
 
-.modal-conteudo { 
-    margin: auto; 
-    display: block; 
-    max-width: 90%; 
-    max-height: 80vh; /* Não deixa a foto passar da tela */
-    margin-top: 5vh;
-    border-radius: 10px;
+.selo-popular { 
+    position: absolute; top: -10px; left: 10px; 
+    background: linear-gradient(45deg, #ff00ff, #7000ff); 
+    color: white; font-size: 0.65rem; padding: 4px 10px; 
+    border-radius: 20px; font-weight: 900; z-index: 2;
 }
+
+.tabela-b2b { 
+    font-size: 0.7rem; background: #f1f5f9; 
+    padding: 8px; border-radius: 8px; margin: 10px 0; 
+    color: #475569; text-align: left;
+}
+
+.estoque-info { font-size: 0.75rem; font-weight: bold; margin: 10px 0; color: #64748b; }
+.estoque-baixo { color: #ef4444; }
+
+.controles { display: flex; gap: 5px; margin-top: auto; }
+.controles input { width: 50px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; }
+.controles button { 
+    flex: 1; background: #0b0f15; color: white; border: none; 
+    border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.3s;
+}
+.controles button:hover { background: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+
+/* 6. CARRINHO LATERAL */
+.checkout-section { 
+    flex: 1; background: #1a202c; padding: 20px; 
+    border-radius: 16px; position: sticky; top: 110px; 
+    height: fit-content; border: 1px solid #334155; 
+}
+
+.resumo-financeiro { background: #0b0f15; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+
+.barra-progresso-container { background: #334155; height: 10px; border-radius: 20px; margin: 10px 0; overflow: hidden; }
+.barra-neon { 
+    height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff); 
+    width: 0%; transition: 0.5s ease; box-shadow: 0 0 10px #ff00ff;
+}
+
+.mini-lista { max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+.mini-item { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.8rem;
+}
+.item-info small { color: #00ffff; font-weight: bold; }
+.mini-item button { background: none; border
