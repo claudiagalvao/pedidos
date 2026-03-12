@@ -16,7 +16,6 @@ export default async function handler(req, res) {
             name: p.name.pt || p.name,
             imagem: p.images?.[0]?.src || "",
             categoria: p.categories[0]?.name.pt || "Geral",
-            // Mapeia todas as variações (tamanho, cor, etc)
             variacoes: p.variants.map(v => ({
                 id: v.id,
                 nome: v.values.map(val => val.pt).join(" / ") || "Padrão",
@@ -24,7 +23,6 @@ export default async function handler(req, res) {
                 estoque: v.stock || 0
             }))
         }));
-
         res.status(200).json(listaFormatada);
     } catch (error) {
         res.status(500).json({ error: error.message });
