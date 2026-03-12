@@ -5,62 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
+    <header class="header-b2b">
+        <div class="banner-container">
+            <img src="https://claudiagalvao.github.io/pedidos/banner-b2b.jpg" class="banner-img" alt="Parceiros e Revendedores Crazy Fantasy">
+        </div>
+        
+        <nav class="nav-bar">
+            <div id="menu-categorias" class="botoes-pulas"></div>
+            
+            <div class="busca-container">
+                <input type="text" id="busca" placeholder="🔍 Digite para buscar..." onkeyup="filtrarBusca()">
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-layout">
+        
+        <section class="catalogo-section">
+            <div id="produtos" class="produtos-grid">
+                </div>
+        </section>
+
+        <aside class="checkout-section">
+            <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+            
+            <div class="resumo-financeiro">
+                <p id="subtotal">Subtotal: R$ 0,00</p>
+                <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
+                <p id="economia-valor" style="color: #00ff88; font-weight: bold;">Economia: R$ 0,00</p>
+                
+                <div class="barra-progresso-container">
+                    <div id="barra-progresso" class="barra-neon"></div>
+                </div>
+                <p id="meta-alerta" class="alerta erro">Faltam R$ 200,00 para o pedido mínimo</p>
+                
+                <hr style="border: 0.5px solid #3d4b5f; margin: 15px 0;">
+                <h3 id="total-final" style="font-size: 1.5rem; color: #ff00ff;">R$ 0,00</h3>
+            </div>
+
+            <div id="lista-itens-carrinho" class="mini-lista">
+                </div>
+
+            <div class="dados-nf">
+                <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
+                <div class="row">
+                    <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
+                    <input type="text" id="ie" placeholder="IE / RG">
+                </div>
+                <input type="text" id="responsavel" placeholder="Nome do Responsável">
+                <div class="row">
+                    <input type="text" id="whatsapp" placeholder="WhatsApp *">
+                    <input type="text" id="email" placeholder="E-mail para Nota Fiscal">
+                </div>
+                <input type="text" id="endereco" placeholder="Endereço de Entrega">
+                <textarea id="observacoes" placeholder="Observações (opcional)" style="width: 100%; background: #2d3748; color: white; border-radius: 4px; padding: 5px; margin-top: 5px; border: 1px solid #444;"></textarea>
+            </div>
+
+            <div class="botoes-finalizacao">
+                <button class="btn-whatsapp" onclick="enviarWhatsapp()">ENVIAR PEDIDO VIA WHATSAPP</button>
+                <button class="btn-email" onclick="enviarEmail()">ENVIAR POR E-MAIL</button>
+                <button class="btn-limpar" onclick="limparFormulario()">ESVAZIAR CARRINHO</button>
+            </div>
+        </aside>
+
+    </main>
+
     <div id="modal-foto" class="modal" onclick="fecharModal()">
         <span class="fechar">&times;</span>
         <img class="modal-conteudo" id="foto-ampliada">
         <div id="legenda-foto"></div>
     </div>
 
-    <header class="header-b2b">
-        <div class="banner-container">
-            <img src="banner.png" alt="Banner Crazy Fantasy" class="banner-img">
-        </div>
-        <div class="nav-bar">
-            <div id="menu-categorias" class="categorias-grid"></div>
-            <div class="busca-container">
-                <input type="text" id="busca" placeholder="🔍 Digite para buscar..." oninput="filtrarBusca()">
-            </div>
-        </div>
-    </header>
-
-    <div class="main-layout">
-        <section class="catalogo-section">
-            <div id="produtos" class="produtos-grid"></div>
-        </section>
-
-        <aside class="checkout-section">
-            <div class="carrinho-container">
-                <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-                <div class="resumo-financeiro">
-                    <p id="subtotal">Subtotal: R$ 0,00</p>
-                    <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
-                    <div class="barra-progresso-container">
-                        <div id="barra-progresso" class="barra-neon"></div>
-                    </div>
-                    <p id="meta-alerta" class="alerta erro">Faltam R$ 200,00 para o mínimo</p>
-                    <h3 id="total-final">R$ 0,00</h3>
-                </div>
-                <div id="lista-itens-carrinho" class="mini-lista"></div>
-                <div class="dados-nf">
-                    <h3>Dados para Nota Fiscal</h3>
-                    <input type="text" id="razao-social" placeholder="Razão Social *">
-                    <div class="row"><input type="text" id="cnpj" placeholder="CNPJ *"><input type="text" id="ie" placeholder="IE"></div>
-                    <input type="text" id="responsavel" placeholder="Responsável">
-                    <div class="row"><input type="text" id="whatsapp" placeholder="WhatsApp *"><input type="text" id="email" placeholder="E-mail *"></div>
-                </div>
-                <div class="botoes-finalizacao">
-                    <button class="btn-email" onclick="enviarEmail()">Enviar Pedido</button>
-                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">WhatsApp</button>
-                    <button class="btn-pdf" onclick="gerarPDF()">Baixar PDF</button>
-                    <button class="btn-limpar" onclick="limparFormulario()">Esvaziar</button>
-                </div>
-            </div>
-        </aside>
-    </div>
     <script src="script.js"></script>
+
 </body>
 </html>
