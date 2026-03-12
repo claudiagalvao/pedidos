@@ -1,59 +1,106 @@
-<aside class="checkout-section">
-    <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-    
-    <div id="status-carrinho" class="status-carrinho">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal B2B | Crazy Fantasy</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <header class="header-b2b">
+        <div class="banner-container">
+            <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
         </div>
-
-    <div class="barra-progresso-bg">
-        <div id="barra-fill" class="barra-progresso-fill"></div>
-    </div>
-
-    <div class="economia-destaque">
-        Economia com descontos: <span id="valor-economia">R$ 0,00</span>
-    </div>
-
-    <div class="formulario-scroll">
-        <div id="lista-itens-carrinho" class="mini-lista"></div>
-        <div style="text-align: right; margin: 10px 0;">
-            <a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" style="color: #888; font-size: 0.7rem;">Esvaziar Carrinho</a>
-        </div>
-
-        <div class="dados-nf">
-            <h4>Dados para Faturamento</h4>
-            <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
-            <div class="row">
-                <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
-                <input type="text" id="ie" placeholder="IE / RG">
+        <nav class="nav-bar">
+            <div id="menu-categorias"></div>
+            <div class="busca-container">
+                <input type="text" id="busca" placeholder="🔍 Buscar produto..." onkeyup="filtrarBusca()">
             </div>
-            <div class="row">
-                <input type="text" id="whatsapp" placeholder="WhatsApp *">
-                <input type="text" id="email-nf" placeholder="E-mail *">
+        </nav>
+    </header>
+
+    <main class="main-layout">
+        <section class="catalogo-section">
+            <div id="produtos" class="produtos-grid"></div>
+        </section>
+
+        <aside class="checkout-section">
+            <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+            
+            <div id="status-carrinho" class="status-carrinho">
+                </div>
+
+            <div class="barra-progresso-bg">
+                <div id="barra-fill" class="barra-progresso-fill"></div>
             </div>
-            <textarea id="endereco" placeholder="Endereço Completo de Entrega *"></textarea>
 
-            <h4>Pagamento e Envio</h4>
-            <select id="forma-pagamento" class="select-crazy">
-                <option value="" disabled selected>Forma de Pagamento *</option>
-                <option value="PIX">PIX</option>
-                <option value="TED">TED / Transferência</option>
-                <option value="Cartão">Cartão de Crédito</option>
-                <option value="Boleto">Boleto (Sob Consulta)</option>
-            </select>
+            <div class="economia-destaque">
+                Economia com descontos: <span id="valor-economia">R$ 0,00</span>
+            </div>
 
-            <select id="forma-envio" class="select-crazy">
-                <option value="" disabled selected>Forma de Envio *</option>
-                <option value="Transportadora">Transportadora</option>
-                <option value="Correios">Correios (PAC/SEDEX)</option>
-                <option value="Retirada">Retirada em Valinhos/SP</option>
-            </select>
+            <div class="formulario-scroll">
+                <div id="lista-itens-carrinho" class="mini-lista"></div>
+                
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" style="color: #888; font-size: 0.65rem; text-decoration: underline;">Esvaziar Carrinho</a>
+                </div>
+
+                <div class="dados-nf">
+                    <h4>Dados para Nota Fiscal</h4>
+                    <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
+                    <div class="row">
+                        <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
+                        <input type="text" id="ie" placeholder="IE / RG">
+                    </div>
+                    <div class="row">
+                        <input type="text" id="whatsapp" placeholder="WhatsApp *">
+                        <input type="text" id="email-nf" placeholder="E-mail *">
+                    </div>
+                    <textarea id="endereco" placeholder="Endereço Completo de Entrega *"></textarea>
+
+                    <h4>Pagamento e Envio</h4>
+                    <select id="forma-pagamento" class="select-crazy">
+                        <option value="" disabled selected>Forma de Pagamento *</option>
+                        <option value="PIX">PIX</option>
+                        <option value="TED">TED</option>
+                        <option value="Cartão">Cartão de Crédito</option>
+                        <option value="Boleto">Boleto</option>
+                    </select>
+
+                    <select id="forma-envio" class="select-crazy">
+                        <option value="" disabled selected>Forma de Envio *</option>
+                        <option value="Transportadora">Transportadora</option>
+                        <option value="Correios">Correios</option>
+                        <option value="Retirada">Retirada em Valinhos/SP</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="botoes-finalizacao">
+                <button id="btn-zap" class="btn-desativado" onclick="enviarWhatsapp()">FINALIZAR WHATSAPP</button>
+                <div class="row">
+                    <button id="btn-pdf" class="btn-desativado" onclick="gerarPDF()">GERAR PDF</button>
+                    <button class="btn-limpar" onclick="limparFormulario()">LIMPAR DADOS</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="footer-crazy">
+        <div class="footer-content">
+            <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
+            <p>CNPJ: 09.626.903/0001-57 | Rua Itália, 170 - Centro - Valinhos, SP</p>
         </div>
+    </footer>
+
+    <div id="modal-foto" class="modal" onclick="fecharModal()">
+        <span class="fechar">&times;</span>
+        <img class="modal-conteudo" id="foto-ampliada">
     </div>
 
-    <div class="botoes-finalizacao">
-        <button id="btn-zap" class="btn-desativado" onclick="enviarWhatsapp()">FINALIZAR WHATSAPP</button>
-        <div class="row">
-            <button id="btn-pdf" class="btn-desativado" onclick="gerarPDF()">GERAR PDF</button>
-            <button class="btn-limpar" onclick="limparFormulario()">LIMPAR DADOS</button>
-        </div>
-    </div>
-</aside>
+    <script src="script.js"></script>
+</body>
+</html>
