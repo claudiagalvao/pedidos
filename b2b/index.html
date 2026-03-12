@@ -6,6 +6,7 @@
     <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -33,41 +34,65 @@
             <div class="resumo-financeiro">
                 <p id="subtotal">Subtotal: R$ 0,00</p>
                 <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
-                <p id="economia-valor" style="color: #00ff88; font-weight: bold;">Economia: R$ 0,00</p>
-                <div class="barra-progresso-container">
-                    <div id="barra-progresso" class="barra-neon"></div>
-                </div>
-                <p id="meta-alerta" class="alerta">Faltam R$ 200,00 para o mínimo</p>
                 <h3 id="total-final">R$ 0,00</h3>
+                <div class="meta-container">
+                    <p id="meta-texto" style="font-size: 0.7rem; color: #888;">Pedido mínimo: R$ 200,00</p>
+                </div>
             </div>
 
-            <div id="lista-itens-carrinho" class="mini-lista"></div>
+            <div class="formulario-scroll">
+                <div id="lista-itens-carrinho" class="mini-lista"></div>
 
-            <div class="dados-nf">
-                <h4>Dados para Faturamento</h4>
-                <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
-                <div class="row">
-                    <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
-                    <input type="text" id="ie" placeholder="IE / RG">
+                <div class="dados-nf">
+                    <h4>Seus Dados</h4>
+                    <input type="text" id="razao-social" placeholder="Razão Social / Nome Completo *">
+                    <div class="row">
+                        <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
+                        <input type="text" id="ie" placeholder="IE / RG">
+                    </div>
+                    <div class="row">
+                        <input type="text" id="whatsapp" placeholder="WhatsApp *">
+                        <input type="text" id="email-nf" placeholder="E-mail *">
+                    </div>
+                    <textarea id="endereco" placeholder="Endereço Completo de Entrega *"></textarea>
+
+                    <h4>Pagamento e Envio</h4>
+                    <select id="forma-pagamento">
+                        <option value="" disabled selected>Forma de Pagamento *</option>
+                        <option value="PIX">PIX</option>
+                        <option value="TED">TED / Transferência</option>
+                        <option value="Cartão">Cartão de Crédito</option>
+                        <option value="Boleto">Boleto (Sob Consulta)</option>
+                    </select>
+
+                    <select id="forma-envio">
+                        <option value="" disabled selected>Forma de Envio *</option>
+                        <option value="Transportadora">Transportadora</option>
+                        <option value="Correios">Correios (PAC/SEDEX)</option>
+                        <option value="Retirada">Retirada em Valinhos/SP</option>
+                    </select>
                 </div>
-                <input type="text" id="responsavel" placeholder="Nome do Responsável">
-                <div class="row">
-                    <input type="text" id="whatsapp" placeholder="WhatsApp *">
-                    <input type="text" id="email-nf" placeholder="E-mail *">
-                </div>
-                <textarea id="endereco" placeholder="Endereço de Entrega"></textarea>
             </div>
 
             <div class="botoes-finalizacao">
-                <button class="btn-whatsapp" onclick="enviarWhatsapp()">WHATSAPP</button>
+                <button class="btn-whatsapp" onclick="enviarWhatsapp()">FINALIZAR WHATSAPP</button>
                 <div class="row">
-                    <button class="btn-email" onclick="enviarEmail()">E-MAIL</button>
-                    <button class="btn-pdf" onclick="gerarPDF()">PDF</button>
+                    <button class="btn-pdf" onclick="gerarPDF()">GERAR PDF</button>
+                    <button class="btn-limpar" onclick="limparCarrinho()">LIMPAR</button>
                 </div>
-                <button class="btn-limpar" onclick="limparCarrinho()">ESVAZIAR TUDO</button>
             </div>
         </aside>
     </main>
+
+    <footer>
+        <div class="footer-content">
+            <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
+            <p>CNPJ: 09.626.903/0001-57 | IE: 708.211.823.110</p>
+            <p>Rua Itália, 170 - Centro - Valinhos, SP | CEP: 13270-170</p>
+            <p>Telefone: (19) 99285-0208 | E-mail: lojacrazyfantasy@hotmail.com</p>
+            <p style="margin-top:20px; font-size: 0.7rem; opacity: 0.5;">Ativa desde 2007 - Atendimento B2B de Segunda a Sexta.</p>
+        </div>
+    </footer>
 
     <div id="modal-foto" class="modal" onclick="fecharModal()">
         <span class="fechar">&times;</span>
