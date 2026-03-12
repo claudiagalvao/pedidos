@@ -1,51 +1,91 @@
-const TOKEN = "4966605d15cf0988f02e0674bcd1e596e272eca1"; 
-const STORE_ID = 840344;
-const VALOR_MINIMO = 200.00;
-const PROXY = "https://cors-anywhere.herokuapp.com/";
-
-let todosProdutos = [];
+let produtosDados = [];
 let carrinho = [];
+let total = 0;
 
 async function carregarProdutos() {
     const container = document.getElementById("produtos");
     try {
-        const url = `https://api.tiendanube.com/v1/${STORE_ID}/products`;
-        const resposta = await fetch(PROXY + url, {
-            headers: { "Authentication": "bearer " + TOKEN, "Content-Type": "application/json" }
-        });
-        todosProdutos = await resposta.json();
-        renderizarProdutos(todosProdutos);
+        const response = await fetch('/api/produtos');
+        produtosDados = await response.json();
+        renderizarProdutos(produtosDados);
     } catch (e) {
-        container.innerHTML = `<p style="color:red">Erro de conexão. <br> 
-        <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">Clique aqui para autorizar o acesso temporário</a> e atualize a página.</p>`;
+        console.error("Erro ao carregar produtos:", e);
     }
 }
 
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     container.innerHTML = "";
-    lista.forEach(prod => {
-        const precoVarejo = parseFloat(prod.variants[0].price);
-        const b2b10 = precoVarejo * 0.90;
-        container.innerHTML += `
-            <div class="produto">
-                <img src="${prod.images[0]?.src || ''}">
-                <h3>${prod.name.pt}</h3>
-                <span style="text-decoration:line-through; color:#999">R$ ${precoVarejo.toFixed(2)}</span>
-                <p style="color:#2d5cf7; font-size:20px; font-weight:bold">B2B: R$ ${b2b10.toFixed(2)}</p>
-                <button onclick="addCarrinho('${prod.name.pt}', ${b2b10})">Adicionar</button>
-            </div>`;
+
+    lista.forEach(p => {
+        const temEstoque = p.estoque > 0 || p.estoque === null;
+        const card = document.createElement("div");
+        card.className = "produto";
+        card.innerHTML = `
+            <img src="${p.imagem}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>R$ ${parseFloat(p.preco).toFixed(2)}</p>
+            <small>${temEstoque ? 'Disponível' : 'Esgotado'}</small>
+            <button onclick="addCarrinho('${p.name}', ${p.preco})" ${!temEstoque ? 'disabled style="background:#ccc"' : ''}>
+                ${temEstoque ? 'Adicionar' : 'Indisponível'}
+            </button>
+        `;
+        container.appendChild(card);
     });
 }
 
 function addCarrinho(nome, preco) {
-    carrinho.push({ nome, preco });
-    const total = carrinho.reduce((sum, item) => sum + item.preco, 0);
-    const faltam = Math.max(0, VALOR_MINIMO - total);
-    document.querySelector(".carrinho h2").innerText = `🛒 Pedido (${carrinho.length} itens)`;
-    document.querySelector(".carrinho p:nth-of-type(1)").innerText = `Total B2B: R$ ${total.toFixed(2)}`;
-    document.getElementById("msg-minimo").innerText = faltam > 0 ? `Faltam R$ ${faltam.toFixed(2)} para o mínimo` : "✅ Mínimo atingido!";
-    document.getElementById("barra-progresso").style.width = `${Math.min(100, (total / VALOR_MINIMO) * 100)}%`;
+    carrinho.push({ nome, preco: parseFloat(preco) });
+    atualizarCarrinho();
 }
 
-window.addEventListener("load", carregarProdutos);
+function atualizarCarrinho() {
+    const listaDiv = document.getElementById("listaCarrinho");
+    const totalP = document.getElementById("total");
+    const titulo = document.getElementById("tituloCarrinho");
+
+    listaDiv.innerHTML = "";
+    total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+
+    carrinho.forEach((item, index) => {
+        const p = document.createElement("p");
+        p.innerHTML = `${item.nome} - R$ ${item.preco.toFixed(2)} 
+                       <span onclick="removerItem(${index})" style="cursor:pointer;color:#ff4b4b;float:right">✖</span>`;
+        listaDiv.appendChild(p);
+    });
+
+    totalP.innerText = `Total B2B: R$ ${total.toFixed(2)}`;
+    titulo.innerText = `🛒 Pedido (${carrinho.length} itens)`;
+}
+
+function removerItem(index) {
+    carrinho.splice(index, 1);
+    atualizarCarrinho();
+}
+
+function limparCarrinho() {
+    carrinho = [];
+    atualizarCarrinho();
+}
+
+function enviarWhatsapp() {
+    if (carrinho.length === 0) return alert("O carrinho está vazio!");
+    
+    let mensagem = "*Novo Pedido B2B - Crazy Fantasy*\n\n";
+    carrinho.forEach(item => {
+        mensagem += `• ${item.nome}: R$ ${item.preco.toFixed(2)}\n`;
+    });
+    mensagem += `\n*Total: R$ ${total.toFixed(2)}*`;
+    
+    const fone = "5511XXXXXXXXX"; // Coloque seu número aqui
+    window.open(`https://wa.me/${fone}?text=${encodeURIComponent(mensagem)}`);
+}
+
+// Filtro de busca automática
+document.getElementById("busca").addEventListener("input", (e) => {
+    const termo = e.target.value.toLowerCase();
+    const filtrados = produtosDados.filter(p => p.name.toLowerCase().includes(termo));
+    renderizarProdutos(filtrados);
+});
+
+document.addEventListener("DOMContentLoaded", carregarProdutos);
