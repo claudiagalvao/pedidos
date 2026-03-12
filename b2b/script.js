@@ -18,15 +18,19 @@ function renderizarMenu() {
 
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
-    container.innerHTML = lista.map(p => {
+    container.innerHTML = lista.map((p, index) => {
         const vPrincipal = p.variacoes[0];
         const precoVarejo = vPrincipal.preco;
         const precoB2B = precoVarejo * 0.90;
+        
+        // Gatilho de Mais Vendido (exibe nos 4 primeiros ou aleatório)
+        const seloMaisVendido = (index < 4) ? `<span class="selo-popular">🔥 Mais Vendido</span>` : '';
 
         return `
         <div class="produto-card">
+            ${seloMaisVendido}
             <img src="${p.imagem}" loading="lazy">
-            <h3>${p.name}</h3>
+            <h3 title="${p.name}">${p.name}</h3>
             <div class="precos-b2b">
                 <span class="riscado">R$ ${precoVarejo.toFixed(2)}</span>
                 <span class="destaque-b2b">R$ ${precoB2B.toFixed(2)}</span>
@@ -53,6 +57,8 @@ function adicionar(nome) {
     const prod = todosProdutos.find(p => p.name === nome);
     const idLimpo = nome.replace(/\s/g, '');
     const select = document.getElementById(`var-${idLimpo}`);
+    const inputQtd = document.getElementById(`qtd-${idLimpo}`);
+    const qtdSolicitada = parseInt(inputQtd.value);
     
     let vNome, vPreco, vEstoque;
     if (select) {
@@ -63,8 +69,17 @@ function adicionar(nome) {
         vEstoque = prod.variacoes[0].estoque;
     }
 
-    const qtd = parseInt(document.getElementById(`qtd-${idLimpo}`).value);
-    carrinho.push({ name: nome, variacao: vNome, preco: parseFloat(vPreco), qtd: qtd });
+    // BLOQUEIO DE ESTOQUE
+    if (qtdSolicitada > parseInt(vEstoque)) {
+        alert(`Quantidade indisponível! Temos apenas ${vEstoque} unidades em estoque.`);
+        return;
+    }
+
+    carrinho.push({ name: nome, variacao: vNome, preco: parseFloat(vPreco), qtd: qtdSolicitada });
+    
+    // VOLTA PARA UM (OU ZERO) APÓS LANÇAR
+    inputQtd.value = 1; 
+
     atualizarInterface();
 }
 
@@ -84,9 +99,14 @@ function atualizarInterface() {
     barra.style.width = Math.min((subtotal / 1000) * 100, 100) + "%";
 
     const metaTxt = document.getElementById("meta-alerta");
-    if (subtotal < 200) metaTxt.innerHTML = `<span style="color:#ff4d4d">Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo</span>`;
-    else if (subtotal < 1000) metaTxt.innerText = `Faltam R$ ${(1000-subtotal).toFixed(2)} para 15%`;
-    else metaTxt.innerText = "🚀 Desconto Máximo!";
+    if (subtotal < 200) {
+        metaTxt.className = "alerta erro";
+        metaTxt.innerHTML = `⚠️ Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo`;
+    } else {
+        metaTxt.className = "alerta sucesso";
+        if (subtotal >= 1000) metaTxt.innerText = "✅ MÍNIMO ATINGIDO E DESCONTO MÁXIMO!";
+        else metaTxt.innerText = `✅ MÍNIMO ATINGIDO! Faltam R$ ${(1000-subtotal).toFixed(2)} para 15%`;
+    }
 
     const lista = document.getElementById("lista-itens-carrinho");
     lista.innerHTML = carrinho.map((i, index) => `
@@ -104,31 +124,22 @@ function remover(index) {
 
 function validar() {
     const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    const r = document.getElementById("razao-social").value;
-    const c = document.getElementById("cnpj").value;
-    const w = document.getElementById("whatsapp").value;
-    const e = document.getElementById("email").value;
-
-    if (subtotal < 200) { alert("Mínimo de R$ 200,00 não atingido!"); return false; }
-    if (!r || !c || !w || !e) { alert("Preencha Razão Social, CNPJ, WhatsApp e E-mail!"); return false; }
+    if (subtotal < 200) { alert("O pedido ainda não atingiu o mínimo de R$ 200,00"); return false; }
+    if (!document.getElementById("razao-social").value || !document.getElementById("cnpj").value) { 
+        alert("Preencha os dados obrigatórios da NF!"); return false; 
+    }
     return true;
 }
 
 function enviarEmail() {
     if (!validar()) return;
-    const cliente = document.getElementById("razao-social").value;
-    const corpo = `PEDIDO B2B - ${cliente}\n\nItens:\n` + 
-        carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + 
-        `\n\nTOTAL: ${document.getElementById("total-final").innerText}`;
-    
+    const corpo = `PEDIDO B2B\n\nItens:\n` + carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + `\n\nTOTAL: ${document.getElementById("total-final").innerText}`;
     window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
 }
 
 function enviarWhatsapp() {
     if (!validar()) return;
-    const texto = `*PEDIDO B2B - ${document.getElementById("razao-social").value}*\n\n` + 
-        carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + 
-        `\n\n*TOTAL: ${document.getElementById("total-final").innerText}*`;
+    const texto = `*PEDIDO B2B*\n\n` + carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + `\n\n*TOTAL: ${document.getElementById("total-final").innerText}*`;
     window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
 
@@ -136,18 +147,18 @@ function gerarPDF() {
     if (!validar()) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text(`Orçamento B2B - ${document.getElementById("razao-social").value}`, 10, 10);
+    doc.text("Pedido B2B - Crazy Fantasy", 10, 10);
     carrinho.forEach((i, idx) => {
         doc.text(`${i.qtd}x ${i.name} (${i.variacao}) - R$ ${(i.preco * i.qtd).toFixed(2)}`, 10, 20 + (idx * 7));
     });
     doc.text(`TOTAL FINAL: ${document.getElementById("total-final").innerText}`, 10, 20 + (carrinho.length * 7) + 10);
-    doc.save("orcamento.pdf");
+    doc.save("pedido.pdf");
 }
 
 function limparFormulario() {
     if(confirm("Limpar tudo?")) {
         carrinho = [];
-        document.querySelectorAll('input').forEach(i => i.value = "");
+        document.querySelectorAll('.dados-nf input').forEach(i => i.value = "");
         atualizarInterface();
     }
 }
