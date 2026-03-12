@@ -18,27 +18,28 @@ function renderizarMenu() {
 
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
+    if (lista.length === 0) {
+        container.innerHTML = "<p style='color:white; padding:20px;'>Nenhum produto encontrado...</p>";
+        return;
+    }
+
     container.innerHTML = lista.map((p, index) => {
         const vPrincipal = p.variacoes[0];
-        const precoVarejo = vPrincipal.preco;
-        const precoB2B = precoVarejo * 0.90;
-        
-        // Selinho de Mais Vendido nos 3 primeiros produtos
-        const selo = index < 3 ? `<span class="selo-popular">🔥 Mais Vendido</span>` : '';
+        // Selo de Mais Vendido (ajustado para o nome Luna Vibe ou Spray)
+        const selo = (p.name.includes("Tinta") || index < 2) ? `<span class="selo-popular">🔥 Mais Vendido</span>` : '';
 
         return `
         <div class="produto-card">
             ${selo}
-            <img src="${p.imagem}" loading="lazy">
+            <img src="${p.imagem}" alt="${p.name}">
             <h3 title="${p.name}">${p.name}</h3>
             <div class="precos-b2b">
-                <span class="riscado">R$ ${precoVarejo.toFixed(2)}</span>
-                <span class="destaque-b2b">R$ ${precoB2B.toFixed(2)}</span>
+                <span class="riscado">R$ ${vPrincipal.preco.toFixed(2)}</span>
+                <span class="destaque-b2b">R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</span>
             </div>
             <div class="tabela-b2b">
-                <p>10% → R$ ${(precoVarejo * 0.9).toFixed(2)}</p>
-                <p>12% (R$500+) → R$ ${(precoVarejo * 0.88).toFixed(2)}</p>
-                <p>15% (R$1000+) → R$ ${(precoVarejo * 0.85).toFixed(2)}</p>
+                <p>10% → R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</p>
+                <p>15% (R$1000+) → R$ ${(vPrincipal.preco * 0.85).toFixed(2)}</p>
             </div>
             <select id="var-${index}" class="select-variacao">
                 ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome} (Est: ${v.estoque})</option>`).join('')}
@@ -51,6 +52,13 @@ function renderizarProdutos(lista) {
     }).join('');
 }
 
+// BUSCA EM TEMPO REAL
+function filtrarBusca() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+    const filtrados = todosProdutos.filter(p => p.name.toLowerCase().includes(termo));
+    renderizarProdutos(filtrados);
+}
+
 function adicionar(index, nomeOriginal) {
     const input = document.getElementById(`qtd-${index}`);
     const select = document.getElementById(`var-${index}`);
@@ -59,12 +67,12 @@ function adicionar(index, nomeOriginal) {
 
     if (qtd <= 0) return;
     if (qtd > parseInt(vEstoque)) {
-        alert(`Ops! Só temos ${vEstoque} em estoque para esta variação.`);
+        alert(`Estoque insuficiente! Temos apenas ${vEstoque} unidades.`);
         return;
     }
 
     carrinho.push({ name: nomeOriginal, variacao: vNome, preco: parseFloat(vPreco), qtd: qtd });
-    input.value = 0; // Volta para zero após lançar
+    input.value = 0; 
     atualizarInterface();
 }
 
@@ -85,15 +93,15 @@ function atualizarInterface() {
     const metaTxt = document.getElementById("meta-alerta");
     if (subtotal < 200) {
         metaTxt.className = "alerta erro";
-        metaTxt.innerHTML = `Faltam R$ ${(200-subtotal).toFixed(2)} para o pedido mínimo`;
+        metaTxt.innerHTML = `Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo`;
     } else {
         metaTxt.className = "alerta sucesso";
-        metaTxt.innerText = subtotal >= 1000 ? "🚀 Desconto máximo atingido!" : "✅ Pedido mínimo liberado!";
+        metaTxt.innerText = "✅ Mínimo Atingido!";
     }
 
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
         <div class="mini-item">
-            <span>${i.qtd}x ${i.name} (${i.variacao})</span>
+            <span>${i.qtd}x ${i.name}</span>
             <button onclick="remover(${idx})">×</button>
         </div>`).join('');
 }
@@ -108,23 +116,16 @@ function filtrar(cat) {
     else renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
 }
 
-function filtrarBusca() {
-    const termo = document.getElementById("busca").value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(termo)));
-}
-
 function validar() {
     const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     if (subtotal < 200) { alert("O mínimo é R$ 200,00!"); return false; }
-    if (!document.getElementById("razao-social").value || !document.getElementById("cnpj").value) {
-        alert("Preencha Razão Social e CNPJ!"); return false;
-    }
+    if (!document.getElementById("razao-social").value) { alert("Preencha a Razão Social!"); return false; }
     return true;
 }
 
 function enviarWhatsapp() {
     if (!validar()) return;
-    const texto = `*PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n` + 
+    const texto = `*NOVO PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n` + 
                   carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
     window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
@@ -140,14 +141,13 @@ function gerarPDF() {
     if (!validar()) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("Orçamento B2B - Crazy Fantasy", 10, 10);
-    carrinho.forEach((i, idx) => doc.text(`${i.qtd}x ${i.name} (${i.variacao}) - R$ ${i.preco.toFixed(2)}`, 10, 20 + (idx * 7)));
-    doc.text(`Total: ${document.getElementById("total-final").innerText}`, 10, 20 + (carrinho.length * 7) + 10);
+    doc.text("Pedido B2B - Crazy Fantasy", 10, 10);
+    carrinho.forEach((i, idx) => doc.text(`${i.qtd}x ${i.name} - R$ ${i.preco.toFixed(2)}`, 10, 20 + (idx * 7)));
     doc.save("pedido.pdf");
 }
 
 function limparFormulario() {
-    if(confirm("Limpar pedido?")) { carrinho = []; atualizarInterface(); }
+    if(confirm("Limpar?")) { carrinho = []; atualizarInterface(); }
 }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
