@@ -1,30 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
-/* Configurações Globais */
 * { box-sizing: border-box; }
 body { background: #0b0f15; color: #e2e8f0; font-family: 'Inter', sans-serif; margin: 0; }
 
-/* Header e Banner */
 .header-b2b { position: sticky; top: 0; z-index: 1000; background: #0b0f15; border-bottom: 2px solid #ff00ff; }
 .banner-container { width: 100%; height: 180px; overflow: hidden; transition: 0.4s; }
 .banner-img { width: 100%; height: 100%; object-fit: cover; }
 .header-b2b.scrolled .banner-container { height: 0; }
 
-.nav-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #11151c; }
-.titulo-b2b-destaque { color: #ff00ff; font-size: 1rem; margin: 10px 0 20px 0; font-weight: 900; text-transform: uppercase; border-left: 5px solid #ff00ff; padding-left: 15px; }
-
-/* Layout Principal */
 .main-layout { display: flex; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
 .catalogo-section { flex: 3; }
 .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
 
-/* Card do Produto */
-.produto-card { background: white; color: #333; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; transition: transform 0.2s; }
-.produto-card:hover { transform: translateY(-5px); }
-.produto-card img { width: 100%; height: 160px; object-fit: contain; cursor: zoom-in; }
-.mini-tabela-desconto { background: #f1f5f9; border-radius: 6px; padding: 8px; font-size: 0.7rem; margin: 10px 0; border-left: 3px solid #ff00ff; color: #475569; }
-
-/* Checkout (O Carrinho Lateral) */
+/* CHECKOUT COM ALTURA FIXA E SCROLL */
 .checkout-section { 
     flex: 1; 
     background: #1e293b; 
@@ -35,40 +23,31 @@ body { background: #0b0f15; color: #e2e8f0; font-family: 'Inter', sans-serif; ma
     height: calc(100vh - 120px); 
     display: flex; 
     flex-direction: column; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
-/* Área de Scroll Interno do Carrinho */
 .checkout-scroll-area { 
     flex: 1; 
     overflow-y: auto; 
-    padding-right: 8px; 
-    margin: 15px 0; 
+    padding-right: 10px; 
+    margin-top: 15px; 
 }
 .checkout-scroll-area::-webkit-scrollbar { width: 6px; }
 .checkout-scroll-area::-webkit-scrollbar-thumb { background: #ff00ff; border-radius: 10px; }
 
-/* Elementos de Progresso */
-.status-carrinho p { margin: 4px 0; font-size: 0.85rem; color: #cbd5e1; }
-.barra-progresso-bg { background: #334155; height: 12px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-.barra-progresso-fill { background: #22c55e; height: 100%; width: 0%; transition: 0.6s ease; box-shadow: 0 0 10px #22c55e; }
-.economia-destaque { background: rgba(34, 197, 94, 0.15); color: #4ade80; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.9rem; border: 1px solid #22c55e; }
+.barra-progresso-bg { background: #334155; height: 12px; border-radius: 10px; margin: 10px 0; }
+.barra-progresso-fill { background: #22c55e; height: 100%; width: 0%; transition: 0.5s; border-radius: 10px; }
+.economia-destaque { background: rgba(34, 197, 94, 0.1); color: #4ade80; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; }
 
-/* Estilo do Formulário */
-.dados-nf h4 { color: #ff00ff; font-size: 0.8rem; margin: 20px 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }
+.produto-card { background: white; color: #333; padding: 15px; border-radius: 12px; }
+.produto-card img { width: 100%; height: 150px; object-fit: contain; }
+
 .select-crazy, .dados-nf input, .dados-nf textarea { 
     width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; 
     color: white; border-radius: 6px; margin-bottom: 8px; font-size: 0.8rem; 
 }
 .row { display: flex; gap: 8px; }
-
-/* Botões de Ação */
-.botoes-finalizacao { border-top: 1px solid #334155; padding-top: 15px; }
-.botoes-finalizacao button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; margin-top: 8px; transition: 0.3s; }
+.botoes-finalizacao button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; margin-top: 8px; }
 .btn-whatsapp-ativo { background: #22c55e; color: white; }
 .btn-pdf-ativo { background: #ef4444; color: white; }
-.btn-limpar { background: transparent; border: 1px solid #444; color: #888; }
-.btn-desativado { background: #475569 !important; color: #94a3b8 !important; cursor: not-allowed; opacity: 0.5; }
-
-/* Rodapé */
-.footer-crazy { background: #11151c; padding: 30px; text-align: center; margin-top: 50px; border-top: 1px solid #334155; font-size: 0.7rem; color: #64748b; line-height: 1.6; }
+.btn-desativado { background: #475569 !important; color: #94a3b8 !important; cursor: not-allowed; }
+.footer-crazy { text-align: center; padding: 40px; color: #64748b; font-size: 0.8rem; }
