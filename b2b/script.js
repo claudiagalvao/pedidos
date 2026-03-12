@@ -1,12 +1,27 @@
 let todosProdutos = [];
 let carrinho = [];
 
+// Carrega produtos da API
 async function carregarProdutos() {
-    const res = await fetch('/api/produtos');
-    todosProdutos = await res.json();
-    renderizarMenu();
-    renderizarProdutos(todosProdutos);
+    try {
+        const res = await fetch('/api/produtos');
+        todosProdutos = await res.json();
+        renderizarMenu();
+        renderizarProdutos(todosProdutos);
+    } catch (err) {
+        console.error("Erro ao carregar produtos:", err);
+    }
 }
+
+// Monitora o Scroll para encolher o banner
+window.onscroll = function() {
+    const header = document.querySelector(".header-b2b");
+    if (window.pageYOffset > 50) {
+        header.classList.add("scrolled");
+    } else {
+        header.classList.remove("scrolled");
+    }
+};
 
 function renderizarMenu() {
     const menu = document.getElementById("menu-categorias");
@@ -30,16 +45,16 @@ function renderizarProdutos(lista) {
         return `
         <div class="produto-card">
             ${selo}
-            <img src="${p.imagem}" alt="${p.name}" onclick="abrirModal('${p.imagem}', '${p.name}')" style="cursor:zoom-in">
+            <img src="${p.imagem}" alt="${p.name}" onclick="abrirModal('${p.imagem}', '${p.name}')">
             <h3 title="${p.name}">${p.name}</h3>
             <div class="precos-b2b">
                 <span class="riscado">R$ ${vPrincipal.preco.toFixed(2)}</span>
                 <span class="destaque-b2b">R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</span>
             </div>
             <div class="tabela-b2b">
-                <p>10% → R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</p>
-                <p>12% (R$500+) → R$ ${(vPrincipal.preco * 0.88).toFixed(2)}</p>
-                <p>15% (R$1000+) → R$ ${(vPrincipal.preco * 0.85).toFixed(2)}</p>
+                <p>• 10% → R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</p>
+                <p>• 12% (R$500+) → R$ ${(vPrincipal.preco * 0.88).toFixed(2)}</p>
+                <p>• 15% (R$1000+) → R$ ${(vPrincipal.preco * 0.85).toFixed(2)}</p>
             </div>
             <select id="var-${index}" class="select-variacao" onchange="atualizarEstoqueVisivel(${index})">
                 ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join('')}
@@ -56,7 +71,9 @@ function renderizarProdutos(lista) {
 function atualizarEstoqueVisivel(index) {
     const select = document.getElementById(`var-${index}`);
     const [nome, preco, estoque] = select.value.split('|');
-    document.getElementById(`est-val-${index}`).innerText = estoque;
+    const display = document.getElementById(`est-val-${index}`);
+    display.innerText = estoque;
+    display.parentElement.classList.toggle('estoque-baixo', parseInt(estoque) < 5);
 }
 
 function adicionar(index, nomeOriginal) {
@@ -68,21 +85,18 @@ function adicionar(index, nomeOriginal) {
 
     if (qtdSolicitada <= 0) return;
 
-    // Procura se já existe exatamente esse produto com essa variação no carrinho
+    // LÓGICA DE AGRUPAMENTO E BUG DO ESTOQUE
     const itemExistente = carrinho.find(item => item.name === nomeOriginal && item.variacao === vNome);
     const qtdAtualNoCarrinho = itemExistente ? itemExistente.qtd : 0;
 
-    // Validação de estoque somando o que já está no carrinho
     if ((qtdAtualNoCarrinho + qtdSolicitada) > estoqueReal) {
-        alert(`Bloqueio de Estoque!\nVocê já tem ${qtdAtualNoCarrinho} no carrinho.\nEstoque total disponível: ${estoqueReal}`);
+        alert(`Bloqueio de Estoque!\nVocê já tem ${qtdAtualNoCarrinho} no carrinho.\nDisponível: ${estoqueReal}`);
         return;
     }
 
     if (itemExistente) {
-        // Se já existe, apenas soma a quantidade
         itemExistente.qtd += qtdSolicitada;
     } else {
-        // Se é novo, adiciona ao array
         carrinho.push({ 
             name: nomeOriginal, 
             variacao: vNome, 
@@ -119,7 +133,6 @@ function atualizarInterface() {
         metaTxt.innerText = "✅ Mínimo Atingido!";
     }
 
-    // Listagem no carrinho exibindo a variável
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
         <div class="mini-item">
             <div class="item-info">
@@ -135,16 +148,6 @@ function remover(idx) {
     atualizarInterface();
 }
 
-// ... (Funções de modal, busca e envio permanecem iguais)
-function abrirModal(src, nome) {
-    const modal = document.getElementById("modal-foto");
-    const img = document.getElementById("foto-ampliada");
-    modal.style.display = "block";
-    img.src = src;
-    document.getElementById("legenda-foto").innerHTML = nome;
-}
-function fecharModal() { document.getElementById("modal-foto").style.display = "none"; }
-
 function filtrarBusca() {
     const termo = document.getElementById("busca").value.toLowerCase();
     renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(termo)));
@@ -155,13 +158,26 @@ function filtrar(cat) {
     else renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
 }
 
+// MODAL
+function abrirModal(src, nome) {
+    const modal = document.getElementById("modal-foto");
+    const img = document.getElementById("foto-ampliada");
+    modal.style.display = "block";
+    img.src = src;
+    document.getElementById("legenda-foto").innerHTML = nome;
+}
+function fecharModal() { document.getElementById("modal-foto").style.display = "none"; }
+
+// FINALIZAÇÃO
 function enviarWhatsapp() {
+    if (carrinho.length === 0) return;
     const texto = `*NOVO PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n\n` + 
                   carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
     window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
 
 function enviarEmail() {
+    if (carrinho.length === 0) return;
     const corpo = `Pedido B2B\nTotal: ${document.getElementById("total-final").innerText}\n\nItens:\n` + 
                   carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
     window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
