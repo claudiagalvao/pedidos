@@ -5,37 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <header class="header-b2b">
-        <img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
+        <img src="banner.png" alt="Banner" class="banner-img">
     </header>
 
     <div class="main-layout">
         <section class="catalogo-section">
             <div id="menu-categorias" class="categorias-grid"></div>
             <div class="busca-container">
-                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome...">
+                <input type="text" id="busca" placeholder="🔍 Buscar produto...">
             </div>
-            <div id="produtos" class="produtos-grid">
-                </div>
+            <div id="produtos" class="produtos-grid"></div>
         </section>
 
         <aside class="checkout-section">
             <div class="carrinho-container">
                 <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-                
                 <div class="resumo-financeiro">
-                    <p id="subtotal">Total B2B: R$ 0,00</p>
-                    <p id="desconto-aplicado">Desconto aplicado: 0%</p>
-                    <div class="barra-progresso-container">
-                        <div id="barra-progresso" class="barra-progresso"></div>
-                    </div>
+                    <p id="subtotal">Subtotal: R$ 0,00</p>
+                    <p id="desconto-aplicado">Desconto: 10% (B2B Ativado)</p>
+                    <div class="barra-progresso-container"><div id="barra-progresso" class="barra-progresso"></div></div>
                     <p id="meta-alerta" class="alerta">Faltam R$ 160,00 para o mínimo</p>
-                    <p id="economia">Economia com descontos: R$ 0,00</p>
-                    <hr>
-                    <h3 id="total-final">R$ 0,00</h3>
+                    <h3 id="total-final">Total: R$ 0,00</h3>
                 </div>
 
                 <div id="lista-itens-carrinho" class="mini-lista"></div>
@@ -43,31 +37,17 @@
                 <div class="dados-nf">
                     <h3>Dados para Nota Fiscal</h3>
                     <input type="text" id="razao-social" placeholder="Razão Social">
-                    <div class="row-input">
-                        <input type="text" id="cnpj" placeholder="CNPJ">
-                        <input type="text" id="ie" placeholder="IE">
-                    </div>
+                    <div class="row"><input type="text" id="cnpj" placeholder="CNPJ"><input type="text" id="ie" placeholder="IE"></div>
                     <input type="text" id="responsavel" placeholder="Responsável">
-                    <div class="row-input">
-                        <input type="text" id="whatsapp" placeholder="WhatsApp">
-                        <input type="text" id="email" placeholder="E-mail">
-                    </div>
+                    <div class="row"><input type="text" id="whatsapp" placeholder="WhatsApp"><input type="text" id="email" placeholder="E-mail"></div>
                     <input type="text" id="endereco" placeholder="Endereço Completo">
-                    <div class="row-input">
-                        <input type="text" id="cidade" placeholder="Cidade">
-                        <input type="text" id="cep" placeholder="CEP">
-                    </div>
-                    <select id="forma-entrega">
-                        <option value="">Forma de entrega</option>
-                        <option value="Retirada">Retirada</option>
-                        <option value="Transportadora">Transportadora</option>
-                        <option value="Correios">Correios</option>
-                    </select>
                 </div>
 
-                <div class="botoes-acao">
-                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
-                    <button class="btn-limpar" onclick="limparCarrinho()">Limpar Tudo</button>
+                <div class="botoes-finalizacao">
+                    <button class="btn-email" onclick="enviarEmail()">Enviar E-mail</button>
+                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
+                    <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
+                    <button class="btn-limpar" onclick="limparFormulario()">Limpar Tudo</button>
                 </div>
             </div>
         </aside>
