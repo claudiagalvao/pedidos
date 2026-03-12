@@ -1,27 +1,59 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal B2B Crazy Fantasy</title>
+    <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <img src="banner.png" class="banner" alt="B2B Crazy Fantasy">
-        <div class="mensagem">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</div>
-        <input type="text" id="busca" placeholder="🔎 Buscar produto por nome...">
-        <div id="produtos"></div>
-    </div>
 
-    <div class="carrinho">
-        <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-        <p id="total">Total B2B: R$ 0,00</p>
-        <hr>
-        <button onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
-        <button onclick="limparCarrinho()">Limpar Carrinho</button>
-        <div id="listaCarrinho"></div>
-    </div>
+    <header class="header-b2b">
+        <div class="banner-container">
+            <img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
+        </div>
+        <div class="header-overlay">
+            <p class="tagline">🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</p>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <aside class="sidebar-carrinho">
+            <div class="carrinho-fixo">
+                <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+                <p id="total">Total B2B: R$ 0,00</p>
+                <div class="botoes-carrinho">
+                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar via WhatsApp</button>
+                    <button class="btn-limpar" onclick="limparCarrinho()">Limpar Carrinho</button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="conteudo-produtos">
+            
+            <div class="filtros-container">
+                <div class="busca-wrapper">
+                    <input type="text" id="busca" placeholder="🔍 Buscar produto por nome...">
+                </div>
+                
+                <div id="menu-categorias" class="menu-categorias">
+                    <span class="loading-texto">Carregando categorias...</span>
+                </div>
+            </div>
+
+            <div id="produtos" class="produtos-grid">
+                </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer-b2b">
+        <p>&copy; 2026 Crazy Fantasy - Portal de Vendas Atacado</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
