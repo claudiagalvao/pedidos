@@ -5,76 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header class="header-b2b">
-        <img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
-        <div class="header-overlay">
-            <p>🔥 Tabela exclusiva para parceiros | Descontos B2B progressivos</p>
-        </div>
+        <img src="banner.png" alt="Banner" class="banner-img">
     </header>
 
     <div class="main-layout">
         <section class="catalogo-section">
-            <div id="menu-categorias" class="categorias-grid">
-                </div>
-
+            <div id="menu-categorias" class="categorias-grid"></div>
             <div class="busca-container">
-                <input type="text" id="busca" placeholder="Buscar produto por nome...">
+                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome...">
             </div>
-
-            <div id="produtos" class="produtos-grid">
-                </div>
+            <div id="produtos" class="produtos-grid"></div>
         </section>
 
         <aside class="checkout-section">
             <div class="carrinho-container">
-                <h2>📦 Pedido (0 itens)</h2>
-                <div class="resumo-valores">
-                    <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
-                    <p class="desconto-alerta">Desconto aplicado: <span id="desconto-porcentagem">0%</span></p>
-                    <p class="meta-alerta" id="meta-proxima"></p>
-                    <h3>Total: <span id="total">R$ 0,00</span></h3>
+                <h2 id="tituloCarrinho">📦 Pedido (0 itens)</h2>
+                <div class="resumo-financeiro">
+                    <p id="subtotal">Subtotal: R$ 0,00</p>
+                    <p id="desconto-aplicado">Desconto: 0%</p>
+                    <div id="meta-alerta" class="meta-alerta">Faltam R$ 160,00 para o mínimo</div>
+                    <p id="economia">Economia: R$ 0,00</p>
+                    <h3 id="total-final">Total: R$ 0,00</h3>
                 </div>
 
-                <div class="dados-cliente">
+                <div id="lista-itens-carrinho" class="mini-lista"></div>
+
+                <div class="dados-nf">
                     <h3>Dados para Nota Fiscal</h3>
                     <input type="text" id="razao-social" placeholder="Razão Social">
-                    <div class="input-row">
-                        <input type="text" id="cnpj" placeholder="CNPJ">
-                        <input type="text" id="ie" placeholder="IE">
-                    </div>
-                    <input type="text" id="responsavel" placeholder="Nome do Responsável">
-                    <div class="input-row">
-                        <input type="text" id="whatsapp" placeholder="WhatsApp">
-                        <input type="text" id="email" placeholder="E-mail">
-                    </div>
-                    <input type="text" id="endereco" placeholder="Endereço Completo">
-                    <div class="input-row">
-                        <input type="text" id="cidade" placeholder="Cidade">
-                        <input type="text" id="estado" placeholder="UF">
-                        <input type="text" id="cep" placeholder="CEP">
-                    </div>
+                    <div class="row"><input type="text" id="cnpj" placeholder="CNPJ"><input type="text" id="ie" placeholder="IE"></div>
+                    <input type="text" id="responsavel" placeholder="Responsável">
+                    <div class="row"><input type="text" id="whatsapp" placeholder="WhatsApp"><input type="text" id="email" placeholder="E-mail"></div>
+                    <input type="text" id="endereco" placeholder="Endereço">
+                    <div class="row"><input type="text" id="cidade" placeholder="Cidade"><input type="text" id="cep" placeholder="CEP"></div>
                     <select id="forma-entrega">
-                        <option value="">Forma de entrega</option>
+                        <option value="">Entrega</option>
                         <option value="Retirada">Retirada</option>
                         <option value="Transportadora">Transportadora</option>
-                        <option value="Correios">Correios</option>
                     </select>
-                    <textarea id="observacoes" placeholder="Observações adicionais..."></textarea>
                 </div>
 
                 <div class="botoes-acao">
-                    <button class="btn-enviar" onclick="enviarWhatsapp()">Enviar Pedido via WhatsApp</button>
-                    <button class="btn-pdf" onclick="alert('Funcionalidade em desenvolvimento')">Gerar PDF</button>
-                    <button class="btn-limpar" onclick="limparCarrinho()">Limpar Tudo</button>
+                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
+                    <button class="btn-limpar" onclick="limparCarrinho()">Limpar</button>
                 </div>
             </div>
         </aside>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
