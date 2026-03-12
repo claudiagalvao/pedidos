@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -13,7 +13,7 @@
 
     <header class="header-b2b">
         <div class="banner-container">
-            <img src="banner.png" class="banner-img">
+            <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
         </div>
         <nav class="nav-bar">
             <div id="menu-categorias"></div>
@@ -32,29 +32,36 @@
         <aside class="checkout-section">
             <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
             <div id="status-carrinho" class="status-carrinho"></div>
-            <div class="barra-progresso-bg"><div id="barra-fill" class="barra-progresso-fill"></div></div>
-            <div class="economia-destaque">Economia: <span id="valor-economia">R$ 0,00</span></div>
+            
+            <div class="barra-progresso-bg">
+                <div id="barra-fill" class="barra-progresso-fill"></div>
+            </div>
+
+            <div class="economia-destaque">
+                Economia: <span id="valor-economia">R$ 0,00</span>
+            </div>
 
             <div class="checkout-scroll-area">
                 <div id="lista-itens-carrinho" class="mini-lista"></div>
-                <div style="text-align: right;"><a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" class="link-esvaziar">Esvaziar Carrinho</a></div>
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <a href="javascript:void(0)" onclick="esvaziarCarrinhoTotal()" class="link-esvaziar">Esvaziar Carrinho</a>
+                </div>
 
                 <form id="form-pedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
                     <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
                     <input type="hidden" name="_subject" id="email-assunto" value="Novo Pedido B2B">
                     <input type="hidden" name="Resumo_Pedido" id="pedido-corpo">
-                    <input type="hidden" name="_template" value="table">
-
+                    
                     <div class="dados-nf">
                         <h4>Dados para Faturamento</h4>
                         <input type="text" name="Cliente" id="razao-social" placeholder="Razão Social / Nome Completo *" required>
                         <div class="row">
-                            <input type="text" name="Documento" id="cnpj" placeholder="CNPJ / CPF *" required>
+                            <input type="text" name="CNPJ_CPF" id="cnpj" placeholder="CNPJ / CPF *" required>
                             <input type="text" name="IE_RG" id="ie" placeholder="IE / RG">
                         </div>
                         <div class="row">
                             <input type="text" name="WhatsApp" id="whatsapp" placeholder="WhatsApp *" required>
-                            <input type="email" name="Email_Cliente" id="email-nf" placeholder="E-mail *" required>
+                            <input type="email" name="Email" id="email-nf" placeholder="E-mail *" required>
                         </div>
                         <textarea name="Endereco" id="endereco" placeholder="Endereço de Entrega Completo *" required></textarea>
 
@@ -64,7 +71,7 @@
                                 <option value="" disabled selected>Pagamento *</option>
                                 <option value="PIX">PIX</option>
                                 <option value="TED">TED</option>
-                                <option value="Cartão">Cartão</option>
+                                <option value="Boleto">Boleto</option>
                             </select>
                             <select name="Envio" id="forma-envio" class="select-crazy" required>
                                 <option value="" disabled selected>Envio *</option>
@@ -87,10 +94,10 @@
     </main>
 
     <footer class="footer-crazy">
-        <p><b>GALVAO ARTIGOS PARA FESTAS LTDA - ME (Crazy Fantasy)</b></p>
-        <p>CNPJ: 09.626.903/0001-57 | Rua Itália, 170 - Valinhos, SP</p>
+        <p><b>GALVAO ARTIGOS PARA FESTAS LTDA (Crazy Fantasy)</b></p>
+        <p>Rua Itália, 170 - Centro - Valinhos, SP</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
