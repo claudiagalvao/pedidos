@@ -25,13 +25,12 @@ function renderizarProdutos(lista) {
 
     container.innerHTML = lista.map((p, index) => {
         const vPrincipal = p.variacoes[0];
-        // Selo de Mais Vendido (ajustado para o nome Luna Vibe ou Spray)
         const selo = (p.name.includes("Tinta") || index < 2) ? `<span class="selo-popular">🔥 Mais Vendido</span>` : '';
 
         return `
         <div class="produto-card">
             ${selo}
-            <img src="${p.imagem}" alt="${p.name}">
+            <img src="${p.imagem}" alt="${p.name}" onclick="abrirModal('${p.imagem}', '${p.name}')" style="cursor:zoom-in">
             <h3 title="${p.name}">${p.name}</h3>
             <div class="precos-b2b">
                 <span class="riscado">R$ ${vPrincipal.preco.toFixed(2)}</span>
@@ -39,11 +38,13 @@ function renderizarProdutos(lista) {
             </div>
             <div class="tabela-b2b">
                 <p>10% → R$ ${(vPrincipal.preco * 0.9).toFixed(2)}</p>
+                <p>12% (R$500+) → R$ ${(vPrincipal.preco * 0.88).toFixed(2)}</p>
                 <p>15% (R$1000+) → R$ ${(vPrincipal.preco * 0.85).toFixed(2)}</p>
             </div>
-            <select id="var-${index}" class="select-variacao">
-                ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome} (Est: ${v.estoque})</option>`).join('')}
+            <select id="var-${index}" class="select-variacao" onchange="atualizarEstoqueVisivel(${index})">
+                ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join('')}
             </select>
+            <p class="estoque-info">Estoque: <span id="est-val-${index}">${vPrincipal.estoque}</span> un</p>
             <div class="controles">
                 <input type="number" id="qtd-${index}" value="0" min="0">
                 <button onclick="adicionar(${index}, '${p.name}')">Adicionar</button>
@@ -52,7 +53,26 @@ function renderizarProdutos(lista) {
     }).join('');
 }
 
-// BUSCA EM TEMPO REAL
+// Função para atualizar o número do estoque quando o cliente muda a variação (cor/tamanho)
+function atualizarEstoqueVisivel(index) {
+    const select = document.getElementById(`var-${index}`);
+    const [nome, preco, estoque] = select.value.split('|');
+    document.getElementById(`est-val-${index}`).innerText = estoque;
+}
+
+function abrirModal(src, nome) {
+    const modal = document.getElementById("modal-foto");
+    const img = document.getElementById("foto-ampliada");
+    const legenda = document.getElementById("legenda-foto");
+    modal.style.display = "block";
+    img.src = src;
+    legenda.innerHTML = nome;
+}
+
+function fecharModal() {
+    document.getElementById("modal-foto").style.display = "none";
+}
+
 function filtrarBusca() {
     const termo = document.getElementById("busca").value.toLowerCase();
     const filtrados = todosProdutos.filter(p => p.name.toLowerCase().includes(termo));
@@ -85,6 +105,7 @@ function atualizarInterface() {
     const total = subtotal * (1 - desc/100);
     document.getElementById("subtotal").innerText = `Subtotal: R$ ${subtotal.toFixed(2)}`;
     document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
+    document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}% (B2B)`;
     document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
 
     const barra = document.getElementById("barra-progresso");
@@ -125,7 +146,7 @@ function validar() {
 
 function enviarWhatsapp() {
     if (!validar()) return;
-    const texto = `*NOVO PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n` + 
+    const texto = `*PEDIDO B2B*\nTotal: ${document.getElementById("total-final").innerText}\n` + 
                   carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
     window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
