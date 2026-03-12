@@ -16,7 +16,7 @@
         <div class="nav-bar">
             <div id="menu-categorias" class="categorias-grid"></div>
             <div class="busca-container">
-                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome..." onkeyup="filtrarBusca()">
+                <input type="text" id="busca" placeholder="🔍 Digite para buscar..." oninput="filtrarBusca()">
             </div>
         </div>
     </header>
@@ -55,17 +55,13 @@
                         <input type="text" id="email" placeholder="E-mail *">
                     </div>
                     <input type="text" id="endereco" placeholder="Endereço">
-                    <div class="row">
-                        <input type="text" id="cidade" placeholder="Cidade">
-                        <input type="text" id="estado" placeholder="UF">
-                    </div>
                 </div>
 
                 <div class="botoes-finalizacao">
-                    <button class="btn-email" onclick="enviarEmail()">Enviar por E-mail</button>
-                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>
-                    <button class="btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
-                    <button class="btn-limpar" onclick="limparFormulario()">Limpar Pedido</button>
+                    <button class="btn-email" onclick="enviarEmail()">Enviar Pedido</button>
+                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">WhatsApp</button>
+                    <button class="btn-pdf" onclick="gerarPDF()">Baixar PDF</button>
+                    <button class="btn-limpar" onclick="limparFormulario()">Esvaziar</button>
                 </div>
             </div>
         </aside>
