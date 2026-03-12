@@ -9,6 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <div id="modal-foto" class="modal" onclick="fecharModal()">
+        <span class="fechar">&times;</span>
+        <img class="modal-conteudo" id="foto-ampliada">
+        <div id="legenda-foto"></div>
+    </div>
+
     <header class="header-b2b">
         <div class="banner-container">
             <img src="banner.png" alt="Banner Crazy Fantasy" class="banner-img">
@@ -29,7 +35,6 @@
         <aside class="checkout-section">
             <div class="carrinho-container">
                 <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
-                
                 <div class="resumo-financeiro">
                     <p id="subtotal">Subtotal: R$ 0,00</p>
                     <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
@@ -39,24 +44,14 @@
                     <p id="meta-alerta" class="alerta erro">Faltam R$ 200,00 para o mínimo</p>
                     <h3 id="total-final">R$ 0,00</h3>
                 </div>
-
                 <div id="lista-itens-carrinho" class="mini-lista"></div>
-
                 <div class="dados-nf">
                     <h3>Dados para Nota Fiscal</h3>
                     <input type="text" id="razao-social" placeholder="Razão Social *">
-                    <div class="row">
-                        <input type="text" id="cnpj" placeholder="CNPJ *">
-                        <input type="text" id="ie" placeholder="IE">
-                    </div>
+                    <div class="row"><input type="text" id="cnpj" placeholder="CNPJ *"><input type="text" id="ie" placeholder="IE"></div>
                     <input type="text" id="responsavel" placeholder="Responsável">
-                    <div class="row">
-                        <input type="text" id="whatsapp" placeholder="WhatsApp *">
-                        <input type="text" id="email" placeholder="E-mail *">
-                    </div>
-                    <input type="text" id="endereco" placeholder="Endereço">
+                    <div class="row"><input type="text" id="whatsapp" placeholder="WhatsApp *"><input type="text" id="email" placeholder="E-mail *"></div>
                 </div>
-
                 <div class="botoes-finalizacao">
                     <button class="btn-email" onclick="enviarEmail()">Enviar Pedido</button>
                     <button class="btn-whatsapp" onclick="enviarWhatsapp()">WhatsApp</button>
