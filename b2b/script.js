@@ -4,7 +4,16 @@ let carrinho = [];
 async function carregarProdutos() {
     const res = await fetch('/api/produtos');
     todosProdutos = await res.json();
+    renderizarMenu();
     renderizarProdutos(todosProdutos);
+}
+
+function renderizarMenu() {
+    const menu = document.getElementById("menu-categorias");
+    const categorias = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
+    menu.innerHTML = categorias.map(cat => 
+        `<button class="btn-cat" onclick="filtrar('${cat}')">${cat}</button>`
+    ).join('');
 }
 
 function renderizarProdutos(lista) {
@@ -16,7 +25,7 @@ function renderizarProdutos(lista) {
 
         return `
         <div class="produto-card">
-            <img src="${p.imagem}">
+            <img src="${p.imagem}" loading="lazy">
             <h3>${p.name}</h3>
             <div class="precos-b2b">
                 <span class="riscado">R$ ${precoVarejo.toFixed(2)}</span>
@@ -28,10 +37,10 @@ function renderizarProdutos(lista) {
                 <p>15% (R$1000+) → R$ ${(precoVarejo * 0.85).toFixed(2)}</p>
             </div>
             ${p.variacoes.length > 1 ? `
-                <select id="var-${p.name.replace(/\s/g, '')}">
+                <select id="var-${p.name.replace(/\s/g, '')}" class="select-variacao">
                     ${p.variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome} (Est: ${v.estoque})</option>`).join('')}
                 </select>
-            ` : ''}
+            ` : `<p class="estoque-label">Estoque: ${vPrincipal.estoque}</p>`}
             <div class="controles">
                 <input type="number" id="qtd-${p.name.replace(/\s/g, '')}" value="1" min="1">
                 <button onclick="adicionar('${p.name}')">Adicionar</button>
@@ -42,54 +51,110 @@ function renderizarProdutos(lista) {
 
 function adicionar(nome) {
     const prod = todosProdutos.find(p => p.name === nome);
-    const select = document.getElementById(`var-${nome.replace(/\s/g, '')}`);
-    const [varNome, varPreco, varEstoque] = select ? select.value.split('|') : [prod.variacoes[0].nome, prod.variacoes[0].preco, prod.variacoes[0].estoque];
-    const qtd = parseInt(document.getElementById(`qtd-${nome.replace(/\s/g, '')}`).value);
+    const idLimpo = nome.replace(/\s/g, '');
+    const select = document.getElementById(`var-${idLimpo}`);
+    
+    let vNome, vPreco, vEstoque;
+    if (select) {
+        [vNome, vPreco, vEstoque] = select.value.split('|');
+    } else {
+        vNome = prod.variacoes[0].nome;
+        vPreco = prod.variacoes[0].preco;
+        vEstoque = prod.variacoes[0].estoque;
+    }
 
-    carrinho.push({ name: nome, variacao: varNome, preco: parseFloat(varPreco), qtd: qtd });
+    const qtd = parseInt(document.getElementById(`qtd-${idLimpo}`).value);
+    carrinho.push({ name: nome, variacao: vNome, preco: parseFloat(vPreco), qtd: qtd });
     atualizarInterface();
 }
 
 function atualizarInterface() {
     const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    let desc = 10; // Mínimo B2B
+    let desc = 10;
     if (subtotal >= 1000) desc = 15;
     else if (subtotal >= 500) desc = 12;
 
     const total = subtotal * (1 - desc/100);
-    document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
     document.getElementById("subtotal").innerText = `Subtotal: R$ ${subtotal.toFixed(2)}`;
-    document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}%`;
-    
+    document.getElementById("desconto-aplicado").innerText = `Desconto: ${desc}% (B2B)`;
+    document.getElementById("total-final").innerText = `R$ ${total.toFixed(2)}`;
+    document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
+
+    const barra = document.getElementById("barra-progresso");
+    barra.style.width = Math.min((subtotal / 1000) * 100, 100) + "%";
+
+    const metaTxt = document.getElementById("meta-alerta");
+    if (subtotal < 200) metaTxt.innerHTML = `<span style="color:#ff4d4d">Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo</span>`;
+    else if (subtotal < 1000) metaTxt.innerText = `Faltam R$ ${(1000-subtotal).toFixed(2)} para 15%`;
+    else metaTxt.innerText = "🚀 Desconto Máximo!";
+
     const lista = document.getElementById("lista-itens-carrinho");
-    lista.innerHTML = carrinho.map(i => `<div class="mini-item">${i.qtd}x ${i.name} (${i.variacao})</div>`).join('');
+    lista.innerHTML = carrinho.map((i, index) => `
+        <div class="mini-item">
+            <span>${i.qtd}x ${i.name} <small>(${i.variacao})</small></span>
+            <button onclick="remover(${index})">×</button>
+        </div>
+    `).join('');
 }
 
-function enviarWhatsapp() {
-    const texto = `Pedido B2B\nTotal: ${document.getElementById("total-final").innerText}\nItens:\n` + carrinho.map(i => `${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
-    window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
+function remover(index) {
+    carrinho.splice(index, 1);
+    atualizarInterface();
+}
+
+function validar() {
+    const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+    const r = document.getElementById("razao-social").value;
+    const c = document.getElementById("cnpj").value;
+    const w = document.getElementById("whatsapp").value;
+    const e = document.getElementById("email").value;
+
+    if (subtotal < 200) { alert("Mínimo de R$ 200,00 não atingido!"); return false; }
+    if (!r || !c || !w || !e) { alert("Preencha Razão Social, CNPJ, WhatsApp e E-mail!"); return false; }
+    return true;
 }
 
 function enviarEmail() {
-    const corpo = `Pedido B2B\nTotal: ${document.getElementById("total-final").innerText}\n\nItens:\n` + carrinho.map(i => `${i.qtd}x ${i.name} (${i.variacao})`).join('\n');
-    window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Novo Pedido B2B&body=${encodeURIComponent(corpo)}`;
+    if (!validar()) return;
+    const cliente = document.getElementById("razao-social").value;
+    const corpo = `PEDIDO B2B - ${cliente}\n\nItens:\n` + 
+        carrinho.map(i => `- ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + 
+        `\n\nTOTAL: ${document.getElementById("total-final").innerText}`;
+    
+    window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
+}
+
+function enviarWhatsapp() {
+    if (!validar()) return;
+    const texto = `*PEDIDO B2B - ${document.getElementById("razao-social").value}*\n\n` + 
+        carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.variacao})`).join('\n') + 
+        `\n\n*TOTAL: ${document.getElementById("total-final").innerText}*`;
+    window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(texto)}`);
 }
 
 function gerarPDF() {
+    if (!validar()) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("Orçamento B2B - Crazy Fantasy", 10, 10);
-    carrinho.forEach((item, index) => {
-        doc.text(`${item.qtd}x ${item.name} (${item.variacao}) - R$ ${item.preco.toFixed(2)}`, 10, 20 + (index * 10));
+    doc.text(`Orçamento B2B - ${document.getElementById("razao-social").value}`, 10, 10);
+    carrinho.forEach((i, idx) => {
+        doc.text(`${i.qtd}x ${i.name} (${i.variacao}) - R$ ${(i.preco * i.qtd).toFixed(2)}`, 10, 20 + (idx * 7));
     });
-    doc.text(`Total Final: ${document.getElementById("total-final").innerText}`, 10, 20 + (carrinho.length * 10) + 10);
-    doc.save("pedido_crazy_fantasy.pdf");
+    doc.text(`TOTAL FINAL: ${document.getElementById("total-final").innerText}`, 10, 20 + (carrinho.length * 7) + 10);
+    doc.save("orcamento.pdf");
 }
 
 function limparFormulario() {
-    carrinho = [];
-    document.querySelectorAll('input').forEach(i => i.value = "");
-    atualizarInterface();
+    if(confirm("Limpar tudo?")) {
+        carrinho = [];
+        document.querySelectorAll('input').forEach(i => i.value = "");
+        atualizarInterface();
+    }
+}
+
+function filtrar(cat) {
+    if (cat === "Todos") renderizarProdutos(todosProdutos);
+    else renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
 }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
