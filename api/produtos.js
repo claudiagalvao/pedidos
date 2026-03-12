@@ -1,7 +1,6 @@
 export default async function handler(req, res) {
     const TOKEN = process.env.NUVEMSHOP_TOKEN;
     const STORE_ID = process.env.ID_DA_LOJA;
-
     try {
         const resposta = await fetch(`https://api.tiendanube.com/v1/${STORE_ID}/products`, {
             headers: {
@@ -10,7 +9,6 @@ export default async function handler(req, res) {
                 "User-Agent": "PortalB2B (cgborin@gmail.com)"
             }
         });
-
         const produtos = await resposta.json();
         const listaFormatada = produtos.map(p => ({
             name: p.name.pt || p.name,
@@ -24,7 +22,5 @@ export default async function handler(req, res) {
             }))
         }));
         res.status(200).json(listaFormatada);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    } catch (error) { res.status(500).json({ error: error.message }); }
 }
