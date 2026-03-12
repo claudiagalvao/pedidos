@@ -1,66 +1,78 @@
-body { background: #0b0f15; color: white; font-family: 'Roboto', sans-serif; margin: 0; }
+/* Configurações Gerais */
+body { 
+    background: #0b0f15; 
+    color: white; 
+    font-family: 'Roboto', sans-serif; 
+    margin: 0; 
+    scroll-behavior: smooth;
+}
 
 /* MODAL FOTO GRANDE */
-.modal { display: none; position: fixed; z-index: 1000; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 2000; 
+    padding-top: 50px; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.9); 
+}
 .modal-conteudo { margin: auto; display: block; width: 80%; max-width: 600px; border-radius: 10px; }
-#legenda-foto { margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; font-weight: bold; }
+#legenda-foto { text-align: center; color: #ccc; padding: 10px; font-weight: bold; }
 .fechar { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
 
-/* Cabeçalho Compacto */
-.header-b2b { background: #0b0f15; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-.banner-container { width: 100%; max-height: 180px; overflow: hidden; }
-.banner-img { width: 100%; object-fit: cover; }
+/* HEADER E BANNER ANIMADO */
+.header-b2b { 
+    background: #0b0f15; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+    transition: all 0.4s ease;
+}
 
-.nav-bar { background: #1a202c; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-bottom: 2px solid #ff00ff; }
+.banner-container { 
+    width: 100%; 
+    height: 180px; /* Altura inicial */
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    transition: height 0.4s ease;
+    background: #000;
+}
+
+.banner-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    object-position: center; 
+}
+
+/* Estado do Banner ao Rolar a Página */
+.header-b2b.scrolled .banner-container {
+    height: 80px;
+}
+
+.nav-bar { 
+    background: #1a202c; 
+    padding: 8px 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 15px; 
+    border-bottom: 2px solid #ff00ff; 
+}
+
+/* BOTÕES E BUSCA */
 .btn-cat { padding: 6px 12px; border-radius: 15px; border: none; background: #ff00ff; color: white; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.2s; }
 .btn-cat:hover { background: #00ffff; color: #000; }
-
 .busca-container { flex-grow: 1; max-width: 350px; }
 .busca-container input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid #3d4b5f; background: #0b0f15; color: white; outline: none; }
 
+/* LAYOUT PRINCIPAL */
 .main-layout { display: flex; gap: 20px; padding: 20px; max-width: 1600px; margin: 0 auto; }
 
-/* Grid de Produtos */
+/* PRODUTOS */
 .catalogo-section { flex: 3; }
-.produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-.produto-card { background: #fff; color: #333; padding: 12px; border-radius: 10px; text-align: center; position: relative; display: flex; flex-direction: column; }
-.selo-popular { position: absolute; top: 5px; left: 5px; background: #ff8c00; color: white; font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; font-weight: bold; z-index: 2; }
-.produto-card img { width: 100%; border-radius: 6px; height: 160px; object-fit: contain; margin-bottom: 8px; transition: 0.3s; }
-.produto-card img:hover { opacity: 0.8; }
-
-.produto-card h3 { font-size: 0.8rem; height: 3em; line-height: 1.1; margin: 5px 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-.riscado { text-decoration: line-through; color: #aaa; font-size: 0.75rem; }
-.destaque-b2b { color: #ff00ff; font-weight: bold; font-size: 1.1rem; }
-.tabela-b2b { font-size: 0.65rem; background: #f1f1f1; padding: 5px; border-radius: 4px; margin: 8px 0; color: #444; }
-
-.select-variacao { width: 100%; padding: 5px; margin-bottom: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.8rem; }
-.estoque-info { font-size: 0.7rem; color: #666; margin-bottom: 10px; font-weight: bold; }
-
-.controles { display: flex; gap: 4px; margin-top: auto; }
-.controles input { width: 45px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 4px; }
-.controles button { flex: 1; background: #0b0f15; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-
-/* Pedido Lateral */
-.checkout-section { flex: 1; background: #1a202c; padding: 15px; border-radius: 10px; position: sticky; top: 220px; height: fit-content; border: 1px solid #3d4b5f; }
-.resumo-financeiro { background: #0b0f15; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
-.barra-progresso-container { background: #333; height: 8px; border-radius: 5px; margin: 8px 0; overflow: hidden; }
-.barra-neon { height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff); box-shadow: 0 0 10px #ff00ff; width: 0%; transition: 0.4s; }
-
-.alerta { font-size: 0.7rem; font-weight: bold; }
-.alerta.erro { color: #ff4d4d; }
-.alerta.sucesso { color: #00ff88; }
-
-.mini-lista { max-height: 120px; overflow-y: auto; margin-bottom: 10px; }
-.mini-item { display: flex; justify-content: space-between; font-size: 0.7rem; padding: 4px 0; border-bottom: 1px solid #333; }
-.mini-item button { background: none; border: none; color: #ff4d4d; cursor: pointer; }
-
-.dados-nf input { width: 100%; padding: 8px; margin: 2px 0; background: #2d3748; color: white; border: 1px solid #444; border-radius: 4px; box-sizing: border-box; font-size: 0.75rem; }
-.row { display: flex; gap: 4px; }
-
-.botoes-finalizacao button { width: 100%; padding: 8px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-top: 4px; color: white; font-size: 0.8rem; }
-.btn-email { background: #3b82f6; }
-.btn-whatsapp { background: #22c55e; }
-.btn-pdf { background: #ef4444; }
-.btn-limpar { background: #4b5563; }
-
-@media (max-width: 1000px) { .main-layout { flex-direction: column; } .checkout-section { position: static; } }
