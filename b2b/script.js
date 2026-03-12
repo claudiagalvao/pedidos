@@ -10,7 +10,7 @@ async function carregarProdutos() {
         produtosFiltrados = todosProdutos;
         renderizarProdutos(produtosFiltrados);
         renderizarMenu();
-    } catch (err) { console.error("Erro ao carregar produtos:", err); }
+    } catch (err) { console.error("Erro API:", err); }
 }
 
 function renderizarMenu() {
@@ -40,11 +40,11 @@ function renderizarProdutos(lista) {
         <div class="produto-card">
             <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
             <h3>${p.name}</h3>
-            <div style="font-size:0.75rem; color:#666">Varejo: R$ ${v.preco.toFixed(2)}</div>
+            <div style="font-size:0.75rem; color:#64748b">Varejo: R$ ${v.preco.toFixed(2)}</div>
             <div style="color:#ff00ff; font-weight:900; font-size:1.1rem">B2B: R$ ${(v.preco * 0.9).toFixed(2)}</div>
             
             <div class="tabela-descontos-card">
-                <b>Atacado Progressivo:</b><br>
+                <b>Progressivo:</b><br>
                 12% OFF (R$500): R$ ${(v.preco * 0.88).toFixed(2)}<br>
                 15% OFF (R$1000): R$ ${(v.preco * 0.85).toFixed(2)}
             </div>
@@ -54,8 +54,8 @@ function renderizarProdutos(lista) {
             </div>
 
             ${p.variacoes.length > 1 && !isPadrao ? `
-                <select id="var-${index}" class="select-crazy" style="width:100%; padding:8px; margin-bottom:10px; border-radius:6px; border:1px solid #ddd">
-                    ${p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome} (Estoque: ${vi.estoque})</option>`).join('')}
+                <select id="var-${index}" class="select-crazy" style="width:100%; padding:8px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1; font-weight:bold">
+                    ${p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome} (Est: ${vi.estoque})</option>`).join('')}
                 </select>` : `<input type="hidden" id="var-${index}" value="${v.nome}|${v.preco}|${v.estoque}">`
             }
 
@@ -63,7 +63,7 @@ function renderizarProdutos(lista) {
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
                 <input type="number" id="qtd-${index}" value="0" min="0" class="input-qtd" readonly>
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
-                <button onclick="adicionar(${index}, '${p.name}')" style="background:#ff00ff; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; margin-left:5px">ADD</button>
+                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADICIONAR</button>
             </div>
         </div>`;
     }).join('');
@@ -75,7 +75,7 @@ function adicionar(index, nome) {
     const qtd = parseInt(input.value);
 
     if (qtd <= 0) return;
-    if (qtd > parseInt(vEstoque)) return alert(`Temos apenas ${vEstoque} em estoque para esta variação.`);
+    if (qtd > parseInt(vEstoque)) return alert(`Estoque insuficiente (${vEstoque} un.)`);
 
     const item = carrinho.find(i => i.name === nome && i.variacao === vNome);
     if (item) { item.qtd += qtd; } else { carrinho.push({ name: nome, variacao: vNome, preco: parseFloat(vPreco), qtd: qtd }); }
@@ -91,19 +91,19 @@ function atualizarInterface() {
     const pronto = totalFinal >= 200;
 
     if (perc > 0 && nivelAlcancado < perc) {
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff00ff', '#ffffff', '#22c55e'] });
         nivelAlcancado = perc;
     }
 
     document.getElementById("status-carrinho").innerHTML = `
-        <p>Subtotal Varejo: R$ ${subtotal.toFixed(2)}</p>
+        <p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
         <p>Desconto Atacado: ${perc}%</p>
         <p style="color:#ff00ff; font-size:1.2rem"><b>Total: R$ ${totalFinal.toFixed(2)}</b></p>
-        ${!pronto ? `<p style="color:red; font-size:0.7rem">Mínimo para faturamento: R$ 200,00</p>` : ''}
+        ${!pronto ? `<p style="color:#ef4444; font-size:0.7rem; font-weight:bold">Mínimo: R$ 200,00</p>` : ''}
     `;
 
     document.getElementById("barra-fill").style.width = `${Math.min((totalFinal/1000)*100, 100)}%`;
-    document.getElementById("box-economia").innerText = `Economia no Pedido: R$ ${(subtotal - totalFinal).toFixed(2)}`;
+    document.getElementById("box-economia").innerText = `Você economizou: R$ ${(subtotal - totalFinal).toFixed(2)}`;
     document.getElementById("tituloCarrinho").innerText = `🛒 Pedido (${carrinho.length} itens)`;
 
     ["btn-zap", "btn-email", "btn-pdf"].forEach(id => {
@@ -125,32 +125,36 @@ function renderCarrinho() {
 function gerarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const logo = document.querySelector('.banner-img');
-    const cliente = document.getElementById('razao-social').value || 'Empresa Parceira';
+    const banner = document.querySelector('.banner-img');
+    const cliente = document.getElementById('razao-social').value || 'Cliente B2B';
 
-    // Adiciona a Logo ao PDF
-    try { doc.addImage(logo, 'PNG', 10, 10, 190, 40); } catch(e) { console.error("Logo erro:", e); }
+    try {
+        // Tenta capturar a logo do banner para o PDF
+        const canvas = document.createElement('canvas');
+        canvas.width = banner.naturalWidth;
+        canvas.height = banner.naturalHeight;
+        canvas.getContext('2d').drawImage(banner, 0, 0);
+        const logoData = canvas.toDataURL('image/png');
+        doc.addImage(logoData, 'PNG', 10, 10, 190, 40);
+    } catch(e) { doc.text("CRAZY FANTASY - PORTAL B2B", 14, 20); }
 
     doc.setFontSize(14);
-    doc.text("ORÇAMENTO DE PEDIDO B2B", 14, 60);
+    doc.text("ORÇAMENTO DE PRODUTOS", 14, 60);
     doc.setFontSize(10);
-    doc.text(`Cliente: ${cliente}`, 14, 70);
+    doc.text(`Empresa: ${cliente}`, 14, 70);
     doc.text(`CNPJ: ${document.getElementById('cnpj').value}`, 14, 75);
     doc.text(`Data: ${new Date().toLocaleDateString()}`, 14, 80);
 
     doc.autoTable({
         startY: 85,
-        head: [['Qtd', 'Produto', 'Variação', 'Preço Un.', 'Total']],
+        head: [['Qtd', 'Produto', 'Variação', 'Un.', 'Total']],
         body: carrinho.map(i => [i.qtd, i.name, i.variacao, `R$ ${i.preco.toFixed(2)}`, `R$ ${(i.qtd * i.preco).toFixed(2)}`]),
-        theme: 'grid',
         headStyles: { fillColor: [255, 0, 255] }
     });
 
     const totalStr = document.getElementById("status-carrinho").querySelector('b').innerText;
-    doc.setFontSize(12);
-    doc.text(`VALOR TOTAL DO PEDIDO: ${totalStr}`, 14, doc.lastAutoTable.finalY + 15);
-    
-    doc.save(`Pedido_Crazy_Fantasy_${cliente}.pdf`);
+    doc.text(`VALOR TOTAL: ${totalStr}`, 14, doc.lastAutoTable.finalY + 15);
+    doc.save(`Orcamento_Crazy_${cliente}.pdf`);
 }
 
 function finalizar(via) {
@@ -184,7 +188,7 @@ function abrirModal(src) {
 }
 
 function remover(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
-function esvaziarCarrinhoTotal() { if(confirm("Esvaziar carrinho?")) { carrinho = []; atualizarInterface(); } }
-function limparTudo() { if(confirm("Limpar todos os campos?")) location.reload(); }
+function esvaziarCarrinhoTotal() { if(confirm("Limpar carrinho?")) { carrinho = []; atualizarInterface(); } }
+function limparTudo() { if(confirm("Deseja recarregar a página?")) location.reload(); }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
