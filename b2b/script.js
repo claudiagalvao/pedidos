@@ -4,24 +4,24 @@ let carrinho = [];
 async function carregarProdutos() {
     const container = document.getElementById("produtos");
     try {
-        // Chama a sua API que está na pasta /api do projeto
+        // Agora o script chama a SUA api da Vercel
         const resposta = await fetch('/api/produtos');
-        if (!resposta.ok) throw new Error("Erro ao buscar dados da API");
-        
         todosProdutos = await resposta.json();
+        
         renderizarProdutos(todosProdutos);
     } catch (e) {
-        console.error(e);
-        container.innerHTML = "<p style='color:red'>Erro ao carregar produtos. Verifique as Variáveis de Ambiente na Vercel.</p>";
+        console.error("Erro:", e);
+        container.innerHTML = "<p style='color:red'>Erro ao carregar produtos.</p>";
     }
 }
 
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     container.innerHTML = "";
+    
     lista.forEach(prod => {
         const card = document.createElement("div");
-        card.className = "produto";
+        card.className = "produto"; // Alinhado ao seu style.css
         card.innerHTML = `
             <img src="${prod.imagem}" style="width:100%">
             <h3>${prod.name}</h3>
