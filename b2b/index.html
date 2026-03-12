@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <header class="header-b2b">
-        <img src="banner.png" alt="Banner" class="banner-img">
+        <img src="banner.png" alt="Banner Crazy Fantasy" class="banner-img">
     </header>
 
     <div class="main-layout">
         <section class="catalogo-section">
             <div id="menu-categorias" class="categorias-grid"></div>
             <div class="busca-container">
-                <input type="text" id="busca" placeholder="🔍 Buscar produto...">
+                <input type="text" id="busca" placeholder="🔍 Buscar produto por nome...">
             </div>
             <div id="produtos" class="produtos-grid"></div>
         </section>
@@ -24,11 +25,14 @@
         <aside class="checkout-section">
             <div class="carrinho-container">
                 <h2 id="tituloCarrinho">🛒 Pedido (0 itens)</h2>
+                
                 <div class="resumo-financeiro">
                     <p id="subtotal">Subtotal: R$ 0,00</p>
-                    <p id="desconto-aplicado">Desconto: 10% (B2B Ativado)</p>
-                    <div class="barra-progresso-container"><div id="barra-progresso" class="barra-progresso"></div></div>
-                    <p id="meta-alerta" class="alerta">Faltam R$ 160,00 para o mínimo</p>
+                    <p id="desconto-aplicado">Desconto: 10% (B2B)</p>
+                    <div class="barra-progresso-container">
+                        <div id="barra-progresso" class="barra-neon"></div>
+                    </div>
+                    <p id="meta-alerta" class="alerta">Faltam R$ 200,00 para o mínimo</p>
                     <h3 id="total-final">Total: R$ 0,00</h3>
                 </div>
 
@@ -36,18 +40,24 @@
 
                 <div class="dados-nf">
                     <h3>Dados para Nota Fiscal</h3>
-                    <input type="text" id="razao-social" placeholder="Razão Social">
-                    <div class="row"><input type="text" id="cnpj" placeholder="CNPJ"><input type="text" id="ie" placeholder="IE"></div>
+                    <input type="text" id="razao-social" placeholder="Razão Social (Obrigatório)">
+                    <div class="row">
+                        <input type="text" id="cnpj" placeholder="CNPJ (Obrigatório)">
+                        <input type="text" id="ie" placeholder="IE">
+                    </div>
                     <input type="text" id="responsavel" placeholder="Responsável">
-                    <div class="row"><input type="text" id="whatsapp" placeholder="WhatsApp"><input type="text" id="email" placeholder="E-mail"></div>
+                    <div class="row">
+                        <input type="text" id="whatsapp" placeholder="WhatsApp (Obrigatório)">
+                        <input type="text" id="email" placeholder="E-mail (Obrigatório)">
+                    </div>
                     <input type="text" id="endereco" placeholder="Endereço Completo">
                 </div>
 
                 <div class="botoes-finalizacao">
-                    <button class="btn-email" onclick="enviarEmail()">Enviar E-mail</button>
-                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar WhatsApp</button>
+                    <button class="btn-email" onclick="enviarEmail()">Enviar por E-mail</button>
+                    <button class="btn-whatsapp" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>
                     <button class="btn-pdf" onclick="gerarPDF()">Gerar Orçamento PDF</button>
-                    <button class="btn-limpar" onclick="limparFormulario()">Limpar Tudo</button>
+                    <button class="btn-limpar" onclick="limparFormulario()">Limpar Pedido</button>
                 </div>
             </div>
         </aside>
