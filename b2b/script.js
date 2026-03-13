@@ -385,3 +385,64 @@ function fecharModal() {
 
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
+
+
+/* =========================================
+ENVIO WHATSAPP
+========================================= */
+
+function enviarWhatsApp(){
+
+    if(carrinho.length===0){
+        alert("Carrinho vazio");
+        return;
+    }
+
+    const nome=document.getElementById("razao-social").value || "Cliente";
+
+    let mensagem=`Pedido B2B - ${nome}%0A%0A`;
+
+    carrinho.forEach(i=>{
+        mensagem+=`${i.qtd}x ${i.name}%0A`;
+    });
+
+    const subtotal=carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
+
+    let desconto=10;
+    if(subtotal>=1000) desconto=15;
+    else if(subtotal>=500) desconto=12;
+
+    const total=subtotal*(1-desconto/100);
+
+    mensagem+=`%0ASubtotal: R$ ${subtotal.toFixed(2)}`;
+    mensagem+=`%0ADesconto: ${desconto}%`;
+    mensagem+=`%0ATotal: R$ ${total.toFixed(2)}`;
+
+    const telefone="5519999999999"; // coloque seu número
+
+    window.open(`https://wa.me/${telefone}?text=${mensagem}`);
+}
+
+
+/* =========================================
+GERAR PDF
+========================================= */
+
+function enviarEmail(){
+
+    if(carrinho.length===0){
+        alert("Carrinho vazio");
+        return;
+    }
+
+    const nome=document.getElementById("razao-social").value || "Cliente";
+
+    const pedido={
+        cliente:nome,
+        itens:carrinho
+    };
+
+    document.getElementById("pedido-corpo").value=JSON.stringify(pedido);
+
+    document.getElementById("form-pedido").submit();
+}
