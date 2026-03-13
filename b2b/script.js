@@ -2,12 +2,12 @@ let todosProdutos = [];
 let carrinho = [];
 
 /* =========================================
-   1. CARREGAMENTO E INICIALIZAÇÃO
+   1. INICIALIZAÇÃO
 ========================================= */
 async function carregarProdutos() {
     try {
         const res = await fetch('../api/produtos.js');
-        if (!res.ok) throw new Error("Erro ao carregar produtos");
+        if (!res.ok) throw new Error("Erro ao carregar catálogo.");
         todosProdutos = await res.json();
         
         renderizarProdutos(todosProdutos);
@@ -29,7 +29,11 @@ function renderizarProdutos(lista) {
     container.innerHTML = lista.map((p, index) => {
         const vPadrao = p.variacoes?.[0] || { preco: 0, estoque: 0 };
         const precoVarejo = vPadrao.preco;
-        const precoB2B = precoVarejo * 0.9; // Desconto padrão de 10% aplicado no B2B
+        
+        // Cálculos das faixas de desconto para exibição no card
+        const precoB2B_10 = precoVarejo * 0.90; 
+        const precoB2B_12 = precoVarejo * 0.88; 
+        const precoB2B_15 = precoVarejo * 0.85; 
 
         const temVariacaoReal = p.variacoes && p.variacoes.length > 1;
 
@@ -44,13 +48,19 @@ function renderizarProdutos(lista) {
             <h3>${p.name}</h3>
 
             <div class="preco-container">
-                <del>De: R$ ${precoVarejo.toFixed(2)}</del>
-                <div class="preco-b2b">B2B: R$ ${precoB2B.toFixed(2)}</div>
+                <del>Varejo: R$ ${precoVarejo.toFixed(2)}</del>
+                <div class="preco-principal">B2B: R$ ${precoB2B_10.toFixed(2)} <small>(10% OFF)</small></div>
             </div>
 
-            <div class="tabela-descontos-card">
-                <strong>💡 Desconto Progressivo:</strong><br>
-                R$ 500: 12% | R$ 1000: 15%
+            <div class="tabela-progressiva">
+                <div class="faixa-item">
+                    <span>Pedido > R$ 500 (12%)</span>
+                    <strong>R$ ${precoB2B_12.toFixed(2)}</strong>
+                </div>
+                <div class="faixa-item">
+                    <span>Pedido > R$ 1000 (15%)</span>
+                    <strong>R$ ${precoB2B_15.toFixed(2)}</strong>
+                </div>
             </div>
 
             <div class="estoque-info">
@@ -112,105 +122,14 @@ function adicionar(idx, nome) {
 }
 
 function atualizarInterface() {
-    const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    let desc = 10; // Desconto inicial B2B
+    const subtotalVarejo = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
-    if (subtotal >= 1000) desc = 15;
-    else if (subtotal >= 500) desc = 12;
+    let desc = 10;
+    let proximoNivel = "";
+    let metaParaBarra = 500;
 
-    const total = subtotal * (1 - desc / 100);
-    const liberado = total >= 200;
-
-    // UI Updates
-    document.getElementById('cart-count').innerText = carrinho.length;
-    document.getElementById('status-carrinho').innerHTML = `
-        <p style="color:#94a3b8; font-size:0.8rem">Subtotal: R$ ${subtotal.toFixed(2)}</p>
-        <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
-        <h2 style="color:white">Total: R$ ${total.toFixed(2)}</h2>
-    `;
-
-    const lista = document.getElementById("lista-itens-carrinho");
-    lista.innerHTML = carrinho.map((i, idx) => `
-        <div class="item-carrinho">
-            <span>${i.qtd}x ${i.name} (${i.var})</span>
-            <button onclick="removerItem(${idx})">✕</button>
-        </div>
-    `).join('');
-
-    // Botões
-    const btnZap = document.querySelector('.btn-whatsapp-ativo');
-    const btnEmail = document.querySelector('.btn-pdf-ativo');
-    
-    [btnZap, btnEmail].forEach(btn => {
-        if(btn) {
-            btn.disabled = !liberado;
-            btn.style.opacity = liberado ? "1" : "0.3";
-            btn.style.cursor = liberado ? "pointer" : "not-allowed";
-        }
-    });
-}
-
-function removerItem(idx) {
-    carrinho.splice(idx, 1);
-    atualizarInterface();
-}
-
-/* =========================================
-   4. FINALIZAÇÃO
-========================================= */
-function gerarCorpoPedido() {
-    const rz = document.getElementById('razao-social').value;
-    if(!rz) return alert("Preencha a Razão Social!");
-    
-    let texto = `*PEDIDO B2B - CRAZY FANTASY*\nEmpresa: ${rz}\n----------\n`;
-    carrinho.forEach(i => texto += `• ${i.qtd}x ${i.name} (${i.var})\n`);
-    texto += `----------\n*${document.querySelector('#status-carrinho h2').innerText}*`;
-    return texto;
-}
-
-function enviarWhatsApp() {
-    const corpo = gerarCorpoPedido();
-    if(corpo) window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(corpo)}`, '_blank');
-}
-
-function enviarEmail() {
-    const corpo = gerarCorpoPedido();
-    if(!corpo) return;
-    document.getElementById('pedido-corpo').value = corpo;
-    document.getElementById('form-pedido').submit();
-}
-
-/* =========================================
-   5. UTILITÁRIOS (BUSCA, MENU, MODAL)
-========================================= */
-function filtrarBusca() {
-    const t = document.getElementById('busca').value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
-}
-
-function renderizarMenu() {
-    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.categoria))];
-    document.getElementById('menu-categorias').innerHTML = cats.map(c => 
-        `<button class="cat-btn" onclick="filtrarCategoria('${c}', this)">${c}</button>`).join('');
-}
-
-function filtrarCategoria(cat, btn) {
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderizarProdutos(cat === 'Todos' ? todosProdutos : todosProdutos.filter(p => p.categoria === cat));
-}
-
-function toggleCarrinho() { document.getElementById('carrinho-drawer').classList.toggle('open'); }
-function ajustarQtd(idx, op) {
-    let i = document.getElementById(`qtd-${idx}`);
-    let v = parseInt(i.value);
-    i.value = op === '+' ? v + 1 : (v > 0 ? v - 1 : 0);
-}
-function abrirModal(s) { 
-    const m = document.getElementById('modal-img');
-    document.getElementById('img-ampliada').src = s;
-    m.style.display = 'flex';
-}
-function fecharModal() { document.getElementById('modal-img').style.display = 'none'; }
-
-document.addEventListener("DOMContentLoaded", carregarProdutos);
+    if (subtotalVarejo >= 1000) {
+        desc = 15;
+        proximoNivel = "🔥 Melhor desconto atingido!";
+        metaParaBarra = 1000;
+    } else if (subtotalVarejo >= 500) {
