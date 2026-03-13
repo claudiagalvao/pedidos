@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=30">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -28,7 +28,7 @@
     </header>
 
     <main class="main-layout">
-        <h2 class="titulo-sessao">🔥 TABELA EXCLUSIVA PARA PARCEIROS | DESCONTOS B2B PROGRESSIVOS</h2>
+        <h2 class="titulo-sessao">🔥 TABELA EXCLUSIVA | DESCONTOS B2B PROGRESSIVOS</h2>
         <div id="produtos" class="produtos-grid"></div>
     </main>
 
@@ -40,10 +40,7 @@
         
         <div class="drawer-content">
             <div id="status-carrinho" class="status-info"></div>
-            
-            <div class="barra-progresso-container">
-                <div id="barra-fill" class="barra-progresso-fill"></div>
-            </div>
+            <div class="barra-progresso-container"><div id="barra-fill" class="barra-progresso-fill"></div></div>
 
             <div id="lista-itens-carrinho" class="mini-lista"></div>
             <button onclick="esvaziarCarrinhoTotal()" class="btn-esvaziar-link">Limpar lista de itens</button>
@@ -63,7 +60,7 @@
                         <input type="text" name="WhatsApp" id="whatsapp" placeholder="WhatsApp *" required>
                         <input type="email" name="Email" id="email-nf" placeholder="E-mail *" required>
                     </div>
-                    <textarea name="Endereco" id="endereco" placeholder="Endereço Completo para Entrega *" required></textarea>
+                    <textarea name="Endereco" id="endereco" placeholder="Endereço Completo *" required></textarea>
                     
                     <h4>Pagamento e Envio</h4>
                     <div class="row">
@@ -77,7 +74,6 @@
                             <option value="" disabled selected>Envio *</option>
                             <option value="Transportadora">Transportadora</option>
                             <option value="Correios">Correios</option>
-                            <option value="Retirada">Retirar em Valinhos</option>
                         </select>
                     </div>
                 </div>
@@ -85,10 +81,10 @@
         </div>
 
         <div class="drawer-footer">
-            <button type="button" id="btn-zap" class="btn-finalizar zap" onclick="finalizar('zap')">FINALIZAR WHATSAPP</button>
-            <button type="button" id="btn-email" class="btn-finalizar email" onclick="finalizar('email')">ENVIAR POR E-MAIL</button>
+            <button type="button" class="btn-finalizar zap" onclick="finalizar('zap')">FINALIZAR WHATSAPP</button>
+            <button type="button" class="btn-finalizar email" onclick="finalizar('email')">ENVIAR POR E-MAIL</button>
             <div class="row-botoes">
-                <button type="button" id="btn-pdf" class="btn-secundario" onclick="gerarPDF()">PDF</button>
+                <button type="button" class="btn-secundario" onclick="gerarPDF()">PDF</button>
                 <button type="button" class="btn-limpar" onclick="limparTudo()">LIMPAR</button>
             </div>
         </div>
@@ -100,6 +96,6 @@
     </footer>
 
     <div id="modal-img" class="modal" onclick="this.style.display='none'"><img id="img-ampliada"></div>
-    <script src="script.js?v=25"></script>
+    <script src="script.js?v=30"></script>
 </body>
 </html>
