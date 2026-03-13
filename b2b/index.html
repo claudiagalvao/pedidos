@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -16,11 +16,10 @@
             <img src="banner.jpg" class="banner-img" id="main-banner" alt="Crazy Fantasy B2B">
         </div>
         <nav class="nav-bar">
-            <div id="menu-categorias" class="menu-cats">
-                </div>
+            <div id="menu-categorias" class="menu-cats"></div>
             <div class="header-right">
                 <div class="busca-container">
-                    <input type="text" id="busca" placeholder="🔍 Buscar..." onkeyup="filtrarBusca()">
+                    <input type="text" id="busca" placeholder="🔍 Buscar produto..." onkeyup="filtrarBusca()">
                 </div>
                 <button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
                     🛒 <span id="cart-count">0</span>
@@ -31,7 +30,7 @@
 
     <main class="main-layout">
         <section class="catalogo-section">
-            <h2 class="titulo-sessao">🔥 Tabela de Parceiros | Descontos Progressivos</h2>
+            <h2 class="titulo-sessao">🔥 Tabela Exclusiva para Parceiros | Descontos B2B Progressivos</h2>
             <div id="produtos" class="produtos-grid"></div>
         </section>
     </main>
@@ -48,6 +47,7 @@
             <div id="box-economia" class="economia-destaque"></div>
 
             <div id="lista-itens-carrinho" class="mini-lista"></div>
+            <button onclick="esvaziarCarrinhoTotal()" class="btn-esvaziar-link">Esvaziar Carrinho</button>
 
             <form id="form-pedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
                 <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
@@ -55,29 +55,31 @@
                 <input type="hidden" name="Resumo_Pedido" id="pedido-corpo">
                 
                 <div class="dados-nf">
-                    <h4>Dados da Empresa</h4>
-                    <input type="text" name="Razao_Social" id="razao-social" placeholder="Razão Social *" required>
+                    <h4>Dados para Faturamento</h4>
+                    <input type="text" name="Razao_Social" id="razao-social" placeholder="Razão Social / Nome Completo *" required>
                     <div class="row">
-                        <input type="text" name="CNPJ" id="cnpj" placeholder="CNPJ *" required>
-                        <input type="text" name="IE" id="ie" placeholder="I.E.">
+                        <input type="text" name="CNPJ_CPF" id="cnpj" placeholder="CNPJ / CPF *" required>
+                        <input type="text" name="IE_RG" id="ie" placeholder="IE / RG">
                     </div>
                     <div class="row">
                         <input type="text" name="Zap" id="whatsapp" placeholder="WhatsApp *" required>
                         <input type="email" name="Email" id="email-nf" placeholder="E-mail *" required>
                     </div>
-                    <textarea name="Endereco" id="endereco" placeholder="Endereço Completo de Entrega *" required></textarea>
+                    <textarea name="Endereco" id="endereco" placeholder="Endereço de Entrega Completo *" required></textarea>
                     
                     <h4>Pagamento e Envio</h4>
                     <div class="row">
                         <select name="Pagamento" id="forma-pagamento" required>
                             <option value="" disabled selected>Pagamento *</option>
-                            <option value="PIX">PIX</option>
-                            <option value="Boleto">Boleto</option>
+                            <option value="PIX">PIX (5% desc extra)</option>
+                            <option value="Boleto">Boleto Faturado</option>
+                            <option value="Cartao">Cartão de Crédito</option>
                         </select>
                         <select name="Envio" id="forma-envio" required>
                             <option value="" disabled selected>Envio *</option>
                             <option value="Transportadora">Transportadora</option>
                             <option value="Correios">Correios</option>
+                            <option value="Retirada">Retirar em Valinhos</option>
                         </select>
                     </div>
                 </div>
@@ -87,17 +89,18 @@
         <div class="drawer-footer">
             <button type="button" id="btn-zap" class="btn-desativado" onclick="finalizar('zap')">FINALIZAR WHATSAPP</button>
             <div class="row">
-                <button type="button" id="btn-pdf" class="btn-desativado" onclick="gerarPDF()">PDF</button>
+                <button type="button" id="btn-pdf" class="btn-desativado" onclick="gerarPDF()">GERAR PDF</button>
                 <button type="button" class="btn-limpar" onclick="limparTudo()">LIMPAR</button>
             </div>
         </div>
     </div>
 
     <footer class="footer-crazy">
-        <p><b>GALVAO ARTIGOS PARA FESTAS LTDA</b> | Valinhos, SP</p>
+        <p><b>GALVAO ARTIGOS PARA FESTAS LTDA (Crazy Fantasy)</b></p>
+        <p>CNPJ: 54.128.539/0001-01 | Valinhos, SP</p>
     </footer>
 
     <div id="modal-img" class="modal" onclick="this.style.display='none'"><img id="img-ampliada"></div>
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 </body>
 </html>
