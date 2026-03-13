@@ -2,7 +2,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #0b0f15; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-/* BANNER */
+/* BANNER INTEGRADO */
 .banner-full-width { width: 100%; line-height: 0; }
 .banner-img { width: 100%; height: auto; display: block; }
 
@@ -12,8 +12,9 @@ body { background: #0b0f15; color: white; font-family: 'Inter', sans-serif; over
     padding: 10px 20px; background: #11151c; position: sticky; 
     top: 0; z-index: 1000; border-bottom: 2px solid #ff00ff; 
 }
-.menu-scroll-container {
-    display: flex; gap: 10px; overflow-x: auto; flex: 1; margin-right: 20px;
+
+.menu-scroll-container { 
+    display: flex; gap: 10px; overflow-x: auto; flex: 1; margin-right: 20px; 
     scrollbar-width: none; -ms-overflow-style: none;
 }
 .menu-scroll-container::-webkit-scrollbar { display: none; }
@@ -25,39 +26,39 @@ body { background: #0b0f15; color: white; font-family: 'Inter', sans-serif; over
 }
 .cat-btn.active { background: #ff00ff; border-color: #ff00ff; color: white; box-shadow: 0 0 10px rgba(255,0,255,0.3); }
 
+.btn-cart-trigger {
+    background: #1a1d23; border: 1px solid #ff00ff; color: white;
+    padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;
+}
+
 /* GRID DE PRODUTOS */
-.titulo-sessao { padding: 30px 20px 10px; text-align: left; }
-.titulo-sessao h2 { font-size: 1rem; letter-spacing: 1px; }
-.produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+.produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; padding: 20px; }
 .produto-card { background: white; color: #1e293b; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; transition: 0.3s; }
-.produto-card img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
+.produto-card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 10px; }
 
 /* CARRINHO DRAWER */
 .drawer { 
     position: fixed; right: -450px; top: 0; width: 420px; height: 100%; 
-    background: #0b0f15; z-index: 9999; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    background: #0b0f15; z-index: 9999; transition: 0.4s ease-in-out; 
     border-left: 2px solid #ff00ff; display: flex; flex-direction: column;
 }
 .drawer.open { right: 0; }
 .drawer-header { padding: 20px; background: #1a1d23; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-.btn-fechar-drawer { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
 
-/* CONTEÚDO E FORMULÁRIO */
 .drawer-content { flex: 1; overflow-y: auto; padding: 20px; }
 .status-container { background: #11151c; padding: 15px; border-radius: 10px; border: 1px solid #ff00ff; margin-bottom: 20px; }
-.dados-nf h4 { color: #ff00ff; font-size: 0.75rem; margin-bottom: 10px; }
+
+/* FORMULÁRIO B2B - ALTO CONTRASTE */
+.dados-nf h4 { color: #ff00ff; font-size: 0.75rem; margin-bottom: 10px; letter-spacing: 1px; }
 .dados-nf input, .dados-nf textarea {
     width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px;
-    border: 1px solid #334155; background: #ffffff !important; color: #000000 !important; font-weight: 700;
+    border: 1px solid #334155; background: #ffffff !important; color: #000000 !important; font-weight: bold;
 }
 .row-inputs { display: flex; gap: 10px; }
 
 /* BOTÕES RODAPÉ */
 .drawer-footer { padding: 20px; background: #1a1d23; border-top: 1px solid #333; }
-.btn-finalizar { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+.btn-finalizar { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.85rem; }
 .zap { background: #25d366; color: white; margin-bottom: 10px; }
 .pdf { background: #334155; color: white; }
 .limpar { background: #ef4444; color: white; }
-
-/* RODAPÉ SITE */
-.footer-crazy { background: #000; color: white; padding: 40px; text-align: center; border-top: 2px solid #ff00ff; margin-top: 50px; }
