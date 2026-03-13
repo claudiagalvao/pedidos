@@ -418,7 +418,7 @@ function enviarWhatsApp(){
     mensagem+=`%0ADesconto: ${desconto}%`;
     mensagem+=`%0ATotal: R$ ${total.toFixed(2)}`;
 
-    const telefone="5519999999999"; // coloque seu número
+    const telefone="5519992850208"; // coloque seu número
 
     window.open(`https://wa.me/${telefone}?text=${mensagem}`);
 }
