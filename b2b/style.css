@@ -1,58 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+/* ... (Manter os imports iniciais) ... */
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #0b0f15; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+/* Banner e Header */
+.banner-container { width: 100%; max-height: 180px; overflow: hidden; background: #000; }
+.banner-img { width: 100%; height: 100%; object-fit: contain; }
 
-/* Banner Otimizado para 1ª Dobra */
-.header-b2b { position: sticky; top: 0; z-index: 1000; background: #0b0f15; border-bottom: 2px solid #ff00ff; }
-.banner-container { width: 100%; max-height: 220px; overflow: hidden; background: #000; display: flex; justify-content: center; }
-.banner-img { width: 100%; max-width: 1920px; height: auto; object-fit: contain; }
+.nav-bar { 
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 10px 20px; background: #11151c; position: sticky; top: 0; z-index: 999;
+}
 
-.nav-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #11151c; flex-wrap: wrap; gap: 15px; }
-.menu-cats { display: flex; gap: 8px; flex-wrap: wrap; }
-.cat-btn { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
-.cat-btn.active { border-color: #ff00ff; color: white; background: #ff00ff44; }
-.busca-container input { background: #1e293b; border: 1px solid #334155; color: white; padding: 8px 15px; border-radius: 20px; width: 220px; outline: none; }
+.header-right { display: flex; align-items: center; gap: 15px; }
+.btn-carrinho-abrir { 
+    background: #ff00ff; color: white; border: none; padding: 10px 15px; 
+    border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
+}
 
-/* Grid de Produtos */
-.main-layout { display: flex; gap: 20px; padding: 20px; max-width: 1600px; margin: 0 auto; align-items: flex-start; }
-.catalogo-section { flex: 3; }
-.produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+/* Grid ocupa a tela toda agora */
+.main-layout { padding: 20px; max-width: 1400px; margin: 0 auto; }
+.produtos-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 25px; 
+}
 
-.produto-card { background: white; color: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: 0.3s; }
-.produto-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-.produto-card img { width: 100%; height: 200px; object-fit: contain; cursor: zoom-in; }
-.produto-card h3 { font-size: 0.9rem; margin: 10px 0; height: 45px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: bold; }
+/* CARRINHO DRAWER (Lado Direito) */
+.drawer {
+    position: fixed; right: -450px; top: 0; width: 400px; height: 100%;
+    background: #1e293b; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+}
+.drawer.open { right: 0; }
 
-.tabela-descontos-card { background: #f8fafc; padding: 8px; border-radius: 6px; font-size: 0.7rem; margin: 10px 0; border-left: 3px solid #ff00ff; color: #475569; }
+.drawer-header { padding: 20px; background: #0f172a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ff00ff; }
+.drawer-content { flex: 1; overflow-y: auto; padding: 20px; }
+.drawer-footer { padding: 20px; background: #0f172a; border-top: 1px solid #334155; }
 
-/* Controles de Quantidade */
-.controle-qtd { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; border-radius: 6px; padding: 5px; margin-top: 10px; gap: 5px; }
-.btn-qtd { width: 30px; height: 30px; border: none; background: #cbd5e1; border-radius: 4px; font-weight: bold; cursor: pointer; }
-.btn-qtd:hover { background: #ff00ff; color: white; }
-.input-qtd { width: 35px; text-align: center; border: none; background: transparent; font-weight: bold; }
-.btn-add { background: #ff00ff; color: white; border: none; padding: 8px; border-radius: 4px; font-weight: 900; cursor: pointer; flex: 1; font-size: 0.7rem; }
+/* Ajuste nos inputs para ficarem perfeitos no Drawer */
+.dados-nf input, .dados-nf textarea, .dados-nf select {
+    background: #ffffff !important; color: #000 !important; border: 1px solid #cbd5e1;
+}
 
-/* Checkout Lateral */
-.checkout-section { flex: 1; background: #1e293b; padding: 20px; border-radius: 15px; position: sticky; top: 130px; height: calc(100vh - 160px); display: flex; flex-direction: column; }
-.checkout-scroll-area { flex: 1; overflow-y: auto; margin: 15px 0; padding-right: 10px; }
-.checkout-scroll-area::-webkit-scrollbar { width: 4px; }
-.checkout-scroll-area::-webkit-scrollbar-thumb { background: #ff00ff; border-radius: 10px; }
-
-/* Formulário PJ - Alto Contraste */
-.dados-nf h4 { color: #ff00ff; font-size: 0.75rem; margin: 15px 0 8px; text-transform: uppercase; letter-spacing: 1px; }
-.dados-nf input, .dados-nf textarea, .dados-nf select { width: 100%; padding: 12px; background: #ffffff; border: 2px solid #cbd5e1; color: #0f172a; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; font-weight: 600; }
-.dados-nf input::placeholder { color: #94a3b8; font-weight: 400; }
-.row { display: flex; gap: 8px; }
-
-/* Botões Ação */
-.botoes-finalizacao button { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; margin-top: 8px; transition: 0.3s; }
-.btn-whatsapp-ativo { background: #22c55e; color: white; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
-.btn-email-ativo { background: #3b82f6; color: white; }
-.btn-pdf-ativo { background: #ef4444; color: white; }
-.btn-desativado { background: #475569 !important; color: #94a3b8 !important; cursor: not-allowed; opacity: 0.6; }
-
-.footer-crazy { text-align: center; padding: 40px; color: #64748b; font-size: 0.8rem; border-top: 1px solid #1e293b; }
-
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; }
-.modal img { max-width: 90%; max-height: 90%; border-radius: 10px; }
+/* ... (Manter estilos de botões e cards anteriores) ... */
