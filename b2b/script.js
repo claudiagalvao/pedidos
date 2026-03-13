@@ -5,64 +5,102 @@ let carrinho = [];
 async function carregarProdutos() {
     try {
         const res = await fetch('../api/produtos.js'); 
-        if (!res.ok) throw new Error("Não foi possível ler o ficheiro produtos.js");
+        if (!res.ok) throw new Error("Erro ao carregar ficheiro");
         todosProdutos = await res.json();
-        
         renderizarProdutos(todosProdutos);
         renderizarMenu(); 
-        console.log("Produtos e Menu carregados.");
     } catch (err) { 
-        console.error("Erro ao carregar:", err);
-        const container = document.getElementById("produtos");
-        if(container) container.innerHTML = `<h2 style='color:white; text-align:center; padding:50px'>⚠️ Erro ao carregar catálogo.</h2>`;
+        console.error("Erro:", err);
     }
 }
 
-// 2. FUNÇÃO PARA ABRIR/FECHAR O CARRINHO
-function toggleCarrinho() {
-    const drawer = document.getElementById('carrinho-drawer');
-    if (drawer) {
-        drawer.classList.toggle('open');
+// 2. RENDERIZAR OS PRODUTOS (Ajustado com Preço Real e Botão Adicionar)
+function renderizarProdutos(lista) {
+    const container = document.getElementById("produtos");
+    if (!container) return;
+
+    container.innerHTML = lista.map((p, index) => {
+        // Pega a primeira variação ou valores zerados se não houver
+        const v = (p.variacoes && p.variacoes.length > 0) ? p.variacoes[0] : { preco: 0, estoque: 0 };
+        
+        // Cálculos de preço
+        const precoOriginal = parseFloat(v.preco);
+        const precoB2B = (precoOriginal * 0.9).toFixed(2); // 10% OFF base do B2B
+
+        return `
+        <div class="produto-card">
+            <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
+            <h3 style="font-size:0.9rem; height:40px; margin: 10px 0; overflow:hidden;">${p.name}</h3>
+            
+            <div style="margin-bottom: 5px">
+                <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.8rem;">De: R$ ${precoOriginal.toFixed(2)}</span><br>
+                <b style="color:#ff00ff; font-size: 1.1rem;">B2B: R$ ${precoB2B}</b>
+            </div>
+
+            <div class="tabela-descontos-card">
+                <b>Atacado:</b><br>
+                12% OFF (R$500) | 15% OFF (R$1000)
+            </div>
+            
+            <div style="font-size:0.8rem; font-weight:bold; color:#ff00ff; margin-bottom:10px">
+                Estoque: <span id="estoque-num-${index}">${v.estoque}</span> un.
+            </div>
+
+            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
+                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome} (Disp: ${vi.estoque})</option>`).join('') : ''}
+            </select>
+
+            <div class="controle-qtd">
+                <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
+                <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
+                <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
+                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADICIONAR</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// 3. ATUALIZAR ESTOQUE QUANDO MUDAR A VARIAÇÃO
+function atualizarEstoqueVisivel(index) {
+    const select = document.getElementById(`var-${index}`);
+    if (select) {
+        const [nome, preco, estoque] = select.value.split('|');
+        const spanEstoque = document.getElementById(`estoque-num-${index}`);
+        if (spanEstoque) spanEstoque.innerText = estoque;
     }
 }
 
-// 3. ADICIONAR AO CARRINHO
+// 4. ADICIONAR AO CARRINHO
 function adicionar(idx, nome) {
     const inputQtd = document.getElementById(`qtd-${idx}`);
-    const selectVar = document.getElementById(`var-${idx}`);
+    const selectVar = document.getElementById(`var-${index}`); // Use o index passado
     
-    const q = parseInt(inputQtd.value);
+    // Pequena correção: o adicionar recebe idx, vamos garantir o ID correto
+    const q = parseInt(document.getElementById(`qtd-${idx}`).value);
+    const sVar = document.getElementById(`var-${idx}`);
+    
     if (q <= 0) return alert("Selecione a quantidade!");
 
-    const [vN, vP, vE] = selectVar.value.split('|');
-    
+    const [vN, vP, vE] = sVar.value.split('|');
+    if (q > parseInt(vE)) return alert("Estoque insuficiente!");
+
     const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
     if (itemExistente) {
         itemExistente.qtd += q;
     } else {
-        // Preço B2B (já com 10% de desconto base)
-        carrinho.push({ 
-            name: nome, 
-            var: vN, 
-            preco: parseFloat(vP) * 0.9, 
-            qtd: q 
-        });
+        carrinho.push({ name: nome, var: vN, preco: parseFloat(vP) * 0.9, qtd: q });
     }
     
-    inputQtd.value = 0;
+    document.getElementById(`qtd-${idx}`).value = 0;
     atualizarInterface();
-    
-    // Abre o carrinho automaticamente ao adicionar
-    const drawer = document.getElementById('carrinho-drawer');
-    if (drawer) drawer.classList.add('open');
+    toggleCarrinho('abrir'); 
 }
 
-// 4. ATUALIZAR INTERFACE (BARRA DE PROGRESSO E TOTAIS)
+// 5. ATUALIZAR INTERFACE (BARRA E TOTAIS)
 function atualizarInterface() {
     const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    
-    // Lógica de Descontos
     let desc = 0, percent = 0;
+
     if (sub >= 1000) { desc = 15; percent = 100; }
     else if (sub >= 500) { desc = 12; percent = (sub/1000)*100; }
     else if (sub >= 200) { desc = 10; percent = (sub/500)*100; }
@@ -70,25 +108,20 @@ function atualizarInterface() {
 
     const total = sub * (1 - desc/100);
 
-    // Atualiza Contador no Ícone
-    const cartCount = document.getElementById('cart-count');
-    if (cartCount) cartCount.innerText = carrinho.length;
-
-    // Atualiza a Barra de Fill (Preenchimento)
     const barra = document.getElementById("barra-fill");
     if (barra) barra.style.width = `${percent}%`;
 
-    // Atualiza os Valores no Carrinho
     const statusCarrinho = document.getElementById("status-carrinho");
     if (statusCarrinho) {
         statusCarrinho.innerHTML = `
-            <p style="margin:0; font-size:0.8rem; color:#94a3b8">Subtotal: R$ ${sub.toFixed(2)}</p>
-            <p style="margin:5px 0; color:#ff00ff; font-weight:bold">Desconto: ${desc}%</p>
-            <h2 style="margin:0; color:white">Total: R$ ${total.toFixed(2)}</h2>
+            <div style="margin-bottom:10px">
+                <p style="color:#94a3b8; font-size:0.8rem; margin:0">Subtotal: R$ ${sub.toFixed(2)}</p>
+                <p style="color:#ff00ff; font-weight:bold; margin:5px 0">Desconto Extra: ${desc}%</p>
+                <h2 style="color:white; margin:0">Total: R$ ${total.toFixed(2)}</h2>
+            </div>
         `;
     }
 
-    // Atualiza Lista de Itens
     const lista = document.getElementById("lista-itens-carrinho");
     if (lista) {
         lista.innerHTML = carrinho.map((i, idx) => `
@@ -98,91 +131,58 @@ function atualizarInterface() {
             </div>`).join('');
     }
 
-    // Gerenciar botões de finalização (mínimo R$ 200)
-    const liberado = total >= 200;
-    const btnZap = document.getElementById("btn-zap");
-    const btnPdf = document.getElementById("btn-pdf");
+    document.getElementById('cart-count').innerText = carrinho.length;
     
-    if (btnZap) {
-        btnZap.disabled = !liberado;
-        btnZap.className = liberado ? 'btn-whatsapp-ativo' : 'btn-desativado';
-    }
-    if (btnPdf) {
-        btnPdf.disabled = !liberado;
-        btnPdf.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado';
-    }
+    const liberado = total >= 200;
+    const bZap = document.getElementById("btn-zap");
+    const bPdf = document.getElementById("btn-pdf");
+    if (bZap) { bZap.disabled = !liberado; bZap.className = liberado ? 'btn-whatsapp-ativo' : 'btn-desativado'; }
+    if (bPdf) { bPdf.disabled = !liberado; bPdf.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado'; }
 }
 
-// 5. FUNÇÕES DE SUPORTE (MENU, FILTROS, QTD)
+// 6. FUNÇÕES AUXILIARES
+function toggleCarrinho(acao) {
+    const d = document.getElementById('carrinho-drawer');
+    if (!d) return;
+    if (acao === 'abrir') d.classList.add('open');
+    else d.classList.toggle('open');
+}
+
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
-    const categoriasExtraidas = todosProdutos.map(p => p.category || p.categoria).filter(c => c);
-    const categoriasUnicas = ['Todos', ...new Set(categoriasExtraidas)];
-    container.innerHTML = categoriasUnicas.map(c => 
-        `<button class="cat-btn ${c === 'Todos' ? 'active' : ''}" onclick="filtrarCategoria('${c}', this)">${c}</button>`
-    ).join('');
+    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.category || p.categoria).filter(c => c))];
+    container.innerHTML = cats.map(c => `<button class="cat-btn ${c === 'Todos' ? 'active' : ''}" onclick="filtrarCategoria('${c}', this)">${c}</button>`).join('');
 }
 
 function filtrarCategoria(cat, btn) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const filtrados = (cat === 'Todos') ? todosProdutos : todosProdutos.filter(p => (p.category || p.categoria) === cat);
-    renderizarProdutos(filtrados);
-}
-
-function renderizarProdutos(lista) {
-    const container = document.getElementById("produtos");
-    if (!container) return;
-    container.innerHTML = lista.map((p, index) => {
-        const v = p.variacoes?.[0] || { preco: 0, estoque: 0 };
-        return `
-        <div class="produto-card">
-            <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
-            <h3 style="font-size:0.9rem; height:40px; margin: 10px 0;">${p.name}</h3>
-            <div style="color:#ff00ff; font-weight:900;">B2B: R$ ${(v.preco * 0.9).toFixed(2)}</div>
-            <div class="tabela-descontos-card">12% (R$500) | 15% (R$1000)</div>
-            <div style="font-size:0.8rem; font-weight:bold; margin-bottom:10px">
-                Estoque: <span id="estoque-num-${index}">${v.estoque}</span> un.
-            </div>
-            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;">
-                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('') : '<option>Padrão</option>'}
-            </select>
-            <div class="controle-qtd">
-                <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
-                <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
-                <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
-                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADD</button>
-            </div>
-        </div>`;
-    }).join('');
+    renderizarProdutos(cat === 'Todos' ? todosProdutos : todosProdutos.filter(p => (p.category || p.categoria) === cat));
 }
 
 function ajustarQtd(idx, op) {
-    let input = document.getElementById(`qtd-${idx}`);
-    let atual = parseInt(input.value);
-    input.value = (op === '+') ? atual + 1 : (atual > 0 ? atual - 1 : 0);
+    let inp = document.getElementById(`qtd-${idx}`);
+    let v = parseInt(inp.value);
+    inp.value = op === '+' ? v + 1 : (v > 0 ? v - 1 : 0);
 }
 
-function removerItem(idx) {
-    carrinho.splice(idx, 1);
-    atualizarInterface();
-}
+function removerItem(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
 
-function abrirModal(src) {
+function abrirModal(src) { 
     const modal = document.getElementById('modal-img');
     const img = document.getElementById('img-ampliada');
     if(modal && img) { img.src = src; modal.style.display = 'flex'; }
 }
 
 function filtrarBusca() {
-    const termo = document.getElementById('busca').value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(termo)));
+    const t = document.getElementById('busca').value.toLowerCase();
+    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
 }
 
 function finalizar(via) {
     const r = document.getElementById('razao-social').value;
-    if(!r) return alert("Por favor, preencha a Razão Social.");
+    if(!r) return alert("Preencha a Razão Social!");
     let txt = `*PEDIDO B2B - ${r}*\n\n` + carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join('\n');
     if(via === 'zap') window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(txt)}`);
 }
