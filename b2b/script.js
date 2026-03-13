@@ -147,24 +147,33 @@ function atualizarInterface(){
 
     let desconto=10;
     let meta=500;
-    let mensagem="";
 
-    if(subtotal>=1000){
-        desconto=15;
-        meta=1000;
-        mensagem="🔥 Desconto máximo atingido (15%)";
-    }
-    else if(subtotal>=500){
-        desconto=12;
-        meta=1000;
-        mensagem=`Faltam R$ ${(1000-subtotal).toFixed(2)} para 15% OFF`;
-    }
-    else{
-        desconto=10;
-        meta=500;
-        mensagem=`Faltam R$ ${(500-subtotal).toFixed(2)} para 12% OFF`;
-    }
+    
+   let mensagem="";
 
+if(subtotal < 200){
+
+    mensagem = `⚠️ Pedido mínimo R$200 • faltam R$ ${(200 - subtotal).toFixed(2)}`;
+
+}
+
+else if(subtotal < 500){
+
+    mensagem = `Faltam R$ ${(500 - subtotal).toFixed(2)} para 🔥 12% OFF`;
+
+}
+
+else if(subtotal < 1000){
+
+    mensagem = `Faltam R$ ${(1000 - subtotal).toFixed(2)} para 💎 15% OFF`;
+
+}
+
+else{
+
+    mensagem = `💎 Desconto máximo atingido (15%)`;
+
+}
     const total=subtotal*(1-desconto/100);
 
     const progresso=Math.min((subtotal/meta)*100,100);
