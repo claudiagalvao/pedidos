@@ -37,7 +37,6 @@ function adicionar(idx, nome) {
     const [vN, vP, vE] = selectVar.value.split('|');
     const estoqueDisponivel = parseInt(vE);
     
-    // Verifica se já existe o item no carrinho para validar o estoque total
     const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
     const qtdNoCarrinho = itemExistente ? itemExistente.qtd : 0;
 
@@ -132,7 +131,6 @@ function filtrarCategoria(cat, btn) {
     renderizarProdutos(filtrados);
 }
 
-// PASSO 3: Função para atualizar o estoque visível no card
 function atualizarEstoqueVisivel(idx) {
     const select = document.getElementById(`var-${idx}`);
     const spanEstoque = document.getElementById(`estoque-num-${idx}`);
@@ -142,7 +140,6 @@ function atualizarEstoqueVisivel(idx) {
     }
 }
 
-// PASSO 1: Card atualizado com preços de desconto calculados
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (!container) return;
@@ -156,9 +153,9 @@ function renderizarProdutos(lista) {
             <h3 style="font-size:0.9rem; height:40px; margin: 10px 0;">${p.name}</h3>
             <div style="color:#ff00ff; font-weight:900;">B2B: R$ ${precoB2B.toFixed(2)}</div>
             
-            <div class="tabela-descontos-card" style="font-size:0.7rem; line-height:1.4">
-                12% (R$500) → <b>R$ ${(precoB2B * 0.88).toFixed(2)}</b><br>
-                15% (R$1000) → <b>R$ ${(precoB2B * 0.85).toFixed(2)}</b>
+            <div class="tabela-descontos-card" style="font-size:0.75rem; line-height:1.5; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; margin: 10px 0;">
+                12% (>R$500) → <b>R$ ${(precoB2B * 0.88).toFixed(2)}</b><br>
+                15% (>R$1000) → <b>R$ ${(precoB2B * 0.85).toFixed(2)}</b>
             </div>
 
             <div style="font-size:0.8rem; font-weight:bold; margin-bottom:10px">
@@ -173,13 +170,12 @@ function renderizarProdutos(lista) {
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
                 <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
-                <button onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')" class="btn-add">ADD</button>
+                <button onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')" class="btn-add">Adicionar</button>
             </div>
         </div>`;
     }).join('');
 }
 
-// PASSO 2: Ajuste de quantidade com trava de estoque
 function ajustarQtd(idx, op) {
     let input = document.getElementById(`qtd-${idx}`);
     let select = document.getElementById(`var-${idx}`);
