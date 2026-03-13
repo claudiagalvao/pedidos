@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css?v=50">
+    
+    <link rel="stylesheet" href="style.css?v=60">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -12,11 +15,13 @@
 
     <header>
         <div class="banner-full-width">
-            <img src="banner.png" class="banner-img" alt="Crazy Fantasy B2B">
+            <img src="banner.png" class="banner-img" alt="Crazy Fantasy B2B Banner">
         </div>
         
         <nav class="nav-bar">
-            <div id="menu-categorias" class="menu-cats"></div>
+            <div id="menu-categorias" class="menu-cats">
+                </div>
+            
             <div class="header-right">
                 <input type="text" id="busca" class="input-busca" placeholder="🔍 Buscar produto..." onkeyup="filtrarBusca()">
                 <button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
@@ -28,51 +33,63 @@
 
     <main class="main-layout">
         <h2 class="titulo-sessao">🔥 TABELA EXCLUSIVA | DESCONTOS B2B PROGRESSIVOS</h2>
-        <div id="produtos" class="produtos-grid"></div>
+        
+        <div id="produtos" class="produtos-grid">
+            </div>
     </main>
 
     <div id="carrinho-drawer" class="drawer">
         <div class="drawer-header">
-            <h3>🛒 Seu Pedido</h3>
-            <button class="btn-fechar" onclick="toggleCarrinho()">✕</button>
+            <h3>🛒 MEU PEDIDO</h3>
+            <button class="btn-fechar" onclick="toggleCarrinho()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
         </div>
         
         <div class="drawer-content">
             <div id="status-carrinho" class="status-info"></div>
-            <div class="barra-progresso-container"><div id="barra-fill" class="barra-progresso-fill"></div></div>
+            <div class="barra-progresso-container" style="background:#334155; height:8px; border-radius:4px; margin-bottom:20px; overflow:hidden;">
+                <div id="barra-fill" style="background:#ff00ff; height:100%; width:0%; transition:0.3s;"></div>
+            </div>
 
             <div id="lista-itens-carrinho" class="mini-lista"></div>
-            <button onclick="limparTudo()" class="btn-esvaziar-link">Limpar lista de itens</button>
+            
+            <div style="text-align:center; margin: 15px 0;">
+                <button onclick="limparTudo()" style="color:#ef4444; background:none; border:none; cursor:pointer; font-size:0.8rem; text-decoration:underline;">Esvaziar carrinho</button>
+            </div>
 
             <form id="form-pedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
                 <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
+                <input type="hidden" name="_subject" value="Novo Pedido B2B - Portal Crazy Fantasy">
                 <input type="hidden" name="Resumo_Pedido" id="pedido-corpo">
                 
                 <div class="dados-nf">
-                    <h4>Dados da Empresa</h4>
-                    <input type="text" name="Razao_Social" id="razao-social" placeholder="Razão Social / Escola *" required>
+                    <h4>Dados da Empresa / Escola</h4>
+                    <input type="text" name="Razao_Social" id="razao-social" placeholder="Razão Social / Nome da Escola *" required>
+                    
                     <div class="row">
-                        <input type="text" name="CNPJ" id="cnpj" placeholder="CNPJ / CPF *" required>
-                        <input type="text" name="IE" id="ie" placeholder="I.E. / RG">
+                        <input type="text" name="CNPJ_CPF" id="cnpj" placeholder="CNPJ ou CPF *" required>
+                        <input type="text" name="IE_RG" id="ie" placeholder="I.E. ou RG">
                     </div>
+                    
                     <div class="row">
-                        <input type="text" name="WhatsApp" id="whatsapp" placeholder="WhatsApp *" required>
-                        <input type="email" name="Email" id="email-nf" placeholder="E-mail *" required>
+                        <input type="text" name="WhatsApp" id="whatsapp" placeholder="WhatsApp (DDD) *" required>
+                        <input type="email" name="Email" id="email-nf" placeholder="E-mail para contato *" required>
                     </div>
-                    <textarea name="Endereco" id="endereco" placeholder="Endereço Completo de Entrega *" required></textarea>
+                    
+                    <textarea name="Endereco_Entrega" id="endereco" placeholder="Endereço Completo de Entrega (Rua, Número, Bairro, Cidade/UF) *" rows="3" required></textarea>
                     
                     <h4>Pagamento e Envio</h4>
                     <div class="row">
-                        <select name="Pagamento" id="forma-pagamento" required>
-                            <option value="" disabled selected>Pagamento *</option>
-                            <option value="PIX">PIX (5% desc extra)</option>
+                        <select name="Forma_Pagamento" id="forma-pagamento" required>
+                            <option value="" disabled selected>Forma de Pagamento *</option>
+                            <option value="PIX">PIX (5% desc. extra)</option>
                             <option value="Boleto">Boleto (Faturado PJ)</option>
                             <option value="Cartao">Cartão de Crédito</option>
                         </select>
-                        <select name="Envio" id="forma-envio" required>
-                            <option value="" disabled selected>Envio *</option>
+                        <select name="Forma_Envio" id="forma-envio" required>
+                            <option value="" disabled selected>Forma de Envio *</option>
                             <option value="Transportadora">Transportadora</option>
                             <option value="Correios">Correios</option>
+                            <option value="Retirada">Retirar em Valinhos</option>
                         </select>
                     </div>
                 </div>
@@ -80,21 +97,21 @@
         </div>
 
         <div class="drawer-footer">
-            <button type="button" class="btn-finalizar zap" onclick="finalizar('zap')">FINALIZAR WHATSAPP</button>
+            <button type="button" class="btn-finalizar zap" onclick="finalizar('zap')">FINALIZAR NO WHATSAPP</button>
             <button type="button" class="btn-finalizar email" onclick="finalizar('email')">ENVIAR POR E-MAIL</button>
-            <div class="row-botoes">
-                <button type="button" class="btn-secundario" onclick="gerarPDF()">PDF</button>
-                <button type="button" class="btn-limpar" onclick="limparTudo()">LIMPAR</button>
-            </div>
         </div>
     </div>
 
     <footer class="footer-crazy">
         <p><b>GALVAO ARTIGOS PARA FESTAS LTDA (Crazy Fantasy)</b></p>
         <p>CNPJ: 54.128.539/0001-01 | Valinhos, SP</p>
+        <p style="font-size: 0.7rem; margin-top: 10px; color: #94a3b8;">© 2026 - Portal B2B Exclusivo</p>
     </footer>
 
-    <div id="modal-img" class="modal" onclick="this.style.display='none'"><img id="img-ampliada"></div>
-    <script src="script.js?v=50"></script>
+    <div id="modal-img" class="modal" onclick="this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
+        <img id="img-ampliada" style="max-width:90%; max-height:90vh; border-radius:10px; border: 2px solid #ff00ff;">
+    </div>
+
+    <script src="script.js?v=60"></script>
 </body>
 </html>
