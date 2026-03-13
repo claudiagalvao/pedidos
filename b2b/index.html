@@ -48,11 +48,72 @@
                     style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #334155; background: #1e293b; color: white;">
             </div>
 
+
+<div class="dados-cliente" style="margin-top:15px">
+
+<label style="color:#94a3b8;font-size:0.8rem">CNPJ / CPF</label>
+<input type="text" id="cnpj" placeholder="Digite aqui">
+
+<label style="color:#94a3b8;font-size:0.8rem;margin-top:10px">Inscrição Estadual</label>
+<input type="text" id="ie" placeholder="Digite aqui">
+
+<label style="color:#94a3b8;font-size:0.8rem;margin-top:10px">Email</label>
+<input type="email" id="email" placeholder="Digite aqui">
+
+    <label style="color:#94a3b8;font-size:0.8rem;margin-top:10px">Telefone</label>
+<input type="email" id="email" placeholder="Digite aqui">
+
+
+    <div class="dados-cliente" style="margin-top:15px">
+
+<label style="color:#94a3b8;font-size:0.8rem">Forma de Pagamento</label>
+
+<select id="pagamento"
+style="width:100%; padding:12px; margin-top:5px; border-radius:5px; border:1px solid #334155; background:#1e293b; color:white;">
+
+<option value="">Selecione</option>
+<option value="PIX">PIX</option>
+<option value="Cartão de Crédito">Cartão de Crédito</option>
+<option value="Boleto">Boleto</option>
+<option value="Transferência">Transferência</option>
+
+</select>
+
+<label style="color:#94a3b8;font-size:0.8rem;margin-top:10px">Forma de Frete</label>
+
+<select id="frete"
+style="width:100%; padding:12px; margin-top:5px; border-radius:5px; border:1px solid #334155; background:#1e293b; color:white;">
+
+<option value="">Selecione</option>
+<option value="Retirada na loja">Retirada na loja</option>
+<option value="Motoboy">Motoboy</option>
+<option value="Correios">Correios</option>
+<option value="Transportadora">Transportadora</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+            
+
             <div class="acoes-carrinho" style="margin-top: 20px;">
                 <button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo" 
                     style="width: 100%; padding: 15px; margin-bottom: 10px; background: #25d366; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
                     🟢 Enviar WhatsApp
                 </button>
+
+
+
+<button onclick="enviarEmailPedido()" class="btn-email"
+style="width:100%; padding:15px; margin-bottom:10px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+📧 Enviar Pedido por Email
+</button>
+
+
+                
                 
                 <button onclick="enviarEmail()" class="btn-pdf-ativo" 
                     style="width: 100%; padding: 15px; margin-bottom: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
