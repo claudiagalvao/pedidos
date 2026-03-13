@@ -1,3 +1,4 @@
+
 let todosProdutos = [];
 let carrinho = [];
 
