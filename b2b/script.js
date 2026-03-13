@@ -1,7 +1,7 @@
 let todosProdutos = [];
 let carrinho = [];
 
-// 1. CARREGAMENTO DOS DADOS
+// 1. CARREGAMENTO DOS PRODUTOS
 async function carregarProdutos() {
     try {
         const res = await fetch('../api/produtos.js'); 
@@ -14,18 +14,15 @@ async function carregarProdutos() {
     }
 }
 
-// 2. RENDERIZAR OS PRODUTOS (Ajustado com Preço Real e Botão Adicionar)
+// 2. RENDERIZAR CARDS (Preço Real, Estoque e Botão Adicionar)
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (!container) return;
 
     container.innerHTML = lista.map((p, index) => {
-        // Pega a primeira variação ou valores zerados se não houver
         const v = (p.variacoes && p.variacoes.length > 0) ? p.variacoes[0] : { preco: 0, estoque: 0 };
-        
-        // Cálculos de preço
         const precoOriginal = parseFloat(v.preco);
-        const precoB2B = (precoOriginal * 0.9).toFixed(2); // 10% OFF base do B2B
+        const precoB2B = (precoOriginal * 0.9).toFixed(2);
 
         return `
         <div class="produto-card">
@@ -60,28 +57,27 @@ function renderizarProdutos(lista) {
     }).join('');
 }
 
-// 3. ATUALIZAR ESTOQUE QUANDO MUDAR A VARIAÇÃO
+// 3. ATUALIZAR ESTOQUE NA TROCA DE VARIAÇÃO
 function atualizarEstoqueVisivel(index) {
     const select = document.getElementById(`var-${index}`);
-    if (select) {
+    const spanEstoque = document.getElementById(`estoque-num-${index}`);
+    if (select && spanEstoque) {
         const [nome, preco, estoque] = select.value.split('|');
-        const spanEstoque = document.getElementById(`estoque-num-${index}`);
-        if (spanEstoque) spanEstoque.innerText = estoque;
+        spanEstoque.innerText = estoque;
     }
 }
 
-// 4. ADICIONAR AO CARRINHO
+// 4. ADICIONAR AO CARRINHO (CORRIGIDO)
 function adicionar(idx, nome) {
     const inputQtd = document.getElementById(`qtd-${idx}`);
-    const selectVar = document.getElementById(`var-${index}`); // Use o index passado
+    const selectVar = document.getElementById(`var-${idx}`);
     
-    // Pequena correção: o adicionar recebe idx, vamos garantir o ID correto
-    const q = parseInt(document.getElementById(`qtd-${idx}`).value);
-    const sVar = document.getElementById(`var-${idx}`);
-    
+    if (!inputQtd || !selectVar) return;
+
+    const q = parseInt(inputQtd.value);
     if (q <= 0) return alert("Selecione a quantidade!");
 
-    const [vN, vP, vE] = sVar.value.split('|');
+    const [vN, vP, vE] = selectVar.value.split('|');
     if (q > parseInt(vE)) return alert("Estoque insuficiente!");
 
     const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
@@ -91,12 +87,12 @@ function adicionar(idx, nome) {
         carrinho.push({ name: nome, var: vN, preco: parseFloat(vP) * 0.9, qtd: q });
     }
     
-    document.getElementById(`qtd-${idx}`).value = 0;
+    inputQtd.value = 0;
     atualizarInterface();
     toggleCarrinho('abrir'); 
 }
 
-// 5. ATUALIZAR INTERFACE (BARRA E TOTAIS)
+// 5. ATUALIZAR INTERFACE E BARRA DE PROGRESSO
 function atualizarInterface() {
     const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     let desc = 0, percent = 0;
@@ -108,9 +104,11 @@ function atualizarInterface() {
 
     const total = sub * (1 - desc/100);
 
+    // Barra de Progresso
     const barra = document.getElementById("barra-fill");
     if (barra) barra.style.width = `${percent}%`;
 
+    // Totais no Carrinho
     const statusCarrinho = document.getElementById("status-carrinho");
     if (statusCarrinho) {
         statusCarrinho.innerHTML = `
@@ -122,17 +120,21 @@ function atualizarInterface() {
         `;
     }
 
+    // Lista de Itens
     const lista = document.getElementById("lista-itens-carrinho");
     if (lista) {
         lista.innerHTML = carrinho.map((i, idx) => `
-            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155; font-size:0.85rem">
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155; font-size:0.85rem; color:white;">
                 <span>${i.qtd}x ${i.name} (${i.var})</span>
                 <button onclick="removerItem(${idx})" style="color:#ef4444; background:none; border:none; cursor:pointer">✕</button>
             </div>`).join('');
     }
 
-    document.getElementById('cart-count').innerText = carrinho.length;
+    // Contador da Bolinha
+    const cartCount = document.getElementById('cart-count');
+    if (cartCount) cartCount.innerText = carrinho.length;
     
+    // Ativação dos botões (Mínimo R$ 200)
     const liberado = total >= 200;
     const bZap = document.getElementById("btn-zap");
     const bPdf = document.getElementById("btn-pdf");
@@ -140,25 +142,12 @@ function atualizarInterface() {
     if (bPdf) { bPdf.disabled = !liberado; bPdf.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado'; }
 }
 
-// 6. FUNÇÕES AUXILIARES
+// 6. FUNÇÕES DE APOIO
 function toggleCarrinho(acao) {
     const d = document.getElementById('carrinho-drawer');
     if (!d) return;
     if (acao === 'abrir') d.classList.add('open');
     else d.classList.toggle('open');
-}
-
-function renderizarMenu() {
-    const container = document.getElementById('menu-categorias');
-    if (!container) return;
-    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.category || p.categoria).filter(c => c))];
-    container.innerHTML = cats.map(c => `<button class="cat-btn ${c === 'Todos' ? 'active' : ''}" onclick="filtrarCategoria('${c}', this)">${c}</button>`).join('');
-}
-
-function filtrarCategoria(cat, btn) {
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderizarProdutos(cat === 'Todos' ? todosProdutos : todosProdutos.filter(p => (p.category || p.categoria) === cat));
 }
 
 function ajustarQtd(idx, op) {
@@ -169,22 +158,12 @@ function ajustarQtd(idx, op) {
 
 function removerItem(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
 
-function abrirModal(src) { 
-    const modal = document.getElementById('modal-img');
-    const img = document.getElementById('img-ampliada');
-    if(modal && img) { img.src = src; modal.style.display = 'flex'; }
+function esvaziarCarrinhoTotal() { 
+    if(confirm("Deseja limpar todos os itens da lista?")) { carrinho = []; atualizarInterface(); }
 }
 
-function filtrarBusca() {
-    const t = document.getElementById('busca').value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
-}
-
-function finalizar(via) {
-    const r = document.getElementById('razao-social').value;
-    if(!r) return alert("Preencha a Razão Social!");
-    let txt = `*PEDIDO B2B - ${r}*\n\n` + carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join('\n');
-    if(via === 'zap') window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(txt)}`);
-}
-
-document.addEventListener("DOMContentLoaded", carregarProdutos);
+function renderizarMenu() {
+    const container = document.getElementById('menu-categorias');
+    if (!container) return;
+    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.category || p.categoria).filter(c => c))];
+    container.innerHTML =
