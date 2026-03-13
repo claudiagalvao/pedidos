@@ -16,17 +16,27 @@
             <img src="banner.png" class="banner-img" id="main-banner" alt="Crazy Fantasy B2B">
         </div>
         
-        <nav class="nav-bar">
-            <div id="menu-categorias" class="menu-cats"></div>
-            <div class="header-right">
-                <div class="busca-container">
-                    <input type="text" id="busca" placeholder="🔍 Buscar produto..." onkeyup="filtrarBusca()">
-                </div>
-                <button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
-                    🛒 <span id="cart-count">0</span>
-                </button>
-            </div>
-        </nav>
+
+
+<nav class="nav-bar">
+    <div class="menu-scroll-container">
+        <div id="menu-categorias" class="menu-cats"></div>
+    </div>
+    
+    <div class="header-right">
+        <div class="busca-container">
+            <input type="text" id="busca" placeholder="🔍 Buscar..." onkeyup="filtrarBusca()">
+        </div>
+        <button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
+            🛒 <span id="cart-count">0</span>
+        </button>
+    </div>
+</nav>
+
+
+
+
+        
     </header>
 
     <main class="main-layout">
