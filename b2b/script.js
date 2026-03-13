@@ -133,3 +133,107 @@ function atualizarInterface() {
         proximoNivel = "🔥 Melhor desconto atingido!";
         metaParaBarra = 1000;
     } else if (subtotalVarejo >= 500) {
+        desc = 12;
+        proximoNivel = `Faltam R$ ${(1000 - subtotalVarejo).toFixed(2)} para 15% OFF`;
+        metaParaBarra = 1000;
+    } else {
+        desc = 10;
+        proximoNivel = `Faltam R$ ${(500 - subtotalVarejo).toFixed(2)} para 12% OFF`;
+        metaParaBarra = 500;
+    }
+
+    const totalComDesconto = subtotalVarejo * (1 - desc / 100);
+    const liberado = totalComDesconto >= 200;
+
+    // Atualiza UI do Carrinho
+    document.getElementById('cart-count').innerText = carrinho.length;
+    document.getElementById('valor-falta').innerText = proximoNivel;
+    
+    const porcenBarra = Math.min((subtotalVarejo / metaParaBarra) * 100, 100);
+    document.getElementById('barra-fill').style.width = porcenBarra + "%";
+
+    document.getElementById('status-carrinho').innerHTML = `
+        <p style="color:#94a3b8; font-size:0.8rem">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
+        <p style="color:#ff00ff; font-weight:bold">Desconto: ${desc}%</p>
+        <h2 style="color:white">Total: R$ ${totalComDesconto.toFixed(2)}</h2>
+    `;
+
+    const lista = document.getElementById("lista-itens-carrinho");
+    lista.innerHTML = carrinho.map((i, idx) => `
+        <div class="item-carrinho">
+            <span>${i.qtd}x ${i.name} (${i.var})</span>
+            <button onclick="removerItem(${idx})">✕</button>
+        </div>
+    `).join('');
+
+    // Controle de botões
+    const btnZap = document.querySelector('.btn-whatsapp-ativo');
+    const btnEmail = document.querySelector('.btn-pdf-ativo');
+    [btnZap, btnEmail].forEach(btn => {
+        if(btn) {
+            btn.disabled = !liberado;
+            btn.style.opacity = liberado ? "1" : "0.3";
+            btn.style.filter = liberado ? "none" : "grayscale(1)";
+        }
+    });
+}
+
+function removerItem(idx) {
+    carrinho.splice(idx, 1);
+    atualizarInterface();
+}
+
+/* =========================================
+   4. FINALIZAÇÃO E UTILITÁRIOS
+========================================= */
+function gerarCorpoPedido() {
+    const rz = document.getElementById('razao-social').value;
+    if(!rz) return alert("Preencha a Razão Social!");
+    let texto = `*PEDIDO B2B - CRAZY FANTASY*\nEmpresa: ${rz}\n----------\n`;
+    carrinho.forEach(i => texto += `• ${i.qtd}x ${i.name} (${i.var})\n`);
+    texto += `----------\n*${document.querySelector('#status-carrinho h2').innerText}*`;
+    return texto;
+}
+
+function enviarWhatsApp() {
+    const corpo = gerarCorpoPedido();
+    if(corpo) window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(corpo)}`, '_blank');
+}
+
+function enviarEmail() {
+    const corpo = gerarCorpoPedido();
+    if(!corpo) return;
+    document.getElementById('pedido-corpo').value = corpo;
+    document.getElementById('form-pedido').submit();
+}
+
+function filtrarBusca() {
+    const t = document.getElementById('busca').value.toLowerCase();
+    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
+}
+
+function renderizarMenu() {
+    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.categoria || p.category))];
+    document.getElementById('menu-categorias').innerHTML = cats.map(c => 
+        `<button class="cat-btn" onclick="filtrarCategoria('${c}', this)">${c}</button>`).join('');
+}
+
+function filtrarCategoria(cat, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderizarProdutos(cat === 'Todos' ? todosProdutos : todosProdutos.filter(p => (p.categoria || p.category) === cat));
+}
+
+function toggleCarrinho() { document.getElementById('carrinho-drawer').classList.toggle('open'); }
+function ajustarQtd(idx, op) {
+    let i = document.getElementById(`qtd-${idx}`);
+    let v = parseInt(i.value);
+    i.value = op === '+' ? v + 1 : (v > 0 ? v - 1 : 0);
+}
+function abrirModal(s) { 
+    document.getElementById('img-ampliada').src = s;
+    document.getElementById('modal-img').style.display = 'flex';
+}
+function fecharModal() { document.getElementById('modal-img').style.display = 'none'; }
+
+document.addEventListener("DOMContentLoaded", carregarProdutos);
