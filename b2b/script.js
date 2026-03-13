@@ -1,3 +1,4 @@
+
 let todosProdutos = [];
 let carrinho = [];
 
@@ -110,7 +111,7 @@ function atualizarInterface() {
 
     const liberado = total >= 200;
     const btnZap = document.getElementById("btn-zap");
-    const btnForm = document.getElementById("btn-pdf"); 
+    const btnForm = document.getElementById("btn-pdf"); // Usando o ID do antigo botão PDF/Email para o Form
     
     if (btnZap) {
         btnZap.disabled = !liberado;
@@ -119,12 +120,23 @@ function atualizarInterface() {
     if (btnForm) {
         btnForm.disabled = !liberado;
         btnForm.innerText = "Finalizar no Form";
-        btnForm.onclick = () => validarEEnviarForm();
+        btnForm.onclick = () => abrirFormulario();
         btnForm.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado';
     }
 }
 
-// 5. FUNÇÕES DE SUPORTE E RENDERIZAÇÃO
+// 5. FUNÇÕES DE SUPORTE
+function abrirFormulario() {
+    toggleCarrinho(); // Fecha o drawer do carrinho
+    const secaoDados = document.getElementById('dados-cliente'); // Certifique-se que sua seção de input tem esse ID
+    if (secaoDados) {
+        secaoDados.scrollIntoView({ behavior: 'smooth' });
+        secaoDados.style.border = "2px solid #ff00ff"; // Destaque visual
+    } else {
+        alert("Por favor, preencha os dados abaixo para finalizar.");
+    }
+}
+
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
@@ -215,37 +227,6 @@ function ajustarQtd(idx, op) {
     }
 }
 
-function validarEEnviarForm() {
-    const razao = document.getElementById('razao-social')?.value;
-    const cnpj = document.getElementById('cnpj-empresa')?.value;
-    const envioPag = document.getElementById('forma-envio-pagamento')?.value;
-
-    if (!razao || razao.length < 3) {
-        alert("Por favor, preencha a Razão Social da empresa.");
-        document.getElementById('razao-social').focus();
-        return;
-    }
-
-    const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    let desc = sub >= 1000 ? 15 : (sub >= 500 ? 12 : (sub >= 200 ? 10 : 0));
-    const total = sub * (1 - desc/100);
-
-    const textoPedido = `PEDIDO B2B - CRAZY FANTASY\n` +
-        `--------------------------\n` +
-        `Empresa: ${razao}\n` +
-        `CNPJ: ${cnpj || 'Não informado'}\n` +
-        `Forma Envio/Pgto: ${envioPag}\n\n` +
-        `ITENS:\n` +
-        carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join('\n') +
-        `\n\nSubtotal: R$ ${sub.toFixed(2)}` +
-        `\nDesconto: ${desc}%` +
-        `\nTOTAL: R$ ${total.toFixed(2)}`;
-
-    const subject = encodeURIComponent(`Novo Pedido B2B - ${razao}`);
-    const body = encodeURIComponent(textoPedido);
-    window.location.href = `mailto:contato@crazyfantasy.com.br?subject=${subject}&body=${body}`;
-}
-
 function removerItem(idx) {
     carrinho.splice(idx, 1);
     atualizarInterface();
@@ -267,13 +248,6 @@ function finalizar(via) {
     if(!r) return alert("Por favor, preencha a Razão Social.");
     let txt = `*PEDIDO B2B - ${r}*\n\n` + carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join('\n');
     if(via === 'zap') window.open(`https://api.whatsapp.com/send?phone=5519992850208&text=${encodeURIComponent(txt)}`);
-}
-
-function limparLista() {
-    if(confirm("Deseja realmente limpar seu pedido?")) {
-        carrinho = [];
-        atualizarInterface();
-    }
 }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
