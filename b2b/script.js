@@ -1,4 +1,3 @@
-
 let todosProdutos = [];
 let carrinho = [];
 
@@ -127,16 +126,40 @@ function atualizarInterface() {
     const subtotalVarejo = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
     let desc = 10; 
-    if (subtotalVarejo >= 1000) desc = 15;
-    else if (subtotalVarejo >= 500) desc = 12;
+    let metaParaBarra = 500;
+    let proximoNivel = "";
+
+    // Lógica de Metas da Barra de Progresso
+    if (subtotalVarejo >= 1000) {
+        desc = 15;
+        metaParaBarra = 1000;
+        proximoNivel = "🔥 Desconto máximo atingido (15%)!";
+    } else if (subtotalVarejo >= 500) {
+        desc = 12;
+        metaParaBarra = 1000;
+        proximoNivel = `Faltam R$ ${(1000 - subtotalVarejo).toFixed(2)} para 15% OFF`;
+    } else {
+        desc = 10;
+        metaParaBarra = 500;
+        proximoNivel = `Faltam R$ ${(500 - subtotalVarejo).toFixed(2)} para 12% OFF`;
+    }
 
     const totalFinal = subtotalVarejo * (1 - desc / 100);
     const liberado = totalFinal >= 200;
 
-    // Atualização da UI
+    // Cálculo da porcentagem da barra
+    const porcenBarra = Math.min((subtotalVarejo / metaParaBarra) * 100, 100);
+
+    // Atualização da UI do Carrinho
     document.getElementById('cart-count').innerText = carrinho.length;
     document.getElementById('status-carrinho').innerHTML = `
-        <p style="color:#94a3b8; font-size:0.8rem">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
+        <div class="progress-container">
+            <div class="progress-text">${proximoNivel}</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: ${porcenBarra}%"></div>
+            </div>
+        </div>
+        <p style="color:#94a3b8; font-size:0.8rem; margin-top:10px">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
         <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
         <h2 style="color:white">Total: R$ ${totalFinal.toFixed(2)}</h2>
     `;
