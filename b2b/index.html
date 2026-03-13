@@ -1,48 +1,78 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - B2B</title>
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crazy Fantasy - B2B</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
-    <header class="hero-banner">
-        <img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
-    </header>
 
-    <nav class="nav-bar">
-        <div id="menu-categorias" class="categorias">
-            </div>
-        <div class="busca-container">
-            <input type="text" id="busca" onkeyup="filtrarBusca()" placeholder="Buscar produto...">
-            <div class="cart-icon" onclick="toggleCarrinho()">
-                🛒 <span id="cart-count">0</span>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container">
-        <h1 class="titulo-sessao">🔥 TABELA EXCLUSIVA PARA PARCEIROS</h1>
-        
-        <div id="produtos" class="produtos-grid">
-            </div>
-    </main>
-
-    <div id="carrinho-drawer" class="drawer">
-        <div class="drawer-content">
-            <span class="close-btn" onclick="toggleCarrinho()">&times;</span>
-            <h3 style="color: white; margin-bottom: 20px; font-family: sans-serif;">Seu Pedido</h3>
-
-            <div id="status-carrinho">
-                <p style="text-align:center; color:#64748b; padding:20px;">Seu carrinho está vazio</p>
-            </div>
-
-            <div id="lista-itens-carrinho"></div>
+<header class="hero-banner">
+<img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
+</header>
 
 
+<nav class="nav-bar">
+
+<div id="menu-categorias" class="categorias"></div>
+
+<div class="busca-container">
+
+<input type="text" id="busca" onkeyup="filtrarBusca()" placeholder="Buscar produto...">
+
+<div class="cart-icon" onclick="toggleCarrinho()">
+🛒 <span id="cart-count">0</span>
+</div>
+
+</div>
+
+</nav>
+
+
+<main class="container">
+
+<h1 class="titulo-sessao">
+🔥 TABELA EXCLUSIVA PARA PARCEIROS
+</h1>
+
+<div id="produtos" class="produtos-grid"></div>
+
+</main>
+
+
+
+<div id="carrinho-drawer" class="drawer">
+
+<div class="drawer-content">
+
+<span class="close-btn" onclick="toggleCarrinho()">&times;</span>
+
+<h3 style="color:white;margin-bottom:20px">
+Seu Pedido
+</h3>
+
+
+
+<div id="status-carrinho">
+
+<p style="text-align:center;color:#64748b;padding:20px">
+Seu carrinho está vazio
+</p>
+
+</div>
+
+
+
+<div id="lista-itens-carrinho"></div>
 
 
 
@@ -51,99 +81,135 @@
 <label>Razão Social / Nome</label>
 <input type="text" id="razao-social" placeholder="Digite aqui">
 
+
+
 <div class="dados-grid">
 
 <div>
+
 <label>CNPJ / CPF</label>
 <input type="text" id="cnpj">
+
 </div>
 
 <div>
+
 <label>Inscrição Estadual</label>
 <input type="text" id="ie">
+
 </div>
 
 <div>
+
 <label>Email</label>
 <input type="email" id="email">
+
 </div>
 
 <div>
+
 <label>Telefone</label>
 <input type="text" id="telefone">
+
 </div>
 
 </div>
+
+
 
 <label>Forma de Pagamento</label>
+
 <select id="pagamento">
+
 <option value="">Selecione</option>
+
 <option>PIX</option>
+
 <option>Boleto</option>
+
 <option>Cartão</option>
+
 <option>Transferência</option>
+
 </select>
 
+
+
 <label>Forma de Frete</label>
+
 <select id="frete">
+
 <option value="">Selecione</option>
+
 <option>Correios</option>
+
 <option>Transportadora</option>
+
 <option>Motoboy</option>
+
 <option>Retirada</option>
+
 </select>
 
 </div>
 
-            
-
-            
-
-            <div class="acoes-carrinho" style="margin-top: 20px;">
-                <button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo" 
-                    style="width: 100%; padding: 15px; margin-bottom: 10px; background: #25d366; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    🟢 Enviar WhatsApp
-                </button>
 
 
+<div class="acoes-carrinho" style="margin-top:20px">
 
-<button onclick="enviarEmailPedido()" class="btn-email"
-style="width:100%; padding:15px; margin-bottom:10px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
-📧 Enviar Pedido por Email
+<div class="menu-envio">
+
+<button onclick="toggleMenuEnvio()" class="btn-enviar">
+📤 Enviar Pedido
 </button>
 
 
-                
-                
-                <button onclick="enviarEmail()" class="btn-pdf-ativo" 
-                    style="width: 100%; padding: 15px; margin-bottom: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                    📄 Gerar PDF do Pedido
-                </button>
 
-                <button onclick="limparCarrinho()" class="btn-limpar" 
-                    style="width: 100%; padding: 10px; background: transparent; color: #f87171; border: 1px solid #ef4444; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">
-                    🗑️ Limpar Carrinho
-                </button>
-            </div>
+<div id="menu-envio-opcoes" class="menu-opcoes">
 
-            <form id="form-pedido" action="../api/gerar-pdf.php" method="POST" style="display:none;">
-                <input type="hidden" name="pedido" id="pedido-corpo">
-            </form>
-        </div>
-    </div>
+<button onclick="enviarWhatsApp()">
+🟢 Enviar por WhatsApp
+</button>
 
-    <div id="modal-img" class="modal" onclick="fecharModal()">
-        <img id="img-ampliada" src="" alt="Produto ampliado">
-    </div>
+<button onclick="enviarEmailPedido()">
+📄 Gerar PDF
+</button>
 
+<button onclick="enviarEmail()">
+📧 Enviar por Email
+</button>
+
+</div>
+
+</div>
+
+
+
+<button onclick="limparCarrinho()" class="btn-limpar"
+style="width:100%;padding:10px;background:transparent;color:#f87171;border:1px solid #ef4444;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;">
+🗑️ Limpar Carrinho
+</button>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<div id="modal-img" class="modal" onclick="fecharModal()">
+<img id="img-ampliada" src="" alt="Produto ampliado">
+</div>
 
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<script src="script.js"></script>
 
-    
 
-    <script src="script.js"></script>
 </body>
+
 </html>
