@@ -5,10 +5,10 @@ let carrinho = [];
 async function carregarDados() {
     const container = document.getElementById("produtos");
     try {
-        const res = await fetch('api/produtos.json'); 
+        const res = await fetch('api/produtos.js'); 
         if (!res.ok) throw new Error("Arquivo não encontrado");
         
-        todosProdutos = await res.json();
+        todosProdutos = await res.js();
         renderizarProdutos(todosProdutos);
         renderizarMenu();
     } catch (err) {
