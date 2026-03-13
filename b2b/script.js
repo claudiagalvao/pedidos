@@ -2,575 +2,459 @@ let todosProdutos = [];
 let carrinho = [];
 
 /* =========================================
-1. CARREGAMENTO DOS PRODUTOS
+CARREGAR PRODUTOS
 ========================================= */
 
-async function carregarProdutos() {
+async function carregarProdutos(){
 
-    try {
+try{
 
-        const res = await fetch('../api/produtos.js');
+const res = await fetch('../api/produtos.js');
 
-        if (!res.ok) throw new Error("Erro ao carregar produtos");
+if(!res.ok) throw new Error("Erro ao carregar produtos");
 
-        todosProdutos = await res.json();
+todosProdutos = await res.json();
 
-        renderizarProdutos(todosProdutos);
-        renderizarMenu();
+renderizarProdutos(todosProdutos);
+renderizarMenu();
 
-    } catch (err) {
+}catch(err){
 
-        console.error(err);
+console.error(err);
 
-        const container = document.getElementById("produtos");
+document.getElementById("produtos").innerHTML=
+`<h2 style="color:white;text-align:center;padding:50px">
+⚠️ Catálogo indisponível
+</h2>`;
 
-        container.innerHTML = `
-        <h2 style="color:white;text-align:center;padding:50px">
-        ⚠️ Catálogo indisponível
-        </h2>`;
-    }
+}
+
 }
 
 
 /* =========================================
-2. RENDERIZAÇÃO DOS PRODUTOS
+RENDER PRODUTOS
 ========================================= */
 
-function renderizarProdutos(lista) {
+function renderizarProdutos(lista){
 
-    const container = document.getElementById("produtos");
+const container=document.getElementById("produtos");
 
-    container.innerHTML = lista.map((p, index) => {
+container.innerHTML=lista.map((p,index)=>{
 
-        const vPadrao = p.variacoes?.[0] || { preco: 0, estoque: 0 };
+const v=p.variacoes?.[0] || {preco:0,estoque:0};
 
-        const precoVarejo = vPadrao.preco;
-        const precoB2B = precoVarejo * 0.90;
-        const preco12 = precoVarejo * 0.88;
-        const preco15 = precoVarejo * 0.85;
+const varejo=v.preco;
+const b2b=varejo*0.90;
+const p12=varejo*0.88;
+const p15=varejo*0.85;
 
-        return `
+return`
 
-        <div class="produto-card">
+<div class="produto-card">
 
-            <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
+<img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
 
-            <h3>${p.name}</h3>
+<h3>${p.name}</h3>
 
-            <div class="preco-container">
+<div class="preco-container">
 
-                <del>Varejo: R$ ${precoVarejo.toFixed(2)}</del>
+<del>Varejo: R$ ${varejo.toFixed(2)}</del>
 
-                <div class="preco-b2b">
-                    B2B: R$ ${precoB2B.toFixed(2)}
-                    <small>(10% OFF)</small>
-                </div>
+<div class="preco-b2b">
+B2B: R$ ${b2b.toFixed(2)}
+<small>(10% OFF)</small>
+</div>
 
-            </div>
+</div>
 
-            <div class="tabela-progressiva">
+<div class="tabela-progressiva">
 
-                <div class="faixa-item">
-                    <span>🔥 12% OFF acima de R$500</span>
-                    <strong>R$ ${preco12.toFixed(2)}</strong>
-                </div>
+<div class="faixa-item">
+<span>🔥 12% OFF acima de R$500</span>
+<strong>R$ ${p12.toFixed(2)}</strong>
+</div>
 
-                <div class="faixa-item destaque">
-                    <span>💎 15% OFF acima de R$1000</span>
-                    <strong>R$ ${preco15.toFixed(2)}</strong>
-                </div>
+<div class="faixa-item destaque">
+<span>💎 15% OFF acima de R$1000</span>
+<strong>R$ ${p15.toFixed(2)}</strong>
+</div>
 
-            </div>
+</div>
 
-            <div class="estoque-info">
-                Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
-            </div>
+<div class="estoque-info">
+Estoque: <span id="estoque-num-${index}">${v.estoque}</span>
+</div>
 
-            ${
-                p.variacoes && p.variacoes.length > 1 ?
-                `
-                <select id="var-${index}" onchange="atualizarEstoqueVisivel(${index})" class="select-variacao">
-                    ${p.variacoes.map(v =>
-                        `<option value="${v.nome}|${v.preco}|${v.estoque}">
-                        ${v.nome}
-                        </option>`
-                    ).join('')}
-                </select>
-                `
-                :
-                ''
-            }
+<div class="controle-qtd">
 
-            <div class="controle-qtd">
+<button onclick="ajustarQtd(${index},'-')">-</button>
 
-                <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
+<input id="qtd-${index}" value="0" readonly>
 
-                <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
+<button onclick="ajustarQtd(${index},'+')">+</button>
 
-                <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
+<button onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}')">
+Add
+</button>
 
-                <button onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')" class="btn-add">
-                    Add
-                </button>
+</div>
 
-            </div>
+</div>
 
-        </div>
+`;
 
-        `;
+}).join("");
 
-    }).join('');
 }
 
 
 /* =========================================
-3. INTERFACE DO CARRINHO
+CARRINHO
+========================================= */
+
+function adicionar(idx,nome){
+
+const input=document.getElementById(`qtd-${idx}`);
+const qtd=parseInt(input.value);
+
+if(qtd<=0) return alert("Selecione quantidade");
+
+const produto=todosProdutos[idx];
+const variacao=produto.variacoes[0];
+
+const existente=carrinho.find(i=>i.name===nome);
+
+if(existente){
+
+existente.qtd+=qtd;
+
+}else{
+
+carrinho.push({
+name:nome,
+preco:variacao.preco,
+qtd:qtd
+});
+
+}
+
+input.value=0;
+
+atualizarInterface();
+
+document.getElementById("carrinho-drawer").classList.add("open");
+
+}
+
+function removerItem(i){
+
+carrinho.splice(i,1);
+atualizarInterface();
+
+}
+
+function limparCarrinho(){
+
+if(confirm("Limpar carrinho?")){
+
+carrinho=[];
+atualizarInterface();
+
+}
+
+}
+
+
+/* =========================================
+INTERFACE DO CARRINHO
 ========================================= */
 
 function atualizarInterface(){
 
-    const subtotal = carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
+const subtotal=carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
 
-    if(subtotal===0){
+const pedidoMinimo=subtotal>=200;
 
-        document.getElementById('cart-count').innerText="0";
+let desconto=10;
 
-        document.getElementById('status-carrinho').innerHTML=
-        `<p style="text-align:center;color:#64748b;padding:20px;">
-        Seu carrinho está vazio
-        </p>`;
+if(subtotal>=1000) desconto=15;
+else if(subtotal>=500) desconto=12;
 
-        document.getElementById("lista-itens-carrinho").innerHTML="";
+const total=subtotal*(1-desconto/100);
 
-        return;
-    }
+const progresso=Math.min((subtotal/1000)*100,100);
 
-    let desconto=10;
-    let meta=500;
+document.getElementById("cart-count").innerText=carrinho.length;
 
-    
-   let mensagem="";
+document.getElementById("status-carrinho").innerHTML=`
 
-if(subtotal < 200){
+<div class="progress-container">
 
-    mensagem = `⚠️ Pedido mínimo R$200 • faltam R$ ${(200 - subtotal).toFixed(2)}`;
+<div class="progress-steps">
 
-}
+<div class="step ${subtotal>=200?'active':''}">
+Pedido mínimo
+<small>R$200</small>
+</div>
 
-else if(subtotal < 500){
+<div class="step ${subtotal>=500?'active':''}">
+🔥 12% OFF
+<small>R$500</small>
+</div>
 
-    mensagem = `Faltam R$ ${(500 - subtotal).toFixed(2)} para 🔥 12% OFF`;
-
-}
-
-else if(subtotal < 1000){
-
-    mensagem = `Faltam R$ ${(1000 - subtotal).toFixed(2)} para 💎 15% OFF`;
-
-}
-
-else{
-
-    mensagem = `💎 Desconto máximo atingido (15%)`;
-
-}
-    const total=subtotal*(1-desconto/100);
-
-
-const pedidoMinimo = subtotal >= 200;
-
-    
-
-    const progresso=Math.min((subtotal/meta)*100,100);
-
-    document.getElementById('cart-count').innerText=carrinho.length;
-
-    document.getElementById('status-carrinho').innerHTML=`
-
-      <div class="progress-container">
-
-    <div class="progress-steps">
-
-        <div class="step ${subtotal >= 200 ? 'active' : ''}">
-            Pedido mínimo
-            <small>R$200</small>
-        </div>
-
-        <div class="step ${subtotal >= 500 ? 'active' : ''}">
-            🔥 12% OFF
-            <small>R$500</small>
-        </div>
-
-        <div class="step ${subtotal >= 1000 ? 'active' : ''}">
-            💎 15% OFF
-            <small>R$1000</small>
-        </div>
-
-    </div>
-
-    <div class="progress-bar-bg">
-        <div class="progress-bar-fill" style="width:${progresso}%"></div>
-    </div>
+<div class="step ${subtotal>=1000?'active':''}">
+💎 15% OFF
+<small>R$1000</small>
+</div>
 
 </div>
 
-        </div>
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" style="width:${progresso}%"></div>
+</div>
 
-        <div style="margin-top:10px;border-top:1px solid #334155;padding-top:10px">
+</div>
 
-            <p style="color:#94a3b8;font-size:0.9rem">
-            Subtotal: R$ ${subtotal.toFixed(2)}
-            </p>
+<p style="color:#94a3b8">
+Subtotal: R$ ${subtotal.toFixed(2)}
+</p>
 
-            <p style="color:#22c55e;font-weight:bold">
-            Desconto aplicado: ${desconto}%
-            </p>
+<p style="color:#22c55e">
+Desconto aplicado: ${desconto}%
+</p>
 
-            <h2 style="color:white">
-            Total: R$ ${total.toFixed(2)}
-            </h2>
+<h2 style="color:white">
+Total: R$ ${total.toFixed(2)}
+</h2>
 
-        </div>
-    `;
+`;
 
-    document.getElementById("lista-itens-carrinho").innerHTML=
-    carrinho.map((i,idx)=>`
+document.getElementById("lista-itens-carrinho").innerHTML=
+carrinho.map((i,idx)=>`
 
-        <div class="item-carrinho"
-        style="display:flex;justify-content:space-between;
-        padding:6px 0;border-bottom:1px solid #334155;font-size:0.85rem">
+<div class="item-carrinho">
+<span>${i.qtd}x ${i.name}</span>
+<button onclick="removerItem(${idx})">✕</button>
+</div>
 
-            <span>${i.qtd}x ${i.name}</span>
+`).join("");
 
-            <button onclick="removerItem(${idx})"
-            style="color:#ef4444;background:none;border:none;cursor:pointer;">
-            ✕
-            </button>
-
-        </div>
-
-    `).join('');
-
-    document.getElementById("pedido-corpo").value=JSON.stringify(carrinho);
-
-
-
-const btnZap = document.querySelector('.btn-whatsapp-ativo');
-const btnPdf = document.querySelector('.btn-pdf-ativo');
-
-[btnZap, btnPdf].forEach(btn=>{
-    if(!btn) return;
-
-    btn.disabled = !pedidoMinimo;
-
-    btn.style.opacity = pedidoMinimo ? "1" : "0.4";
-    btn.style.cursor = pedidoMinimo ? "pointer" : "not-allowed";
-});
-
-
-    
-
-    
 }
 
 
 /* =========================================
-4. CARRINHO
+VALIDAÇÃO
 ========================================= */
-
-function adicionar(idx, nome) {
-
-    const inputQtd = document.getElementById(`qtd-${idx}`);
-    const selectVar = document.getElementById(`var-${idx}`);
-
-    const q = parseInt(inputQtd.value);
-
-    if (q <= 0) return alert("Selecione a quantidade");
-
-    let vNome, vPreco, vEstoque;
-
-    if (selectVar) {
-
-        [vNome, vPreco, vEstoque] = selectVar.value.split('|');
-
-    } else {
-
-        const v = todosProdutos[idx].variacoes[0];
-
-        vNome = v.nome;
-        vPreco = v.preco;
-        vEstoque = v.estoque;
-    }
-
-    const existente = carrinho.find(i => i.name === nome && i.var === vNome);
-
-    if ((existente ? existente.qtd : 0) + q > parseInt(vEstoque))
-        return alert("Estoque insuficiente");
-
-    if (existente) existente.qtd += q;
-    else carrinho.push({ name: nome, var: vNome, preco: parseFloat(vPreco), qtd: q });
-
-    inputQtd.value = 0;
-
-    atualizarInterface();
-
-    document.getElementById('carrinho-drawer').classList.add('open');
-}
-
-
-function removerItem(idx) {
-
-    carrinho.splice(idx, 1);
-
-    atualizarInterface();
-}
-
-
-function limparCarrinho() {
-
-    if (confirm("Limpar carrinho?")) {
-
-        carrinho = [];
-
-        atualizarInterface();
-    }
-}
-
-
-/* =========================================
-5. ESTOQUE
-========================================= */
-
-function atualizarEstoqueVisivel(idx) {
-
-    const select = document.getElementById(`var-${idx}`);
-
-    if (select) {
-
-        const [nome, preco, estoque] = select.value.split('|');
-
-        document.getElementById(`estoque-num-${idx}`).innerText = estoque;
-    }
-}
-
-
-/* =========================================
-6. QUANTIDADE
-========================================= */
-
-function ajustarQtd(idx, op) {
-
-    let input = document.getElementById(`qtd-${idx}`);
-
-    let v = parseInt(input.value);
-
-    input.value = op === '+' ? v + 1 : (v > 0 ? v - 1 : 0);
-}
-
-
-/* =========================================
-7. UTILIDADES
-========================================= */
-
-function toggleCarrinho() {
-
-    document.getElementById('carrinho-drawer').classList.toggle('open');
-}
-
-
-function filtrarBusca() {
-
-    const t = document.getElementById('busca').value.toLowerCase();
-
-    renderizarProdutos(
-        todosProdutos.filter(p =>
-            p.name.toLowerCase().includes(t)
-        )
-    );
-}
-
-
-function renderizarMenu() {
-
-    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.categoria))];
-
-    const menu = document.getElementById('menu-categorias');
-
-    menu.innerHTML = cats.map(c => `
-        <button class="cat-btn" onclick="filtrarCategoria('${c}', this)">
-        ${c}
-        </button>
-    `).join('');
-}
-
-
-function filtrarCategoria(cat, btn) {
-
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-
-    btn.classList.add('active');
-
-    renderizarProdutos(
-        cat === 'Todos'
-        ? todosProdutos
-        : todosProdutos.filter(p => p.categoria === cat)
-    );
-}
-
-
-/* =========================================
-8. MODAL IMAGEM
-========================================= */
-
-function abrirModal(src) {
-
-    document.getElementById('img-ampliada').src = src;
-
-    document.getElementById('modal-img').style.display = 'flex';
-}
-
-function fecharModal() {
-
-    document.getElementById('modal-img').style.display = 'none';
-}
-
-
-document.addEventListener("DOMContentLoaded", carregarProdutos);
-
-
-/* =========================================
-ENVIO WHATSAPP
-========================================= */
-
-function enviarWhatsApp(){
-
-if(!validarFormulario()) return;
-    }
-
-    const nome=document.getElementById("razao-social").value || "Cliente";
-
-
-
-    const pagamento = document.getElementById("pagamento").value || "Não informado";
-const frete = document.getElementById("frete").value || "Não informado";
-
-    let mensagem=`Pedido B2B - ${nome}%0A%0A`;
-
-
-    mensagem += `%0APagamento: ${pagamento}`;
-mensagem += `%0AFrete: ${frete}`;
-
-    carrinho.forEach(i=>{
-        mensagem+=`${i.qtd}x ${i.name}%0A`;
-    });
-
-    const subtotal=carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
-
-    let desconto=10;
-    if(subtotal>=1000) desconto=15;
-    else if(subtotal>=500) desconto=12;
-
-    const total=subtotal*(1-desconto/100);
-
-    mensagem+=`%0ASubtotal: R$ ${subtotal.toFixed(2)}`;
-    mensagem+=`%0ADesconto: ${desconto}%`;
-    mensagem+=`%0ATotal: R$ ${total.toFixed(2)}`;
-
-    const telefone="5519992850208"; // coloque seu número
-
-    window.open(`https://wa.me/${telefone}?text=${mensagem}`);
-}
-
-
-/* =========================================
-GERAR PDF
-========================================= */
-
-function enviarEmailPedido(){
-
-if(!validarFormulario()) return;
-    }
-
-const pagamento = document.getElementById("pagamento").value || "";
-const frete = document.getElementById("frete").value || "";
-
-    
-    const { jsPDF } = window.jspdf;
-
-    const doc = new jsPDF();
-
-    let y = 20;
-
-    const cliente = document.getElementById("razao-social").value || "Cliente";
-
-    doc.text("Pagamento: "+pagamento,20,y);
-y+=8;
-
-doc.text("Frete: "+frete,20,y);
-y+=10;
-
-    doc.setFontSize(18);
-    doc.text("Pedido B2B - Crazy Fantasy", 20, y);
-
-    y+=10;
-
-    doc.setFontSize(12);
-    doc.text("Cliente: "+cliente, 20, y);
-
-    y+=10;
-
-    carrinho.forEach(item=>{
-
-        doc.text(`${item.qtd}x ${item.name}`,20,y);
-
-        y+=8;
-
-    });
-
-    const subtotal=carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
-
-    let desconto=10;
-
-    if(subtotal>=1000) desconto=15;
-    else if(subtotal>=500) desconto=12;
-
-    const total=subtotal*(1-desconto/100);
-
-    y+=10;
-
-    doc.text("Subtotal: R$ "+subtotal.toFixed(2),20,y);
-    y+=8;
-
-    doc.text("Desconto: "+desconto+"%",20,y);
-    y+=8;
-
-    doc.text("Total: R$ "+total.toFixed(2),20,y);
-
-    doc.save("pedido-crazy-fantasy.pdf");
-
-}
-
-
-
-
-
 
 function validarFormulario(){
 
-const nome=document.getElementById("razao-social").value.trim();
-const cnpj=document.getElementById("cnpj").value.trim();
-const email=document.getElementById("email").value.trim();
-const telefone=document.getElementById("telefone").value.trim();
-const pagamento=document.getElementById("pagamento").value;
-const frete=document.getElementById("frete").value;
+const nome=document.getElementById("razao-social")?.value.trim();
+const cnpj=document.getElementById("cnpj")?.value.trim();
+const email=document.getElementById("email")?.value.trim();
+const telefone=document.getElementById("telefone")?.value.trim();
+const pagamento=document.getElementById("pagamento")?.value;
+const frete=document.getElementById("frete")?.value;
 
-if(!nome || !cnpj || !email || !telefone || !pagamento || !frete){
+if(!nome||!cnpj||!email||!telefone||!pagamento||!frete){
 
 alert("Preencha todos os campos do pedido");
-
 return false;
+
 }
 
 return true;
 
 }
+
+function podeEnviarPedido(){
+
+if(!validarFormulario()) return false;
+
+const subtotal=carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
+
+if(subtotal<200){
+
+alert("Pedido mínimo de R$200 não atingido.");
+return false;
+
+}
+
+return true;
+
+}
+
+
+/* =========================================
+WHATSAPP
+========================================= */
+
+function enviarWhatsApp(){
+
+if(!podeEnviarPedido()) return;
+
+const nome=document.getElementById("razao-social").value;
+
+const pagamento=document.getElementById("pagamento").value;
+
+const frete=document.getElementById("frete").value;
+
+let mensagem=`Pedido B2B - ${nome}%0A%0A`;
+
+mensagem+=`Pagamento: ${pagamento}%0A`;
+mensagem+=`Frete: ${frete}%0A%0A`;
+
+carrinho.forEach(i=>{
+
+mensagem+=`${i.qtd}x ${i.name}%0A`;
+
+});
+
+const subtotal=carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
+
+let desconto=10;
+if(subtotal>=1000) desconto=15;
+else if(subtotal>=500) desconto=12;
+
+const total=subtotal*(1-desconto/100);
+
+mensagem+=`%0ASubtotal: R$ ${subtotal.toFixed(2)}`;
+mensagem+=`%0ADesconto: ${desconto}%`;
+mensagem+=`%0ATotal: R$ ${total.toFixed(2)}`;
+
+window.open(`https://wa.me/5519992850208?text=${mensagem}`);
+
+}
+
+
+/* =========================================
+PDF
+========================================= */
+
+function enviarEmailPedido(){
+
+if(!podeEnviarPedido()) return;
+
+const {jsPDF}=window.jspdf;
+
+const doc=new jsPDF();
+
+let y=20;
+
+const cliente=document.getElementById("razao-social").value;
+
+doc.text("Pedido B2B - Crazy Fantasy",20,y);
+
+y+=10;
+
+doc.text("Cliente: "+cliente,20,y);
+
+y+=10;
+
+carrinho.forEach(i=>{
+
+doc.text(`${i.qtd}x ${i.name}`,20,y);
+
+y+=8;
+
+});
+
+const subtotal=carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
+
+let desconto=10;
+if(subtotal>=1000) desconto=15;
+else if(subtotal>=500) desconto=12;
+
+const total=subtotal*(1-desconto/100);
+
+y+=10;
+
+doc.text("Subtotal: R$ "+subtotal.toFixed(2),20,y);
+
+y+=8;
+
+doc.text("Desconto: "+desconto+"%",20,y);
+
+y+=8;
+
+doc.text("Total: R$ "+total.toFixed(2),20,y);
+
+doc.save("pedido-crazy-fantasy.pdf");
+
+}
+
+
+/* =========================================
+EMAIL
+========================================= */
+
+function enviarEmail(){
+
+if(!podeEnviarPedido()) return;
+
+const emailDestino="pedidos@crazyfantasy.com.br";
+
+let corpo="Pedido Crazy Fantasy\n\n";
+
+carrinho.forEach(i=>{
+corpo+=`${i.qtd}x ${i.name}\n`;
+});
+
+window.location.href=
+`mailto:${emailDestino}?subject=Pedido Crazy Fantasy&body=${encodeURIComponent(corpo)}`;
+
+}
+
+
+/* =========================================
+MENU ENVIO
+========================================= */
+
+function toggleMenuEnvio(){
+
+const menu=document.getElementById("menu-envio-opcoes");
+
+if(menu.style.display==="flex"){
+menu.style.display="none";
+}else{
+menu.style.display="flex";
+}
+
+}
+
+
+/* =========================================
+UTILIDADES
+========================================= */
+
+function ajustarQtd(idx,op){
+
+const input=document.getElementById(`qtd-${idx}`);
+
+let v=parseInt(input.value);
+
+input.value=op==="+"?v+1:Math.max(0,v-1);
+
+}
+
+function toggleCarrinho(){
+
+document.getElementById("carrinho-drawer").classList.toggle("open");
+
+}
+
+function abrirModal(src){
+
+document.getElementById("img-ampliada").src=src;
+
+document.getElementById("modal-img").style.display="flex";
+
+}
+
+function fecharModal(){
+
+document.getElementById("modal-img").style.display="none";
+
+}
+
+document.addEventListener("DOMContentLoaded",carregarProdutos);
