@@ -1,30 +1,13 @@
-let todosProdutos = [];
+let todosProdutos = window.PRODUTOS || [];
 let carrinho = [];
 
 
-/* CARREGAR PRODUTOS */
+/* CARREGAR */
 
-async function carregarProdutos(){
-
-try{
-
-const res = await fetch('../api/produtos.js');
-
-if(!res.ok) throw new Error("Erro API");
-
-todosProdutos = await res.json();
+function carregarProdutos(){
 
 renderizarProdutos(todosProdutos);
 renderizarMenu();
-
-}catch(e){
-
-console.error(e);
-
-document.getElementById("produtos").innerHTML =
-"<h2 style='color:white'>Erro ao carregar catálogo</h2>";
-
-}
 
 }
 
@@ -37,16 +20,13 @@ const container=document.getElementById("menu-categorias");
 
 const cats=[
 "Todos",
-...new Set(todosProdutos.map(p=>p.categoria))
+...new Set(todosProdutos.map(p=>p.category||p.categoria))
 ];
 
 container.innerHTML=cats.map(c=>
-
-`<button class="cat-btn"
-onclick="filtrarCategoria('${c}',this)">
+`<button class="cat-btn" onclick="filtrarCategoria('${c}',this)">
 ${c}
 </button>`
-
 ).join("");
 
 }
@@ -62,7 +42,7 @@ btn.classList.add("active");
 const lista=
 cat==="Todos"
 ?todosProdutos
-:todosProdutos.filter(p=>p.categoria===cat);
+:todosProdutos.filter(p=>(p.category||p.categoria)===cat);
 
 renderizarProdutos(lista);
 
@@ -97,14 +77,14 @@ container.innerHTML=lista.map((p,i)=>{
 const v=p.variacoes[0];
 
 const preco=v.preco;
+
 const precoB2B=preco*0.9;
 
-return`
+return `
 
 <div class="produto-card">
 
-<img src="${p.imagem}"
-onclick="abrirModal('${p.imagem}')">
+<img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
 
 <h3>${p.name}</h3>
 
@@ -116,27 +96,22 @@ R$ ${preco.toFixed(2)}
 R$ ${precoB2B.toFixed(2)}
 </div>
 
-<div style="font-size:11px;background:#f1f5f9;padding:4px;border-radius:4px">
+<div class="tabela-descontos-card">
 
-12% → ${(precoB2B*0.88).toFixed(2)}
-|
+12% → ${(precoB2B*0.88).toFixed(2)}<br>
 15% → ${(precoB2B*0.85).toFixed(2)}
 
 </div>
 
-<select id="var-${i}"
-onchange="atualizarEstoqueVisivel(${i})">
+<select id="var-${i}" onchange="atualizarEstoqueVisivel(${i})">
 
 ${p.variacoes.map(v=>
-
 `<option value="${v.nome}|${v.preco}|${v.estoque}">
 ${v.nome}
 </option>`
-
 ).join("")}
 
 </select>
-
 
 <div>
 
@@ -146,7 +121,6 @@ ${v.estoque}
 </span>
 
 </div>
-
 
 <div>
 
@@ -179,8 +153,7 @@ const select=document.getElementById(`var-${idx}`);
 
 const estoque=select.value.split("|")[2];
 
-document.getElementById(`estoque-num-${idx}`)
-.innerText=estoque;
+document.getElementById(`estoque-num-${idx}`).innerText=estoque;
 
 }
 
@@ -240,31 +213,27 @@ else if(sub>=200)desc=10;
 
 const total=sub*(1-desc/100);
 
-document.getElementById("cart-count")
-.innerText=carrinho.length;
+document.getElementById("cart-count").innerText=carrinho.length;
 
-document.getElementById("barra-fill")
-.style.width=Math.min(sub/1000*100,100)+"%";
+document.getElementById("barra-fill").style.width=
+Math.min(sub/1000*100,100)+"%";
+
 
 const falta=document.getElementById("valor-falta");
 
 if(sub<200)falta.innerText=`Faltam ${(200-sub).toFixed(2)}`;
-
-else if(sub<500)
-falta.innerText=`Faltam ${(500-sub).toFixed(2)} p/12%`;
-
-else if(sub<1000)
-falta.innerText=`Faltam ${(1000-sub).toFixed(2)} p/15%`;
-
+else if(sub<500)falta.innerText=`Faltam ${(500-sub).toFixed(2)} para 12%`;
+else if(sub<1000)falta.innerText=`Faltam ${(1000-sub).toFixed(2)} para 15%`;
 else falta.innerText="Desconto máximo";
 
 
-document.getElementById("status-carrinho").innerHTML=
+document.getElementById("status-carrinho").innerHTML=`
 
-`Subtotal: R$ ${sub.toFixed(2)}<br>
+Subtotal: R$ ${sub.toFixed(2)}<br>
 Desconto: ${desc}%<br>
-<b>Total: R$ ${total.toFixed(2)}</b>`;
+<b>Total: R$ ${total.toFixed(2)}</b>
 
+`;
 
 document.getElementById("lista-itens-carrinho").innerHTML=
 
@@ -382,7 +351,4 @@ document.getElementById("modal-img").style.display="none";
 
 /* INIT */
 
-document.addEventListener(
-"DOMContentLoaded",
-carregarProdutos
-);
+document.addEventListener("DOMContentLoaded",carregarProdutos);
