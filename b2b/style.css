@@ -458,11 +458,19 @@ body {
 .faixa-item{
     display:flex;
     justify-content:space-between;
-    color:#cbd5f5;
+    align-items:center;
+    white-space:nowrap;
+    font-size:13px;
+}
+
+.faixa-item span{
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .faixa-item strong{
     color:#38bdf8;
+    margin-left:10px;
 }
 
 /* ESTOQUE */
