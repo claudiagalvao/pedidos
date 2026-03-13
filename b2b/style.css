@@ -650,3 +650,50 @@ gap:10px;
 .dados-grid-full{
 grid-column:span 2;
 }
+
+
+
+
+
+/* MENU ENVIAR PEDIDO */
+
+.menu-envio{
+position:relative;
+}
+
+.btn-enviar{
+width:100%;
+padding:15px;
+background:#22c55e;
+border:none;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.menu-opcoes{
+display:none;
+flex-direction:column;
+position:absolute;
+bottom:60px;
+width:100%;
+background:#0f172a;
+border:1px solid #334155;
+border-radius:8px;
+overflow:hidden;
+z-index:10;
+}
+
+.menu-opcoes button{
+padding:12px;
+background:none;
+border:none;
+color:white;
+text-align:left;
+cursor:pointer;
+}
+
+.menu-opcoes button:hover{
+background:#1e293b;
+}
