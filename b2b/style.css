@@ -297,4 +297,64 @@ body {
     align-items: center; 
 }
 
+
+
+/* ============================================================
+   PROGRESS BAR - B2B (ADICIONADO)
+   ============================================================ */
+
+/* Container do fundo da barra */
+.barra-progresso-bg {
+    width: 100%;
+    height: 12px;
+    background: #334155; /* Cor de fundo cinza escuro */
+    border-radius: 10px;
+    margin: 15px 0 5px 0;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+}
+
+/* O preenchimento que o JS controla */
+.barra-progresso-fill {
+    width: 0%; /* O JavaScript altera isso dinamicamente */
+    height: 100%;
+    background: linear-gradient(90deg, #ff00ff, #00ffff); /* Rosa para Ciano Neon */
+    transition: width 0.5s ease-in-out;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* Texto que indica quanto falta para o desconto */
+.economia-destaque {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.economia-destaque b {
+    color: #00ffff;
+}
+
+/* Ajuste de cor para os itens listados no carrinho */
+#lista-itens-carrinho div {
+    color: white !important;
+}
+
+/* Estilo do contador (bolinha) de itens no botão do carrinho */
+#cart-count {
+    background: #ff00ff;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    right: 5px;
+}
+
+
+
+
+
 #img-ampliada { max-width: 90%; max-height: 90%; border-radius: 10px; }
