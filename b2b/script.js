@@ -88,7 +88,7 @@ function atualizarEstoqueVisivel(idx) {
 }
 
 /* =========================================
-   3. LÓGICA DO CARRINHO
+   3. LÓGICA DO CARRINHO E BARRA DE PROGRESSO
 ========================================= */
 function adicionar(idx, nome) {
     const inputQtd = document.getElementById(`qtd-${idx}`);
@@ -122,22 +122,46 @@ function adicionar(idx, nome) {
 }
 
 function atualizarInterface() {
-    // Cálculo baseado no preço base (varejo) para aplicar as faixas de desconto corretamente
     const subtotalVarejo = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
-    let desc = 10; 
-    if (subtotalVarejo >= 1000) desc = 15;
-    else if (subtotalVarejo >= 500) desc = 12;
+    let desc = 10;
+    let proximoNivel = "";
+    let metaParaBarra = 500;
+
+    if (subtotalVarejo >= 1000) {
+        desc = 15;
+        proximoNivel = "🔥 Melhor desconto atingido (15%)!";
+        metaParaBarra = 1000;
+    } else if (subtotalVarejo >= 500) {
+        desc = 12;
+        proximoNivel = `Faltam R$ ${(1000 - subtotalVarejo).toFixed(2)} para 15% OFF`;
+        metaParaBarra = 1000;
+    } else {
+        desc = 10;
+        proximoNivel = `Faltam R$ ${(500 - subtotalVarejo).toFixed(2)} para 12% OFF`;
+        metaParaBarra = 500;
+    }
 
     const totalFinal = subtotalVarejo * (1 - desc / 100);
     const liberado = totalFinal >= 200;
 
-    // Atualização da UI
+    // Atualiza Barra de Progresso
+    const porcenBarra = Math.min((subtotalVarejo / metaParaBarra) * 100, 100);
+    const progressoHTML = `
+        <div class="progress-container">
+            <div class="progress-text">${proximoNivel}</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: ${porcenBarra}%"></div>
+            </div>
+        </div>
+    `;
+
     document.getElementById('cart-count').innerText = carrinho.length;
     document.getElementById('status-carrinho').innerHTML = `
-        <p style="color:#94a3b8; font-size:0.8rem">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
+        ${progressoHTML}
+        <p style="color:#94a3b8; font-size:0.8rem; margin-top:10px">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
         <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
-        <h2 style="color:white">Total: R$ ${totalFinal.toFixed(2)}</h2>
+        <h2 style="color:white; font-size:1.5rem">Total: R$ ${totalFinal.toFixed(2)}</h2>
     `;
 
     const lista = document.getElementById("lista-itens-carrinho");
@@ -150,12 +174,11 @@ function atualizarInterface() {
 
     const btnZap = document.querySelector('.btn-whatsapp-ativo');
     const btnEmail = document.querySelector('.btn-pdf-ativo');
-    
     [btnZap, btnEmail].forEach(btn => {
         if(btn) {
             btn.disabled = !liberado;
             btn.style.opacity = liberado ? "1" : "0.3";
-            btn.style.cursor = liberado ? "pointer" : "not-allowed";
+            btn.style.filter = liberado ? "none" : "grayscale(1)";
         }
     });
 }
@@ -171,7 +194,6 @@ function removerItem(idx) {
 function gerarCorpoPedido() {
     const rz = document.getElementById('razao-social').value;
     if(!rz) return alert("Preencha a Razão Social!");
-    
     let texto = `*PEDIDO B2B - CRAZY FANTASY*\nEmpresa: ${rz}\n----------\n`;
     carrinho.forEach(i => texto += `• ${i.qtd}x ${i.name} (${i.var})\n`);
     texto += `----------\n*${document.querySelector('#status-carrinho h2').innerText}*`;
