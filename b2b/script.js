@@ -34,9 +34,19 @@ function adicionar(idx, nome) {
     
     if (q <= 0) return alert("Selecione a quantidade!");
 
-    const [vN, vP, vE] = selectVar.value.split('|');
+    // Se o select existir, pega os dados dele. Se não, pega da primeira variação do produto.
+    let vN, vP, vE;
+    if (selectVar) {
+        [vN, vP, vE] = selectVar.value.split('|');
+    } else {
+        const p = todosProdutos[idx];
+        const v = p.variacoes[0];
+        vN = v.nome;
+        vP = v.preco;
+        vE = v.estoque;
+    }
+
     const estoqueDisponivel = parseInt(vE);
-    
     const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
     const qtdNoCarrinho = itemExistente ? itemExistente.qtd : 0;
 
@@ -147,6 +157,14 @@ function renderizarProdutos(lista) {
         const v = p.variacoes?.[0] || { preco: 0, estoque: 0 };
         const precoB2B = v.preco * 0.9;
 
+        // Lógica para decidir se mostra o dropdown ou não
+        const temVariacaoReal = p.variacoes && p.variacoes.length > 1;
+        const selectHTML = temVariacaoReal 
+            ? `<select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
+                ${p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('')}
+               </select>`
+            : `<div style="height:20px; margin-bottom:15px;"></div>`; // Espaço vazio caso não tenha select
+
         return `
         <div class="produto-card">
             <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
@@ -162,9 +180,7 @@ function renderizarProdutos(lista) {
                 Estoque: <span id="estoque-num-${index}">${v.estoque}</span> un.
             </div>
 
-            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
-                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('') : ''}
-            </select>
+            ${selectHTML}
 
             <div class="controle-qtd">
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
@@ -181,8 +197,12 @@ function ajustarQtd(idx, op) {
     let select = document.getElementById(`var-${idx}`);
     let atual = parseInt(input.value);
     
-    const [nomeVar, precoVar, estoqueVar] = select.value.split('|');
-    const limite = parseInt(estoqueVar);
+    let limite;
+    if (select) {
+        limite = parseInt(select.value.split('|')[2]);
+    } else {
+        limite = todosProdutos[idx].variacoes[0].estoque;
+    }
 
     if (op === '+') {
         if (atual < limite) {
