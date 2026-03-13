@@ -124,7 +124,6 @@ function adicionar(idx, nome) {
 function atualizarInterface() {
     const subtotalVarejo = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
-    // Se o carrinho estiver vazio, reseta a visualização
     if (subtotalVarejo === 0) {
         document.getElementById('cart-count').innerText = "0";
         document.getElementById('status-carrinho').innerHTML = `<p style="text-align:center; color:#64748b; padding:20px;">Seu carrinho está vazio</p>`;
@@ -136,7 +135,7 @@ function atualizarInterface() {
     let metaParaBarra = 500;
     let proximoNivel = "";
 
-    // Lógica de Metas para os Descontos Progressivos
+    // Lógica de Descontos
     if (subtotalVarejo >= 1000) {
         desc = 15;
         metaParaBarra = 1000;
@@ -152,13 +151,12 @@ function atualizarInterface() {
     }
 
     const totalFinal = subtotalVarejo * (1 - desc / 100);
-    const liberado = totalFinal >= 200; // Regra do pedido mínimo
+    const liberado = totalFinal >= 200;
     const porcenBarra = Math.min((subtotalVarejo / metaParaBarra) * 100, 100);
 
-    // Atualiza o contador de itens no ícone do carrinho
     document.getElementById('cart-count').innerText = carrinho.length;
 
-    // Constrói o HTML do status (Barra + Valores)
+    // Renderiza a barra ÚNICA e os valores
     document.getElementById('status-carrinho').innerHTML = `
         <div class="progress-container">
             <div class="progress-text">${proximoNivel}</div>
@@ -166,28 +164,29 @@ function atualizarInterface() {
                 <div class="progress-bar-fill" style="width: ${porcenBarra}%"></div>
             </div>
         </div>
-        <div class="info-valores">
+        <div class="info-valores" style="margin-top:15px; border-top:1px solid #334155; padding-top:10px">
             <p style="color:#94a3b8; font-size:0.8rem">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
             <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
-            <h2 style="color:white; margin: 5px 0;">Total: R$ ${totalFinal.toFixed(2)}</h2>
-            ${!liberado ? `<p style="color:#f87171; font-size:0.75rem; font-weight:bold;">⚠️ Mínimo para pedido: R$ 200,00</p>` : ''}
+            <h2 style="color:white; font-size:1.4rem">Total: R$ ${totalFinal.toFixed(2)}</h2>
+            ${!liberado ? `<p style="color:#f87171; font-size:0.75rem; font-weight:bold; margin-top:5px">⚠️ Mínimo para pedido: R$ 200,00</p>` : ''}
         </div>
     `;
 
-    // Renderiza a lista de itens
+    // Lista de Itens
     const lista = document.getElementById("lista-itens-carrinho");
     lista.innerHTML = carrinho.map((i, idx) => `
-        <div class="item-carrinho">
-            <span>${i.qtd}x ${i.name} (${i.var})</span>
-            <button onclick="removerItem(${idx})" style="color:#ef4444; background:none; border:none; cursor:pointer;">✕</button>
+        <div class="item-carrinho" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #334155;">
+            <span style="font-size:0.85rem;">${i.qtd}x ${i.name}</span>
+            <button onclick="removerItem(${idx})" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button>
         </div>
     `).join('');
 
-    // Gerencia a ativação dos botões de finalização
+    // Botões de ação
     const btnZap = document.querySelector('.btn-whatsapp-ativo');
     const btnEmail = document.querySelector('.btn-pdf-ativo');
+    const btnPDF = document.querySelector('.btn-pdf-ativo') || document.querySelector('button[onclick="enviarEmail()"]');
     
-    [btnZap, btnEmail].forEach(btn => {
+    [btnZap, btnEmail, btnPDF].forEach(btn => {
         if(btn) {
             btn.disabled = !liberado;
             btn.style.opacity = liberado ? "1" : "0.3";
@@ -195,7 +194,6 @@ function atualizarInterface() {
         }
     });
 }
-
 function removerItem(idx) {
     carrinho.splice(idx, 1);
     atualizarInterface();
