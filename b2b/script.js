@@ -435,14 +435,51 @@ function enviarEmail(){
         return;
     }
 
-    const nome=document.getElementById("razao-social").value || "Cliente";
+    const { jsPDF } = window.jspdf;
 
-    const pedido={
-        cliente:nome,
-        itens:carrinho
-    };
+    const doc = new jsPDF();
 
-    document.getElementById("pedido-corpo").value=JSON.stringify(pedido);
+    let y = 20;
 
-    document.getElementById("form-pedido").submit();
+    const cliente = document.getElementById("razao-social").value || "Cliente";
+
+    doc.setFontSize(18);
+    doc.text("Pedido B2B - Crazy Fantasy", 20, y);
+
+    y+=10;
+
+    doc.setFontSize(12);
+    doc.text("Cliente: "+cliente, 20, y);
+
+    y+=10;
+
+    carrinho.forEach(item=>{
+
+        doc.text(`${item.qtd}x ${item.name}`,20,y);
+
+        y+=8;
+
+    });
+
+    const subtotal=carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
+
+    let desconto=10;
+
+    if(subtotal>=1000) desconto=15;
+    else if(subtotal>=500) desconto=12;
+
+    const total=subtotal*(1-desconto/100);
+
+    y+=10;
+
+    doc.text("Subtotal: R$ "+subtotal.toFixed(2),20,y);
+    y+=8;
+
+    doc.text("Desconto: "+desconto+"%",20,y);
+    y+=8;
+
+    doc.text("Total: R$ "+total.toFixed(2),20,y);
+
+    doc.save("pedido-crazy-fantasy.pdf");
+
 }
