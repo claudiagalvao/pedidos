@@ -254,3 +254,13 @@ function abrirModal(s) {
 function fecharModal() { document.getElementById('modal-img').style.display = 'none'; }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
+
+
+
+
+function limparCarrinho() {
+    if (confirm("Deseja limpar todos os itens do carrinho?")) {
+        carrinho = [];
+        atualizarInterface();
+    }
+}
