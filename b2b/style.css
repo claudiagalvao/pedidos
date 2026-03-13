@@ -302,3 +302,40 @@ body {
 }
 
 #img-ampliada { max-width: 90%; max-height: 90%; border-radius: 10px; }
+
+
+
+
+
+/* Barra de Progresso no Carrinho */
+.progress-container {
+    background: #11151c;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #334155;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #d400d4, #ff00ff);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    transition: width 0.5s ease-in-out;
+    width: 0%; /* Alterado dinamicamente pelo JS */
+}
