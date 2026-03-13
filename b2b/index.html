@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css?v=35">
+    <link rel="stylesheet" href="style.css?v=50">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-    <header class="header-b2b">
-        <div class="banner-full">
+    <header>
+        <div class="banner-full-width">
             <img src="banner.png" class="banner-img" alt="Crazy Fantasy B2B">
         </div>
         
@@ -37,21 +36,49 @@
             <h3>🛒 Seu Pedido</h3>
             <button class="btn-fechar" onclick="toggleCarrinho()">✕</button>
         </div>
+        
         <div class="drawer-content">
             <div id="status-carrinho" class="status-info"></div>
             <div class="barra-progresso-container"><div id="barra-fill" class="barra-progresso-fill"></div></div>
+
             <div id="lista-itens-carrinho" class="mini-lista"></div>
+            <button onclick="limparTudo()" class="btn-esvaziar-link">Limpar lista de itens</button>
+
             <form id="form-pedido" action="https://formsubmit.co/lojacrazyfantasy@hotmail.com" method="POST">
+                <input type="hidden" name="_cc" value="claus.galvao@hotmail.com">
                 <input type="hidden" name="Resumo_Pedido" id="pedido-corpo">
+                
                 <div class="dados-nf">
+                    <h4>Dados da Empresa</h4>
                     <input type="text" name="Razao_Social" id="razao-social" placeholder="Razão Social / Escola *" required>
+                    <div class="row">
+                        <input type="text" name="CNPJ" id="cnpj" placeholder="CNPJ / CPF *" required>
+                        <input type="text" name="IE" id="ie" placeholder="I.E. / RG">
+                    </div>
                     <div class="row">
                         <input type="text" name="WhatsApp" id="whatsapp" placeholder="WhatsApp *" required>
                         <input type="email" name="Email" id="email-nf" placeholder="E-mail *" required>
                     </div>
+                    <textarea name="Endereco" id="endereco" placeholder="Endereço Completo de Entrega *" required></textarea>
+                    
+                    <h4>Pagamento e Envio</h4>
+                    <div class="row">
+                        <select name="Pagamento" id="forma-pagamento" required>
+                            <option value="" disabled selected>Pagamento *</option>
+                            <option value="PIX">PIX (5% desc extra)</option>
+                            <option value="Boleto">Boleto (Faturado PJ)</option>
+                            <option value="Cartao">Cartão de Crédito</option>
+                        </select>
+                        <select name="Envio" id="forma-envio" required>
+                            <option value="" disabled selected>Envio *</option>
+                            <option value="Transportadora">Transportadora</option>
+                            <option value="Correios">Correios</option>
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
+
         <div class="drawer-footer">
             <button type="button" class="btn-finalizar zap" onclick="finalizar('zap')">FINALIZAR WHATSAPP</button>
             <button type="button" class="btn-finalizar email" onclick="finalizar('email')">ENVIAR POR E-MAIL</button>
@@ -68,6 +95,6 @@
     </footer>
 
     <div id="modal-img" class="modal" onclick="this.style.display='none'"><img id="img-ampliada"></div>
-    <script src="script.js?v=35"></script>
+    <script src="script.js?v=50"></script>
 </body>
 </html>
