@@ -444,9 +444,7 @@ ENVIO WHATSAPP
 
 function enviarWhatsApp(){
 
-    if(carrinho.length===0){
-        alert("Carrinho vazio");
-        return;
+if(!validarFormulario()) return;
     }
 
     const nome=document.getElementById("razao-social").value || "Cliente";
@@ -488,11 +486,9 @@ mensagem += `%0AFrete: ${frete}`;
 GERAR PDF
 ========================================= */
 
-function enviarEmail(){
+function enviarEmailPedido(){
 
-    if(carrinho.length===0){
-        alert("Carrinho vazio");
-        return;
+if(!validarFormulario()) return;
     }
 
 const pagamento = document.getElementById("pagamento").value || "";
@@ -551,5 +547,30 @@ y+=10;
     doc.text("Total: R$ "+total.toFixed(2),20,y);
 
     doc.save("pedido-crazy-fantasy.pdf");
+
+}
+
+
+
+
+
+
+function validarFormulario(){
+
+const nome=document.getElementById("razao-social").value.trim();
+const cnpj=document.getElementById("cnpj").value.trim();
+const email=document.getElementById("email").value.trim();
+const telefone=document.getElementById("telefone").value.trim();
+const pagamento=document.getElementById("pagamento").value;
+const frete=document.getElementById("frete").value;
+
+if(!nome || !cnpj || !email || !telefone || !pagamento || !frete){
+
+alert("Preencha todos os campos do pedido");
+
+return false;
+}
+
+return true;
 
 }
