@@ -521,3 +521,17 @@ body {
 .btn-add:hover{
     background:#2563eb;
 }
+
+
+
+
+
+
+.produto-card img{
+    width:100%;
+    border-radius:8px;
+    background:white;
+    padding:12px;
+    object-fit:contain;
+    box-shadow: inset 0 0 0 1px #e2e8f0;
+}
