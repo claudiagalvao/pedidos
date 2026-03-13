@@ -182,14 +182,32 @@ else{
 
     document.getElementById('status-carrinho').innerHTML=`
 
-        <div class="progress-container">
+      <div class="progress-container">
 
-            <div class="progress-text">${mensagem}</div>
+    <div class="progress-steps">
 
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill"
-                style="width:${progresso}%"></div>
-            </div>
+        <div class="step ${subtotal >= 200 ? 'active' : ''}">
+            Pedido mínimo
+            <small>R$200</small>
+        </div>
+
+        <div class="step ${subtotal >= 500 ? 'active' : ''}">
+            🔥 12% OFF
+            <small>R$500</small>
+        </div>
+
+        <div class="step ${subtotal >= 1000 ? 'active' : ''}">
+            💎 15% OFF
+            <small>R$1000</small>
+        </div>
+
+    </div>
+
+    <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:${progresso}%"></div>
+    </div>
+
+</div>
 
         </div>
 
