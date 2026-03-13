@@ -127,61 +127,99 @@ function renderizarProdutos(lista) {
 3. INTERFACE DO CARRINHO
 ========================================= */
 
-function atualizarInterface() {
+function atualizarInterface(){
 
-    const subtotal = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+    const subtotal = carrinho.reduce((acc,i)=>acc+(i.preco*i.qtd),0);
 
-    if (subtotal === 0) {
+    if(subtotal===0){
 
-        document.getElementById('cart-count').innerText = "0";
+        document.getElementById('cart-count').innerText="0";
 
-        document.getElementById('status-carrinho').innerHTML = `
-        <p style="text-align:center;color:#64748b;padding:20px">
+        document.getElementById('status-carrinho').innerHTML=
+        `<p style="text-align:center;color:#64748b;padding:20px;">
         Seu carrinho está vazio
         </p>`;
 
-        document.getElementById("lista-itens-carrinho").innerHTML = "";
+        document.getElementById("lista-itens-carrinho").innerHTML="";
 
         return;
     }
 
-    let desconto = 10;
+    let desconto=10;
+    let meta=500;
+    let mensagem="";
 
-    if (subtotal >= 1000) desconto = 15;
-    else if (subtotal >= 500) desconto = 12;
+    if(subtotal>=1000){
+        desconto=15;
+        meta=1000;
+        mensagem="🔥 Desconto máximo atingido (15%)";
+    }
+    else if(subtotal>=500){
+        desconto=12;
+        meta=1000;
+        mensagem=`Faltam R$ ${(1000-subtotal).toFixed(2)} para 15% OFF`;
+    }
+    else{
+        desconto=10;
+        meta=500;
+        mensagem=`Faltam R$ ${(500-subtotal).toFixed(2)} para 12% OFF`;
+    }
 
-    const total = subtotal * (1 - desconto / 100);
+    const total=subtotal*(1-desconto/100);
 
-    document.getElementById('cart-count').innerText = carrinho.length;
+    const progresso=Math.min((subtotal/meta)*100,100);
 
-    document.getElementById('status-carrinho').innerHTML = `
+    document.getElementById('cart-count').innerText=carrinho.length;
 
-        <p style="color:#94a3b8;font-size:0.9rem">
-        Subtotal: R$ ${subtotal.toFixed(2)}
-        </p>
+    document.getElementById('status-carrinho').innerHTML=`
 
-        <p style="color:#22c55e;font-weight:bold">
-        Desconto aplicado: ${desconto}%
-        </p>
+        <div class="progress-container">
 
-        <h2 style="color:white">
-        Total: R$ ${total.toFixed(2)}
-        </h2>
+            <div class="progress-text">${mensagem}</div>
+
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill"
+                style="width:${progresso}%"></div>
+            </div>
+
+        </div>
+
+        <div style="margin-top:10px;border-top:1px solid #334155;padding-top:10px">
+
+            <p style="color:#94a3b8;font-size:0.9rem">
+            Subtotal: R$ ${subtotal.toFixed(2)}
+            </p>
+
+            <p style="color:#22c55e;font-weight:bold">
+            Desconto aplicado: ${desconto}%
+            </p>
+
+            <h2 style="color:white">
+            Total: R$ ${total.toFixed(2)}
+            </h2>
+
+        </div>
     `;
 
-    document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
+    document.getElementById("lista-itens-carrinho").innerHTML=
+    carrinho.map((i,idx)=>`
+
         <div class="item-carrinho"
-        style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #334155;font-size:0.85rem">
+        style="display:flex;justify-content:space-between;
+        padding:6px 0;border-bottom:1px solid #334155;font-size:0.85rem">
 
             <span>${i.qtd}x ${i.name}</span>
 
             <button onclick="removerItem(${idx})"
-            style="color:#ef4444;background:none;border:none;cursor:pointer">
+            style="color:#ef4444;background:none;border:none;cursor:pointer;">
             ✕
             </button>
 
         </div>
+
     `).join('');
+
+    document.getElementById("pedido-corpo").value=JSON.stringify(carrinho);
 }
 
 
