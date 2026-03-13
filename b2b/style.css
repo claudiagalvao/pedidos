@@ -535,3 +535,28 @@ body {
     object-fit:contain;
     box-shadow: inset 0 0 0 1px #e2e8f0;
 }
+
+
+.tabela-progressiva{
+    background:#020617;
+    border-radius:8px;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:13px;
+}
+
+.faixa-item{
+    display:flex;
+    justify-content:space-between;
+    color:#cbd5f5;
+}
+
+.faixa-item strong{
+    color:#38bdf8;
+}
+
+.faixa-item.destaque{
+    color:#fde68a;
+}
