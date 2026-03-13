@@ -34,7 +34,6 @@ function adicionar(idx, nome) {
     
     if (q <= 0) return alert("Selecione a quantidade!");
 
-    // Se o select existir, pega os dados dele. Se não, pega da primeira variação do produto.
     let vN, vP, vE;
     if (selectVar) {
         [vN, vP, vE] = selectVar.value.split('|');
@@ -111,19 +110,32 @@ function atualizarInterface() {
 
     const liberado = total >= 200;
     const btnZap = document.getElementById("btn-zap");
-    const btnPdf = document.getElementById("btn-pdf");
+    const btnForm = document.getElementById("btn-pdf"); // Usando o ID do antigo botão PDF/Email para o Form
     
     if (btnZap) {
         btnZap.disabled = !liberado;
         btnZap.className = liberado ? 'btn-whatsapp-ativo' : 'btn-desativado';
     }
-    if (btnPdf) {
-        btnPdf.disabled = !liberado;
-        btnPdf.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado';
+    if (btnForm) {
+        btnForm.disabled = !liberado;
+        btnForm.innerText = "Finalizar no Form";
+        btnForm.onclick = () => abrirFormulario();
+        btnForm.className = liberado ? 'btn-pdf-ativo' : 'btn-desativado';
     }
 }
 
 // 5. FUNÇÕES DE SUPORTE
+function abrirFormulario() {
+    toggleCarrinho(); // Fecha o drawer do carrinho
+    const secaoDados = document.getElementById('dados-cliente'); // Certifique-se que sua seção de input tem esse ID
+    if (secaoDados) {
+        secaoDados.scrollIntoView({ behavior: 'smooth' });
+        secaoDados.style.border = "2px solid #ff00ff"; // Destaque visual
+    } else {
+        alert("Por favor, preencha os dados abaixo para finalizar.");
+    }
+}
+
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
@@ -157,13 +169,12 @@ function renderizarProdutos(lista) {
         const v = p.variacoes?.[0] || { preco: 0, estoque: 0 };
         const precoB2B = v.preco * 0.9;
 
-        // Lógica para decidir se mostra o dropdown ou não
         const temVariacaoReal = p.variacoes && p.variacoes.length > 1;
         const selectHTML = temVariacaoReal 
             ? `<select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
                 ${p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('')}
                </select>`
-            : `<div style="height:20px; margin-bottom:15px;"></div>`; // Espaço vazio caso não tenha select
+            : `<div style="height:20px; margin-bottom:15px;"></div>`;
 
         return `
         <div class="produto-card">
