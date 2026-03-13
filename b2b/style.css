@@ -1,43 +1,32 @@
-/* ... (Manter os imports iniciais) ... */
+/* ... (Seu CSS base de fontes e cores) ... */
 
-/* Banner e Header */
-.banner-container { width: 100%; max-height: 180px; overflow: hidden; background: #000; }
-.banner-img { width: 100%; height: 100%; object-fit: contain; }
-
-.nav-bar { 
-    display: flex; align-items: center; justify-content: space-between; 
-    padding: 10px 20px; background: #11151c; position: sticky; top: 0; z-index: 999;
-}
-
-.header-right { display: flex; align-items: center; gap: 15px; }
-.btn-carrinho-abrir { 
-    background: #ff00ff; color: white; border: none; padding: 10px 15px; 
-    border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
-}
-
-/* Grid ocupa a tela toda agora */
-.main-layout { padding: 20px; max-width: 1400px; margin: 0 auto; }
-.produtos-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 25px; 
-}
-
-/* CARRINHO DRAWER (Lado Direito) */
+/* Carrinho Drawer */
 .drawer {
-    position: fixed; right: -450px; top: 0; width: 400px; height: 100%;
-    background: #1e293b; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed; right: -450px; top: 0; width: 420px; height: 100%;
+    background: #1e293b; z-index: 2000; transition: 0.4s ease;
     display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 }
 .drawer.open { right: 0; }
 
-.drawer-header { padding: 20px; background: #0f172a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ff00ff; }
+.drawer-header { padding: 20px; background: #0f172a; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff00ff; }
 .drawer-content { flex: 1; overflow-y: auto; padding: 20px; }
 .drawer-footer { padding: 20px; background: #0f172a; border-top: 1px solid #334155; }
 
-/* Ajuste nos inputs para ficarem perfeitos no Drawer */
+/* Inputs do Formulário (Fundo Branco para facilitar leitura) */
 .dados-nf input, .dados-nf textarea, .dados-nf select {
-    background: #ffffff !important; color: #000 !important; border: 1px solid #cbd5e1;
+    width: 100%; padding: 10px; background: #ffffff !important; color: #000 !important;
+    border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 8px; font-size: 0.85rem;
 }
 
-/* ... (Manter estilos de botões e cards anteriores) ... */
+/* Botão Flutuante do Carrinho no Header */
+.btn-carrinho-abrir {
+    background: #ff00ff; color: white; border: none; padding: 10px 18px;
+    border-radius: 50px; cursor: pointer; font-weight: bold; position: relative;
+}
+#cart-count { background: white; color: #ff00ff; padding: 2px 6px; border-radius: 50%; font-size: 0.7rem; margin-left: 5px; }
+
+/* Menu e Categorias */
+.nav-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #11151c; border-bottom: 1px solid #334155; }
+.menu-cats { display: flex; gap: 10px; }
+
+/* ... (Manter estilos dos cards de produto) ... */
