@@ -26,21 +26,29 @@ function toggleCarrinho() {
     }
 }
 
-// 3. ADICIONAR AO CARRINHO
+// 3. ADICIONAR AO CARRINHO (COM TRAVA DE ESTOQUE)
 function adicionar(idx, nome) {
     const inputQtd = document.getElementById(`qtd-${idx}`);
     const selectVar = document.getElementById(`var-${idx}`);
-    
     const q = parseInt(inputQtd.value);
+    
     if (q <= 0) return alert("Selecione a quantidade!");
 
     const [vN, vP, vE] = selectVar.value.split('|');
+    const estoqueDisponivel = parseInt(vE);
     
+    // Verifica se já existe o item no carrinho para validar o estoque total
     const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
+    const qtdNoCarrinho = itemExistente ? itemExistente.qtd : 0;
+
+    if ((q + qtdNoCarrinho) > estoqueDisponivel) {
+        alert(`Estoque insuficiente! Você já tem ${qtdNoCarrinho} no carrinho. Limite máximo: ${estoqueDisponivel}.`);
+        return;
+    }
+
     if (itemExistente) {
         itemExistente.qtd += q;
     } else {
-        // Preço B2B (já com 10% de desconto base)
         carrinho.push({ 
             name: nome, 
             var: vN, 
@@ -52,7 +60,6 @@ function adicionar(idx, nome) {
     inputQtd.value = 0;
     atualizarInterface();
     
-    // Abre o carrinho automaticamente ao adicionar
     const drawer = document.getElementById('carrinho-drawer');
     if (drawer) drawer.classList.add('open');
 }
@@ -61,7 +68,6 @@ function adicionar(idx, nome) {
 function atualizarInterface() {
     const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
-    // Lógica de Descontos
     let desc = 0, percent = 0;
     if (sub >= 1000) { desc = 15; percent = 100; }
     else if (sub >= 500) { desc = 12; percent = (sub/1000)*100; }
@@ -70,15 +76,12 @@ function atualizarInterface() {
 
     const total = sub * (1 - desc/100);
 
-    // Atualiza Contador no Ícone
     const cartCount = document.getElementById('cart-count');
     if (cartCount) cartCount.innerText = carrinho.length;
 
-    // Atualiza a Barra de Fill (Preenchimento)
     const barra = document.getElementById("barra-fill");
     if (barra) barra.style.width = `${percent}%`;
 
-    // Atualiza os Valores no Carrinho
     const statusCarrinho = document.getElementById("status-carrinho");
     if (statusCarrinho) {
         statusCarrinho.innerHTML = `
@@ -88,7 +91,6 @@ function atualizarInterface() {
         `;
     }
 
-    // Atualiza Lista de Itens
     const lista = document.getElementById("lista-itens-carrinho");
     if (lista) {
         lista.innerHTML = carrinho.map((i, idx) => `
@@ -98,7 +100,6 @@ function atualizarInterface() {
             </div>`).join('');
     }
 
-    // Gerenciar botões de finalização (mínimo R$ 200)
     const liberado = total >= 200;
     const btnZap = document.getElementById("btn-zap");
     const btnPdf = document.getElementById("btn-pdf");
@@ -113,7 +114,7 @@ function atualizarInterface() {
     }
 }
 
-// 5. FUNÇÕES DE SUPORTE (MENU, FILTROS, QTD)
+// 5. FUNÇÕES DE SUPORTE
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
@@ -131,37 +132,71 @@ function filtrarCategoria(cat, btn) {
     renderizarProdutos(filtrados);
 }
 
+// PASSO 3: Função para atualizar o estoque visível no card
+function atualizarEstoqueVisivel(idx) {
+    const select = document.getElementById(`var-${idx}`);
+    const spanEstoque = document.getElementById(`estoque-num-${idx}`);
+    if (select && spanEstoque) {
+        const estoque = select.value.split('|')[2];
+        spanEstoque.innerText = estoque;
+    }
+}
+
+// PASSO 1: Card atualizado com preços de desconto calculados
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (!container) return;
     container.innerHTML = lista.map((p, index) => {
         const v = p.variacoes?.[0] || { preco: 0, estoque: 0 };
+        const precoB2B = v.preco * 0.9;
+
         return `
         <div class="produto-card">
             <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
             <h3 style="font-size:0.9rem; height:40px; margin: 10px 0;">${p.name}</h3>
-            <div style="color:#ff00ff; font-weight:900;">B2B: R$ ${(v.preco * 0.9).toFixed(2)}</div>
-            <div class="tabela-descontos-card">12% (R$500) | 15% (R$1000)</div>
+            <div style="color:#ff00ff; font-weight:900;">B2B: R$ ${precoB2B.toFixed(2)}</div>
+            
+            <div class="tabela-descontos-card" style="font-size:0.7rem; line-height:1.4">
+                12% (R$500) → <b>R$ ${(precoB2B * 0.88).toFixed(2)}</b><br>
+                15% (R$1000) → <b>R$ ${(precoB2B * 0.85).toFixed(2)}</b>
+            </div>
+
             <div style="font-size:0.8rem; font-weight:bold; margin-bottom:10px">
                 Estoque: <span id="estoque-num-${index}">${v.estoque}</span> un.
             </div>
-            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;">
-                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('') : '<option>Padrão</option>'}
+
+            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
+                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('') : ''}
             </select>
+
             <div class="controle-qtd">
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
                 <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
-                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADD</button>
+                <button onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')" class="btn-add">ADD</button>
             </div>
         </div>`;
     }).join('');
 }
 
+// PASSO 2: Ajuste de quantidade com trava de estoque
 function ajustarQtd(idx, op) {
     let input = document.getElementById(`qtd-${idx}`);
+    let select = document.getElementById(`var-${idx}`);
     let atual = parseInt(input.value);
-    input.value = (op === '+') ? atual + 1 : (atual > 0 ? atual - 1 : 0);
+    
+    const [nomeVar, precoVar, estoqueVar] = select.value.split('|');
+    const limite = parseInt(estoqueVar);
+
+    if (op === '+') {
+        if (atual < limite) {
+            input.value = atual + 1;
+        } else {
+            alert(`Limite de estoque atingido (${limite} un).`);
+        }
+    } else {
+        input.value = (atual > 0) ? atual - 1 : 0;
+    }
 }
 
 function removerItem(idx) {
