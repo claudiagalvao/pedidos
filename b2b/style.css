@@ -624,3 +624,29 @@ font-size:10px;
 color:#22c55e;
 font-weight:bold;
 }
+
+
+
+
+
+.dados-cliente input,
+.dados-cliente select{
+width:100%;
+padding:12px;
+margin-top:5px;
+border-radius:6px;
+border:1px solid #334155;
+background:#1e293b;
+color:white;
+margin-bottom:10px;
+}
+
+.dados-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.dados-grid-full{
+grid-column:span 2;
+}
