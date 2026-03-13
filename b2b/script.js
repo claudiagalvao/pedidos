@@ -176,6 +176,11 @@ else{
 }
     const total=subtotal*(1-desconto/100);
 
+
+const pedidoMinimo = subtotal >= 200;
+
+    
+
     const progresso=Math.min((subtotal/meta)*100,100);
 
     document.getElementById('cart-count').innerText=carrinho.length;
@@ -247,6 +252,25 @@ else{
     `).join('');
 
     document.getElementById("pedido-corpo").value=JSON.stringify(carrinho);
+
+
+
+const btnZap = document.querySelector('.btn-whatsapp-ativo');
+const btnPdf = document.querySelector('.btn-pdf-ativo');
+
+[btnZap, btnPdf].forEach(btn=>{
+    if(!btn) return;
+
+    btn.disabled = !pedidoMinimo;
+
+    btn.style.opacity = pedidoMinimo ? "1" : "0.4";
+    btn.style.cursor = pedidoMinimo ? "pointer" : "not-allowed";
+});
+
+
+    
+
+    
 }
 
 
