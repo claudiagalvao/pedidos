@@ -14,7 +14,7 @@ async function carregarProdutos() {
     }
 }
 
-// 2. RENDERIZAR CARDS (Estoque, Preço B2B e Botão Adicionar)
+// 2. RENDERIZAR CARDS
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (!container) return;
@@ -90,20 +90,44 @@ function adicionar(idx, nome) {
 
 function atualizarInterface() {
     const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    let desc = 0, percent = 0;
+    let desc = 0, percent = 0, faltam = 0;
 
-    if (sub >= 1000) { desc = 15; percent = 100; }
-    else if (sub >= 500) { desc = 12; percent = (sub/1000)*100; }
-    else if (sub >= 200) { desc = 10; percent = (sub/500)*100; }
-    else { desc = 0; percent = (sub/200)*100; }
+    // --- Lógica da Barra de Progressão Corrigida ---
+    if (sub >= 1000) {
+        desc = 15;
+        percent = 100;
+        faltam = 0;
+    } else if (sub >= 500) {
+        desc = 12;
+        percent = 66 + ((sub - 500) / 500 * 34); // De 66% a 100%
+        faltam = 1000 - sub;
+    } else if (sub >= 200) {
+        desc = 10;
+        percent = 33 + ((sub - 200) / 300 * 33); // De 33% a 66%
+        faltam = 500 - sub;
+    } else {
+        desc = 0;
+        percent = (sub / 200) * 33; // De 0% a 33%
+        faltam = 200 - sub;
+    }
 
     const total = sub * (1 - desc/100);
 
-    // Barra
+    // Atualiza a Barra Visual
     const barra = document.getElementById("barra-fill");
     if (barra) barra.style.width = `${percent}%`;
 
-    // Totais
+    // Mensagem de Economia Dinâmica
+    const boxEconomia = document.getElementById("box-economia");
+    if (boxEconomia) {
+        if (faltam > 0) {
+            boxEconomia.innerHTML = `Faltam <b>R$ ${faltam.toFixed(2)}</b> para o próximo nível de desconto!`;
+        } else {
+            boxEconomia.innerHTML = `🎉 Você atingiu o <b>DESCONTO MÁXIMO!</b>`;
+        }
+    }
+
+    // Totais no Carrinho
     const status = document.getElementById("status-carrinho");
     if (status) {
         status.innerHTML = `
@@ -115,7 +139,7 @@ function atualizarInterface() {
         `;
     }
 
-    // Itens
+    // Lista de Itens
     const lista = document.getElementById("lista-itens-carrinho");
     if (lista) {
         lista.innerHTML = carrinho.map((i, idx) => `
@@ -128,7 +152,6 @@ function atualizarInterface() {
     const count = document.getElementById('cart-count');
     if (count) count.innerText = carrinho.length;
     
-    // Botões
     const liberado = total >= 200;
     const bZap = document.getElementById("btn-zap");
     const bPdf = document.getElementById("btn-pdf");
@@ -180,7 +203,7 @@ function abrirModal(src) {
     if(m && i) { i.src = src; m.style.display = 'flex'; }
 }
 
-// 5. FINALIZAÇÃO E PDF (PARA NÃO DAR ERRO NO HTML)
+// 5. FINALIZAÇÃO
 function finalizar(via) {
     const r = document.getElementById('razao-social').value;
     if(!r) return alert("Preencha a Razão Social!");
