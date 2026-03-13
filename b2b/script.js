@@ -122,14 +122,21 @@ function adicionar(idx, nome) {
 }
 
 function atualizarInterface() {
-    // Cálculo baseado no preço base (varejo) para aplicar as faixas de desconto corretamente
     const subtotalVarejo = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
     
+    // Se o carrinho estiver vazio, reseta a visualização
+    if (subtotalVarejo === 0) {
+        document.getElementById('cart-count').innerText = "0";
+        document.getElementById('status-carrinho').innerHTML = `<p style="text-align:center; color:#64748b; padding:20px;">Seu carrinho está vazio</p>`;
+        document.getElementById("lista-itens-carrinho").innerHTML = "";
+        return;
+    }
+
     let desc = 10; 
     let metaParaBarra = 500;
     let proximoNivel = "";
 
-    // Lógica de Metas da Barra de Progresso
+    // Lógica de Metas para os Descontos Progressivos
     if (subtotalVarejo >= 1000) {
         desc = 15;
         metaParaBarra = 1000;
@@ -145,13 +152,13 @@ function atualizarInterface() {
     }
 
     const totalFinal = subtotalVarejo * (1 - desc / 100);
-    const liberado = totalFinal >= 200;
-
-    // Cálculo da porcentagem da barra
+    const liberado = totalFinal >= 200; // Regra do pedido mínimo
     const porcenBarra = Math.min((subtotalVarejo / metaParaBarra) * 100, 100);
 
-    // Atualização da UI do Carrinho
+    // Atualiza o contador de itens no ícone do carrinho
     document.getElementById('cart-count').innerText = carrinho.length;
+
+    // Constrói o HTML do status (Barra + Valores)
     document.getElementById('status-carrinho').innerHTML = `
         <div class="progress-container">
             <div class="progress-text">${proximoNivel}</div>
@@ -159,19 +166,24 @@ function atualizarInterface() {
                 <div class="progress-bar-fill" style="width: ${porcenBarra}%"></div>
             </div>
         </div>
-        <p style="color:#94a3b8; font-size:0.8rem; margin-top:10px">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
-        <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
-        <h2 style="color:white">Total: R$ ${totalFinal.toFixed(2)}</h2>
+        <div class="info-valores">
+            <p style="color:#94a3b8; font-size:0.8rem">Subtotal Varejo: R$ ${subtotalVarejo.toFixed(2)}</p>
+            <p style="color:#ff00ff; font-weight:bold">Desconto Aplicado: ${desc}%</p>
+            <h2 style="color:white; margin: 5px 0;">Total: R$ ${totalFinal.toFixed(2)}</h2>
+            ${!liberado ? `<p style="color:#f87171; font-size:0.75rem; font-weight:bold;">⚠️ Mínimo para pedido: R$ 200,00</p>` : ''}
+        </div>
     `;
 
+    // Renderiza a lista de itens
     const lista = document.getElementById("lista-itens-carrinho");
     lista.innerHTML = carrinho.map((i, idx) => `
         <div class="item-carrinho">
             <span>${i.qtd}x ${i.name} (${i.var})</span>
-            <button onclick="removerItem(${idx})">✕</button>
+            <button onclick="removerItem(${idx})" style="color:#ef4444; background:none; border:none; cursor:pointer;">✕</button>
         </div>
     `).join('');
 
+    // Gerencia a ativação dos botões de finalização
     const btnZap = document.querySelector('.btn-whatsapp-ativo');
     const btnEmail = document.querySelector('.btn-pdf-ativo');
     
