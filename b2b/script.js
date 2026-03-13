@@ -1,19 +1,19 @@
 let todosProdutos = [];
 let carrinho = [];
 
-// 1. CARREGAR DADOS (Caminho api/ corrigido)
+// 1. CARREGAR DADOS DA PASTA API
 async function carregarDados() {
     const container = document.getElementById("produtos");
     try {
         const res = await fetch('api/produtos.json'); 
-        if (!res.ok) throw new Error("JSON não encontrado em api/");
+        if (!res.ok) throw new Error("Arquivo não encontrado");
         
         todosProdutos = await res.json();
         renderizarProdutos(todosProdutos);
         renderizarMenu();
     } catch (err) {
         console.error("Erro:", err);
-        if(container) container.innerHTML = `<h2 style='color:white; grid-column: 1/-1; text-align:center; padding:50px'>⚠️ Erro ao carregar api/produtos.json</h2>`;
+        if(container) container.innerHTML = `<h2 style='color:white; grid-column: 1/-1; text-align:center; padding:50px'>⚠️ Erro: Não foi possível carregar api/produtos.json</h2>`;
     }
 }
 
@@ -37,7 +37,7 @@ function renderizarProdutos(lista) {
     }).join('');
 }
 
-// 3. ADICIONAR E ATUALIZAR INTERFACE (Correção totalCalculado)
+// 3. CARRINHO E TOTAIS (Correção totalCalculado)
 function adicionar(idx) {
     const p = todosProdutos[idx];
     const v = p.variacoes[0];
@@ -55,24 +55,23 @@ function atualizarInterface() {
     let desc = sub >= 1000 ? 15 : sub >= 500 ? 12 : 0;
     const totalCalculado = sub * (1 - desc/100);
 
-    const totalItens = carrinho.reduce((acc, i) => acc + i.qtd, 0);
-    document.getElementById('cart-count').innerText = totalItens;
+    document.getElementById('cart-count').innerText = carrinho.reduce((acc, i) => acc + i.qtd, 0);
 
     document.getElementById("status-carrinho").innerHTML = `
-        <p style="font-size: 0.8rem; color: #94a3b8;">Subtotal Bruto: R$ ${sub.toFixed(2)}</p>
+        <p style="font-size: 0.8rem; color: #94a3b8;">Subtotal: R$ ${sub.toFixed(2)}</p>
         <p style="color: #ff00ff; font-weight: bold;">Desconto B2B: ${desc}%</p>
         <h2 style="color: white; font-size: 1.5rem;">Total: R$ ${totalCalculado.toFixed(2)}</h2>
     `;
 
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #333; font-size:0.85rem; color:white">
+        <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #333; font-size:0.85rem; color:white">
             <span><b>${i.qtd}x</b> ${i.name}</span>
             <button onclick="remover(${idx})" style="color:#ff4d4d; background:none; border:none; cursor:pointer">✕</button>
         </div>
     `).join('');
 }
 
-// 4. MENU E FILTROS
+// 4. MENU E NAVEGAÇÃO
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
@@ -91,6 +90,6 @@ function filtrar(cat, btn) {
 
 function remover(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
 function toggleCarrinho() { document.getElementById('carrinho-drawer').classList.toggle('open'); }
-function limparCarrinho() { if(confirm("Limpar pedido?")) { carrinho = []; atualizarInterface(); toggleCarrinho(); } }
+function limparCarrinho() { if(confirm("Deseja limpar o pedido?")) { carrinho = []; atualizarInterface(); toggleCarrinho(); } }
 
 document.addEventListener("DOMContentLoaded", carregarDados);
