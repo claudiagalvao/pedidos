@@ -1,180 +1,122 @@
 let todosProdutos = [];
 let carrinho = [];
+let nivelAlcancado = 0;
 
 // 1. CARREGAMENTO DOS DADOS (Conectado ao seu api/produtos.js)
 async function carregarProdutos() {
     try {
+        // Usa o caminho relativo para sair da pasta /b2b/ e aceder à /api/
         const res = await fetch('../api/produtos.js'); 
-        if (!res.ok) throw new Error("Erro ao carregar ficheiro");
+        if (!res.ok) throw new Error("Não foi possível ler o ficheiro produtos.js");
         
         todosProdutos = await res.json();
         
+        // Renderiza primeiro os produtos e DEPOIS o menu
         renderizarProdutos(todosProdutos);
         renderizarMenu(); 
-        console.log("Sistema carregado com sucesso.");
+        
+        console.log("Sucesso: Produtos e Menu carregados.");
     } catch (err) { 
-        console.error("Erro técnico:", err);
+        console.error("Erro ao carregar:", err);
+        const container = document.getElementById("produtos");
+        if(container) container.innerHTML = `<h2 style='color:white; grid-column: 1/-1; text-align:center; padding:50px'>⚠️ Erro ao carregar catálogo. Verifique o ficheiro produtos.js</h2>`;
     }
 }
 
-// 2. ABRIR/FECHAR CARRINHO
-function toggleCarrinho() {
-    const drawer = document.getElementById('carrinho-drawer');
-    if (drawer) {
-        drawer.classList.toggle('open');
-    } else {
-        console.warn("Elemento 'carrinho-drawer' não encontrado no HTML.");
-    }
-}
-
-// 3. ADICIONAR AO CARRINHO
-function adicionar(idx, nome) {
-    const inputQtd = document.getElementById(`qtd-${idx}`);
-    const selectVar = document.getElementById(`var-${idx}`);
-    
-    if (!inputQtd || !selectVar) return;
-    
-    const q = parseInt(inputQtd.value);
-    if (q <= 0) return alert("Selecione a quantidade!");
-
-    const [vN, vP, vE] = selectVar.value.split('|');
-    
-    // Verifica se já existe no carrinho para somar
-    const itemExistente = carrinho.find(i => i.name === nome && i.var === vN);
-    if (itemExistente) {
-        itemExistente.qtd += q;
-    } else {
-        // Aplica o desconto base de 10% do B2B
-        carrinho.push({ 
-            name: nome, 
-            var: vN, 
-            preco: parseFloat(vP) * 0.9, 
-            qtd: q 
-        });
-    }
-    
-    inputQtd.value = 0; // Reseta o campo
-    atualizarInterface();
-    
-    // Abre o carrinho para dar feedback ao cliente
-    const drawer = document.getElementById('carrinho-drawer');
-    if (drawer) drawer.classList.add('open');
-}
-
-// 4. ATUALIZAR INTERFACE (Lógica da Barra e Totais)
-function atualizarInterface() {
-    const sub = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-    
-    // Cálculo de Descontos
-    let desc = 0, percent = 0, textoAlvo = "";
-    if (sub >= 1000) { desc = 15; percent = 100; textoAlvo = "DESCONTO MÁXIMO!"; }
-    else if (sub >= 500) { desc = 12; percent = (sub/1000)*100; textoAlvo = `Faltam R$ ${(1000-sub).toFixed(2)} para 15%`; }
-    else if (sub >= 200) { desc = 10; percent = (sub/500)*100; textoAlvo = `Faltam R$ ${(500-sub).toFixed(2)} para 12%`; }
-    else { desc = 0; percent = (sub/200)*100; textoAlvo = `Faltam R$ ${(200-sub).toFixed(2)} para liberar`; }
-
-    const total = sub * (1 - desc/100);
-
-    // Atualiza Contador do Ícone
-    const cartCount = document.getElementById('cart-count');
-    if (cartCount) cartCount.innerText = carrinho.length;
-
-    // Atualiza Barra de Progresso (se ela existir no HTML)
-    const barra = document.getElementById("barra-fill");
-    const labelFalta = document.getElementById("valor-falta");
-    if (barra) barra.style.width = `${percent}%`;
-    if (labelFalta) labelFalta.innerText = textoAlvo;
-
-    // Atualiza Resumo de Valores
-    const statusCarrinho = document.getElementById("status-carrinho");
-    if (statusCarrinho) {
-        statusCarrinho.innerHTML = `
-            <div style="margin-bottom:15px">
-                <p style="color:#94a3b8; font-size:0.8rem; margin:0">Subtotal: R$ ${sub.toFixed(2)}</p>
-                <p style="color:#ff00ff; font-weight:bold; margin:5px 0">Desconto: ${desc}%</p>
-                <h2 style="color:white; margin:0">Total: R$ ${total.toFixed(2)}</h2>
-            </div>
-        `;
-    }
-
-    // Atualiza Lista de Itens
-    const lista = document.getElementById("lista-itens-carrinho");
-    if (lista) {
-        lista.innerHTML = carrinho.map((i, idx) => `
-            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #334155; font-size:0.85rem; color:white">
-                <span>${i.qtd}x ${i.name} (${i.var})</span>
-                <button onclick="removerItem(${idx})" style="color:#ef4444; background:none; border:none; cursor:pointer">✕</button>
-            </div>`).join('');
-    }
-
-    // Ativa/Desativa botões de finalizar
-    const liberado = total >= 200;
-    ["btn-zap", "btn-pdf"].forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) {
-            btn.disabled = !liberado;
-            btn.className = liberado ? (id === 'btn-zap' ? 'btn-whatsapp-ativo' : 'btn-pdf-ativo') : 'btn-desativado';
-        }
-    });
-}
-
-// 5. RENDERIZAÇÃO E FILTROS
+// 2. CRIAÇÃO DO MENU DE CATEGORIAS (O que estava a faltar)
 function renderizarMenu() {
     const container = document.getElementById('menu-categorias');
     if (!container) return;
-    const cats = ['Todos', ...new Set(todosProdutos.map(p => p.category || p.categoria).filter(c => c))];
-    container.innerHTML = cats.map(c => 
+
+    // Extrai categorias e aceita tanto 'category' como 'categoria'
+    const categoriasExtraidas = todosProdutos
+        .map(p => p.category || p.categoria)
+        .filter(c => c && c.trim() !== "");
+    
+    // Cria lista única começando por 'Todos'
+    const categoriasUnicas = ['Todos', ...new Set(categoriasExtraidas)];
+    
+    // Gera os botões e insere no HTML
+    container.innerHTML = categoriasUnicas.map(c => 
         `<button class="cat-btn ${c === 'Todos' ? 'active' : ''}" onclick="filtrarCategoria('${c}', this)">${c}</button>`
     ).join('');
 }
 
+// 3. FILTRAGEM POR CATEGORIA
 function filtrarCategoria(cat, btn) {
+    // Atualiza a aparência dos botões
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const filtrados = cat === 'Todos' ? todosProdutos : todosProdutos.filter(p => (p.category || p.categoria) === cat);
+
+    // Filtra a lista
+    const filtrados = (cat === 'Todos') 
+        ? todosProdutos 
+        : todosProdutos.filter(p => (p.category || p.categoria) === cat);
+    
     renderizarProdutos(filtrados);
 }
 
+// 4. RENDERIZAÇÃO DO GRID DE PRODUTOS
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
     if (!container) return;
+
     container.innerHTML = lista.map((p, index) => {
         const v = p.variacoes?.[0] || { preco: 0, estoque: 0 };
+        const precoB2B = (v.preco * 0.9).toFixed(2);
+
         return `
         <div class="produto-card">
-            <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
-            <h3>${p.name}</h3>
-            <div style="color:#ff00ff; font-weight:bold;">B2B: R$ ${(v.preco * 0.9).toFixed(2)}</div>
-            <select id="var-${index}" class="dados-nf" onchange="atualizarEstoqueVisivel(${index})">
-                ${p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome}</option>`).join('')}
+            <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')" alt="${p.name}" style="cursor:zoom-in">
+            <h3 style="font-size:0.9rem; height:40px; margin: 10px 0; overflow:hidden;">${p.name}</h3>
+            <div style="color:#ff00ff; font-weight:900; margin-bottom: 5px">B2B: R$ ${precoB2B}</div>
+            <div class="tabela-descontos-card"><b>Atacado:</b><br>12% (R$500) | 15% (R$1000)</div>
+            
+            <div style="font-size:0.8rem; font-weight:bold; color:#ff00ff; margin-bottom:10px">
+                Estoque: <span id="estoque-num-${index}">${v.estoque}</span> un.
+            </div>
+
+            <select id="var-${index}" class="dados-nf" style="margin-bottom:15px; background:white; color:black;" onchange="atualizarEstoqueVisivel(${index})">
+                ${p.variacoes ? p.variacoes.map(vi => `<option value="${vi.nome}|${vi.preco}|${vi.estoque}">${vi.nome} (Disp: ${vi.estoque})</option>`).join('') : '<option>Padrão</option>'}
             </select>
+
             <div class="controle-qtd">
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '-')">-</button>
                 <input type="number" id="qtd-${index}" value="0" class="input-qtd" readonly>
                 <button class="btn-qtd" onclick="ajustarQtd(${index}, '+')">+</button>
-                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADD</button>
+                <button onclick="adicionar(${index}, '${p.name}')" class="btn-add">ADICIONAR</button>
             </div>
         </div>`;
     }).join('');
 }
 
-// 6. UTILITÁRIOS
-function ajustarQtd(idx, op) {
-    let inp = document.getElementById(`qtd-${idx}`);
-    let v = parseInt(inp.value);
-    inp.value = op === '+' ? v + 1 : (v > 0 ? v - 1 : 0);
-}
-function removerItem(idx) { carrinho.splice(idx, 1); atualizarInterface(); }
-function abrirModal(src) { document.getElementById('img-ampliada').src = src; document.getElementById('modal-img').style.display = 'flex'; }
-function fecharModal() { document.getElementById('modal-img').style.display = 'none'; }
-function esvaziarCarrinhoTotal() { if(confirm("Limpar pedido?")) { carrinho = []; atualizarInterface(); } }
-
+// 5. BUSCA E UTILITÁRIOS
 function filtrarBusca() {
-    const t = document.getElementById('busca').value.toLowerCase();
-    renderizarProdutos(todosProdutos.filter(p => p.name.toLowerCase().includes(t)));
+    const termo = document.getElementById('busca').value.toLowerCase();
+    const filtrados = todosProdutos.filter(p => p.name.toLowerCase().includes(termo));
+    renderizarProdutos(filtrados);
 }
 
-function finalizar(via) {
-    const r = document.getElementById('razao-social').value;
-    if(!r) return alert("Razão Social obrigatória!");
-    let corpo = `*PEDIDO B2B - ${r}*\n\n` + carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join('\n');
-    if(via === 'zap') window.open(`https://api.whatsapp.
+function ajustarQtd(idx, op) {
+    let input = document.getElementById(`qtd-${idx}`);
+    let atual = parseInt(input.value);
+    if (op === '+') atual++;
+    else if (atual > 0) atual--;
+    input.value = atual;
+}
+
+function abrirModal(src) {
+    const modal = document.getElementById('modal-img');
+    const img = document.getElementById('img-ampliada');
+    if(modal && img) {
+        img.src = src;
+        modal.style.display = 'flex';
+    }
+}
+
+function fecharModal() {
+    document.getElementById('modal-img').style.display = 'none';
+}
+
+// Inicialização automática
+document.addEventListener("DOMContentLoaded", carregarProdutos);
