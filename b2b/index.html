@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal B2B | Crazy Fantasy</title>
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=99">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -13,9 +14,10 @@
             <img src="banner.png" class="banner-img" alt="Crazy Fantasy B2B">
         </div>
         <nav class="nav-bar">
-            <div id="menu-categorias"></div>
+            <div id="menu-categorias" class="menu-cats"></div>
             <div class="header-right">
-                <button onclick="toggleCarrinho()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer">
+                <input type="text" id="busca" class="input-busca" placeholder="🔍 Buscar..." onkeyup="filtrarBusca()">
+                <button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
                     🛒 <span id="cart-count">0</span>
                 </button>
             </div>
@@ -23,24 +25,34 @@
     </header>
 
     <main class="main-layout">
-        <div id="produtos" class="produtos-grid"></div>
+        <h2 class="titulo-sessao">🔥 TABELA EXCLUSIVA | DESCONTOS B2B PROGRESSIVOS</h2>
+        <div id="produtos" class="produtos-grid">
+            </div>
     </main>
 
     <div id="carrinho-drawer" class="drawer">
         <div class="drawer-header">
-            <h3>MEU PEDIDO</h3>
-            <button onclick="toggleCarrinho()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer">✕</button>
+            <h3>🛒 SEU PEDIDO</h3>
+            <button onclick="toggleCarrinho()" class="btn-fechar">✕</button>
         </div>
         <div class="drawer-content">
             <div id="status-carrinho"></div>
             <div id="lista-itens-carrinho"></div>
-            <div class="dados-nf">
-                <input type="text" id="razao" placeholder="Razão Social / Escola">
-                <textarea id="obs" placeholder="Observações do pedido" rows="2"></textarea>
-            </div>
+            <form id="form-pedido">
+                <div class="dados-nf">
+                    <h4>DADOS DA EMPRESA</h4>
+                    <input type="text" id="razao-social" placeholder="Razão Social / Escola *" required>
+                    <div class="row">
+                        <input type="text" id="cnpj" placeholder="CNPJ / CPF *">
+                        <input type="text" id="whatsapp" placeholder="WhatsApp *">
+                    </div>
+                    <textarea id="endereco" placeholder="Endereço Completo *" rows="2"></textarea>
+                </div>
+            </form>
         </div>
-        <div style="padding:20px">
-            <button class="btn-finalizar zap" onclick="alert('Enviando WhatsApp...')">FINALIZAR WHATSAPP</button>
+        <div class="drawer-footer">
+            <button class="btn-finalizar zap" onclick="finalizar('zap')">WHATSAPP</button>
+            <button class="btn-finalizar email" onclick="finalizar('email')">E-MAIL</button>
         </div>
     </div>
 
@@ -49,6 +61,7 @@
         <p>CNPJ: 54.128.539/0001-01 | Valinhos, SP</p>
     </footer>
 
-    <script src="script.js?v=1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="script.js?v=99"></script>
 </body>
 </html>
