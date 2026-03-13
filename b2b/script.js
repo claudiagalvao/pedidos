@@ -451,7 +451,16 @@ function enviarWhatsApp(){
 
     const nome=document.getElementById("razao-social").value || "Cliente";
 
+
+
+    const pagamento = document.getElementById("pagamento").value || "Não informado";
+const frete = document.getElementById("frete").value || "Não informado";
+
     let mensagem=`Pedido B2B - ${nome}%0A%0A`;
+
+
+    mensagem += `%0APagamento: ${pagamento}`;
+mensagem += `%0AFrete: ${frete}`;
 
     carrinho.forEach(i=>{
         mensagem+=`${i.qtd}x ${i.name}%0A`;
@@ -486,6 +495,10 @@ function enviarEmail(){
         return;
     }
 
+const pagamento = document.getElementById("pagamento").value || "";
+const frete = document.getElementById("frete").value || "";
+
+    
     const { jsPDF } = window.jspdf;
 
     const doc = new jsPDF();
@@ -493,6 +506,12 @@ function enviarEmail(){
     let y = 20;
 
     const cliente = document.getElementById("razao-social").value || "Cliente";
+
+    doc.text("Pagamento: "+pagamento,20,y);
+y+=8;
+
+doc.text("Frete: "+frete,20,y);
+y+=10;
 
     doc.setFontSize(18);
     doc.text("Pedido B2B - Crazy Fantasy", 20, y);
