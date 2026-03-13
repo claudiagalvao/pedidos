@@ -1,194 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>B2B - Crazy Fantasy</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Fantasy - B2B</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
-
 <body>
 
-
-<header class="header-b2b">
-
-<div class="banner-container">
-<img src="banner.png" class="banner-img">
-</div>
-
-
-<nav class="nav-bar">
-
-<div class="menu-scroll-container">
-
-<div id="menu-categorias" class="menu-cats">
-<button class="cat-btn active">Todos</button>
-</div>
-
-</div>
-
-
-<div class="header-right">
-
-<div class="busca-container">
-<input type="text" id="busca" placeholder="Buscar produto..." onkeyup="filtrarBusca()">
-</div>
-
-<button class="btn-carrinho-abrir" onclick="toggleCarrinho()">
-🛒 <span id="cart-count">0</span>
-</button>
-
-</div>
-
-</nav>
-
-</header>
-
-
-
-<main class="main-layout">
-
-<h2 class="titulo-sessao">
-🔥 TABELA EXCLUSIVA PARA PARCEIROS
-</h2>
-
-<div id="produtos" class="produtos-grid"></div>
-
-</main>
-
-
-
-<div id="carrinho-drawer" class="drawer">
-
-<div class="drawer-header">
-
-<h3>Seu Pedido</h3>
-
-<button onclick="toggleCarrinho()">✕</button>
-
-</div>
-
-
-<div style="padding:15px">
-
-<div style="display:flex;justify-content:space-between;font-size:12px">
-
-<span>Progresso do Pedido</span>
-
-<span id="valor-falta">Faltam R$ 200</span>
-
-</div>
-
-<div style="background:#334155;height:8px;border-radius:10px">
-
-<div id="barra-fill" style="height:100%;width:0%;background:#ff00ff"></div>
-
-</div>
-
-</div>
-
-
-
-<div class="drawer-content">
-
-<div id="status-carrinho"></div>
-
-<div id="lista-itens-carrinho"></div>
-
-
-<form id="form-pedido"
-action="https://formsubmit.co/claudia-galvao@hotmail.com"
-method="POST">
-
-<input type="hidden" name="_captcha" value="false">
-
-<input type="hidden" name="pedido_detalhes" id="pedido-corpo">
-
-<div class="dados-nf">
-
-<h4>Dados da Empresa</h4>
-
-<input name="razao_social" id="razao-social" placeholder="Razão Social *" required>
-
-<input name="cnpj" placeholder="CNPJ / CPF *" required>
-
-<input name="whatsapp" placeholder="WhatsApp *" required>
-
-<textarea name="endereco" placeholder="Endereço *"></textarea>
-
-
-<h4>Pagamento</h4>
-
-<select name="pagamento">
-
-<option>Pix</option>
-<option>Boleto</option>
-<option>Cartão</option>
-
-</select>
-
-
-<h4>Forma de envio</h4>
-
-<select name="envio" required>
-
-<option value="">Escolha</option>
-
-<option>Retirada</option>
-<option>Motoboy</option>
-<option>Transportadora</option>
-<option>Correios</option>
-
-</select>
-
-</div>
-
-</form>
-
-</div>
-
-
-
-<div class="drawer-footer">
-
-<button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo">
-Enviar WhatsApp
-</button>
-
-<button onclick="enviarEmail()" class="btn-pdf-ativo">
-Enviar Email
-</button>
-
-<button onclick="gerarPDF()" class="btn-pdf-ativo">
-Gerar PDF
-</button>
-
-<button onclick="esvaziarCarrinhoTotal()" class="btn-limpar">
-Limpar
-</button>
-
-</div>
-
-</div>
-
-
-
-<div id="modal-img" class="modal" onclick="fecharModal()">
-<img id="img-ampliada" onclick="fecharModal()">
-</div>
-
-
-
-<script src="script.js"></script>
-
+    <header class="hero-banner">
+        <img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
+    </header>
+
+    <nav class="nav-bar">
+        <div id="menu-categorias" class="categorias">
+            </div>
+        <div class="busca-container">
+            <input type="text" id="busca" onkeyup="filtrarBusca()" placeholder="Buscar produto...">
+            <div class="cart-icon" onclick="toggleCarrinho()">
+                🛒 <span id="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 class="titulo-sessao">🔥 TABELA EXCLUSIVA PARA PARCEIROS</h1>
+        
+        <div id="produtos" class="produtos-grid">
+            </div>
+    </main>
+
+    <div id="carrinho-drawer" class="drawer">
+        <div class="drawer-content">
+            <span class="close-btn" onclick="toggleCarrinho()">&times;</span>
+            <h3 style="color: white; margin-bottom: 20px; font-family: sans-serif;">Seu Pedido</h3>
+
+            <div id="status-carrinho">
+                <p style="text-align:center; color:#64748b; padding:20px;">Seu carrinho está vazio</p>
+            </div>
+
+            <div id="lista-itens-carrinho"></div>
+
+            <div class="dados-cliente" style="margin-top: 20px;">
+                <label style="color: #94a3b8; font-size: 0.8rem;">Razão Social / Nome:</label>
+                <input type="text" id="razao-social" placeholder="Digite aqui..." 
+                    style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #334155; background: #1e293b; color: white;">
+            </div>
+
+            <div class="acoes-carrinho" style="margin-top: 20px;">
+                <button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo" 
+                    style="width: 100%; padding: 15px; margin-bottom: 10px; background: #25d366; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    🟢 Enviar WhatsApp
+                </button>
+                
+                <button onclick="enviarEmail()" class="btn-pdf-ativo" 
+                    style="width: 100%; padding: 15px; margin-bottom: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    📄 Gerar PDF do Pedido
+                </button>
+
+                <button onclick="limparCarrinho()" class="btn-limpar" 
+                    style="width: 100%; padding: 10px; background: transparent; color: #f87171; border: 1px solid #ef4444; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">
+                    🗑️ Limpar Carrinho
+                </button>
+            </div>
+
+            <form id="form-pedido" action="../api/gerar-pdf.php" method="POST" style="display:none;">
+                <input type="hidden" name="pedido" id="pedido-corpo">
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-img" class="modal" onclick="fecharModal()">
+        <img id="img-ampliada" src="" alt="Produto ampliado">
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
