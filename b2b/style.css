@@ -868,3 +868,45 @@ padding:2px 4px;
 .item-carrinho button:hover{
 color:#ef4444;
 }
+
+
+/* ITEM DO CARRINHO */
+
+.item-carrinho{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+padding:6px 0;
+border-bottom:1px solid #1e293b;
+font-size:13px;
+}
+
+.item-carrinho span{
+flex:1;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.item-preco{
+font-size:12px;
+color:#94a3b8;
+}
+
+.item-preco strong{
+color:#22c55e;
+font-weight:bold;
+}
+
+.item-carrinho button{
+background:none;
+border:none;
+color:#64748b;
+cursor:pointer;
+font-size:14px;
+}
+
+.item-carrinho button:hover{
+color:#ef4444;
+}
