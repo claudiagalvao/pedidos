@@ -1,12 +1,12 @@
-let todosProdutos=[]
-let carrinho=[]
+let todosProdutos = []
+let carrinho = []
 
 
 async function carregarProdutos(){
 
-const res=await fetch("/api/produtos.js")
+const res = await fetch("/api/produtos.js")
 
-todosProdutos=await res.json()
+todosProdutos = await res.json()
 
 renderizarProdutos(todosProdutos)
 
@@ -18,7 +18,7 @@ renderizarMenu()
 
 function filtrarBusca(){
 
-const termo=document
+const termo = document
 .getElementById("busca")
 .value
 .toLowerCase()
@@ -37,14 +37,14 @@ p.name.toLowerCase().includes(termo)
 
 function renderizarMenu(){
 
-const menu=document.getElementById("menu-categorias")
+const menu = document.getElementById("menu-categorias")
 
-const categorias=[
+const categorias = [
 "Todos",
 ...new Set(todosProdutos.map(p=>p.categoria))
 ]
 
-menu.innerHTML=categorias.map(cat=>`
+menu.innerHTML = categorias.map(cat=>`
 
 <button class="cat-btn"
 onclick="filtrarCategoria('${cat}',this)">
@@ -83,20 +83,19 @@ todosProdutos.filter(p=>p.categoria===cat)
 
 function renderizarProdutos(lista){
 
-const container=document.getElementById("produtos")
+const container = document.getElementById("produtos")
 
-container.innerHTML=lista.map((p,index)=>{
+container.innerHTML = lista.map((p,index)=>{
 
-const variacoes=p.variacoes||[]
-const v=variacoes[0]||{preco:0,estoque:0,nome:"Padrão"}
+const variacoes = p.variacoes || []
+const vPadrao = variacoes[0] || {preco:0,estoque:0,nome:"Padrão"}
 
-const varejo=v.preco
+const varejo = vPadrao.preco
+const p10 = varejo * 0.90
+const p12 = varejo * 0.88
+const p15 = varejo * 0.85
 
-const p10=varejo*0.90
-const p12=varejo*0.88
-const p15=varejo*0.85
-
-return`
+return `
 
 <div class="produto-card">
 
@@ -134,14 +133,30 @@ B2B: R$ ${p10.toFixed(2)}
 
 Estoque:
 <span id="estoque-num-${index}">
-${v.estoque}
+${vPadrao.estoque}
 </span>
 
-${v.estoque<=5 && v.estoque>0
-?`<span style="color:#f59e0b;">⚠ Últimas unidades</span>`
-:""}
-
 </div>
+
+
+${variacoes.length > 1 ? `
+
+<select id="var-${index}"
+onchange="atualizarEstoqueVisivel(${index})"
+class="select-variacao">
+
+${variacoes.map(v=>`
+
+<option value="${v.nome}|${v.preco}|${v.estoque}">
+${v.nome}
+</option>
+
+`).join("")}
+
+</select>
+
+` : ""}
+
 
 
 <div class="controle-qtd">
@@ -158,12 +173,12 @@ value="0"
 readonly>
 
 <button class="btn-qtd"
-onclick="ajustarQtd(${index},'+',${v.estoque})">+</button>
+onclick="ajustarQtd(${index},'+',${vPadrao.estoque})">+</button>
 
 </div>
 
 <button class="btn-add"
-onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',${v.estoque},this)">
+onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
 🛒 Adicionar
 </button>
 
@@ -179,15 +194,52 @@ onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',${v.estoque},this)">
 
 
 
-function adicionar(idx,nome,estoque,botao){
+function atualizarEstoqueVisivel(idx){
 
-const qtd=parseInt(
-document.getElementById(`qtd-${idx}`).value
-)
+const select = document.getElementById(`var-${idx}`)
+
+if(!select) return
+
+const [, , estoque] = select.value.split("|")
+
+document.getElementById(`estoque-num-${idx}`).innerText = estoque
+
+}
+
+
+
+function adicionar(idx,nome,botao){
+
+const input = document.getElementById(`qtd-${idx}`)
+const select = document.getElementById(`var-${idx}`)
+
+const qtd = parseInt(input.value)
 
 if(qtd<=0) return alert("Selecione quantidade")
 
-if(qtd>estoque){
+let preco
+let variacao
+let estoque
+
+if(select){
+
+const [v,p,e] = select.value.split("|")
+
+variacao = v
+preco = parseFloat(p)
+estoque = parseInt(e)
+
+}else{
+
+const v = todosProdutos[idx].variacoes[0]
+
+variacao = v.nome
+preco = v.preco
+estoque = v.estoque
+
+}
+
+if(qtd > estoque){
 
 alert("⚠ Estoque insuficiente")
 
@@ -195,15 +247,13 @@ return
 
 }
 
-const v=todosProdutos[idx].variacoes[0]
-
-const existente=carrinho.find(
-i=>i.name===nome
+const existente = carrinho.find(
+i=>i.name===nome && i.var===variacao
 )
 
 if(existente){
 
-if(existente.qtd+qtd>estoque){
+if(existente.qtd + qtd > estoque){
 
 alert("⚠ Estoque insuficiente")
 
@@ -211,21 +261,20 @@ return
 
 }
 
-existente.qtd+=qtd
+existente.qtd += qtd
 
 }else{
 
 carrinho.push({
-
 name:nome,
-preco:v.preco,
+var:variacao,
+preco:preco,
 qtd:qtd
-
 })
 
 }
 
-document.getElementById(`qtd-${idx}`).value=0
+input.value = 0
 
 atualizarInterface()
 
@@ -236,15 +285,15 @@ document
 
 if(botao){
 
-const original=botao.innerHTML
+const original = botao.innerHTML
 
-botao.innerHTML="✔ Adicionado"
-botao.style.background="#22c55e"
+botao.innerHTML = "✔ Adicionado"
+botao.style.background = "#22c55e"
 
 setTimeout(()=>{
 
-botao.innerHTML=original
-botao.style.background=""
+botao.innerHTML = original
+botao.style.background = ""
 
 },1000)
 
@@ -256,17 +305,17 @@ botao.style.background=""
 
 function ajustarQtd(idx,op,estoque){
 
-const input=document.getElementById(`qtd-${idx}`)
+const input = document.getElementById(`qtd-${idx}`)
 
-let v=parseInt(input.value)
+let v = parseInt(input.value)
 
-if(op==="+" && v<estoque){
+if(op==="+" && v < estoque){
 
-input.value=v+1
+input.value = v + 1
 
-}else if(op==="-"){
+}else if(op==="-" ){
 
-input.value=Math.max(0,v-1)
+input.value = Math.max(0,v-1)
 
 }
 
@@ -276,22 +325,22 @@ input.value=Math.max(0,v-1)
 
 function atualizarInterface(){
 
-const subtotal=carrinho.reduce(
+const subtotal = carrinho.reduce(
 (a,i)=>a+(i.preco*i.qtd),0
 )
 
-let desconto=10
+let desconto = 10
 
-if(subtotal>=1000) desconto=15
-else if(subtotal>=500) desconto=12
+if(subtotal>=1000) desconto = 15
+else if(subtotal>=500) desconto = 12
 
-const total=subtotal*(1-desconto/100)
+const total = subtotal*(1-desconto/100)
 
-const progresso=Math.min((subtotal/1000)*100,100)
+const progresso = Math.min((subtotal/1000)*100,100)
 
-document.getElementById("cart-count").innerText=carrinho.length
+document.getElementById("cart-count").innerText = carrinho.length
 
-document.getElementById("status-carrinho").innerHTML=`
+document.getElementById("status-carrinho").innerHTML = `
 
 <div class="progress-container">
 
@@ -328,13 +377,13 @@ style="width:${progresso}%">
 
 `
 
-document.getElementById("lista-itens-carrinho").innerHTML=
+document.getElementById("lista-itens-carrinho").innerHTML =
 
 carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
 
-<span>${i.qtd}x ${i.name}</span>
+<span>${i.qtd}x ${i.name} (${i.var})</span>
 
 <button onclick="removerItem(${idx})">
 ✕
@@ -366,7 +415,6 @@ const v=document.getElementById(id)?.value.trim()
 if(!v){
 
 alert("Preencha todos os campos")
-
 return false
 
 }
@@ -408,7 +456,7 @@ if(!podeEnviarPedido()) return
 let msg="Pedido Crazy Fantasy\n\n"
 
 carrinho.forEach(i=>{
-msg+=`${i.qtd}x ${i.name}\n`
+msg+=`${i.qtd}x ${i.name} (${i.var})\n`
 })
 
 window.open(
@@ -435,7 +483,7 @@ y+=10
 
 carrinho.forEach(i=>{
 
-doc.text(`${i.qtd}x ${i.name}`,20,y)
+doc.text(`${i.qtd}x ${i.name} (${i.var})`,20,y)
 
 y+=8
 
@@ -454,11 +502,11 @@ if(!podeEnviarPedido()) return
 let corpo="Pedido Crazy Fantasy\n\n"
 
 carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name}\n`
+corpo+=`${i.qtd}x ${i.name} (${i.var})\n`
 })
 
 window.location.href=
-`mailto:pedidos@crazyfantasy.com.br?subject=Pedido&body=${encodeURIComponent(corpo)}`
+`mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido Crazy Fantasy&body=${encodeURIComponent(corpo)}`
 
 }
 
@@ -502,7 +550,7 @@ function toggleMenuEnvio(){
 
 const menu=document.getElementById("menu-envio-opcoes")
 
-menu.style.display=
+menu.style.display =
 menu.style.display==="flex"
 ?"none"
 :"flex"
