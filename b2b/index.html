@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy - B2B</title>
+<title>Crazy Fantasy B2B</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -14,25 +14,17 @@
 
 <body>
 
+<header>
 
-<!-- BANNER -->
-
-<header class="hero-banner">
-
-<img src="banner.png" class="banner-img" alt="Crazy Fantasy B2B">
+<img src="banner.png" class="banner-img">
 
 </header>
 
 
 
-<!-- NAVBAR -->
-
 <nav class="nav-bar">
 
 <div id="menu-categorias" class="categorias"></div>
-
-
-<div class="busca-container">
 
 <input
 type="text"
@@ -42,20 +34,13 @@ placeholder="Buscar fantasia, peruca ou acessório..."
 onkeyup="filtrarBusca()"
 >
 
-</div>
-
-
 <div class="cart-icon" onclick="toggleCarrinho()">
-
 🛒 <span id="cart-count">0</span>
-
 </div>
 
 </nav>
 
 
-
-<!-- CONTEÚDO -->
 
 <main class="container">
 
@@ -69,20 +54,15 @@ onkeyup="filtrarBusca()"
 
 
 
-<!-- CARRINHO -->
+<!-- DRAWER CARRINHO -->
 
 <div id="carrinho-drawer" class="drawer">
 
 <div class="drawer-content">
 
-
 <span class="close-btn" onclick="toggleCarrinho()">×</span>
 
-
-<h2 style="color:white;margin-bottom:20px;">
-Seu Pedido
-</h2>
-
+<h2>Seu Pedido</h2>
 
 <div id="status-carrinho"></div>
 
@@ -90,51 +70,31 @@ Seu Pedido
 
 
 
-<!-- FORM CLIENTE -->
-
 <div class="dados-cliente">
 
 <label>Razão Social / Nome</label>
-
 <input type="text" id="razao-social">
-
-
 
 <div class="dados-grid">
 
 <div>
-
 <label>CNPJ / CPF</label>
-
 <input type="text" id="cnpj">
-
 </div>
 
-
 <div>
-
 <label>Inscrição Estadual</label>
-
 <input type="text" id="ie">
-
 </div>
 
-
 <div>
-
 <label>Email</label>
-
 <input type="email" id="email">
-
 </div>
 
-
 <div>
-
 <label>Telefone</label>
-
 <input type="tel" id="telefone">
-
 </div>
 
 </div>
@@ -171,8 +131,6 @@ Seu Pedido
 
 
 
-<!-- MENU ENVIO -->
-
 <div class="menu-envio">
 
 <button onclick="toggleMenuEnvio()" class="btn-enviar">
@@ -181,49 +139,25 @@ Seu Pedido
 
 </button>
 
-
 <div id="menu-envio-opcoes" class="menu-opcoes">
 
+<button onclick="enviarWhatsApp()">📲 WhatsApp</button>
 
-<button onclick="enviarWhatsApp()">
+<button onclick="gerarPDF()">📄 PDF</button>
 
-📲 Enviar via WhatsApp
-
-</button>
-
-
-<button onclick="gerarPDF()">
-
-📄 Gerar PDF
-
-</button>
-
-
-<button onclick="enviarEmail()">
-
-✉ Enviar por Email
-
-</button>
-
+<button onclick="enviarEmail()">✉ Email</button>
 
 </div>
 
 </div>
 
 
-
-<!-- LIMPAR CARRINHO -->
-
-<div class="acoes-carrinho">
 
 <button onclick="limparCarrinho()" class="btn-limpar">
 
 🗑️ Limpar Carrinho
 
 </button>
-
-</div>
-
 
 </div>
 
@@ -235,104 +169,15 @@ Seu Pedido
 
 <div id="modal-img" class="modal" onclick="fecharModal()">
 
-<img id="img-ampliada" alt="Imagem ampliada do produto">
+<img id="img-ampliada">
 
 </div>
 
 
-
-<!-- LIB PDF -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-
-
-<!-- SCRIPT PRINCIPAL -->
-
 <script src="script.js"></script>
-
-
-
-<!-- FOOTER -->
-
-<footer class="footer-crazy">
-
-<div class="footer-container">
-
-<div class="footer-col">
-
-<h3>Crazy Fantasy</h3>
-
-<p>
-A maior loja de fantasias premium do interior de São Paulo.
-<br>
-Especialistas em eventos, festas e carnaval.
-</p>
-
-</div>
-
-
-
-<div class="footer-col">
-
-<h4>Contato</h4>
-
-<p>📍 Valinhos - SP</p>
-<p>📲 (19) 99285-0208</p>
-<p>✉ lojacrazyfantasy@hotmail.com</p>
-
-</div>
-
-
-
-<div class="footer-col">
-
-<h4>Atendimento B2B</h4>
-
-<p>Pedido mínimo: <strong>R$200</strong></p>
-
-<p>Descontos progressivos:</p>
-
-<ul>
-<li>10% Parceiros</li>
-<li>12% acima de R$500</li>
-<li>15% acima de R$1000</li>
-</ul>
-
-</div>
-
-
-
-<div class="footer-col">
-
-<h4>Siga a Crazy</h4>
-
-<div class="social-links">
-
-<a href="https://instagram.com/lojacrazyfantasy">
-Instagram
-</a>
-
-<a href="https://wa.me/5519992850208">
-WhatsApp
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<div class="footer-bottom">
-
-© 2026 Crazy Fantasy — Todos os direitos reservados
-
-</div>
-
-</footer>
-
 
 </body>
 </html>
