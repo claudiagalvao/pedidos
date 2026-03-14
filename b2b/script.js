@@ -3,6 +3,7 @@ let carrinho=[]
 let categoriaAtual="Todos"
 
 
+
 /* ===============================
 CARREGAR PRODUTOS
 =============================== */
@@ -32,7 +33,7 @@ console.error("Erro ao carregar produtos",e)
 
 
 /* ===============================
-CARRINHO LOCAL STORAGE
+LOCAL STORAGE
 =============================== */
 
 function salvarCarrinho(){
@@ -226,7 +227,7 @@ value="0"
 readonly>
 
 <button class="btn-qtd"
-onclick="ajustarQtd(${index},'+',${vPadrao.estoque})">+</button>
+onclick="ajustarQtd(${index},'+')">+</button>
 
 </div>
 
@@ -248,16 +249,34 @@ onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
 
 
 /* ===============================
+ESTOQUE ATUAL
+=============================== */
+
+function obterEstoqueAtual(idx){
+
+const select=document.getElementById(`var-${idx}`)
+
+if(select){
+
+const [, , estoque]=select.value.split("|")
+
+return parseInt(estoque)
+
+}
+
+return todosProdutos[idx].variacoes?.[0]?.estoque || 0
+
+}
+
+
+
+/* ===============================
 VARIAÇÃO
 =============================== */
 
 function atualizarEstoqueVisivel(idx){
 
-const select=document.getElementById(`var-${idx}`)
-
-if(!select) return
-
-const [, , estoque]=select.value.split("|")
+const estoque=obterEstoqueAtual(idx)
 
 document.getElementById(`estoque-num-${idx}`).innerText=estoque
 
@@ -266,7 +285,35 @@ document.getElementById(`estoque-num-${idx}`).innerText=estoque
 
 
 /* ===============================
-CARRINHO
+CONTROLE QUANTIDADE
+=============================== */
+
+function ajustarQtd(idx,op){
+
+const input=document.getElementById(`qtd-${idx}`)
+
+let v=parseInt(input.value)
+
+const estoque=obterEstoqueAtual(idx)
+
+if(op==="+" && v<estoque){
+
+input.value=v+1
+
+}
+
+if(op==="-" ){
+
+input.value=Math.max(0,v-1)
+
+}
+
+}
+
+
+
+/* ===============================
+ADICIONAR AO CARRINHO
 =============================== */
 
 function adicionar(idx,nome,botao){
@@ -301,6 +348,26 @@ estoque=v.estoque
 
 }
 
+const existente=carrinho.find(
+i=>i.name===nome && i.var===variacao
+)
+
+if(existente){
+
+const novaQtd=existente.qtd+qtd
+
+if(novaQtd>estoque){
+
+alert("⚠ Estoque insuficiente")
+
+return
+
+}
+
+existente.qtd=novaQtd
+
+}else{
+
 if(qtd>estoque){
 
 alert("⚠ Estoque insuficiente")
@@ -308,24 +375,6 @@ alert("⚠ Estoque insuficiente")
 return
 
 }
-
-const existente=carrinho.find(
-i=>i.name===nome && i.var===variacao
-)
-
-if(existente){
-
-if(existente.qtd+qtd>estoque){
-
-alert("⚠ Estoque insuficiente")
-
-return
-
-}
-
-existente.qtd+=qtd
-
-}else{
 
 carrinho.push({
 name:nome,
@@ -391,7 +440,7 @@ return 10
 
 
 /* ===============================
-INTERFACE DO CARRINHO
+INTERFACE
 =============================== */
 
 function atualizarInterface(){
@@ -406,324 +455,15 @@ const economia=subtotal-total
 
 const progresso=Math.min((subtotal/1000)*100,100)
 
-
-
-let incentivo=""
-
-if(subtotal<500){
-
-incentivo=`🔥 Faltam R$ ${(500-subtotal).toFixed(2)} para ganhar 12% OFF`
-
-}
-
-else if(subtotal<1000){
-
-incentivo=`💎 Faltam R$ ${(1000-subtotal).toFixed(2)} para ganhar 15% OFF`
-
-}
-
-
-
 document.getElementById("cart-count").innerText=carrinho.length
 
-
-
-if(carrinho.length===0){
-
-document.getElementById("lista-itens-carrinho").innerHTML=
-"<p style='color:#64748b'>Seu carrinho está vazio</p>"
-
-}
-
-
-
-document.getElementById("status-carrinho").innerHTML=`
-
-<div class="progress-container">
-
-<div class="progress-steps">
-
-<div class="step ${subtotal>=200?'active':''}">
-Pedido mínimo
-<small>R$200</small>
-</div>
-
-<div class="step ${subtotal>=500?'active':''}">
-🔥 12% OFF
-<small>R$500</small>
-</div>
-
-<div class="step ${subtotal>=1000?'active':''}">
-💎 15% OFF
-<small>R$1000</small>
-</div>
-
-</div>
-
-<div class="progress-bar-bg">
-
-<div class="progress-bar-fill"
-style="width:${progresso}%">
-</div>
-
-</div>
-
-</div>
-
-<div class="info-valores">
-
-<p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
-
-<p>Desconto aplicado: ${desconto}%</p>
-
-<p class="economia">
-Economia: R$ ${economia.toFixed(2)}
-</p>
-
-<h2>Total: R$ ${total.toFixed(2)}</h2>
-
-${incentivo?`<p style="color:#fbbf24;">${incentivo}</p>`:""}
-
-</div>
-
-`
-
-
-
-document.getElementById("lista-itens-carrinho").innerHTML=
-
-carrinho.map((i,idx)=>{
-
-const precoCheio=i.preco
-
-const precoDesc=i.preco*(1-desconto/100)
-
-return`
-
-<div class="item-carrinho">
-
-<span>${i.qtd}x ${i.name}</span>
-
-<div class="item-preco">
-
-<del>R$ ${precoCheio.toFixed(2)}</del>
-
-<strong>R$ ${precoDesc.toFixed(2)}</strong>
-
-</div>
-
-<button onclick="removerItem(${idx})">
-✕
-</button>
-
-</div>
-
-`
-
-}).join("")
-
 }
 
 
 
 /* ===============================
-FORMULÁRIO
+MODAL
 =============================== */
-
-function validarFormulario(){
-
-const campos=[
-"razao-social",
-"cnpj",
-"email",
-"telefone",
-"pagamento",
-"frete"
-]
-
-for(let id of campos){
-
-const v=document.getElementById(id)?.value.trim()
-
-if(!v){
-
-alert("Preencha todos os campos")
-
-return false
-
-}
-
-}
-
-return true
-
-}
-
-
-
-function podeEnviarPedido(){
-
-if(!validarFormulario()) return false
-
-const subtotal=calcularSubtotal()
-
-if(subtotal<200){
-
-alert("Pedido mínimo R$200")
-
-return false
-
-}
-
-return true
-
-}
-
-
-
-/* ===============================
-ENVIO
-=============================== */
-
-function enviarWhatsApp(){
-
-if(!podeEnviarPedido()) return
-
-let msg="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-msg+=`${i.qtd}x ${i.name}\n`
-})
-
-window.open(
-`https://wa.me/5519992850208?text=${encodeURIComponent(msg)}`
-)
-
-}
-
-
-
-function gerarPDF(){
-
-if(!podeEnviarPedido()) return
-
-const {jsPDF}=window.jspdf
-
-const doc=new jsPDF()
-
-let y=20
-
-doc.text("Pedido Crazy Fantasy",20,y)
-
-y+=10
-
-carrinho.forEach(i=>{
-
-doc.text(`${i.qtd}x ${i.name}`,20,y)
-
-y+=8
-
-})
-
-doc.save("pedido.pdf")
-
-}
-
-
-
-function enviarEmail(){
-
-if(!podeEnviarPedido()) return
-
-let corpo="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name}\n`
-})
-
-window.location.href=
-`mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido Crazy Fantasy&body=${encodeURIComponent(corpo)}`
-
-}
-
-
-
-/* ===============================
-UTILIDADES
-=============================== */
-
-function removerItem(i){
-
-carrinho.splice(i,1)
-
-salvarCarrinho()
-
-atualizarInterface()
-
-}
-
-
-
-function limparCarrinho(){
-
-if(confirm("Limpar carrinho?")){
-
-carrinho=[]
-
-salvarCarrinho()
-
-atualizarInterface()
-
-}
-
-}
-
-
-
-function ajustarQtd(idx,op,estoque){
-
-const input=document.getElementById(`qtd-${idx}`)
-
-let v=parseInt(input.value)
-
-if(op==="+" && v<estoque){
-
-input.value=v+1
-
-}
-
-else if(op==="-" ){
-
-input.value=Math.max(0,v-1)
-
-}
-
-}
-
-
-
-function toggleCarrinho(){
-
-document
-.getElementById("carrinho-drawer")
-.classList.toggle("open")
-
-}
-
-
-
-function toggleMenuEnvio(){
-
-const menu=document.getElementById("menu-envio-opcoes")
-
-menu.style.display=
-menu.style.display==="flex"
-?"none"
-:"flex"
-
-}
-
-
 
 function abrirModal(src){
 
@@ -732,8 +472,6 @@ document.getElementById("img-ampliada").src=src
 document.getElementById("modal-img").style.display="flex"
 
 }
-
-
 
 function fecharModal(){
 
