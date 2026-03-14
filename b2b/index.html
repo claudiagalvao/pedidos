@@ -15,9 +15,7 @@
 <body>
 
 <header class="hero-banner">
-
 <img src="banner.png" class="banner-img">
-
 </header>
 
 
@@ -70,7 +68,6 @@ Seu Pedido
 <div class="dados-cliente">
 
 <label>Razão Social / Nome</label>
-
 <input type="text" id="razao-social">
 
 
@@ -123,17 +120,36 @@ Seu Pedido
 </div>
 
 
-<div class="acoes-carrinho">
 
-<button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo">
-📲 Enviar Pedido
+<div class="menu-envio">
+
+<button onclick="toggleMenuEnvio()" class="btn-enviar">
+📤 Enviar Pedido
 </button>
+
+<div id="menu-envio-opcoes" class="menu-opcoes">
+
+<button onclick="enviarWhatsApp()">
+📲 Enviar via WhatsApp
+</button>
+
+<button onclick="gerarPDF()">
+📄 Gerar PDF
+</button>
+
+<button onclick="enviarEmail()">
+✉ Enviar por Email
+</button>
+
+</div>
+
+</div>
+
 
 <button onclick="limparCarrinho()" class="btn-limpar">
 🗑️ Limpar Carrinho
 </button>
 
-</div>
 
 </div>
 
