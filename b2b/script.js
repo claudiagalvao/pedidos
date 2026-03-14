@@ -17,6 +17,56 @@ async function carregarProdutos() {
 
         renderizarProdutos(todosProdutos);
 
+
+
+/* =========================================
+MENU DE CATEGORIAS
+========================================= */
+
+function renderizarMenu(){
+
+const menu=document.getElementById("menu-categorias");
+
+if(!menu) return;
+
+const categorias=["Todos", ...new Set(todosProdutos.map(p=>p.categoria))];
+
+menu.innerHTML=categorias.map(cat=>`
+
+<button class="cat-btn"
+onclick="filtrarCategoria('${cat}',this)">
+${cat}
+</button>
+
+`).join("");
+
+}
+
+function filtrarCategoria(cat,btn){
+
+document.querySelectorAll(".cat-btn")
+.forEach(b=>b.classList.remove("active"));
+
+if(btn) btn.classList.add("active");
+
+if(cat==="Todos"){
+
+renderizarProdutos(todosProdutos);
+
+}else{
+
+renderizarProdutos(
+todosProdutos.filter(p=>p.categoria===cat)
+);
+
+}
+
+}
+
+
+
+        
+
         renderizarMenu();
 
     } catch (err) {
