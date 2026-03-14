@@ -63,12 +63,13 @@ BUSCA
 
 function filtrarBusca(){
 
-const termo=document
+let termo=document
 .getElementById("busca")
 .value
 .toLowerCase()
+.trim()
 
-let lista=todosProdutos
+let lista=[...todosProdutos]
 
 if(categoriaAtual!=="Todos"){
 
@@ -76,9 +77,21 @@ lista=lista.filter(p=>p.categoria===categoriaAtual)
 
 }
 
-lista=lista.filter(p=>
-p.name.toLowerCase().includes(termo)
-)
+if(termo){
+
+lista=lista.filter(p=>{
+
+const nome=(p.name||"").toLowerCase()
+
+const variacoes=(p.variacoes||[])
+.map(v=>v.nome.toLowerCase())
+.join(" ")
+
+return nome.includes(termo) || variacoes.includes(termo)
+
+})
+
+}
 
 renderizarProdutos(lista)
 
@@ -136,6 +149,18 @@ function renderizarProdutos(lista){
 
 const container=document.getElementById("produtos")
 
+if(!lista.length){
+
+container.innerHTML=`
+<p style="grid-column:1/-1;color:#94a3b8">
+Nenhum produto encontrado
+</p>
+`
+
+return
+
+}
+
 container.innerHTML=lista.map((p,index)=>{
 
 const variacoes=p.variacoes||[]
@@ -171,12 +196,12 @@ B2B: R$ ${p10.toFixed(2)}
 <div class="tabela-progressiva">
 
 <div class="faixa-item">
-<span>🔥 12% OFF acima de R$500</span>
+<span>🔥 12% OFF >R$500</span>
 <strong>R$ ${p12.toFixed(2)}</strong>
 </div>
 
 <div class="faixa-item destaque">
-<span>💎 15% OFF acima de R$1000</span>
+<span>💎 15% OFF >R$1000</span>
 <strong>R$ ${p15.toFixed(2)}</strong>
 </div>
 
@@ -404,98 +429,13 @@ const total=subtotal*(1-desconto/100)
 
 const economia=subtotal-total
 
-const progresso=Math.min((subtotal/1000)*100,100)
-
-
-
-let incentivo=""
-
-if(subtotal<500){
-
-incentivo=`🔥 Faltam R$ ${(500-subtotal).toFixed(2)} para ganhar 12% OFF`
-
-}
-
-else if(subtotal<1000){
-
-incentivo=`💎 Faltam R$ ${(1000-subtotal).toFixed(2)} para ganhar 15% OFF`
-
-}
-
-
-
 document.getElementById("cart-count").innerText=carrinho.length
-
-
-
-if(carrinho.length===0){
-
-document.getElementById("lista-itens-carrinho").innerHTML=
-"<p style='color:#64748b'>Seu carrinho está vazio</p>"
-
-}
-
-
-
-document.getElementById("status-carrinho").innerHTML=`
-
-<div class="progress-container">
-
-<div class="progress-steps">
-
-<div class="step ${subtotal>=200?'active':''}">
-Pedido mínimo
-<small>R$200</small>
-</div>
-
-<div class="step ${subtotal>=500?'active':''}">
-🔥 12% OFF
-<small>R$500</small>
-</div>
-
-<div class="step ${subtotal>=1000?'active':''}">
-💎 15% OFF
-<small>R$1000</small>
-</div>
-
-</div>
-
-<div class="progress-bar-bg">
-
-<div class="progress-bar-fill"
-style="width:${progresso}%">
-</div>
-
-</div>
-
-</div>
-
-<div class="info-valores">
-
-<p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
-
-<p>Desconto aplicado: ${desconto}%</p>
-
-<p class="economia">
-Economia: R$ ${economia.toFixed(2)}
-</p>
-
-<h2>Total: R$ ${total.toFixed(2)}</h2>
-
-${incentivo?`<p style="color:#fbbf24;">${incentivo}</p>`:""}
-
-</div>
-
-`
-
-
 
 document.getElementById("lista-itens-carrinho").innerHTML=
 
 carrinho.map((i,idx)=>{
 
 const precoCheio=i.preco
-
 const precoDesc=i.preco*(1-desconto/100)
 
 return`
@@ -527,128 +467,6 @@ return`
 
 
 /* ===============================
-FORMULÁRIO
-=============================== */
-
-function validarFormulario(){
-
-const campos=[
-"razao-social",
-"cnpj",
-"email",
-"telefone",
-"pagamento",
-"frete"
-]
-
-for(let id of campos){
-
-const v=document.getElementById(id)?.value.trim()
-
-if(!v){
-
-alert("Preencha todos os campos")
-
-return false
-
-}
-
-}
-
-return true
-
-}
-
-
-
-function podeEnviarPedido(){
-
-if(!validarFormulario()) return false
-
-const subtotal=calcularSubtotal()
-
-if(subtotal<200){
-
-alert("Pedido mínimo R$200")
-
-return false
-
-}
-
-return true
-
-}
-
-
-
-/* ===============================
-ENVIO
-=============================== */
-
-function enviarWhatsApp(){
-
-if(!podeEnviarPedido()) return
-
-let msg="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-msg+=`${i.qtd}x ${i.name}\n`
-})
-
-window.open(
-`https://wa.me/5519992850208?text=${encodeURIComponent(msg)}`
-)
-
-}
-
-
-
-function gerarPDF(){
-
-if(!podeEnviarPedido()) return
-
-const {jsPDF}=window.jspdf
-
-const doc=new jsPDF()
-
-let y=20
-
-doc.text("Pedido Crazy Fantasy",20,y)
-
-y+=10
-
-carrinho.forEach(i=>{
-
-doc.text(`${i.qtd}x ${i.name}`,20,y)
-
-y+=8
-
-})
-
-doc.save("pedido.pdf")
-
-}
-
-
-
-function enviarEmail(){
-
-if(!podeEnviarPedido()) return
-
-let corpo="Pedido Crazy Fantasy\n\n"
-
-carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name}\n`
-})
-
-window.location.href=
-`mailto:lojacrazyfantasy@hotmail.com?cc=claus.galvao@hotmail.com&subject=Pedido Crazy Fantasy&body=${encodeURIComponent(corpo)}`
-
-}
-
-
-
-/* ===============================
 UTILIDADES
 =============================== */
 
@@ -661,24 +479,6 @@ salvarCarrinho()
 atualizarInterface()
 
 }
-
-
-
-function limparCarrinho(){
-
-if(confirm("Limpar carrinho?")){
-
-carrinho=[]
-
-salvarCarrinho()
-
-atualizarInterface()
-
-}
-
-}
-
-
 
 function ajustarQtd(idx,op,estoque){
 
@@ -700,8 +500,6 @@ input.value=Math.max(0,v-1)
 
 }
 
-
-
 function toggleCarrinho(){
 
 document
@@ -709,21 +507,6 @@ document
 .classList.toggle("open")
 
 }
-
-
-
-function toggleMenuEnvio(){
-
-const menu=document.getElementById("menu-envio-opcoes")
-
-menu.style.display=
-menu.style.display==="flex"
-?"none"
-:"flex"
-
-}
-
-
 
 function abrirModal(src){
 
@@ -733,8 +516,6 @@ document.getElementById("modal-img").style.display="flex"
 
 }
 
-
-
 function fecharModal(){
 
 document.getElementById("modal-img").style.display="none"
@@ -743,7 +524,19 @@ document.getElementById("modal-img").style.display="none"
 
 
 
+/* ===============================
+INICIALIZAÇÃO
+=============================== */
+
 document.addEventListener(
 "DOMContentLoaded",
-carregarProdutos
+()=>{
+
+carregarProdutos()
+
+document
+.getElementById("busca")
+?.addEventListener("input",filtrarBusca)
+
+}
 )
