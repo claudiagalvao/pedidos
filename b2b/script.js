@@ -79,9 +79,10 @@ const container=document.getElementById("produtos");
 
 container.innerHTML=lista.map((p,index)=>{
 
-const v=p.variacoes?.[0] || {preco:0,estoque:0};
+const variacoes = p.variacoes || [];
+const vPadrao = variacoes[0] || {preco:0,estoque:0};
 
-const varejo=v.preco;
+const varejo=vPadrao.preco;
 const b2b=varejo*0.90;
 const p12=varejo*0.88;
 const p15=varejo*0.85;
@@ -120,8 +121,18 @@ B2B: R$ ${b2b.toFixed(2)}
 </div>
 
 <div class="estoque-info">
-Estoque: ${v.estoque}
+Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
 </div>
+
+${variacoes.length > 1 ? `
+<select id="var-${index}" onchange="atualizarEstoqueVisivel(${index})" class="select-variacao">
+${variacoes.map(v=>`
+<option value="${v.nome}|${v.preco}|${v.estoque}">
+${v.nome}
+</option>
+`).join("")}
+</select>
+` : ""}
 
 <div class="controle-qtd">
 
@@ -146,27 +157,61 @@ Add
 }
 
 /* =========================================
+VARIAÇÕES
+========================================= */
+
+function atualizarEstoqueVisivel(idx){
+
+const select=document.getElementById(`var-${idx}`);
+
+if(!select) return;
+
+const [, , estoque]=select.value.split("|");
+
+document.getElementById(`estoque-num-${idx}`).innerText=estoque;
+
+}
+
+/* =========================================
 CARRINHO
 ========================================= */
 
 function adicionar(idx,nome){
 
 const input=document.getElementById(`qtd-${idx}`);
+const select=document.getElementById(`var-${idx}`);
+
 const qtd=parseInt(input.value);
 
 if(qtd<=0) return alert("Selecione quantidade");
 
-const produto=todosProdutos[idx];
-const variacao=produto.variacoes[0];
+let preco;
+let variacaoNome;
 
-const existente=carrinho.find(i=>i.name===nome);
+if(select){
+
+const [nomeVar, precoVar] = select.value.split("|");
+
+variacaoNome = nomeVar;
+preco = parseFloat(precoVar);
+
+}else{
+
+const v=todosProdutos[idx].variacoes[0];
+variacaoNome=v.nome;
+preco=v.preco;
+
+}
+
+const existente=carrinho.find(i=>i.name===nome && i.var===variacaoNome);
 
 if(existente){
 existente.qtd+=qtd;
 }else{
 carrinho.push({
 name:nome,
-preco:variacao.preco,
+var:variacaoNome,
+preco:preco,
 qtd:qtd
 });
 }
@@ -214,7 +259,7 @@ document.getElementById("lista-itens-carrinho").innerHTML=
 carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
-<span>${i.qtd}x ${i.name}</span>
+<span>${i.qtd}x ${i.name} (${i.var})</span>
 <button onclick="removerItem(${idx})">✕</button>
 </div>
 
