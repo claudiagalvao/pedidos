@@ -1,16 +1,57 @@
 let todosProdutos=[]
 let carrinho=[]
+let categoriaAtual="Todos"
 
+
+/* ===============================
+CARREGAR PRODUTOS
+=============================== */
 
 async function carregarProdutos(){
+
+try{
 
 const res=await fetch("/api/produtos.js")
 
 todosProdutos=await res.json()
 
-renderizarProdutos(todosProdutos)
+carregarCarrinho()
 
 renderizarMenu()
+
+renderizarProdutos(todosProdutos)
+
+}catch(e){
+
+console.error("Erro ao carregar produtos",e)
+
+}
+
+}
+
+
+
+/* ===============================
+CARRINHO LOCAL STORAGE
+=============================== */
+
+function salvarCarrinho(){
+
+localStorage.setItem("carrinhoCF",JSON.stringify(carrinho))
+
+}
+
+function carregarCarrinho(){
+
+const salvo=localStorage.getItem("carrinhoCF")
+
+if(salvo){
+
+carrinho=JSON.parse(salvo)
+
+atualizarInterface()
+
+}
 
 }
 
@@ -27,13 +68,19 @@ const termo=document
 .value
 .toLowerCase()
 
-renderizarProdutos(
+let lista=todosProdutos
 
-todosProdutos.filter(p=>
+if(categoriaAtual!=="Todos"){
+
+lista=lista.filter(p=>p.categoria===categoriaAtual)
+
+}
+
+lista=lista.filter(p=>
 p.name.toLowerCase().includes(termo)
 )
 
-)
+renderizarProdutos(lista)
 
 }
 
@@ -67,23 +114,15 @@ ${cat}
 
 function filtrarCategoria(cat,btn){
 
+categoriaAtual=cat
+
 document
 .querySelectorAll(".cat-btn")
 .forEach(b=>b.classList.remove("active"))
 
 btn.classList.add("active")
 
-if(cat==="Todos"){
-
-renderizarProdutos(todosProdutos)
-
-}else{
-
-renderizarProdutos(
-todosProdutos.filter(p=>p.categoria===cat)
-)
-
-}
+filtrarBusca()
 
 }
 
@@ -254,7 +293,7 @@ estoque=parseInt(e)
 
 }else{
 
-const v=todosProdutos[idx].variacoes[0]
+const v=todosProdutos[idx].variacoes?.[0]||{nome:"Padrão",preco:0,estoque:0}
 
 variacao=v.nome
 preco=v.preco
@@ -299,6 +338,8 @@ qtd:qtd
 
 input.value=0
 
+salvarCarrinho()
+
 atualizarInterface()
 
 document
@@ -328,19 +369,36 @@ botao.style.background=""
 
 
 /* ===============================
+CALCULOS
+=============================== */
+
+function calcularSubtotal(){
+
+return carrinho.reduce(
+(a,i)=>a+(i.preco*i.qtd),0
+)
+
+}
+
+function calcularDesconto(subtotal){
+
+if(subtotal>=1000) return 15
+if(subtotal>=500) return 12
+return 10
+
+}
+
+
+
+/* ===============================
 INTERFACE DO CARRINHO
 =============================== */
 
 function atualizarInterface(){
 
-const subtotal=carrinho.reduce(
-(a,i)=>a+(i.preco*i.qtd),0
-)
+const subtotal=calcularSubtotal()
 
-let desconto=10
-
-if(subtotal>=1000) desconto=15
-else if(subtotal>=500) desconto=12
+const desconto=calcularDesconto(subtotal)
 
 const total=subtotal*(1-desconto/100)
 
@@ -367,6 +425,15 @@ incentivo=`💎 Faltam R$ ${(1000-subtotal).toFixed(2)} para ganhar 15% OFF`
 
 
 document.getElementById("cart-count").innerText=carrinho.length
+
+
+
+if(carrinho.length===0){
+
+document.getElementById("lista-itens-carrinho").innerHTML=
+"<p style='color:#64748b'>Seu carrinho está vazio</p>"
+
+}
 
 
 
@@ -409,7 +476,7 @@ style="width:${progresso}%">
 
 <p>Desconto aplicado: ${desconto}%</p>
 
-<p style="color:#22c55e;font-weight:bold;">
+<p class="economia">
 Economia: R$ ${economia.toFixed(2)}
 </p>
 
@@ -428,6 +495,7 @@ document.getElementById("lista-itens-carrinho").innerHTML=
 carrinho.map((i,idx)=>{
 
 const precoCheio=i.preco
+
 const precoDesc=i.preco*(1-desconto/100)
 
 return`
@@ -497,9 +565,7 @@ function podeEnviarPedido(){
 
 if(!validarFormulario()) return false
 
-const subtotal=carrinho.reduce(
-(a,i)=>a+(i.preco*i.qtd),0
-)
+const subtotal=calcularSubtotal()
 
 if(subtotal<200){
 
@@ -590,6 +656,8 @@ function removerItem(i){
 
 carrinho.splice(i,1)
 
+salvarCarrinho()
+
 atualizarInterface()
 
 }
@@ -601,6 +669,8 @@ function limparCarrinho(){
 if(confirm("Limpar carrinho?")){
 
 carrinho=[]
+
+salvarCarrinho()
 
 atualizarInterface()
 
