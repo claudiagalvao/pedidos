@@ -5,30 +5,33 @@ let carrinho = [];
 CARREGAR PRODUTOS
 ========================================= */
 
-async function carregarProdutos() {
+async function carregarProdutos(){
 
-    try {
+try{
 
-        const res = await fetch("/api/produtos.js");
-        todosProdutos = await res.json();
+const res = await fetch("/api/produtos.js");
+todosProdutos = await res.json();
 
-        renderizarProdutos(todosProdutos);
-        renderizarMenu();
+renderizarProdutos(todosProdutos);
+renderizarMenu();
 
-    } catch (err) {
+}catch(err){
 
-        console.error("Erro ao carregar produtos:", err);
+console.error("Erro ao carregar produtos:",err);
 
-        const container = document.getElementById("produtos");
+const container=document.getElementById("produtos");
 
-        if(container){
-            container.innerHTML = `
-            <h2 style="color:white;text-align:center;padding:50px">
-            ⚠️ Catálogo indisponível
-            </h2>`;
-        }
+if(container){
 
-    }
+container.innerHTML=`
+<h2 style="color:white;text-align:center;padding:50px">
+⚠️ Catálogo indisponível
+</h2>
+`;
+
+}
+
+}
 
 }
 
@@ -45,9 +48,14 @@ if(!menu) return;
 const categorias=["Todos", ...new Set(todosProdutos.map(p=>p.categoria))];
 
 menu.innerHTML=categorias.map(cat=>`
-<button class="cat-btn" onclick="filtrarCategoria('${cat}',this)">
+
+<button class="cat-btn"
+onclick="filtrarCategoria('${cat}',this)">
+
 ${cat}
+
 </button>
+
 `).join("");
 
 }
@@ -60,11 +68,15 @@ document.querySelectorAll(".cat-btn")
 if(btn) btn.classList.add("active");
 
 if(cat==="Todos"){
+
 renderizarProdutos(todosProdutos);
+
 }else{
+
 renderizarProdutos(
 todosProdutos.filter(p=>p.categoria===cat)
 );
+
 }
 
 }
@@ -79,8 +91,8 @@ const container=document.getElementById("produtos");
 
 container.innerHTML=lista.map((p,index)=>{
 
-const variacoes = p.variacoes || [];
-const vPadrao = variacoes[0] || {preco:0,estoque:0};
+const variacoes=p.variacoes || [];
+const vPadrao=variacoes[0] || {preco:0,estoque:0,nome:"Padrão"};
 
 const varejo=vPadrao.preco;
 const b2b=varejo*0.90;
@@ -125,25 +137,45 @@ Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
 </div>
 
 ${variacoes.length > 1 ? `
-<select id="var-${index}" onchange="atualizarEstoqueVisivel(${index})" class="select-variacao">
+
+<select id="var-${index}"
+onchange="atualizarEstoqueVisivel(${index})"
+class="select-variacao">
+
 ${variacoes.map(v=>`
+
 <option value="${v.nome}|${v.preco}|${v.estoque}">
 ${v.nome}
 </option>
+
 `).join("")}
+
 </select>
+
 ` : ""}
 
 <div class="controle-qtd">
 
-<button onclick="ajustarQtd(${index},'-')">-</button>
+<div class="qtd-box">
 
-<input id="qtd-${index}" value="0" readonly>
+<button class="btn-qtd"
+onclick="ajustarQtd(${index},'-')">−</button>
 
-<button onclick="ajustarQtd(${index},'+')">+</button>
+<input class="input-qtd"
+id="qtd-${index}"
+value="0"
+readonly>
 
-<button onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}')">
-Add
+<button class="btn-qtd"
+onclick="ajustarQtd(${index},'+')">+</button>
+
+</div>
+
+<button class="btn-add"
+onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}')">
+
+🛒 Adicionar
+
 </button>
 
 </div>
@@ -190,14 +222,15 @@ let variacaoNome;
 
 if(select){
 
-const [nomeVar, precoVar] = select.value.split("|");
+const [nomeVar,precoVar]=select.value.split("|");
 
-variacaoNome = nomeVar;
-preco = parseFloat(precoVar);
+variacaoNome=nomeVar;
+preco=parseFloat(precoVar);
 
 }else{
 
-const v=todosProdutos[idx].variacoes[0];
+const v=todosProdutos[idx].variacoes?.[0] || {nome:"Padrão",preco:0};
+
 variacaoNome=v.nome;
 preco=v.preco;
 
@@ -206,14 +239,20 @@ preco=v.preco;
 const existente=carrinho.find(i=>i.name===nome && i.var===variacaoNome);
 
 if(existente){
+
 existente.qtd+=qtd;
+
 }else{
+
 carrinho.push({
+
 name:nome,
 var:variacaoNome,
 preco:preco,
 qtd:qtd
+
 });
+
 }
 
 input.value=0;
@@ -225,15 +264,21 @@ document.getElementById("carrinho-drawer").classList.add("open");
 }
 
 function removerItem(i){
+
 carrinho.splice(i,1);
+
 atualizarInterface();
+
 }
 
 function limparCarrinho(){
 
 if(confirm("Limpar carrinho?")){
+
 carrinho=[];
+
 atualizarInterface();
+
 }
 
 }
@@ -256,11 +301,15 @@ const total=subtotal*(1-desconto/100);
 document.getElementById("cart-count").innerText=carrinho.length;
 
 document.getElementById("lista-itens-carrinho").innerHTML=
+
 carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
+
 <span>${i.qtd}x ${i.name} (${i.var})</span>
+
 <button onclick="removerItem(${idx})">✕</button>
+
 </div>
 
 `).join("");
@@ -277,21 +326,29 @@ const input=document.getElementById(`qtd-${idx}`);
 
 let v=parseInt(input.value);
 
-input.value=op==="+"?v+1:Math.max(0,v-1);
+input.value=op==="+" ? v+1 : Math.max(0,v-1);
 
 }
 
 function toggleCarrinho(){
-document.getElementById("carrinho-drawer").classList.toggle("open");
+
+document.getElementById("carrinho-drawer")
+.classList.toggle("open");
+
 }
 
 function abrirModal(src){
+
 document.getElementById("img-ampliada").src=src;
+
 document.getElementById("modal-img").style.display="flex";
+
 }
 
 function fecharModal(){
+
 document.getElementById("modal-img").style.display="none";
+
 }
 
 document.addEventListener("DOMContentLoaded",carregarProdutos);
