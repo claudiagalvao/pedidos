@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crazy Fantasy B2B</title>
+<title>Crazy Fantasy - B2B</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -14,12 +14,9 @@
 
 <body>
 
-<header>
-
+<header class="hero-banner">
 <img src="banner.png" class="banner-img">
-
 </header>
-
 
 
 <nav class="nav-bar">
@@ -30,7 +27,7 @@
 type="text"
 id="busca"
 class="busca-input"
-placeholder="Buscar fantasia, peruca ou acessório..."
+placeholder="Buscar produto..."
 onkeyup="filtrarBusca()"
 >
 
@@ -39,7 +36,6 @@ onkeyup="filtrarBusca()"
 </div>
 
 </nav>
-
 
 
 <main class="container">
@@ -54,26 +50,26 @@ onkeyup="filtrarBusca()"
 
 
 
-<!-- DRAWER CARRINHO -->
-
 <div id="carrinho-drawer" class="drawer">
 
 <div class="drawer-content">
 
 <span class="close-btn" onclick="toggleCarrinho()">×</span>
 
-<h2>Seu Pedido</h2>
+<h3 style="color:white;margin-bottom:20px;">
+Seu Pedido
+</h3>
 
 <div id="status-carrinho"></div>
 
 <div id="lista-itens-carrinho"></div>
 
 
-
 <div class="dados-cliente">
 
 <label>Razão Social / Nome</label>
 <input type="text" id="razao-social">
+
 
 <div class="dados-grid">
 
@@ -94,37 +90,31 @@ onkeyup="filtrarBusca()"
 
 <div>
 <label>Telefone</label>
-<input type="tel" id="telefone">
+<input type="text" id="telefone">
 </div>
 
 </div>
-
 
 
 <label>Forma de Pagamento</label>
 
 <select id="pagamento">
-
 <option value="">Selecione</option>
 <option>PIX</option>
 <option>Boleto</option>
 <option>Cartão</option>
 <option>Transferência</option>
-
 </select>
-
 
 
 <label>Forma de Frete</label>
 
 <select id="frete">
-
 <option value="">Selecione</option>
 <option>Correios</option>
 <option>Transportadora</option>
 <option>Motoboy</option>
 <option>Retirada</option>
-
 </select>
 
 </div>
@@ -134,29 +124,21 @@ onkeyup="filtrarBusca()"
 <div class="menu-envio">
 
 <button onclick="toggleMenuEnvio()" class="btn-enviar">
-
 📤 Enviar Pedido
-
 </button>
 
 <div id="menu-envio-opcoes" class="menu-opcoes">
 
-<button onclick="enviarWhatsApp()">📲 WhatsApp</button>
+<button onclick="enviarWhatsApp()">
+📲 Enviar via WhatsApp
+</button>
 
-<button onclick="gerarPDF()">📄 PDF</button>
+<button onclick="gerarPDF()">
+📄 Gerar PDF
+</button>
 
-<button onclick="enviarEmail()">✉ Email</button>
-
-</div>
-
-</div>
-
-
-
-<button onclick="limparCarrinho()" class="btn-limpar">
-
-🗑️ Limpar Carrinho
-
+<button onclick="enviarEmail()">
+✉ Enviar por Email
 </button>
 
 </div>
@@ -164,20 +146,101 @@ onkeyup="filtrarBusca()"
 </div>
 
 
+<button onclick="limparCarrinho()" class="btn-limpar">
+🗑️ Limpar Carrinho
+</button>
 
-<!-- MODAL IMAGEM -->
-
-<div id="modal-img" class="modal" onclick="fecharModal()">
-
-<img id="img-ampliada">
 
 </div>
 
+</div>
+
+
+
+<div id="modal-img" class="modal" onclick="fecharModal()">
+<img id="img-ampliada">
+</div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script src="script.js"></script>
+
+
+<footer class="footer-crazy">
+
+<div class="footer-container">
+
+<div class="footer-col">
+
+<h3>Crazy Fantasy</h3>
+
+<p>
+A maior loja de fantasias premium do interior de São Paulo.
+<br>
+Especialistas em eventos, festas e carnaval.
+</p>
+
+</div>
+
+
+<div class="footer-col">
+
+<h4>Contato</h4>
+
+<p>📍 Valinhos - SP</p>
+<p>📲 (19) 99285-0208</p>
+<p>✉ lojacrazyfantasy@hotmail.com</p>
+
+</div>
+
+
+<div class="footer-col">
+
+<h4>Atendimento B2B</h4>
+
+<p>Pedido mínimo: <strong>R$200</strong></p>
+<p>Descontos progressivos:</p>
+
+<ul>
+<li>10% Parceiros</li>
+<li>12% acima de R$500</li>
+<li>15% acima de R$1000</li>
+</ul>
+
+</div>
+
+
+<div class="footer-col">
+
+<h4>Siga a Crazy</h4>
+
+<div class="social-links">
+
+<a href="https://instagram.com/lojacrazyfantasy">
+Instagram
+</a>
+
+<a href="https://wa.me/5519992850208">
+WhatsApp
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="footer-bottom">
+
+© 2026 Crazy Fantasy — Todos os direitos reservados
+
+</div>
+
+</footer>
+
+  
 
 </body>
 </html>
