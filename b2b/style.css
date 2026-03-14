@@ -1,131 +1,56 @@
-/* ============================================================
-FONTES E BASE
-============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
 body{
 background:#0b0f15;
 color:#e2e8f0;
-font-family:'Inter',sans-serif;
-overflow-x:hidden;
+font-family:Inter,sans-serif;
+margin:0;
 }
-
-
-
-/* ============================================================
-BANNER
-============================================================ */
 
 .banner-img{
 width:100%;
-display:block;
-object-fit:cover;
 }
-
-
-
-/* ============================================================
-NAVBAR
-============================================================ */
 
 .nav-bar{
 display:flex;
+gap:10px;
 align-items:center;
 justify-content:space-between;
-gap:15px;
 padding:10px 20px;
 background:#11151c;
 border-bottom:2px solid #ff00ff;
-position:sticky;
-top:0;
-z-index:999;
 }
 
 .categorias{
 display:flex;
 gap:8px;
 overflow-x:auto;
-white-space:nowrap;
-}
-
-.categorias::-webkit-scrollbar{
-display:none;
 }
 
 .cat-btn{
 background:#1e293b;
 border:1px solid #334155;
-color:#cbd5e1;
+color:white;
 padding:8px 18px;
 border-radius:25px;
 cursor:pointer;
-font-size:0.8rem;
-font-weight:600;
-transition:0.2s;
-}
-
-.cat-btn:hover{
-background:#334155;
 }
 
 .cat-btn.active{
 background:#ff00ff;
-border-color:#ff00ff;
-color:white;
-box-shadow:0 0 10px rgba(255,0,255,0.4);
 }
 
 .busca-input{
 background:#1e293b;
 border:1px solid #334155;
-color:white;
-padding:8px 12px;
+padding:8px;
 border-radius:8px;
-font-size:0.85rem;
-width:220px;
+color:white;
 }
-
-.busca-input:focus{
-outline:none;
-border-color:#38bdf8;
-}
-
-.cart-icon{
-cursor:pointer;
-font-size:16px;
-}
-
-
-
-/* ============================================================
-CONTEÚDO
-============================================================ */
 
 .container{
 max-width:1400px;
 margin:auto;
 padding:20px;
 }
-
-.titulo-sessao{
-text-align:center;
-font-size:1rem;
-margin-bottom:20px;
-letter-spacing:1px;
-}
-
-
-
-/* ============================================================
-GRID PRODUTOS
-============================================================ */
 
 .produtos-grid{
 display:grid;
@@ -135,209 +60,37 @@ gap:20px;
 
 .produto-card{
 background:#0f172a;
+padding:18px;
 border-radius:12px;
 border:1px solid #1e293b;
-padding:18px;
 display:flex;
 flex-direction:column;
 gap:10px;
-transition:0.25s;
-min-height:360px;
-}
-
-.produto-card:hover{
-transform:translateY(-4px);
-border-color:#3b82f6;
-box-shadow:0 10px 24px rgba(0,0,0,0.4);
 }
 
 .produto-card img{
 width:100%;
-border-radius:8px;
 background:white;
 padding:12px;
-object-fit:contain;
+border-radius:8px;
 cursor:pointer;
-box-shadow: inset 0 0 0 1px #e2e8f0;
-}
-
-.produto-card h3{
-font-size:16px;
-font-weight:600;
-color:white;
-line-height:1.3;
-}
-
-
-
-/* ============================================================
-PREÇOS
-============================================================ */
-
-.preco-container{
-display:flex;
-flex-direction:column;
-gap:4px;
-}
-
-.preco-container del{
-font-size:13px;
-color:#94a3b8;
 }
 
 .preco-b2b{
+color:#22c55e;
 font-size:20px;
 font-weight:bold;
-color:#22c55e;
-text-shadow:0 0 6px rgba(34,197,94,0.3);
 }
-
-.preco-b2b small{
-font-size:12px;
-color:#94a3b8;
-}
-
-
-
-/* ============================================================
-TABELA PROGRESSIVA
-============================================================ */
-
-.tabela-progressiva{
-background:#020617;
-border-radius:8px;
-padding:10px;
-display:flex;
-flex-direction:column;
-gap:6px;
-font-size:13px;
-border:1px solid #1e293b;
-}
-
-.faixa-item{
-display:flex;
-justify-content:space-between;
-color:#cbd5f5;
-}
-
-.faixa-item strong{
-color:#38bdf8;
-}
-
-.faixa-item.destaque{
-color:#fde68a;
-}
-
-
-
-/* ============================================================
-ESTOQUE
-============================================================ */
-
-.estoque-info{
-font-size:12px;
-color:#94a3b8;
-}
-
-
-
-/* ============================================================
-VARIAÇÃO
-============================================================ */
-
-.select-variacao{
-background:#1e293b;
-border:1px solid #334155;
-color:white;
-padding:6px;
-border-radius:6px;
-}
-
-
-
-/* ============================================================
-CONTROLE QUANTIDADE
-============================================================ */
-
-.controle-qtd{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-margin-top:10px;
-}
-
-.qtd-box{
-display:flex;
-align-items:center;
-border:1px solid #334155;
-border-radius:8px;
-overflow:hidden;
-background:#0f172a;
-}
-
-.btn-qtd{
-border:none;
-background:none;
-color:white;
-width:32px;
-height:32px;
-font-size:18px;
-cursor:pointer;
-}
-
-.btn-qtd:hover{
-background:#1e293b;
-}
-
-.input-qtd{
-width:40px;
-text-align:center;
-border:none;
-background:none;
-color:white;
-font-size:14px;
-}
-
-.btn-add{
-flex:1;
-background:#3b82f6;
-border:none;
-color:white;
-padding:8px;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
-transition:0.15s;
-}
-
-.btn-add:hover{
-background:#2563eb;
-}
-
-.btn-add:active{
-transform:scale(0.96);
-}
-
-
-
-/* ============================================================
-DRAWER CARRINHO
-============================================================ */
 
 .drawer{
 position:fixed;
-right:-450px;
+right:-420px;
 top:0;
 width:420px;
 height:100%;
 background:#1a1d23;
+transition:0.3s;
 border-left:2px solid #ff00ff;
-transition:0.35s;
-z-index:2000;
-display:flex;
-flex-direction:column;
-box-shadow:-5px 0 20px rgba(0,0,0,0.5);
 }
 
 .drawer.open{
@@ -350,252 +103,24 @@ overflow-y:auto;
 height:100vh;
 }
 
-
-
-/* ============================================================
-PROGRESS BAR
-============================================================ */
-
-.progress-container{
-background:#11151c;
-border:1px solid #334155;
-border-radius:8px;
-padding:12px;
-margin-bottom:15px;
-}
-
-.progress-steps{
-display:flex;
-justify-content:space-between;
-font-size:11px;
-margin-bottom:6px;
-}
-
-.step{
-flex:1;
-text-align:center;
-color:#64748b;
-}
-
-.step small{
-display:block;
-font-size:10px;
-}
-
-.step.active{
-color:#22c55e;
-font-weight:bold;
-}
-
-.progress-bar-bg{
-height:8px;
-background:#1e293b;
-border-radius:10px;
-overflow:hidden;
-}
-
-.progress-bar-fill{
-height:100%;
-background:linear-gradient(90deg,#22c55e,#4ade80,#86efac);
-transition:width 0.5s ease;
-}
-
-
-
-/* ============================================================
-VALORES CARRINHO
-============================================================ */
-
-.info-valores{
-margin-top:15px;
-border-top:1px solid #334155;
-padding-top:10px;
-}
-
-.economia{
-color:#22c55e;
-font-weight:bold;
-}
-
-
-
-/* ============================================================
-ITENS DO CARRINHO
-============================================================ */
-
-.item-carrinho{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-padding:6px 0;
-border-bottom:1px solid #1e293b;
-font-size:13px;
-}
-
-.item-carrinho span{
-flex:1;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
-
-.item-preco{
-font-size:12px;
-color:#94a3b8;
-}
-
-.item-preco strong{
-color:#22c55e;
-font-weight:bold;
-}
-
-.item-carrinho button{
-background:none;
-border:none;
-color:#64748b;
-cursor:pointer;
-font-size:14px;
-}
-
-.item-carrinho button:hover{
-color:#ef4444;
-}
-
-
-
-/* ============================================================
-FORMULÁRIO
-============================================================ */
-
-.dados-cliente input,
-.dados-cliente select{
-width:100%;
-padding:12px;
-margin-top:5px;
-margin-bottom:10px;
-border-radius:6px;
-border:1px solid #334155;
-background:#1e293b;
-color:white;
-}
-
-.dados-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-
-
-/* ============================================================
-MENU ENVIO
-============================================================ */
-
-.menu-envio{
-position:relative;
-}
-
-.btn-enviar{
-width:100%;
-padding:15px;
-background:#22c55e;
-border:none;
-border-radius:8px;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-.menu-opcoes{
+.modal{
 display:none;
-flex-direction:column;
-position:absolute;
-bottom:60px;
+position:fixed;
+top:0;
+left:0;
 width:100%;
-background:#0f172a;
-border:1px solid #334155;
-border-radius:8px;
-overflow:hidden;
-z-index:10;
+height:100%;
+background:rgba(0,0,0,0.9);
+justify-content:center;
+align-items:center;
 }
 
-.menu-opcoes button{
-padding:12px;
-background:none;
-border:none;
-color:white;
-text-align:left;
-cursor:pointer;
-}
-
-.menu-opcoes button:hover{
-background:#1e293b;
-}
-
-
-
-/* ============================================================
-RODAPÉ
-============================================================ */
-
-.footer-crazy{
-background:#020617;
-border-top:2px solid #ff00ff;
-margin-top:60px;
-color:#cbd5f5;
-}
-
-.footer-container{
-max-width:1200px;
-margin:auto;
-padding:40px 20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:30px;
-}
-
-.footer-col h3{
-color:white;
-font-size:20px;
-margin-bottom:10px;
-}
-
-.footer-col h4{
-color:#38bdf8;
-margin-bottom:10px;
-}
-
-.footer-col p{
-font-size:14px;
-line-height:1.6;
-}
-
-.footer-col ul{
-padding-left:16px;
-font-size:14px;
-}
-
-.social-links{
+.modal.open{
 display:flex;
-flex-direction:column;
-gap:6px;
 }
 
-.social-links a{
-color:#cbd5f5;
-text-decoration:none;
-font-size:14px;
-}
-
-.social-links a:hover{
-color:#38bdf8;
-}
-
-.footer-bottom{
-text-align:center;
-padding:15px;
-border-top:1px solid #1e293b;
-font-size:12px;
-color:#64748b;
+#img-ampliada{
+max-width:90%;
+max-height:90%;
+border-radius:10px;
 }
