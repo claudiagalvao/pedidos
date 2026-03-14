@@ -1,4 +1,5 @@
 let todosProdutos=[]
+let produtosVisiveis=[]
 let carrinho=[]
 let categoriaAtual="Todos"
 
@@ -15,11 +16,13 @@ const res=await fetch("/api/produtos.js")
 
 todosProdutos=await res.json()
 
+produtosVisiveis=[...todosProdutos]
+
 carregarCarrinho()
 
 renderizarMenu()
 
-renderizarProdutos(todosProdutos)
+renderizarProdutos(produtosVisiveis)
 
 }catch(e){
 
@@ -36,9 +39,7 @@ CARRINHO LOCAL STORAGE
 =============================== */
 
 function salvarCarrinho(){
-
 localStorage.setItem("carrinhoCF",JSON.stringify(carrinho))
-
 }
 
 function carregarCarrinho(){
@@ -46,11 +47,8 @@ function carregarCarrinho(){
 const salvo=localStorage.getItem("carrinhoCF")
 
 if(salvo){
-
 carrinho=JSON.parse(salvo)
-
 atualizarInterface()
-
 }
 
 }
@@ -72,9 +70,7 @@ let termo=document
 let lista=[...todosProdutos]
 
 if(categoriaAtual!=="Todos"){
-
 lista=lista.filter(p=>p.categoria===categoriaAtual)
-
 }
 
 if(termo){
@@ -87,13 +83,15 @@ const variacoes=(p.variacoes||[])
 .map(v=>v.nome.toLowerCase())
 .join(" ")
 
-return nome.includes(termo) || variacoes.includes(termo)
+return nome.includes(termo)||variacoes.includes(termo)
 
 })
 
 }
 
-renderizarProdutos(lista)
+produtosVisiveis=lista
+
+renderizarProdutos(produtosVisiveis)
 
 }
 
@@ -139,8 +137,6 @@ document
 
 btn.classList.add("active")
 
-/* limpa campo de busca ao trocar categoria */
-
 const campoBusca=document.getElementById("busca")
 
 if(campoBusca){
@@ -168,9 +164,7 @@ container.innerHTML=`
 Nenhum produto encontrado
 </p>
 `
-
 return
-
 }
 
 container.innerHTML=lista.map((p,index)=>{
@@ -308,8 +302,9 @@ CARRINHO
 
 function adicionar(idx,nome,botao){
 
-const input=document.getElementById(`qtd-${idx}`)
+const produto=produtosVisiveis[idx]
 
+const input=document.getElementById(`qtd-${idx}`)
 const select=document.getElementById(`var-${idx}`)
 
 const qtd=parseInt(input.value)
@@ -330,7 +325,7 @@ estoque=parseInt(e)
 
 }else{
 
-const v=todosProdutos[idx].variacoes?.[0]||{nome:"Padrão",preco:0,estoque:0}
+const v=produto.variacoes?.[0]||{nome:"Padrão",preco:0,estoque:0}
 
 variacao=v.nome
 preco=v.preco
@@ -339,25 +334,17 @@ estoque=v.estoque
 }
 
 if(qtd>estoque){
-
 alert("⚠ Estoque insuficiente")
-
 return
-
 }
 
-const existente=carrinho.find(
-i=>i.name===nome && i.var===variacao
-)
+const existente=carrinho.find(i=>i.name===nome && i.var===variacao)
 
 if(existente){
 
 if(existente.qtd+qtd>estoque){
-
 alert("⚠ Estoque insuficiente")
-
 return
-
 }
 
 existente.qtd+=qtd
@@ -379,11 +366,7 @@ salvarCarrinho()
 
 atualizarInterface()
 
-document
-.getElementById("carrinho-drawer")
-.classList.add("open")
-
-
+document.getElementById("carrinho-drawer").classList.add("open")
 
 if(botao){
 
@@ -393,10 +376,8 @@ botao.innerHTML="✔ Adicionado"
 botao.style.background="#22c55e"
 
 setTimeout(()=>{
-
 botao.innerHTML=original
 botao.style.background=""
-
 },1000)
 
 }
@@ -410,11 +391,7 @@ CALCULOS
 =============================== */
 
 function calcularSubtotal(){
-
-return carrinho.reduce(
-(a,i)=>a+(i.preco*i.qtd),0
-)
-
+return carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0)
 }
 
 function calcularDesconto(subtotal){
@@ -428,7 +405,7 @@ return 10
 
 
 /* ===============================
-INTERFACE DO CARRINHO
+INTERFACE CARRINHO
 =============================== */
 
 function atualizarInterface(){
@@ -483,13 +460,9 @@ UTILIDADES
 =============================== */
 
 function removerItem(i){
-
 carrinho.splice(i,1)
-
 salvarCarrinho()
-
 atualizarInterface()
-
 }
 
 function ajustarQtd(idx,op,estoque){
@@ -499,39 +472,25 @@ const input=document.getElementById(`qtd-${idx}`)
 let v=parseInt(input.value)
 
 if(op==="+" && v<estoque){
-
 input.value=v+1
-
 }
-
 else if(op==="-" ){
-
 input.value=Math.max(0,v-1)
-
 }
 
 }
 
 function toggleCarrinho(){
-
-document
-.getElementById("carrinho-drawer")
-.classList.toggle("open")
-
+document.getElementById("carrinho-drawer").classList.toggle("open")
 }
 
 function abrirModal(src){
-
 document.getElementById("img-ampliada").src=src
-
 document.getElementById("modal-img").style.display="flex"
-
 }
 
 function fecharModal(){
-
 document.getElementById("modal-img").style.display="none"
-
 }
 
 
@@ -540,15 +499,14 @@ document.getElementById("modal-img").style.display="none"
 INICIALIZAÇÃO
 =============================== */
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
 carregarProdutos()
 
-document
-.getElementById("busca")
-?.addEventListener("input",filtrarBusca)
+const campoBusca=document.getElementById("busca")
 
+if(campoBusca){
+campoBusca.addEventListener("input",filtrarBusca)
 }
-)
+
+})
