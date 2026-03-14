@@ -1,26 +1,19 @@
 let todosProdutos=[]
 let carrinho=[]
 
+
 async function carregarProdutos(){
 
-try{
-
 const res=await fetch("/api/produtos.js")
+
 todosProdutos=await res.json()
 
 renderizarProdutos(todosProdutos)
+
 renderizarMenu()
 
-}catch(e){
-
-document.getElementById("produtos").innerHTML=
-`<h2 style="color:white;text-align:center;padding:50px">
-⚠️ Catálogo indisponível
-</h2>`
-
 }
 
-}
 
 
 function filtrarBusca(){
@@ -98,6 +91,7 @@ const variacoes=p.variacoes||[]
 const v=variacoes[0]||{preco:0,estoque:0,nome:"Padrão"}
 
 const varejo=v.preco
+
 const p10=varejo*0.90
 const p12=varejo*0.88
 const p15=varejo*0.85
@@ -137,29 +131,17 @@ B2B: R$ ${p10.toFixed(2)}
 </div>
 
 <div class="estoque-info">
+
 Estoque:
 <span id="estoque-num-${index}">
 ${v.estoque}
 </span>
+
+${v.estoque<=5 && v.estoque>0
+?`<span style="color:#f59e0b;">⚠ Últimas unidades</span>`
+:""}
+
 </div>
-
-${variacoes.length>1?`
-
-<select id="var-${index}"
-onchange="atualizarEstoqueVisivel(${index})"
-class="select-variacao">
-
-${variacoes.map(v=>
-
-`<option value="${v.nome}|${v.preco}|${v.estoque}">
-${v.nome}
-</option>`
-
-).join("")}
-
-</select>
-
-`:""}
 
 
 <div class="controle-qtd">
@@ -176,12 +158,12 @@ value="0"
 readonly>
 
 <button class="btn-qtd"
-onclick="ajustarQtd(${index},'+')">+</button>
+onclick="ajustarQtd(${index},'+',${v.estoque})">+</button>
 
 </div>
 
 <button class="btn-add"
-onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
+onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',${v.estoque},this)">
 🛒 Adicionar
 </button>
 
@@ -197,18 +179,7 @@ onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
 
 
 
-function atualizarEstoqueVisivel(idx){
-
-const select=document.getElementById(`var-${idx}`)
-const [, , estoque]=select.value.split("|")
-
-document.getElementById(`estoque-num-${idx}`).innerText=estoque
-
-}
-
-
-
-function adicionar(idx,nome,botao){
+function adicionar(idx,nome,estoque,botao){
 
 const qtd=parseInt(
 document.getElementById(`qtd-${idx}`).value
@@ -216,42 +187,40 @@ document.getElementById(`qtd-${idx}`).value
 
 if(qtd<=0) return alert("Selecione quantidade")
 
-const select=document.getElementById(`var-${idx}`)
+if(qtd>estoque){
 
-let preco
-let variacao
+alert("⚠ Estoque insuficiente")
 
-if(select){
-
-const [v,p]=select.value.split("|")
-
-variacao=v
-preco=parseFloat(p)
-
-}else{
-
-const v=todosProdutos[idx].variacoes[0]
-
-variacao=v.nome
-preco=v.preco
+return
 
 }
 
+const v=todosProdutos[idx].variacoes[0]
+
 const existente=carrinho.find(
-i=>i.name===nome && i.var===variacao
+i=>i.name===nome
 )
 
 if(existente){
+
+if(existente.qtd+qtd>estoque){
+
+alert("⚠ Estoque insuficiente")
+
+return
+
+}
 
 existente.qtd+=qtd
 
 }else{
 
 carrinho.push({
+
 name:nome,
-var:variacao,
-preco:preco,
+preco:v.preco,
 qtd:qtd
+
 })
 
 }
@@ -278,6 +247,26 @@ botao.innerHTML=original
 botao.style.background=""
 
 },1000)
+
+}
+
+}
+
+
+
+function ajustarQtd(idx,op,estoque){
+
+const input=document.getElementById(`qtd-${idx}`)
+
+let v=parseInt(input.value)
+
+if(op==="+" && v<estoque){
+
+input.value=v+1
+
+}else if(op==="-"){
+
+input.value=Math.max(0,v-1)
 
 }
 
@@ -335,15 +324,7 @@ style="width:${progresso}%">
 
 </div>
 
-<div class="info-valores">
-
-<p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
-
-<p>Desconto aplicado: ${desconto}%</p>
-
 <h2>Total: R$ ${total.toFixed(2)}</h2>
-
-</div>
 
 `
 
@@ -353,7 +334,7 @@ carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
 
-<span>${i.qtd}x ${i.name} (${i.var})</span>
+<span>${i.qtd}x ${i.name}</span>
 
 <button onclick="removerItem(${idx})">
 ✕
@@ -385,6 +366,7 @@ const v=document.getElementById(id)?.value.trim()
 if(!v){
 
 alert("Preencha todos os campos")
+
 return false
 
 }
@@ -408,6 +390,7 @@ const subtotal=carrinho.reduce(
 if(subtotal<200){
 
 alert("Pedido mínimo R$200")
+
 return false
 
 }
@@ -425,7 +408,7 @@ if(!podeEnviarPedido()) return
 let msg="Pedido Crazy Fantasy\n\n"
 
 carrinho.forEach(i=>{
-msg+=`${i.qtd}x ${i.name} (${i.var})\n`
+msg+=`${i.qtd}x ${i.name}\n`
 })
 
 window.open(
@@ -436,31 +419,70 @@ window.open(
 
 
 
+function gerarPDF(){
+
+if(!podeEnviarPedido()) return
+
+const {jsPDF}=window.jspdf
+
+const doc=new jsPDF()
+
+let y=20
+
+doc.text("Pedido Crazy Fantasy",20,y)
+
+y+=10
+
+carrinho.forEach(i=>{
+
+doc.text(`${i.qtd}x ${i.name}`,20,y)
+
+y+=8
+
+})
+
+doc.save("pedido.pdf")
+
+}
+
+
+
+function enviarEmail(){
+
+if(!podeEnviarPedido()) return
+
+let corpo="Pedido Crazy Fantasy\n\n"
+
+carrinho.forEach(i=>{
+corpo+=`${i.qtd}x ${i.name}\n`
+})
+
+window.location.href=
+`mailto:pedidos@crazyfantasy.com.br?subject=Pedido&body=${encodeURIComponent(corpo)}`
+
+}
+
+
+
 function removerItem(i){
 
 carrinho.splice(i,1)
+
 atualizarInterface()
 
 }
+
+
 
 function limparCarrinho(){
 
 if(confirm("Limpar carrinho?")){
 
 carrinho=[]
+
 atualizarInterface()
 
 }
-
-}
-
-function ajustarQtd(idx,op){
-
-const input=document.getElementById(`qtd-${idx}`)
-
-let v=parseInt(input.value)
-
-input.value=op==="+"?v+1:Math.max(0,v-1)
 
 }
 
@@ -476,12 +498,28 @@ document
 
 
 
+function toggleMenuEnvio(){
+
+const menu=document.getElementById("menu-envio-opcoes")
+
+menu.style.display=
+menu.style.display==="flex"
+?"none"
+:"flex"
+
+}
+
+
+
 function abrirModal(src){
 
 document.getElementById("img-ampliada").src=src
+
 document.getElementById("modal-img").style.display="flex"
 
 }
+
+
 
 function fecharModal(){
 
