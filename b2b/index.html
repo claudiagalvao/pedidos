@@ -14,49 +14,36 @@
 
 <body>
 
-<!-- BANNER -->
-
 <header class="hero-banner">
 
-<img src="banner.png" alt="Crazy Fantasy B2B" class="banner-img">
+<img src="banner.png" class="banner-img">
 
 </header>
 
-
-<!-- MENU SUPERIOR -->
 
 <nav class="nav-bar">
 
 <div id="menu-categorias" class="categorias"></div>
 
-<div class="busca-container">
-
 <input
 type="text"
 id="busca"
+class="busca-input"
 placeholder="Buscar produto..."
 onkeyup="filtrarBusca()"
 >
 
 <div class="cart-icon" onclick="toggleCarrinho()">
-
 🛒 <span id="cart-count">0</span>
-
-</div>
-
 </div>
 
 </nav>
 
 
-<!-- CONTEÚDO -->
-
 <main class="container">
 
 <h1 class="titulo-sessao">
-
 🔥 TABELA EXCLUSIVA PARA PARCEIROS
-
 </h1>
 
 <div id="produtos" class="produtos-grid"></div>
@@ -64,7 +51,6 @@ onkeyup="filtrarBusca()"
 </main>
 
 
-<!-- CARRINHO -->
 
 <div id="carrinho-drawer" class="drawer">
 
@@ -76,68 +62,38 @@ onkeyup="filtrarBusca()"
 Seu Pedido
 </h3>
 
-
-<div id="status-carrinho">
-
-<p style="text-align:center;color:#64748b;padding:20px;">
-Seu carrinho está vazio
-</p>
-
-</div>
-
+<div id="status-carrinho"></div>
 
 <div id="lista-itens-carrinho"></div>
 
-
-
-<!-- DADOS DO CLIENTE -->
 
 <div class="dados-cliente">
 
 <label>Razão Social / Nome</label>
 
-<input
-type="text"
-id="razao-social"
-placeholder="Digite aqui"
->
+<input type="text" id="razao-social">
 
 
 <div class="dados-grid">
 
 <div>
-
 <label>CNPJ / CPF</label>
-
 <input type="text" id="cnpj">
-
 </div>
 
-
 <div>
-
 <label>Inscrição Estadual</label>
-
 <input type="text" id="ie">
-
 </div>
 
-
 <div>
-
 <label>Email</label>
-
 <input type="email" id="email">
-
 </div>
 
-
 <div>
-
 <label>Telefone</label>
-
 <input type="text" id="telefone">
-
 </div>
 
 </div>
@@ -146,78 +102,53 @@ placeholder="Digite aqui"
 <label>Forma de Pagamento</label>
 
 <select id="pagamento">
-
 <option value="">Selecione</option>
 <option>PIX</option>
 <option>Boleto</option>
 <option>Cartão</option>
 <option>Transferência</option>
-
 </select>
 
 
 <label>Forma de Frete</label>
 
 <select id="frete">
-
 <option value="">Selecione</option>
 <option>Correios</option>
 <option>Transportadora</option>
 <option>Motoboy</option>
 <option>Retirada</option>
-
 </select>
 
 </div>
 
 
-
-<!-- BOTÕES -->
-
-<div class="acoes-carrinho" style="margin-top:20px;">
+<div class="acoes-carrinho">
 
 <button onclick="enviarWhatsApp()" class="btn-whatsapp-ativo">
-
 📲 Enviar Pedido
-
 </button>
-
 
 <button onclick="limparCarrinho()" class="btn-limpar">
-
 🗑️ Limpar Carrinho
-
 </button>
 
 </div>
 
-
 </div>
 
 </div>
 
 
-
-<!-- MODAL IMAGEM -->
 
 <div id="modal-img" class="modal" onclick="fecharModal()">
-
-<img id="img-ampliada" src="" alt="Produto ampliado">
-
+<img id="img-ampliada">
 </div>
 
-
-
-<!-- BIBLIOTECA PDF -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-
-
-<!-- SCRIPT PRINCIPAL -->
-
 <script src="script.js"></script>
-
 
 </body>
 </html>
