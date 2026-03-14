@@ -125,6 +125,10 @@ ${cat}
 
 
 
+/* ===============================
+FILTRO CATEGORIA
+=============================== */
+
 function filtrarCategoria(cat,btn){
 
 categoriaAtual=cat
@@ -134,6 +138,14 @@ document
 .forEach(b=>b.classList.remove("active"))
 
 btn.classList.add("active")
+
+/* limpa campo de busca ao trocar categoria */
+
+const campoBusca=document.getElementById("busca")
+
+if(campoBusca){
+campoBusca.value=""
+}
 
 filtrarBusca()
 
