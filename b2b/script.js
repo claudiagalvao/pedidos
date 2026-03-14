@@ -164,7 +164,6 @@ container.innerHTML=`
 Nenhum produto encontrado
 </p>
 `
-
 return
 }
 
@@ -258,7 +257,7 @@ value="0"
 readonly>
 
 <button class="btn-qtd"
-onclick="ajustarQtd(${index},'+')">+</button>
+onclick="ajustarQtd(${index},'+',${vPadrao.estoque})">+</button>
 
 </div>
 
@@ -292,41 +291,6 @@ if(!select) return
 const [, , estoque]=select.value.split("|")
 
 document.getElementById(`estoque-num-${idx}`).innerText=estoque
-
-}
-
-
-
-/* ===============================
-CONTROLE QTD
-=============================== */
-
-function ajustarQtd(idx,op){
-
-const input=document.getElementById(`qtd-${idx}`)
-const select=document.getElementById(`var-${idx}`)
-
-let estoque=0
-
-if(select){
-
-const [, , e]=select.value.split("|")
-estoque=parseInt(e)
-
-}else{
-
-estoque=produtosVisiveis[idx].variacoes?.[0]?.estoque||0
-
-}
-
-let v=parseInt(input.value)
-
-if(op==="+" && v<estoque){
-input.value=v+1
-}
-else if(op==="-" ){
-input.value=Math.max(0,v-1)
-}
 
 }
 
@@ -447,12 +411,12 @@ INTERFACE CARRINHO
 function atualizarInterface(){
 
 const subtotal=calcularSubtotal()
+
 const desconto=calcularDesconto(subtotal)
 
 const total=subtotal*(1-desconto/100)
-const economia=subtotal-total
 
-const progresso=Math.min((subtotal/1000)*100,100)
+const economia=subtotal-total
 
 document.getElementById("cart-count").innerText=carrinho.length
 
@@ -487,12 +451,6 @@ return`
 
 }).join("")
 
-const barra=document.querySelector(".progress-bar-fill")
-
-if(barra){
-barra.style.width=progresso+"%"
-}
-
 }
 
 
@@ -505,6 +463,21 @@ function removerItem(i){
 carrinho.splice(i,1)
 salvarCarrinho()
 atualizarInterface()
+}
+
+function ajustarQtd(idx,op,estoque){
+
+const input=document.getElementById(`qtd-${idx}`)
+
+let v=parseInt(input.value)
+
+if(op==="+" && v<estoque){
+input.value=v+1
+}
+else if(op==="-" ){
+input.value=Math.max(0,v-1)
+}
+
 }
 
 function toggleCarrinho(){
