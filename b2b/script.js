@@ -5,32 +5,37 @@ let carrinho = [];
 CARREGAR PRODUTOS
 ========================================= */
 
-async function carregarProdutos(){
+async function carregarProdutos() {
 
-try{
+    try {
 
-const res = await fetch('../api/produtos.js');
+        const res = await fetch("/api/produtos.js");
 
-if(!res.ok) throw new Error("Erro ao carregar produtos");
+        const data = await res.text();
 
-todosProdutos = await res.json();
+        todosProdutos = JSON.parse(data);
 
-renderizarProdutos(todosProdutos);
-renderizarMenu();
+        renderizarProdutos(todosProdutos);
 
-}catch(err){
+        renderizarMenu();
 
-console.error(err);
+    } catch (err) {
 
-document.getElementById("produtos").innerHTML=
-`<h2 style="color:white;text-align:center;padding:50px">
-⚠️ Catálogo indisponível
-</h2>`;
+        console.error("Erro ao carregar produtos:", err);
+
+        const container = document.getElementById("produtos");
+
+        if(container){
+
+            container.innerHTML = `
+            <h2 style="color:white;text-align:center;padding:50px">
+            ⚠️ Catálogo indisponível
+            </h2>`;
+        }
+
+    }
 
 }
-
-}
-
 
 /* =========================================
 RENDER PRODUTOS
