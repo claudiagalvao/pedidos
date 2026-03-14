@@ -1,12 +1,12 @@
-let todosProdutos = []
-let carrinho = []
+let todosProdutos=[]
+let carrinho=[]
 
 
 async function carregarProdutos(){
 
-const res = await fetch("/api/produtos.js")
+const res=await fetch("/api/produtos.js")
 
-todosProdutos = await res.json()
+todosProdutos=await res.json()
 
 renderizarProdutos(todosProdutos)
 
@@ -16,9 +16,13 @@ renderizarMenu()
 
 
 
+/* ===============================
+BUSCA
+=============================== */
+
 function filtrarBusca(){
 
-const termo = document
+const termo=document
 .getElementById("busca")
 .value
 .toLowerCase()
@@ -35,16 +39,20 @@ p.name.toLowerCase().includes(termo)
 
 
 
+/* ===============================
+MENU
+=============================== */
+
 function renderizarMenu(){
 
-const menu = document.getElementById("menu-categorias")
+const menu=document.getElementById("menu-categorias")
 
-const categorias = [
+const categorias=[
 "Todos",
 ...new Set(todosProdutos.map(p=>p.categoria))
 ]
 
-menu.innerHTML = categorias.map(cat=>`
+menu.innerHTML=categorias.map(cat=>`
 
 <button class="cat-btn"
 onclick="filtrarCategoria('${cat}',this)">
@@ -81,21 +89,27 @@ todosProdutos.filter(p=>p.categoria===cat)
 
 
 
+/* ===============================
+PRODUTOS
+=============================== */
+
 function renderizarProdutos(lista){
 
-const container = document.getElementById("produtos")
+const container=document.getElementById("produtos")
 
-container.innerHTML = lista.map((p,index)=>{
+container.innerHTML=lista.map((p,index)=>{
 
-const variacoes = p.variacoes || []
-const vPadrao = variacoes[0] || {preco:0,estoque:0,nome:"Padrão"}
+const variacoes=p.variacoes||[]
 
-const varejo = vPadrao.preco
-const p10 = varejo * 0.90
-const p12 = varejo * 0.88
-const p15 = varejo * 0.85
+const vPadrao=variacoes[0]||{preco:0,estoque:0,nome:"Padrão"}
 
-return `
+const varejo=vPadrao.preco
+
+const p10=varejo*0.90
+const p12=varejo*0.88
+const p15=varejo*0.85
+
+return`
 
 <div class="produto-card">
 
@@ -139,7 +153,7 @@ ${vPadrao.estoque}
 </div>
 
 
-${variacoes.length > 1 ? `
+${variacoes.length>1?`
 
 <select id="var-${index}"
 onchange="atualizarEstoqueVisivel(${index})"
@@ -155,7 +169,7 @@ ${v.nome}
 
 </select>
 
-` : ""}
+`:""}
 
 
 
@@ -194,26 +208,35 @@ onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
 
 
 
+/* ===============================
+VARIAÇÃO
+=============================== */
+
 function atualizarEstoqueVisivel(idx){
 
-const select = document.getElementById(`var-${idx}`)
+const select=document.getElementById(`var-${idx}`)
 
 if(!select) return
 
-const [, , estoque] = select.value.split("|")
+const [, , estoque]=select.value.split("|")
 
-document.getElementById(`estoque-num-${idx}`).innerText = estoque
+document.getElementById(`estoque-num-${idx}`).innerText=estoque
 
 }
 
 
 
+/* ===============================
+CARRINHO
+=============================== */
+
 function adicionar(idx,nome,botao){
 
-const input = document.getElementById(`qtd-${idx}`)
-const select = document.getElementById(`var-${idx}`)
+const input=document.getElementById(`qtd-${idx}`)
 
-const qtd = parseInt(input.value)
+const select=document.getElementById(`var-${idx}`)
+
+const qtd=parseInt(input.value)
 
 if(qtd<=0) return alert("Selecione quantidade")
 
@@ -223,23 +246,23 @@ let estoque
 
 if(select){
 
-const [v,p,e] = select.value.split("|")
+const [v,p,e]=select.value.split("|")
 
-variacao = v
-preco = parseFloat(p)
-estoque = parseInt(e)
+variacao=v
+preco=parseFloat(p)
+estoque=parseInt(e)
 
 }else{
 
-const v = todosProdutos[idx].variacoes[0]
+const v=todosProdutos[idx].variacoes[0]
 
-variacao = v.nome
-preco = v.preco
-estoque = v.estoque
+variacao=v.nome
+preco=v.preco
+estoque=v.estoque
 
 }
 
-if(qtd > estoque){
+if(qtd>estoque){
 
 alert("⚠ Estoque insuficiente")
 
@@ -247,13 +270,13 @@ return
 
 }
 
-const existente = carrinho.find(
+const existente=carrinho.find(
 i=>i.name===nome && i.var===variacao
 )
 
 if(existente){
 
-if(existente.qtd + qtd > estoque){
+if(existente.qtd+qtd>estoque){
 
 alert("⚠ Estoque insuficiente")
 
@@ -261,7 +284,7 @@ return
 
 }
 
-existente.qtd += qtd
+existente.qtd+=qtd
 
 }else{
 
@@ -274,7 +297,7 @@ qtd:qtd
 
 }
 
-input.value = 0
+input.value=0
 
 atualizarInterface()
 
@@ -283,17 +306,18 @@ document
 .classList.add("open")
 
 
+
 if(botao){
 
-const original = botao.innerHTML
+const original=botao.innerHTML
 
-botao.innerHTML = "✔ Adicionado"
-botao.style.background = "#22c55e"
+botao.innerHTML="✔ Adicionado"
+botao.style.background="#22c55e"
 
 setTimeout(()=>{
 
-botao.innerHTML = original
-botao.style.background = ""
+botao.innerHTML=original
+botao.style.background=""
 
 },1000)
 
@@ -303,44 +327,50 @@ botao.style.background = ""
 
 
 
-function ajustarQtd(idx,op,estoque){
-
-const input = document.getElementById(`qtd-${idx}`)
-
-let v = parseInt(input.value)
-
-if(op==="+" && v < estoque){
-
-input.value = v + 1
-
-}else if(op==="-" ){
-
-input.value = Math.max(0,v-1)
-
-}
-
-}
-
-
+/* ===============================
+INTERFACE DO CARRINHO
+=============================== */
 
 function atualizarInterface(){
 
-const subtotal = carrinho.reduce(
+const subtotal=carrinho.reduce(
 (a,i)=>a+(i.preco*i.qtd),0
 )
 
-let desconto = 10
+let desconto=10
 
-if(subtotal>=1000) desconto = 15
-else if(subtotal>=500) desconto = 12
+if(subtotal>=1000) desconto=15
+else if(subtotal>=500) desconto=12
 
-const total = subtotal*(1-desconto/100)
+const total=subtotal*(1-desconto/100)
 
-const progresso = Math.min((subtotal/1000)*100,100)
+const economia=subtotal-total
 
-document.getElementById("cart-count").innerText = carrinho.length
+const progresso=Math.min((subtotal/1000)*100,100)
 
-document.getElementById("status-carrinho").innerHTML = `
+
+
+let incentivo=""
+
+if(subtotal<500){
+
+incentivo=`🔥 Faltam R$ ${(500-subtotal).toFixed(2)} para ganhar 12% OFF`
+
+}
+
+else if(subtotal<1000){
+
+incentivo=`💎 Faltam R$ ${(1000-subtotal).toFixed(2)} para ganhar 15% OFF`
+
+}
+
+
+
+document.getElementById("cart-count").innerText=carrinho.length
+
+
+
+document.getElementById("status-carrinho").innerHTML=`
 
 <div class="progress-container">
 
@@ -373,17 +403,46 @@ style="width:${progresso}%">
 
 </div>
 
+<div class="info-valores">
+
+<p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
+
+<p>Desconto aplicado: ${desconto}%</p>
+
+<p style="color:#22c55e;font-weight:bold;">
+Economia: R$ ${economia.toFixed(2)}
+</p>
+
 <h2>Total: R$ ${total.toFixed(2)}</h2>
+
+${incentivo?`<p style="color:#fbbf24;">${incentivo}</p>`:""}
+
+</div>
 
 `
 
-document.getElementById("lista-itens-carrinho").innerHTML =
 
-carrinho.map((i,idx)=>`
+
+document.getElementById("lista-itens-carrinho").innerHTML=
+
+carrinho.map((i,idx)=>{
+
+const precoCheio=i.preco
+const precoDesc=i.preco*(1-desconto/100)
+
+return`
 
 <div class="item-carrinho">
 
-<span>${i.qtd}x ${i.name} (${i.var})</span>
+<span>${i.qtd}x ${i.name}</span>
+
+<div class="item-preco">
+
+<del>R$ ${precoCheio.toFixed(2)}</del>
+
+<strong>R$ ${precoDesc.toFixed(2)}</strong>
+
+</div>
 
 <button onclick="removerItem(${idx})">
 ✕
@@ -391,11 +450,17 @@ carrinho.map((i,idx)=>`
 
 </div>
 
-`).join("")
+`
+
+}).join("")
 
 }
 
 
+
+/* ===============================
+FORMULÁRIO
+=============================== */
 
 function validarFormulario(){
 
@@ -415,6 +480,7 @@ const v=document.getElementById(id)?.value.trim()
 if(!v){
 
 alert("Preencha todos os campos")
+
 return false
 
 }
@@ -449,6 +515,10 @@ return true
 
 
 
+/* ===============================
+ENVIO
+=============================== */
+
 function enviarWhatsApp(){
 
 if(!podeEnviarPedido()) return
@@ -456,7 +526,7 @@ if(!podeEnviarPedido()) return
 let msg="Pedido Crazy Fantasy\n\n"
 
 carrinho.forEach(i=>{
-msg+=`${i.qtd}x ${i.name} (${i.var})\n`
+msg+=`${i.qtd}x ${i.name}\n`
 })
 
 window.open(
@@ -483,7 +553,7 @@ y+=10
 
 carrinho.forEach(i=>{
 
-doc.text(`${i.qtd}x ${i.name} (${i.var})`,20,y)
+doc.text(`${i.qtd}x ${i.name}`,20,y)
 
 y+=8
 
@@ -502,7 +572,7 @@ if(!podeEnviarPedido()) return
 let corpo="Pedido Crazy Fantasy\n\n"
 
 carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name} (${i.var})\n`
+corpo+=`${i.qtd}x ${i.name}\n`
 })
 
 window.location.href=
@@ -511,6 +581,10 @@ window.location.href=
 }
 
 
+
+/* ===============================
+UTILIDADES
+=============================== */
 
 function removerItem(i){
 
@@ -536,6 +610,28 @@ atualizarInterface()
 
 
 
+function ajustarQtd(idx,op,estoque){
+
+const input=document.getElementById(`qtd-${idx}`)
+
+let v=parseInt(input.value)
+
+if(op==="+" && v<estoque){
+
+input.value=v+1
+
+}
+
+else if(op==="-" ){
+
+input.value=Math.max(0,v-1)
+
+}
+
+}
+
+
+
 function toggleCarrinho(){
 
 document
@@ -550,7 +646,7 @@ function toggleMenuEnvio(){
 
 const menu=document.getElementById("menu-envio-opcoes")
 
-menu.style.display =
+menu.style.display=
 menu.style.display==="flex"
 ?"none"
 :"flex"
