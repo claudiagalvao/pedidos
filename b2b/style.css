@@ -768,3 +768,69 @@ border-radius:8px;
 font-size:0.85rem;
 width:200px;
 }
+
+
+
+
+/* RODAPÉ */
+
+.footer-crazy{
+background:#020617;
+border-top:2px solid #ff00ff;
+margin-top:60px;
+color:#cbd5f5;
+}
+
+.footer-container{
+max-width:1200px;
+margin:auto;
+padding:40px 20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:30px;
+}
+
+.footer-col h3{
+color:white;
+font-size:20px;
+margin-bottom:10px;
+}
+
+.footer-col h4{
+color:#38bdf8;
+margin-bottom:10px;
+}
+
+.footer-col p{
+font-size:14px;
+line-height:1.6;
+}
+
+.footer-col ul{
+padding-left:16px;
+font-size:14px;
+}
+
+.social-links{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.social-links a{
+color:#cbd5f5;
+text-decoration:none;
+font-size:14px;
+}
+
+.social-links a:hover{
+color:#38bdf8;
+}
+
+.footer-bottom{
+text-align:center;
+padding:15px;
+border-top:1px solid #1e293b;
+font-size:12px;
+color:#64748b;
+}
