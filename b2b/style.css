@@ -756,3 +756,15 @@ font-weight:bold;
 .btn-add:hover{
 background:#2563eb;
 }
+
+
+
+.busca-input{
+background:#1e293b;
+border:1px solid #334155;
+color:white;
+padding:8px 12px;
+border-radius:8px;
+font-size:0.85rem;
+width:200px;
+}
