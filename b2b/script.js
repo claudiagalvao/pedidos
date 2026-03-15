@@ -216,7 +216,7 @@ input.value=0;
 salvarCarrinho();
 atualizarInterface();
 
-/* abrir carrinho */
+/* abrir carrinho automaticamente */
 
 const drawer = document.getElementById("carrinho-drawer");
 
@@ -285,16 +285,16 @@ if(barra){
 barra.style.width = Math.min((subtotal/1000)*100,100)+"%";
 
 if(subtotal<200)
-feedback.innerHTML=`🚚 Faltam ${(200-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para atingir o pedido mínimo`;
+feedback.innerHTML=`🚚 Faltam ${(200-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para o pedido mínimo`;
 
 else if(subtotal<500)
-feedback.innerHTML=`🔥 Faltam ${(500-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para ganhar 12% OFF`;
+feedback.innerHTML=`🔥 Faltam ${(500-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 12% OFF`;
 
 else if(subtotal<1000)
-feedback.innerHTML=`💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para ganhar 15% OFF`;
+feedback.innerHTML=`💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 15% OFF`;
 
 else
-feedback.innerHTML=`💎 Desconto máximo atingido!`;
+feedback.innerHTML=`💎 Desconto máximo atingido`;
 
 }
 
@@ -316,33 +316,7 @@ carrinho.map((i,idx)=>`
 
 </div>
 
-`).join("")
-
-+
-
-(carrinho.length ?
-
-`
-
-<div class="info-valores">
-
-<div class="total-varejo">
-De ${subtotal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-</div>
-
-<div class="total-b2b">
-${totalB2B.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-</div>
-
-<div class="economia">
-Economia ${economia.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-</div>
-
-</div>
-
-`
-
-:"");
+`).join("");
 
 }
 
@@ -360,28 +334,8 @@ atualizarInterface();
 }
 
 /* ===============================
-LIMPAR
+MODAL
 =============================== */
-
-function limparCarrinho(){
-
-if(confirm("Limpar pedido?")){
-
-carrinho=[];
-salvarCarrinho();
-atualizarInterface();
-
-}
-
-}
-
-/* ===============================
-UI
-=============================== */
-
-function toggleCarrinho(){
-document.getElementById("carrinho-drawer").classList.toggle("open");
-}
 
 function abrirModal(src){
 document.getElementById("img-ampliada").src=src;
@@ -392,11 +346,67 @@ function fecharModal(){
 document.getElementById("modal-img").style.display="none";
 }
 
+/* ===============================
+MENU
+=============================== */
+
+function toggleCarrinho(){
+document.getElementById("carrinho-drawer").classList.toggle("open");
+}
+
 function toggleMenuEnvio(){
 
 const m=document.getElementById("menu-envio-opcoes");
 
 m.style.display=(m.style.display==="flex")?"none":"flex";
+
+}
+
+/* ===============================
+BUSCA
+=============================== */
+
+function filtrarBusca(){
+
+const t=document.getElementById("busca").value.toLowerCase();
+
+produtosVisiveis=todosProdutos.filter(p=>p.name.toLowerCase().includes(t));
+
+renderizarProdutos(produtosVisiveis);
+
+}
+
+/* ===============================
+CATEGORIAS
+=============================== */
+
+function renderizarMenu(){
+
+const m=document.getElementById("menu-categorias");
+
+const c=["Todos",...new Set(todosProdutos.map(p=>p.categoria))];
+
+m.innerHTML=c.map(cat=>`<button class="cat-btn" onclick="filtrarCategoria('${cat}')">${cat}</button>`).join("");
+
+}
+
+function filtrarCategoria(cat){
+
+categoriaAtual=cat;
+
+produtosVisiveis=cat==="Todos"
+?todosProdutos
+:todosProdutos.filter(p=>p.categoria===cat);
+
+renderizarProdutos(produtosVisiveis);
+
+}
+
+function atualizarEstoqueVisivel(idx){
+
+const s=document.getElementById(`var-${idx}`);
+
+document.getElementById(`estoque-num-${idx}`).innerText=s.value.split("|")[2];
 
 }
 
