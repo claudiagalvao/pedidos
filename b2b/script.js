@@ -216,7 +216,7 @@ input.value=0;
 salvarCarrinho();
 atualizarInterface();
 
-/* ABRIR CARRINHO AUTOMATICAMENTE */
+/* abrir carrinho */
 
 const drawer = document.getElementById("carrinho-drawer");
 
@@ -224,7 +224,7 @@ if(!drawer.classList.contains("open")){
 drawer.classList.add("open");
 }
 
-/* FEEDBACK VISUAL */
+/* feedback botão */
 
 if(btn){
 
@@ -265,6 +265,16 @@ const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
 
 document.getElementById("cart-count").innerText=totalItens;
 
+/* GAMIFICAÇÃO */
+
+const stepMin = document.getElementById("step-minimo");
+const step12 = document.getElementById("step-12");
+const step15 = document.getElementById("step-15");
+
+if(stepMin) stepMin.classList.toggle("active", subtotal>=200);
+if(step12) step12.classList.toggle("active", subtotal>=500);
+if(step15) step15.classList.toggle("active", subtotal>=1000);
+
 /* BARRA */
 
 const barra = document.getElementById("progress-bar");
@@ -275,16 +285,16 @@ if(barra){
 barra.style.width = Math.min((subtotal/1000)*100,100)+"%";
 
 if(subtotal<200)
-feedback.innerHTML=`⚠ Faltam ${(200-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para o mínimo`;
+feedback.innerHTML=`🚚 Faltam ${(200-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para atingir o pedido mínimo`;
 
 else if(subtotal<500)
-feedback.innerHTML=`🔥 Faltam ${(500-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 12% OFF`;
+feedback.innerHTML=`🔥 Faltam ${(500-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para ganhar 12% OFF`;
 
 else if(subtotal<1000)
-feedback.innerHTML=`💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 15% OFF`;
+feedback.innerHTML=`💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para ganhar 15% OFF`;
 
 else
-feedback.innerHTML=`💎 Desconto máximo atingido`;
+feedback.innerHTML=`💎 Desconto máximo atingido!`;
 
 }
 
@@ -366,131 +376,6 @@ atualizarInterface();
 }
 
 /* ===============================
-FORMULÁRIO
-=============================== */
-
-function validarFormulario(){
-
-const razao = document.getElementById("razao-social").value.trim();
-const cnpj = document.getElementById("cnpj").value.trim();
-const email = document.getElementById("email").value.trim();
-const telefone = document.getElementById("telefone").value.trim();
-const pagamento = document.getElementById("pagamento").value;
-const frete = document.getElementById("frete").value;
-
-if(!razao || !cnpj || !email || !telefone || !pagamento || !frete){
-
-alert("Preencha todos os dados de faturamento");
-
-return false;
-
-}
-
-return true;
-
-}
-
-/* ===============================
-WHATSAPP
-=============================== */
-
-function enviarWhatsApp(){
-
-const subtotal = carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
-
-if(carrinho.length===0){
-alert("Carrinho vazio");
-return;
-}
-
-if(subtotal<200){
-alert("Pedido mínimo R$200");
-return;
-}
-
-if(!validarFormulario()) return;
-
-let msg=`*Pedido Crazy Fantasy B2B*%0A`;
-
-carrinho.forEach(i=>{
-msg+=`• ${i.qtd}x ${i.name} (${i.var})%0A`;
-});
-
-window.open(`https://wa.me/5519992850208?text=${msg}`,"_blank");
-
-}
-
-/* ===============================
-EMAIL
-=============================== */
-
-function enviarEmail(){
-
-const subtotal = carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
-
-if(carrinho.length===0){
-alert("Carrinho vazio");
-return;
-}
-
-if(subtotal<200){
-alert("Pedido mínimo R$200");
-return;
-}
-
-if(!validarFormulario()) return;
-
-const emailCliente = document.getElementById("email").value;
-
-let corpo=`Pedido Crazy Fantasy B2B\n\n`;
-
-carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name} (${i.var})\n`;
-});
-
-window.location.href=
-`mailto:lojacrazyfantasy@hotmail.com?cc=${emailCliente}&bcc=claus.galvao@hotmail.com&subject=Pedido Crazy Fantasy B2B&body=${encodeURIComponent(corpo)}`;
-
-}
-
-/* ===============================
-PDF
-=============================== */
-
-function gerarPDF(){
-
-const subtotal = carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
-
-if(carrinho.length===0){
-alert("Carrinho vazio");
-return;
-}
-
-if(subtotal<200){
-alert("Pedido mínimo R$200");
-return;
-}
-
-if(!validarFormulario()) return;
-
-const { jsPDF } = window.jspdf;
-
-const doc = new jsPDF();
-
-doc.text("Pedido Crazy Fantasy B2B",10,10);
-
-let y=30;
-
-carrinho.forEach(i=>{
-doc.text(`${i.qtd}x ${i.name} (${i.var})`,10,y);
-y+=10;
-});
-
-doc.save("pedido.pdf");
-
-}
-
-/* ===============================
 UI
 =============================== */
 
@@ -512,54 +397,6 @@ function toggleMenuEnvio(){
 const m=document.getElementById("menu-envio-opcoes");
 
 m.style.display=(m.style.display==="flex")?"none":"flex";
-
-}
-
-/* ===============================
-BUSCA
-=============================== */
-
-function filtrarBusca(){
-
-const t=document.getElementById("busca").value.toLowerCase();
-
-produtosVisiveis=todosProdutos.filter(p=>p.name.toLowerCase().includes(t));
-
-renderizarProdutos(produtosVisiveis);
-
-}
-
-/* ===============================
-CATEGORIAS
-=============================== */
-
-function renderizarMenu(){
-
-const m=document.getElementById("menu-categorias");
-
-const c=["Todos",...new Set(todosProdutos.map(p=>p.categoria))];
-
-m.innerHTML=c.map(cat=>`<button class="cat-btn" onclick="filtrarCategoria('${cat}')">${cat}</button>`).join("");
-
-}
-
-function filtrarCategoria(cat){
-
-categoriaAtual=cat;
-
-produtosVisiveis=cat==="Todos"
-?todosProdutos
-:todosProdutos.filter(p=>p.categoria===cat);
-
-renderizarProdutos(produtosVisiveis);
-
-}
-
-function atualizarEstoqueVisivel(idx){
-
-const s=document.getElementById(`var-${idx}`);
-
-document.getElementById(`estoque-num-${idx}`).innerText=s.value.split("|")[2];
 
 }
 
