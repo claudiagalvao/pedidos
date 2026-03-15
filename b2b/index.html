@@ -1,14 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - B2B Portal</title>
+    <title>Crazy Fantasy - B2B</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="hero-banner">
-        <img src="banner.png" class="banner-img" alt="Crazy Fantasy">
+        <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
     </header>
 
     <nav class="nav-bar">
@@ -27,7 +28,7 @@
     <div id="carrinho-drawer" class="drawer">
         <div class="drawer-content">
             <span class="close-btn" onclick="toggleCarrinho()">×</span>
-            <h3 class="drawer-title">Seu Pedido</h3>
+            <h3 style="color:white;margin-bottom:20px;">Seu Pedido</h3>
 
             <div id="status-carrinho">
                 <div class="progress-container">
@@ -39,43 +40,27 @@
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" id="progress-bar"></div>
                     </div>
-                    <div id="feedback-progresso"></div>
+                    <div id="feedback-progresso" style="font-size: 11px; margin-top: 8px; text-align: center; color: #94a3b8;"></div>
                 </div>
             </div>
 
             <div id="lista-itens-carrinho"></div>
-            
-            <div id="resumo-valores-container"></div>
 
-            <div class="secao-faturamento">
-                <h4 class="titulo-faturamento">Dados para faturamento</h4>
-                
-                <div class="campo-grupo">
-                    <label>Razão Social / Nome</label>
-                    <input type="text" id="razao-social" placeholder="Ex: Galvão Artigos para Festas">
+            <hr class="divisor-carrinho">
+            <h4 class="titulo-faturamento">Dados para faturamento:</h4>
+
+            <div class="dados-cliente">
+                <label>Razão Social / Nome</label>
+                <input type="text" id="razao-social">
+                <div class="dados-grid">
+                    <div><label>CNPJ / CPF</label><input type="text" id="cnpj"></div>
+                    <div><label>Email</label><input type="email" id="email"></div>
+                    <div><label>Telefone</label><input type="text" id="telefone"></div>
+                    <div><label>I.E.</label><input type="text" id="ie"></div>
                 </div>
                 
                 <div class="dados-grid">
-                    <div class="campo-grupo">
-                        <label>CNPJ / CPF</label>
-                        <input type="text" id="cnpj" placeholder="00.000.000/0000-00" oninput="mascaraCNPJ(this)">
-                    </div>
-                    <div class="campo-grupo">
-                        <label>Email</label>
-                        <input type="email" id="email" placeholder="email@exemplo.com">
-                    </div>
-                    <div class="campo-grupo">
-                        <label>Telefone</label>
-                        <input type="text" id="telefone" placeholder="(00) 00000-0000" oninput="mascaraTel(this)">
-                    </div>
-                    <div class="campo-grupo">
-                        <label>I.E.</label>
-                        <input type="text" id="ie" placeholder="Inscrição Estadual">
-                    </div>
-                </div>
-                
-                <div class="dados-grid">
-                    <div class="campo-grupo">
+                    <div>
                         <label>Pagamento</label>
                         <select id="pagamento">
                             <option value="">Selecione</option>
@@ -84,35 +69,44 @@
                             <option>Cartão</option>
                         </select>
                     </div>
-                    <div class="campo-grupo">
+                    <div>
                         <label>Frete</label>
                         <select id="frete">
                             <option value="">Selecione</option>
                             <option>Correios</option>
                             <option>Transportadora</option>
-                            <option>Retirada (Valinhos)</option>
+                            <option>Retirada</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="acoes-carrinho">
-                <div class="menu-envio">
-                    <button onclick="toggleMenuEnvio()" class="btn-enviar">📤 Enviar Pedido</button>
-                    <div id="menu-envio-opcoes" class="menu-opcoes">
-                        <button onclick="enviarWhatsApp()">📲 WhatsApp</button>
-                        <button onclick="gerarPDF()">📄 Gerar PDF</button>
-                        <button onclick="enviarEmail()">✉ Email</button>
-                    </div>
+            <div class="menu-envio">
+                <button onclick="toggleMenuEnvio()" class="btn-enviar">📤 Enviar Pedido</button>
+                <div id="menu-envio-opcoes" class="menu-opcoes">
+                    <button onclick="enviarWhatsApp()">📲 Enviar via WhatsApp</button>
+                    <button onclick="gerarPDF()">📄 Gerar PDF</button>
+                    <button onclick="enviarEmail()">✉ Enviar por Email</button>
                 </div>
-                <button onclick="limparCarrinho()" class="btn-limpar">🗑️ Esvaziar Carrinho</button>
             </div>
+            <button onclick="limparCarrinho()" class="btn-limpar">🗑️ Limpar Carrinho</button>
         </div>
     </div>
 
     <div id="modal-img" class="modal" onclick="fecharModal()"><img id="img-ampliada"></div>
 
     <footer class="footer-crazy">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Crazy Fantasy</h3>
+                <p>A maior loja de fantasias premium do interior de São Paulo.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Atendimento B2B</h4>
+                <p>📍 Valinhos - SP</p>
+                <p>📲 (19) 99285-0208</p>
+            </div>
+        </div>
         <div class="footer-bottom">© 2026 Crazy Fantasy — Todos os direitos reservados</div>
     </footer>
 
