@@ -69,16 +69,10 @@ function renderizarProdutos(lista) {
 function ajustarQtd(idx, op) {
     const input = document.getElementById(`qtd-${idx}`);
     const select = document.getElementById(`var-${idx}`);
-    let estoqueDisponivel = 0;
-
-    if (select) {
-        estoqueDisponivel = parseInt(select.value.split("|")[2]);
-    } else {
-        estoqueDisponivel = produtosVisiveis[idx].variacoes?.[0]?.estoque || 0;
-    }
+    let estoqueMax = select ? parseInt(select.value.split("|")[2]) : (produtosVisiveis[idx].variacoes?.[0]?.estoque || 0);
 
     let v = parseInt(input.value);
-    if (op === "+" && v < estoqueDisponivel) input.value = v + 1;
+    if (op === "+" && v < estoqueMax) input.value = v + 1;
     else if (op === "-" && v > 0) input.value = v - 1;
 }
 
@@ -86,7 +80,6 @@ function adicionar(idx, nome) {
     const input = document.getElementById(`qtd-${idx}`);
     const select = document.getElementById(`var-${idx}`);
     const qtdPedida = parseInt(input.value);
-
     if (qtdPedida <= 0) return alert("Selecione a quantidade");
 
     let variacao, preco, estoqueMax;
@@ -99,11 +92,8 @@ function adicionar(idx, nome) {
     }
 
     const existente = carrinho.find(i => i.name === nome && i.var === variacao);
-    const qtdNoCarrinho = existente ? existente.qtd : 0;
-
-    // BLOQUEIO DE ESTOQUE
-    if ((qtdPedida + qtdNoCarrinho) > estoqueMax) {
-        return alert(`⚠️ Estoque insuficiente! Você já tem ${qtdNoCarrinho} no carrinho e o limite é ${estoqueMax}.`);
+    if ((qtdPedida + (existente ? existente.qtd : 0)) > estoqueMax) {
+        return alert("⚠️ Limite de estoque atingido para esta variação.");
     }
 
     if (existente) existente.qtd += qtdPedida;
@@ -112,116 +102,94 @@ function adicionar(idx, nome) {
     input.value = 0;
     salvarCarrinho();
     atualizarInterface();
-    document.getElementById("carrinho-drawer").classList.add("open");
 }
 
 function atualizarInterface() {
-    const subtotal = calcularSubtotal();
-    const desconto = calcularDesconto(subtotal);
-    const totalComDesconto = subtotal * (1 - desconto / 100);
-    const economiaGerada = subtotal - totalComDesconto;
+    const subtotal = carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0);
+    const desconto = subtotal >= 1000 ? 15 : (subtotal >= 500 ? 12 : 10);
+    const totalB2B = subtotal * (1 - desconto / 100);
+    const economia = subtotal - totalB2B;
     
     document.getElementById("cart-count").innerText = carrinho.length;
 
+    // Atualização da Barra
     const barra = document.getElementById("progress-bar");
     const feedback = document.getElementById("feedback-progresso");
-    const progresso = Math.min((subtotal / 1000) * 100, 100);
-    
     if (barra) {
-        barra.style.width = progresso + "%";
-        if (subtotal < 200) feedback.innerHTML = `Faltam <strong>R$ ${(200-subtotal).toFixed(2)}</strong> para o pedido mínimo.`;
-        else if (subtotal < 500) feedback.innerHTML = `Faltam <strong>R$ ${(500-subtotal).toFixed(2)}</strong> para 12% OFF!`;
-        else if (subtotal < 1000) feedback.innerHTML = `Faltam <strong>R$ ${(1000-subtotal).toFixed(2)}</strong> para 15% OFF!`;
+        barra.style.width = Math.min((subtotal / 1000) * 100, 100) + "%";
+        if (subtotal < 200) feedback.innerHTML = `Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo.`;
+        else if (subtotal < 500) feedback.innerHTML = `Faltam R$ ${(500-subtotal).toFixed(2)} para 12% OFF!`;
+        else if (subtotal < 1000) feedback.innerHTML = `Faltam R$ ${(1000-subtotal).toFixed(2)} para 15% OFF!`;
         else feedback.innerHTML = `💎 Desconto máximo atingido!`;
     }
 
-    // LISTAGEM E BOTÃO REMOVER
+    // Renderização da Nova Ordem de Valores
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
         <div class="item-carrinho">
             <span>${i.qtd}x ${i.name} (${i.var})</span>
             <div class="item-preco"><strong>R$ ${(i.preco * (1 - desconto/100)).toFixed(2)}</strong></div>
-            <button onclick="removerItem(${idx})" title="Remover item">✕</button>
+            <button onclick="removerItem(${idx})">✕</button>
         </div>
     `).join("") + (carrinho.length ? `
-        <div class="info-valores" style="border-top:1px solid #334155; padding-top:10px; margin-top:10px;">
-            <p>Subtotal: R$ ${subtotal.toFixed(2)}</p>
-            <p class="economia" style="color:#22c55e; font-weight:bold;">Sua Economia: R$ ${economiaGerada.toFixed(2)}</p>
-            <h3 style="color:white; margin-top:5px;">Total B2B: R$ ${totalComDesconto.toFixed(2)}</h3>
+        <div class="info-valores" style="padding-top:10px; margin-top:10px; border-top: 1px solid #334155;">
+            <p style="color: #94a3b8; margin: 0;">Total varejo: R$ ${subtotal.toFixed(2)}</p>
+            <h3 style="color: white; margin: 5px 0;">Total B2B: R$ ${totalB2B.toFixed(2)}</h3>
+            <p style="color: #22c55e; font-weight: bold; margin: 0;">Economia para parceiro: R$ ${economia.toFixed(2)}</p>
         </div>` : "");
 }
 
-function removerItem(idx) {
-    carrinho.splice(idx, 1);
-    salvarCarrinho();
-    atualizarInterface();
-}
-
-/* ===============================
-AÇÕES DE ENVIO E BUSCA
-=============================== */
-function toggleMenuEnvio() {
-    const menu = document.getElementById("menu-envio-opcoes");
-    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
-}
+function removerItem(idx) { carrinho.splice(idx, 1); salvarCarrinho(); atualizarInterface(); }
 
 function gerarPDF() {
-    if (calcularSubtotal() < 200) return alert("⚠️ Bloqueado: Pedido mínimo de R$ 200,00.");
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("CRAZY FANTASY - PEDIDO B2B", 10, 10);
+    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
     doc.text(`Cliente: ${document.getElementById("razao-social").value}`, 10, 20);
     let y = 40;
     carrinho.forEach(i => { doc.text(`${i.qtd}x ${i.name} (${i.var})`, 10, y); y += 10; });
-    doc.save("pedido-crazy.pdf");
+    doc.save("pedido.pdf");
 }
 
 function enviarWhatsApp() {
-    if (calcularSubtotal() < 200) return alert("⚠️ Bloqueado: Pedido mínimo de R$ 200,00.");
-    const msg = `*Novo Pedido Crazy Fantasy*%0A*Cliente:* ${document.getElementById("razao-social").value}%0A%0A` + 
-                carrinho.map(i => `• ${i.qtd}x ${i.name} (${i.var})`).join("%0A");
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
+    const msg = `*Pedido Crazy Fantasy*%0A*Cliente:* ${document.getElementById("razao-social").value}%0A` + carrinho.map(i => `• ${i.qtd}x ${i.name}`).join("%0A");
     window.open(`https://wa.me/5519992850208?text=${msg}`, "_blank");
 }
 
 function enviarEmail() {
-    if (calcularSubtotal() < 200) return alert("⚠️ Bloqueado: Pedido mínimo de R$ 200,00.");
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
     const corpo = carrinho.map(i => `${i.qtd}x ${i.name} (${i.var})`).join("\n");
     window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=${document.getElementById("email").value}&bcc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
 }
 
-function limparCarrinho() {
-    if (confirm("Limpar carrinho?")) { carrinho = []; salvarCarrinho(); atualizarInterface(); }
+function toggleMenuEnvio() {
+    const m = document.getElementById("menu-envio-opcoes");
+    m.style.display = (m.style.display === "flex") ? "none" : "flex";
 }
 
+function limparCarrinho() { if(confirm("Limpar pedido?")) { carrinho = []; salvarCarrinho(); atualizarInterface(); } }
+function toggleCarrinho() { document.getElementById("carrinho-drawer").classList.toggle("open"); }
+function abrirModal(src) { document.getElementById("img-ampliada").src = src; document.getElementById("modal-img").style.display = "flex"; }
+function fecharModal() { document.getElementById("modal-img").style.display = "none"; }
 function filtrarBusca() {
-    const termo = document.getElementById("busca").value.toLowerCase();
-    produtosVisiveis = todosProdutos.filter(p => p.name.toLowerCase().includes(termo));
+    const t = document.getElementById("busca").value.toLowerCase();
+    produtosVisiveis = todosProdutos.filter(p => p.name.toLowerCase().includes(t));
     renderizarProdutos(produtosVisiveis);
 }
-
 function renderizarMenu() {
-    const menu = document.getElementById("menu-categorias");
-    const cats = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
-    menu.innerHTML = cats.map(c => `<button class="cat-btn" onclick="filtrarCategoria('${c}', this)">${c}</button>`).join("");
+    const m = document.getElementById("menu-categorias");
+    const c = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
+    m.innerHTML = c.map(cat => `<button class="cat-btn" onclick="filtrarCategoria('${cat}')">${cat}</button>`).join("");
 }
-
-function filtrarCategoria(cat, btn) {
+function filtrarCategoria(cat) {
     categoriaAtual = cat;
     produtosVisiveis = cat === "Todos" ? todosProdutos : todosProdutos.filter(p => p.categoria === cat);
     renderizarProdutos(produtosVisiveis);
 }
-
-function calcularSubtotal() { return carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0); }
-function calcularDesconto(subtotal) {
-    if (subtotal >= 1000) return 15;
-    if (subtotal >= 500) return 12;
-    return 10;
-}
 function atualizarEstoqueVisivel(idx) {
-    const select = document.getElementById(`var-${idx}`);
-    if (select) document.getElementById(`estoque-num-${idx}`).innerText = select.value.split("|")[2];
+    const s = document.getElementById(`var-${idx}`);
+    document.getElementById(`estoque-num-${idx}`).innerText = s.value.split("|")[2];
 }
-function toggleCarrinho() { document.getElementById("carrinho-drawer").classList.toggle("open"); }
-function abrirModal(src) { document.getElementById("img-ampliada").src = src; document.getElementById("modal-img").style.display = "flex"; }
-function fecharModal() { document.getElementById("modal-img").style.display = "none"; }
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);
