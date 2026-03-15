@@ -333,6 +333,24 @@ atualizarInterface();
 
 }
 
+
+
+
+/* ===============================
+FORMULÁRIO
+=============================== */
+
+function validarFormulario(){
+
+const razao = document.getElementById("razao-social").value.trim();
+const cnpj = document.getElementById("cnpj").value.trim();
+const email = document.getElementById("email").value.trim();
+const telefone = document.getElementById("telefone").value.trim();
+const pagamento = document.getElementById("pagamento").value
+
+
+
+
 /* ===============================
 MODAL
 =============================== */
