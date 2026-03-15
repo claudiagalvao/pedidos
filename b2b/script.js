@@ -48,8 +48,9 @@ const salvo=localStorage.getItem("carrinhoCF")
 
 if(salvo){
 carrinho=JSON.parse(salvo)
-atualizarInterface()
 }
+
+atualizarInterface()
 
 }
 
@@ -61,11 +62,11 @@ BUSCA
 
 function filtrarBusca(){
 
-let termo=document
-.getElementById("busca")
-.value
-.toLowerCase()
-.trim()
+const campo=document.getElementById("busca")
+
+if(!campo) return
+
+let termo=campo.value.toLowerCase().trim()
 
 let lista=[...todosProdutos]
 
@@ -164,6 +165,7 @@ container.innerHTML=`
 Nenhum produto encontrado
 </p>
 `
+
 return
 }
 
@@ -183,8 +185,7 @@ return`
 
 <div class="produto-card">
 
-<img src="${p.imagem}"
-onclick="abrirModal('${p.imagem}')">
+<img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
 
 <h3>${p.name}</h3>
 
@@ -214,12 +215,10 @@ B2B: R$ ${p10.toFixed(2)}
 </div>
 
 <div class="estoque-info">
-
 Estoque:
 <span id="estoque-num-${index}">
 ${vPadrao.estoque}
 </span>
-
 </div>
 
 
@@ -230,11 +229,9 @@ onchange="atualizarEstoqueVisivel(${index})"
 class="select-variacao">
 
 ${variacoes.map(v=>`
-
 <option value="${v.nome}|${v.preco}|${v.estoque}">
 ${v.nome}
 </option>
-
 `).join("")}
 
 </select>
@@ -250,14 +247,10 @@ ${v.nome}
 <button class="btn-qtd"
 onclick="ajustarQtd(${index},'-')">−</button>
 
-<input
-class="input-qtd"
-id="qtd-${index}"
-value="0"
-readonly>
+<input class="input-qtd" id="qtd-${index}" value="0" readonly>
 
 <button class="btn-qtd"
-onclick="ajustarQtd(${index},'+',${vPadrao.estoque})">+</button>
+onclick="ajustarQtd(${index},'+')">+</button>
 
 </div>
 
@@ -291,6 +284,37 @@ if(!select) return
 const [, , estoque]=select.value.split("|")
 
 document.getElementById(`estoque-num-${idx}`).innerText=estoque
+
+}
+
+
+
+/* ===============================
+CONTROLE QTD
+=============================== */
+
+function ajustarQtd(idx,op){
+
+const input=document.getElementById(`qtd-${idx}`)
+const select=document.getElementById(`var-${idx}`)
+
+let estoque=0
+
+if(select){
+const [, , e]=select.value.split("|")
+estoque=parseInt(e)
+}else{
+estoque=produtosVisiveis[idx].variacoes?.[0]?.estoque||0
+}
+
+let v=parseInt(input.value)
+
+if(op==="+" && v<estoque){
+input.value=v+1
+}
+else if(op==="-" ){
+input.value=Math.max(0,v-1)
+}
 
 }
 
@@ -341,23 +365,9 @@ return
 const existente=carrinho.find(i=>i.name===nome && i.var===variacao)
 
 if(existente){
-
-if(existente.qtd+qtd>estoque){
-alert("⚠ Estoque insuficiente")
-return
-}
-
 existente.qtd+=qtd
-
 }else{
-
-carrinho.push({
-name:nome,
-var:variacao,
-preco:preco,
-qtd:qtd
-})
-
+carrinho.push({name:nome,var:variacao,preco:preco,qtd:qtd})
 }
 
 input.value=0
@@ -367,20 +377,6 @@ salvarCarrinho()
 atualizarInterface()
 
 document.getElementById("carrinho-drawer").classList.add("open")
-
-if(botao){
-
-const original=botao.innerHTML
-
-botao.innerHTML="✔ Adicionado"
-botao.style.background="#22c55e"
-
-setTimeout(()=>{
-botao.innerHTML=original
-botao.style.background=""
-},1000)
-
-}
 
 }
 
@@ -418,7 +414,19 @@ const total=subtotal*(1-desconto/100)
 
 const economia=subtotal-total
 
+const progresso=Math.min((subtotal/1000)*100,100)
+
 document.getElementById("cart-count").innerText=carrinho.length
+
+/* barra progresso */
+
+const barra=document.querySelector(".progress-bar-fill")
+
+if(barra){
+barra.style.width=progresso+"%"
+}
+
+/* itens carrinho */
 
 document.getElementById("lista-itens-carrinho").innerHTML=
 
@@ -441,9 +449,7 @@ return`
 
 </div>
 
-<button onclick="removerItem(${idx})">
-✕
-</button>
+<button onclick="removerItem(${idx})">✕</button>
 
 </div>
 
@@ -463,21 +469,6 @@ function removerItem(i){
 carrinho.splice(i,1)
 salvarCarrinho()
 atualizarInterface()
-}
-
-function ajustarQtd(idx,op,estoque){
-
-const input=document.getElementById(`qtd-${idx}`)
-
-let v=parseInt(input.value)
-
-if(op==="+" && v<estoque){
-input.value=v+1
-}
-else if(op==="-" ){
-input.value=Math.max(0,v-1)
-}
-
 }
 
 function toggleCarrinho(){
