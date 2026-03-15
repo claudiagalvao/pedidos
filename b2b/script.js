@@ -3,193 +3,604 @@ let produtosVisiveis = [];
 let carrinho = [];
 let categoriaAtual = "Todos";
 
-async function carregarProdutos() {
-    try {
-        const res = await fetch("/api/produtos.js");
-        todosProdutos = await res.json();
-        produtosVisiveis = [...todosProdutos];
-        carregarCarrinho();
-        renderizarMenu();
-        renderizarProdutos(produtosVisiveis);
-    } catch (e) { console.error("Erro ao carregar produtos", e); }
+/* ===============================
+CARREGAR PRODUTOS
+=============================== */
+
+async function carregarProdutos(){
+
+try{
+
+const res = await fetch("/api/produtos.js");
+
+todosProdutos = await res.json();
+
+produtosVisiveis = [...todosProdutos];
+
+carregarCarrinho();
+renderizarMenu();
+renderizarProdutos(produtosVisiveis);
+
+}catch(e){
+
+console.error("Erro ao carregar produtos",e);
+
 }
 
-function salvarCarrinho() { localStorage.setItem("carrinhoCF", JSON.stringify(carrinho)); }
-
-function carregarCarrinho() {
-    const salvo = localStorage.getItem("carrinhoCF");
-    if (salvo) { carrinho = JSON.parse(salvo); }
-    atualizarInterface();
 }
 
-function renderizarProdutos(lista) {
-    const container = document.getElementById("produtos");
-    if (!lista.length) {
-        container.innerHTML = `<p style="grid-column:1/-1;color:#94a3b8">Nenhum produto encontrado</p>`;
-        return;
-    }
+/* ===============================
+CARRINHO LOCAL STORAGE
+=============================== */
 
-    container.innerHTML = lista.map((p, index) => {
-        const variacoes = p.variacoes || [];
-        const vPadrao = variacoes[0] || { preco: 0, estoque: 0, nome: "Padrão" };
-        const varejo = vPadrao.preco;
+function salvarCarrinho(){
 
-        return `
-            <div class="produto-card">
-                <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
-                <h3>${p.name}</h3>
-                <div class="preco-container">
-                    <del>Varejo: R$ ${varejo.toFixed(2)}</del>
-                    <div class="preco-b2b">B2B: R$ ${(varejo * 0.9).toFixed(2)} <small>(10% OFF)</small></div>
-                </div>
-                <div class="tabela-progressiva">
-                    <div class="faixa-item"><span>🔥 12% OFF > R$500</span><strong>R$ ${(varejo * 0.88).toFixed(2)}</strong></div>
-                    <div class="faixa-item destaque"><span>💎 15% OFF > R$1000</span><strong>R$ ${(varejo * 0.85).toFixed(2)}</strong></div>
-                </div>
-                <div class="estoque-info">Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span></div>
+localStorage.setItem("carrinhoCF",JSON.stringify(carrinho));
 
-                ${variacoes.length > 1 ? `
-                    <select id="var-${index}" class="select-variacao" onchange="atualizarEstoqueVisivel(${index})">
-                        ${variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join("")}
-                    </select>
-                ` : ""}
-
-                <div class="controle-qtd">
-                    <div class="qtd-box">
-                        <button class="btn-qtd" onclick="ajustarQtd(${index},'-')">−</button>
-                        <input class="input-qtd" id="qtd-${index}" value="0" readonly>
-                        <button class="btn-qtd" onclick="ajustarQtd(${index},'+')">+</button>
-                    </div>
-                    <button class="btn-add" onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')">🛒 Adicionar</button>
-                </div>
-            </div>`;
-    }).join("");
 }
 
-function ajustarQtd(idx, op) {
-    const input = document.getElementById(`qtd-${idx}`);
-    const select = document.getElementById(`var-${idx}`);
-    let estoqueMax = select ? parseInt(select.value.split("|")[2]) : (produtosVisiveis[idx].variacoes?.[0]?.estoque || 0);
+function carregarCarrinho(){
 
-    let v = parseInt(input.value);
-    if (op === "+" && v < estoqueMax) input.value = v + 1;
-    else if (op === "-" && v > 0) input.value = v - 1;
+const salvo = localStorage.getItem("carrinhoCF");
+
+if(salvo){
+
+carrinho = JSON.parse(salvo);
+
 }
 
-function adicionar(idx, nome) {
-    const input = document.getElementById(`qtd-${idx}`);
-    const select = document.getElementById(`var-${idx}`);
-    const qtdPedida = parseInt(input.value);
-    if (qtdPedida <= 0) return alert("Selecione a quantidade");
+atualizarInterface();
 
-    let variacao, preco, estoqueMax;
-    if (select) {
-        const [v, p, e] = select.value.split("|");
-        variacao = v; preco = parseFloat(p); estoqueMax = parseInt(e);
-    } else {
-        const v = produtosVisiveis[idx].variacoes?.[0];
-        variacao = v.nome; preco = v.preco; estoqueMax = v.estoque;
-    }
-
-    const existente = carrinho.find(i => i.name === nome && i.var === variacao);
-    if ((qtdPedida + (existente ? existente.qtd : 0)) > estoqueMax) {
-        return alert("⚠️ Limite de estoque atingido para esta variação.");
-    }
-
-    if (existente) existente.qtd += qtdPedida;
-    else carrinho.push({ name: nome, var: variacao, preco: preco, qtd: qtdPedida });
-
-    input.value = 0;
-    salvarCarrinho();
-    atualizarInterface();
 }
 
-function atualizarInterface() {
-    const subtotal = carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0);
-    const desconto = subtotal >= 1000 ? 15 : (subtotal >= 500 ? 12 : 10);
-    const totalB2B = subtotal * (1 - desconto / 100);
-    const economia = subtotal - totalB2B;
-    
-    document.getElementById("cart-count").innerText = carrinho.length;
+/* ===============================
+RENDER PRODUTOS
+=============================== */
 
-    // Atualização da Barra
-    const barra = document.getElementById("progress-bar");
-    const feedback = document.getElementById("feedback-progresso");
-    if (barra) {
-        barra.style.width = Math.min((subtotal / 1000) * 100, 100) + "%";
-        if (subtotal < 200) feedback.innerHTML = `Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo.`;
-        else if (subtotal < 500) feedback.innerHTML = `Faltam R$ ${(500-subtotal).toFixed(2)} para 12% OFF!`;
-        else if (subtotal < 1000) feedback.innerHTML = `Faltam R$ ${(1000-subtotal).toFixed(2)} para 15% OFF!`;
-        else feedback.innerHTML = `💎 Desconto máximo atingido!`;
-    }
+function renderizarProdutos(lista){
 
-    // Renderização da Nova Ordem de Valores
-    document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
-        <div class="item-carrinho">
-            <span>${i.qtd}x ${i.name} (${i.var})</span>
-            <div class="item-preco"><strong>R$ ${(i.preco * (1 - desconto/100)).toFixed(2)}</strong></div>
-            <button onclick="removerItem(${idx})">✕</button>
-        </div>
-    `).join("") + (carrinho.length ? `
-        <div class="info-valores" style="padding-top:10px; margin-top:10px; border-top: 1px solid #334155;">
-            <p style="color: #94a3b8; margin: 0;">Total varejo: R$ ${subtotal.toFixed(2)}</p>
-            <h3 style="color: white; margin: 5px 0;">Total B2B: R$ ${totalB2B.toFixed(2)}</h3>
-            <p style="color: #22c55e; font-weight: bold; margin: 0;">Economia para parceiro: R$ ${economia.toFixed(2)}</p>
-        </div>` : "");
+const container = document.getElementById("produtos");
+
+if(!lista.length){
+
+container.innerHTML = `<p style="grid-column:1/-1;color:#94a3b8">Nenhum produto encontrado</p>`;
+
+return;
+
 }
 
-function removerItem(idx) { carrinho.splice(idx, 1); salvarCarrinho(); atualizarInterface(); }
+container.innerHTML = lista.map((p,index)=>{
 
-function gerarPDF() {
-    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
-    doc.text(`Cliente: ${document.getElementById("razao-social").value}`, 10, 20);
-    let y = 40;
-    carrinho.forEach(i => { doc.text(`${i.qtd}x ${i.name} (${i.var})`, 10, y); y += 10; });
-    doc.save("pedido.pdf");
+const variacoes = p.variacoes || [];
+
+const vPadrao = variacoes[0] || {preco:0,estoque:0,nome:"Padrão"};
+
+const varejo = vPadrao.preco;
+
+return `
+
+<div class="produto-card">
+
+<img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
+
+<h3>${p.name}</h3>
+
+<div class="preco-container">
+
+<del>Varejo: ${varejo.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</del>
+
+<div class="preco-b2b">
+
+B2B: ${(varejo*0.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+<small>(10% OFF)</small>
+
+</div>
+
+</div>
+
+<div class="tabela-progressiva">
+
+<div class="faixa-item">
+
+<span>🔥 12% OFF > R$500</span>
+
+<strong>${(varejo*0.88).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
+
+</div>
+
+<div class="faixa-item destaque">
+
+<span>💎 15% OFF > R$1000</span>
+
+<strong>${(varejo*0.85).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
+
+</div>
+
+</div>
+
+<div class="estoque-info">
+
+Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
+
+</div>
+
+${variacoes.length>1 ? `
+
+<select id="var-${index}" class="select-variacao"
+
+onchange="atualizarEstoqueVisivel(${index})">
+
+${variacoes.map(v=>
+
+`<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`
+
+).join("")}
+
+</select>
+
+` : ""}
+
+<div class="controle-qtd">
+
+<div class="qtd-box">
+
+<button class="btn-qtd"
+
+onclick="ajustarQtd(${index},'-')">−</button>
+
+<input class="input-qtd"
+
+id="qtd-${index}"
+
+value="0"
+
+readonly>
+
+<button class="btn-qtd"
+
+onclick="ajustarQtd(${index},'+')">+</button>
+
+</div>
+
+<button class="btn-add"
+
+onclick="adicionar(${index},'${p.name.replace(/'/g,"\\'")}',this)">
+
+🛒 Adicionar
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
 }
 
-function enviarWhatsApp() {
-    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
-    const msg = `*Pedido Crazy Fantasy*%0A*Cliente:* ${document.getElementById("razao-social").value}%0A` + carrinho.map(i => `• ${i.qtd}x ${i.name}`).join("%0A");
-    window.open(`https://wa.me/5519992850208?text=${msg}`, "_blank");
+/* ===============================
+QUANTIDADE
+=============================== */
+
+function ajustarQtd(idx,op){
+
+const input = document.getElementById(`qtd-${idx}`);
+
+const select = document.getElementById(`var-${idx}`);
+
+let estoqueMax = select
+
+? parseInt(select.value.split("|")[2])
+
+: (produtosVisiveis[idx].variacoes?.[0]?.estoque || 0);
+
+let v = parseInt(input.value);
+
+if(op==="+" && v<estoqueMax)
+
+input.value = v+1;
+
+else if(op==="-" && v>0)
+
+input.value = v-1;
+
 }
 
-function enviarEmail() {
-    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
-    const corpo = carrinho.map(i => `${i.qtd}x ${i.name} (${i.var})`).join("\n");
-    window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=${document.getElementById("email").value}&bcc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
+/* ===============================
+ADICIONAR PRODUTO
+=============================== */
+
+function adicionar(idx,nome,btn){
+
+const input = document.getElementById(`qtd-${idx}`);
+
+const select = document.getElementById(`var-${idx}`);
+
+const qtdPedida = parseInt(input.value);
+
+if(qtdPedida<=0)
+
+return alert("Selecione a quantidade");
+
+let variacao,preco,estoqueMax;
+
+if(select){
+
+const [v,p,e] = select.value.split("|");
+
+variacao = v;
+
+preco = parseFloat(p);
+
+estoqueMax = parseInt(e);
+
+}else{
+
+const v = produtosVisiveis[idx].variacoes?.[0];
+
+variacao = v.nome;
+
+preco = v.preco;
+
+estoqueMax = v.estoque;
+
 }
 
-function toggleMenuEnvio() {
-    const m = document.getElementById("menu-envio-opcoes");
-    m.style.display = (m.style.display === "flex") ? "none" : "flex";
+const existente = carrinho.find(
+
+i=>i.name===nome && i.var===variacao
+
+);
+
+if((qtdPedida + (existente ? existente.qtd : 0)) > estoqueMax){
+
+return alert("⚠️ Limite de estoque atingido.");
+
 }
 
-function limparCarrinho() { if(confirm("Limpar pedido?")) { carrinho = []; salvarCarrinho(); atualizarInterface(); } }
-function toggleCarrinho() { document.getElementById("carrinho-drawer").classList.toggle("open"); }
-function abrirModal(src) { document.getElementById("img-ampliada").src = src; document.getElementById("modal-img").style.display = "flex"; }
-function fecharModal() { document.getElementById("modal-img").style.display = "none"; }
-function filtrarBusca() {
-    const t = document.getElementById("busca").value.toLowerCase();
-    produtosVisiveis = todosProdutos.filter(p => p.name.toLowerCase().includes(t));
-    renderizarProdutos(produtosVisiveis);
-}
-function renderizarMenu() {
-    const m = document.getElementById("menu-categorias");
-    const c = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
-    m.innerHTML = c.map(cat => `<button class="cat-btn" onclick="filtrarCategoria('${cat}')">${cat}</button>`).join("");
-}
-function filtrarCategoria(cat) {
-    categoriaAtual = cat;
-    produtosVisiveis = cat === "Todos" ? todosProdutos : todosProdutos.filter(p => p.categoria === cat);
-    renderizarProdutos(produtosVisiveis);
-}
-function atualizarEstoqueVisivel(idx) {
-    const s = document.getElementById(`var-${idx}`);
-    document.getElementById(`estoque-num-${idx}`).innerText = s.value.split("|")[2];
+if(existente)
+
+existente.qtd += qtdPedida;
+
+else
+
+carrinho.push({
+
+name:nome,
+
+var:variacao,
+
+preco:preco,
+
+qtd:qtdPedida
+
+});
+
+input.value = 0;
+
+salvarCarrinho();
+
+atualizarInterface();
+
+/* feedback botão */
+
+if(btn){
+
+const texto = btn.innerHTML;
+
+btn.classList.add("adicionado");
+
+btn.innerHTML = "✓ Adicionado";
+
+setTimeout(()=>{
+
+btn.classList.remove("adicionado");
+
+btn.innerHTML = texto;
+
+},1000);
+
 }
 
-document.addEventListener("DOMContentLoaded", carregarProdutos);
+}
+
+/* ===============================
+ATUALIZAR INTERFACE
+=============================== */
+
+function atualizarInterface(){
+
+const subtotal = carrinho.reduce(
+
+(a,i)=>a+(i.preco*i.qtd),
+
+0
+
+);
+
+/* DESCONTO */
+
+let desconto = 0;
+
+if(subtotal>=1000)
+
+desconto=15;
+
+else if(subtotal>=500)
+
+desconto=12;
+
+else if(subtotal>=200)
+
+desconto=10;
+
+/* TOTAIS */
+
+const totalB2B = subtotal*(1-desconto/100);
+
+const economia = subtotal-totalB2B;
+
+/* CONTADOR CARRINHO */
+
+const totalItens = carrinho.reduce(
+
+(a,i)=>a+i.qtd,
+
+0
+
+);
+
+document.getElementById("cart-count").innerText = totalItens;
+
+/* BARRA PROGRESSO */
+
+const barra = document.getElementById("progress-bar");
+
+const feedback = document.getElementById("feedback-progresso");
+
+if(barra){
+
+let progresso = 0;
+
+if(subtotal<=200)
+
+progresso=(subtotal/200)*20;
+
+else if(subtotal<=500)
+
+progresso=20+((subtotal-200)/(500-200))*40;
+
+else if(subtotal<=1000)
+
+progresso=60+((subtotal-500)/(1000-500))*40;
+
+else
+
+progresso=100;
+
+barra.style.width = progresso+"%";
+
+/* FEEDBACK */
+
+if(subtotal<200)
+
+feedback.innerHTML = `⚠ Faltam ${(200-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para o pedido mínimo`;
+
+else if(subtotal<500)
+
+feedback.innerHTML = `🔥 Faltam ${(500-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 12% OFF`;
+
+else if(subtotal<1000)
+
+feedback.innerHTML = `💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} para 15% OFF`;
+
+else
+
+feedback.innerHTML = `💎 Desconto máximo atingido`;
+
+}
+
+/* LISTA CARRINHO */
+
+document.getElementById("lista-itens-carrinho").innerHTML =
+
+carrinho.map((i,idx)=>`
+
+<div class="item-carrinho">
+
+<span>${i.qtd}x ${i.name} (${i.var})</span>
+
+<div class="item-preco">
+
+<strong>${(i.preco*(1-desconto/100)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
+
+</div>
+
+<button onclick="removerItem(${idx})">✕</button>
+
+</div>
+
+`).join("")
+
++
+
+(carrinho.length ?
+
+`
+
+<div class="info-valores">
+
+<div class="total-varejo">
+
+De ${subtotal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+</div>
+
+<div class="total-b2b">
+
+${totalB2B.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+</div>
+
+<div class="economia">
+
+Economia ${economia.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+</div>
+
+</div>
+
+`
+
+:"");
+
+}
+
+/* ===============================
+REMOVER ITEM
+=============================== */
+
+function removerItem(idx){
+
+carrinho.splice(idx,1);
+
+salvarCarrinho();
+
+atualizarInterface();
+
+}
+
+/* ===============================
+LIMPAR
+=============================== */
+
+function limparCarrinho(){
+
+if(confirm("Limpar pedido?")){
+
+carrinho=[];
+
+salvarCarrinho();
+
+atualizarInterface();
+
+}
+
+}
+
+/* ===============================
+UI
+=============================== */
+
+function toggleCarrinho(){
+
+document.getElementById("carrinho-drawer")
+
+.classList.toggle("open");
+
+}
+
+function abrirModal(src){
+
+document.getElementById("img-ampliada").src = src;
+
+document.getElementById("modal-img").style.display="flex";
+
+}
+
+function fecharModal(){
+
+document.getElementById("modal-img").style.display="none";
+
+}
+
+/* ===============================
+BUSCA
+=============================== */
+
+function filtrarBusca(){
+
+const t = document
+
+.getElementById("busca")
+
+.value
+
+.toLowerCase();
+
+produtosVisiveis = todosProdutos.filter(
+
+p=>p.name.toLowerCase().includes(t)
+
+);
+
+renderizarProdutos(produtosVisiveis);
+
+}
+
+/* ===============================
+CATEGORIAS
+=============================== */
+
+function renderizarMenu(){
+
+const m = document.getElementById("menu-categorias");
+
+const c = ["Todos",
+
+...new Set(todosProdutos.map(p=>p.categoria))
+
+];
+
+m.innerHTML = c.map(cat=>
+
+`<button class="cat-btn"
+
+onclick="filtrarCategoria('${cat}')">
+
+${cat}
+
+</button>`
+
+).join("");
+
+}
+
+function filtrarCategoria(cat){
+
+categoriaAtual = cat;
+
+produtosVisiveis = cat==="Todos"
+
+? todosProdutos
+
+: todosProdutos.filter(
+
+p=>p.categoria===cat
+
+);
+
+renderizarProdutos(produtosVisiveis);
+
+}
+
+function atualizarEstoqueVisivel(idx){
+
+const s = document.getElementById(`var-${idx}`);
+
+document.getElementById(`estoque-num-${idx}`)
+
+.innerText = s.value.split("|")[2];
+
+}
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+carregarProdutos
+
+);
