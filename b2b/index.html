@@ -1,116 +1,225 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Fantasy - B2B</title>
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crazy Fantasy B2B</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-    <header class="hero-banner">
-        <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
-    </header>
 
-    <nav class="nav-bar">
-        <div id="menu-categorias" class="categorias"></div>
-        <input type="text" id="busca" class="busca-input" placeholder="Buscar produto..." onkeyup="filtrarBusca()">
-        <div class="cart-icon" onclick="toggleCarrinho()">
-            🛒 <span id="cart-count">0</span>
-        </div>
-    </nav>
+<header class="hero-banner">
+<img src="banner.png" class="banner-img">
+</header>
 
-    <main class="container">
-        <h1 class="titulo-sessao">🔥 TABELA EXCLUSIVA PARA PARCEIROS</h1>
-        <div id="produtos" class="produtos-grid"></div>
-    </main>
+<nav class="nav-bar">
 
-    <div id="carrinho-drawer" class="drawer">
-        <div class="drawer-content">
-            <span class="close-btn" onclick="toggleCarrinho()">×</span>
-            <h3 style="color:white;margin-bottom:20px;">Seu Pedido</h3>
+<div id="menu-categorias" class="categorias"></div>
 
-            <div id="status-carrinho">
-                <div class="progress-container">
-                    <div class="progress-steps">
-                        <span class="step">Mínimo</span>
-                        <span class="step">12% OFF</span>
-                        <span class="step">15% OFF</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="progress-bar"></div>
-                    </div>
-                    <div id="feedback-progresso" style="font-size: 11px; margin-top: 8px; text-align: center; color: #94a3b8;"></div>
-                </div>
-            </div>
+<input type="text"
+id="busca"
+class="busca-input"
+placeholder="Buscar produto..."
+onkeyup="filtrarBusca()">
 
-            <div id="lista-itens-carrinho"></div>
+<div class="cart-icon" onclick="toggleCarrinho()">
+🛒 <span id="cart-count">0</span>
+</div>
 
-            <hr class="divisor-carrinho">
-            <h4 class="titulo-faturamento">Dados para faturamento:</h4>
+</nav>
 
-            <div class="dados-cliente">
-                <label>Razão Social / Nome</label>
-                <input type="text" id="razao-social">
-                <div class="dados-grid">
-                    <div><label>CNPJ / CPF</label><input type="text" id="cnpj"></div>
-                    <div><label>Email</label><input type="email" id="email"></div>
-                    <div><label>Telefone</label><input type="text" id="telefone"></div>
-                    <div><label>I.E.</label><input type="text" id="ie"></div>
-                </div>
-                
-                <div class="dados-grid">
-                    <div>
-                        <label>Pagamento</label>
-                        <select id="pagamento">
-                            <option value="">Selecione</option>
-                            <option>PIX</option>
-                            <option>Boleto</option>
-                            <option>Cartão</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Frete</label>
-                        <select id="frete">
-                            <option value="">Selecione</option>
-                            <option>Correios</option>
-                            <option>Transportadora</option>
-                            <option>Retirada</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
 
-            <div class="menu-envio">
-                <button onclick="toggleMenuEnvio()" class="btn-enviar">📤 Enviar Pedido</button>
-                <div id="menu-envio-opcoes" class="menu-opcoes">
-                    <button onclick="enviarWhatsApp()">📲 Enviar via WhatsApp</button>
-                    <button onclick="gerarPDF()">📄 Gerar PDF</button>
-                    <button onclick="enviarEmail()">✉ Enviar por Email</button>
-                </div>
-            </div>
-            <button onclick="limparCarrinho()" class="btn-limpar">🗑️ Limpar Carrinho</button>
-        </div>
-    </div>
+<main class="container">
 
-    <div id="modal-img" class="modal" onclick="fecharModal()"><img id="img-ampliada"></div>
+<h1 class="titulo-sessao">
+🔥 TABELA EXCLUSIVA PARA PARCEIROS
+</h1>
 
-    <footer class="footer-crazy">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h3>Crazy Fantasy</h3>
-                <p>A maior loja de fantasias premium do interior de São Paulo.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Atendimento B2B</h4>
-                <p>📍 Valinhos - SP</p>
-                <p>📲 (19) 99285-0208</p>
-            </div>
-        </div>
-        <div class="footer-bottom">© 2026 Crazy Fantasy — Todos os direitos reservados</div>
-    </footer>
+<div id="produtos" class="produtos-grid"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
+</main>
+
+
+
+<div id="carrinho-drawer" class="drawer">
+
+<div class="drawer-content">
+
+<span class="close-btn" onclick="toggleCarrinho()">×</span>
+
+<h3 class="titulo-carrinho">Seu Pedido</h3>
+
+
+
+<div class="progress-container">
+
+<div class="progress-steps">
+
+<span class="step">Mínimo</span>
+<span class="step">12% OFF</span>
+<span class="step">15% OFF</span>
+
+</div>
+
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" id="progress-bar"></div>
+</div>
+
+<div id="feedback-progresso"></div>
+
+</div>
+
+
+
+<div id="lista-itens-carrinho"></div>
+
+
+
+<hr class="divisor-carrinho">
+
+
+
+<div class="card-faturamento">
+
+<h4 class="titulo-faturamento">
+📄 Dados para faturamento
+</h4>
+
+
+<div class="dados-cliente">
+
+<label>Razão Social / Nome</label>
+<input type="text" id="razao-social">
+
+
+<div class="dados-grid">
+
+<div>
+<label>CNPJ / CPF</label>
+<input type="text" id="cnpj">
+</div>
+
+<div>
+<label>Email</label>
+<input type="email" id="email">
+</div>
+
+<div>
+<label>Telefone</label>
+<input type="text" id="telefone">
+</div>
+
+<div>
+<label>I.E.</label>
+<input type="text" id="ie">
+</div>
+
+</div>
+
+
+<div class="dados-grid">
+
+<div>
+<label>Pagamento</label>
+<select id="pagamento">
+<option value="">Selecione</option>
+<option>PIX</option>
+<option>Boleto</option>
+<option>Cartão</option>
+</select>
+</div>
+
+<div>
+<label>Frete</label>
+<select id="frete">
+<option value="">Selecione</option>
+<option>Correios</option>
+<option>Transportadora</option>
+<option>Retirada</option>
+</select>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="menu-envio">
+
+<button onclick="toggleMenuEnvio()" class="btn-enviar">
+📤 Enviar Pedido
+</button>
+
+<div id="menu-envio-opcoes" class="menu-opcoes">
+
+<button onclick="enviarWhatsApp()">
+📲 Enviar via WhatsApp
+</button>
+
+<button onclick="gerarPDF()">
+📄 Gerar PDF
+</button>
+
+<button onclick="enviarEmail()">
+✉ Enviar por Email
+</button>
+
+</div>
+
+</div>
+
+
+<button onclick="limparCarrinho()" class="btn-limpar">
+🗑️ Limpar Carrinho
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<div id="modal-img" class="modal" onclick="fecharModal()">
+<img id="img-ampliada">
+</div>
+
+
+
+<footer class="footer-crazy">
+
+<div class="footer-container">
+
+<div class="footer-col">
+<h3>Crazy Fantasy</h3>
+<p>A maior loja de fantasias premium do interior de São Paulo.</p>
+</div>
+
+<div class="footer-col">
+<h4>Atendimento B2B</h4>
+<p>📍 Valinhos - SP</p>
+<p>📲 (19) 99285-0208</p>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+© 2026 Crazy Fantasy
+</div>
+
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
