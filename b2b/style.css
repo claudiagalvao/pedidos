@@ -1087,3 +1087,18 @@ flex-wrap:wrap;
 color:#22c55e;
 
 }
+
+
+
+/* GAMIFICAÇÃO DO CARRINHO */
+
+.step{
+opacity:0.4;
+transition:0.3s;
+}
+
+.step.active{
+opacity:1;
+color:#22c55e;
+transform:scale(1.1);
+}
