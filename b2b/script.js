@@ -216,6 +216,14 @@ input.value=0;
 salvarCarrinho();
 atualizarInterface();
 
+/* ABRIR CARRINHO AUTOMATICAMENTE */
+
+const drawer = document.getElementById("carrinho-drawer");
+
+if(!drawer.classList.contains("open")){
+drawer.classList.add("open");
+}
+
 /* FEEDBACK VISUAL */
 
 if(btn){
@@ -230,7 +238,7 @@ setTimeout(()=>{
 btn.classList.remove("adicionado");
 btn.innerHTML=texto;
 
-},1000);
+},1500);
 
 }
 
