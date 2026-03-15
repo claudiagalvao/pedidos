@@ -167,32 +167,67 @@ return;
 
 let variacao="Padrão";
 let preco=0;
+let estoqueMax=0;
 
 const select = document.getElementById(`var-${idx}`);
 
 if(select){
 
-const [v,p] = select.value.split("|");
+const [v,p,e] = select.value.split("|");
 
 variacao=v;
 preco=parseFloat(p);
+estoqueMax=parseInt(e);
 
 }else{
 
 const produto = produtosVisiveis[idx];
+
 variacao = produto.variacoes?.[0]?.nome || "Padrão";
 preco = produto.variacoes?.[0]?.preco || 0;
+estoqueMax = produto.variacoes?.[0]?.estoque || 0;
 
 }
 
-carrinho.push({name:nome,var:variacao,preco:preco,qtd:qtdPedida});
+/* verificar se já existe no carrinho */
+
+const existente = carrinho.find(i=>i.name===nome && i.var===variacao);
+
+const qtdAtual = existente ? existente.qtd : 0;
+
+/* BLOQUEIO DE ESTOQUE */
+
+if((qtdPedida + qtdAtual) > estoqueMax){
+
+alert("⚠️ Quantidade maior que o estoque disponível");
+
+return;
+
+}
+
+/* adicionar */
+
+if(existente){
+
+existente.qtd += qtdPedida;
+
+}else{
+
+carrinho.push({
+name:nome,
+var:variacao,
+preco:preco,
+qtd:qtdPedida
+});
+
+}
 
 input.value=0;
 
 salvarCarrinho();
 atualizarInterface();
 
-/* abrir carrinho */
+/* abrir carrinho automaticamente */
 
 const drawer = document.getElementById("carrinho-drawer");
 
