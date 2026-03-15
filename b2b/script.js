@@ -103,6 +103,13 @@ B2B: ${(varejo*0.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
 Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
 </div>
 
+${variacoes.length>1 ? `
+<select id="var-${index}" class="select-variacao"
+onchange="atualizarEstoqueVisivel(${index})">
+${variacoes.map(v=>`<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join("")}
+</select>
+` : ""}
+
 <div class="controle-qtd">
 
 <div class="qtd-box">
@@ -158,10 +165,27 @@ alert("Selecione a quantidade");
 return;
 }
 
-const produto = produtosVisiveis[idx];
-const preco = produto.variacoes?.[0]?.preco || 0;
+let variacao="Padrão";
+let preco=0;
 
-carrinho.push({name:nome,preco:preco,qtd:qtdPedida});
+const select = document.getElementById(`var-${idx}`);
+
+if(select){
+
+const [v,p] = select.value.split("|");
+
+variacao=v;
+preco=parseFloat(p);
+
+}else{
+
+const produto = produtosVisiveis[idx];
+variacao = produto.variacoes?.[0]?.nome || "Padrão";
+preco = produto.variacoes?.[0]?.preco || 0;
+
+}
+
+carrinho.push({name:nome,var:variacao,preco:preco,qtd:qtdPedida});
 
 input.value=0;
 
@@ -208,16 +232,6 @@ const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
 
 document.getElementById("cart-count").innerText=totalItens;
 
-/* gamificação */
-
-const stepMin = document.getElementById("step-minimo");
-const step12 = document.getElementById("step-12");
-const step15 = document.getElementById("step-15");
-
-if(stepMin) stepMin.classList.toggle("active", subtotal>=200);
-if(step12) step12.classList.toggle("active", subtotal>=500);
-if(step15) step15.classList.toggle("active", subtotal>=1000);
-
 /* barra progresso */
 
 const barra = document.getElementById("progress-bar");
@@ -249,7 +263,7 @@ carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
 
-<span>${i.qtd}x ${i.name}</span>
+<span>${i.qtd}x ${i.name} (${i.var})</span>
 
 <div class="item-preco">
 <strong>${(i.preco).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
@@ -327,7 +341,7 @@ if(!validarFormulario()) return;
 let msg="*Pedido Crazy Fantasy B2B*%0A";
 
 carrinho.forEach(i=>{
-msg+=`• ${i.qtd}x ${i.name}%0A`;
+msg+=`• ${i.qtd}x ${i.name} (${i.var})%0A`;
 });
 
 window.open(`https://wa.me/5519992850208?text=${msg}`,"_blank");
@@ -345,7 +359,7 @@ if(!validarFormulario()) return;
 let corpo="Pedido Crazy Fantasy B2B\n\n";
 
 carrinho.forEach(i=>{
-corpo+=`${i.qtd}x ${i.name}\n`;
+corpo+=`${i.qtd}x ${i.name} (${i.var})\n`;
 });
 
 window.location.href=
@@ -370,7 +384,7 @@ doc.text("Pedido Crazy Fantasy B2B",10,10);
 let y=30;
 
 carrinho.forEach(i=>{
-doc.text(`${i.qtd}x ${i.name}`,10,y);
+doc.text(`${i.qtd}x ${i.name} (${i.var})`,10,y);
 y+=10;
 });
 
@@ -444,6 +458,14 @@ produtosVisiveis=cat==="Todos"
 :todosProdutos.filter(p=>p.categoria===cat);
 
 renderizarProdutos(produtosVisiveis);
+
+}
+
+function atualizarEstoqueVisivel(idx){
+
+const s=document.getElementById(`var-${idx}`);
+
+document.getElementById(`estoque-num-${idx}`).innerText=s.value.split("|")[2];
 
 }
 
