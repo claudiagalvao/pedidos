@@ -204,12 +204,6 @@ function atualizarInterface(){
 
 const subtotal = carrinho.reduce((a,i)=>a+(i.preco*i.qtd),0);
 
-let desconto=0;
-
-if(subtotal>=1000) desconto=15;
-else if(subtotal>=500) desconto=12;
-else if(subtotal>=200) desconto=10;
-
 const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
 
 document.getElementById("cart-count").innerText=totalItens;
@@ -270,7 +264,7 @@ carrinho.map((i,idx)=>`
 }
 
 /* ===============================
-REMOVER
+REMOVER ITEM
 =============================== */
 
 function removerItem(idx){
@@ -279,6 +273,23 @@ carrinho.splice(idx,1);
 
 salvarCarrinho();
 atualizarInterface();
+
+}
+
+/* ===============================
+LIMPAR CARRINHO
+=============================== */
+
+function limparCarrinho(){
+
+if(confirm("Deseja realmente limpar o carrinho?")){
+
+carrinho=[];
+
+salvarCarrinho();
+atualizarInterface();
+
+}
 
 }
 
@@ -320,6 +331,25 @@ msg+=`• ${i.qtd}x ${i.name}%0A`;
 });
 
 window.open(`https://wa.me/5519992850208?text=${msg}`,"_blank");
+
+}
+
+/* ===============================
+EMAIL
+=============================== */
+
+function enviarEmail(){
+
+if(!validarFormulario()) return;
+
+let corpo="Pedido Crazy Fantasy B2B\n\n";
+
+carrinho.forEach(i=>{
+corpo+=`${i.qtd}x ${i.name}\n`;
+});
+
+window.location.href=
+`mailto:lojacrazyfantasy@hotmail.com?subject=Pedido Crazy Fantasy B2B&body=${encodeURIComponent(corpo)}`;
 
 }
 
