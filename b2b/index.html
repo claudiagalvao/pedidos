@@ -6,10 +6,9 @@
     <title>Crazy Fantasy - B2B</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <header class="hero-banner">
-        <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
+        <img src="banner.png" class="banner-img">
     </header>
 
     <nav class="nav-bar">
@@ -33,9 +32,9 @@
             <div id="status-carrinho">
                 <div class="progress-container">
                     <div class="progress-steps">
-                        <span class="step" id="step-min">Mínimo</span>
-                        <span class="step" id="step-500">12% OFF</span>
-                        <span class="step" id="step-1000">15% OFF</span>
+                        <span class="step">Mínimo</span>
+                        <span class="step">12% OFF</span>
+                        <span class="step">15% OFF</span>
                     </div>
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" id="progress-bar"></div>
@@ -49,35 +48,20 @@
             <div class="dados-cliente">
                 <label>Razão Social / Nome</label>
                 <input type="text" id="razao-social">
-
                 <div class="dados-grid">
-                    <div>
-                        <label>CNPJ / CPF</label>
-                        <input type="text" id="cnpj">
-                    </div>
-                    <div>
-                        <label>Email</label>
-                        <input type="email" id="email">
-                    </div>
-                    <div>
-                        <label>Telefone</label>
-                        <input type="text" id="telefone">
-                    </div>
-                    <div>
-                        <label>Inscrição Estadual</label>
-                        <input type="text" id="ie">
-                    </div>
+                    <div><label>CNPJ / CPF</label><input type="text" id="cnpj"></div>
+                    <div><label>Email</label><input type="email" id="email"></div>
+                    <div><label>Telefone</label><input type="text" id="telefone"></div>
+                    <div><label>I.E.</label><input type="text" id="ie"></div>
                 </div>
-
-                <label>Forma de Pagamento</label>
+                <label>Pagamento</label>
                 <select id="pagamento">
                     <option value="">Selecione</option>
                     <option>PIX</option>
                     <option>Boleto</option>
                     <option>Cartão</option>
                 </select>
-
-                <label>Forma de Frete</label>
+                <label>Frete</label>
                 <select id="frete">
                     <option value="">Selecione</option>
                     <option>Correios</option>
@@ -94,20 +78,13 @@
                     <button onclick="enviarEmail()">✉ Enviar por Email</button>
                 </div>
             </div>
-
             <button onclick="limparCarrinho()" class="btn-limpar">🗑️ Limpar Carrinho</button>
         </div>
     </div>
 
-    <div id="modal-img" class="modal" onclick="fecharModal()">
-        <img id="img-ampliada">
-    </div>
+    <div id="modal-img" class="modal" onclick="fecharModal()"><img id="img-ampliada"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
-
-    <footer class="footer-crazy">
-        <div class="footer-bottom">© 2026 Crazy Fantasy — Todos os direitos reservados</div>
-    </footer>
 </body>
 </html>
