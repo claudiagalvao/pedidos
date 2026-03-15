@@ -1056,3 +1056,34 @@ flex-wrap:wrap;
 color:#22c55e;
 
 }
+
+
+
+
+/* BARRA COMERCIAL B2B */
+
+.barra-b2b{
+
+background:#020617;
+
+border-bottom:1px solid #1e293b;
+
+display:flex;
+justify-content:center;
+gap:40px;
+
+padding:12px;
+
+font-size:14px;
+
+color:#e2e8f0;
+
+flex-wrap:wrap;
+
+}
+
+.barra-b2b strong{
+
+color:#22c55e;
+
+}
