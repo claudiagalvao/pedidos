@@ -1,127 +1,195 @@
 let todosProdutos = [];
+let produtosVisiveis = [];
 let carrinho = [];
+let categoriaAtual = "Todos";
 
 async function carregarProdutos() {
     try {
         const res = await fetch("/api/produtos.js");
         todosProdutos = await res.json();
+        produtosVisiveis = [...todosProdutos];
         carregarCarrinho();
-        renderizarProdutos(todosProdutos);
-    } catch (e) { console.error("Erro ao carregar dados", e); }
+        renderizarMenu();
+        renderizarProdutos(produtosVisiveis);
+    } catch (e) { console.error("Erro ao carregar produtos", e); }
 }
 
-/* MÁSCARAS DE ENTRADA */
-function mascaraCNPJ(i) {
-    let v = i.value.replace(/\D/g, "");
-    if (v.length <= 11) { // CPF
-        v = v.replace(/(\0d{3})(\d)/, "$1.$2");
-        v = v.replace(/(\d{3})(\d)/, "$1.$2");
-        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-    } else { // CNPJ
-        v = v.replace(/^(\d{2})(\d)/, "$1.$2");
-        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
-        v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
-        v = v.replace(/(\d{4})(\d)/, "$1-$2");
-    }
-    i.value = v;
-}
+function salvarCarrinho() { localStorage.setItem("carrinhoCF", JSON.stringify(carrinho)); }
 
-function mascaraTel(i) {
-    let v = i.value.replace(/\D/g, "");
-    v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-    v = v.replace(/(\d{5})(\d)/, "$1-$2");
-    i.value = v;
+function carregarCarrinho() {
+    const salvo = localStorage.getItem("carrinhoCF");
+    if (salvo) { carrinho = JSON.parse(salvo); }
+    atualizarInterface();
 }
 
 function renderizarProdutos(lista) {
     const container = document.getElementById("produtos");
+    if (!lista.length) {
+        container.innerHTML = `<p style="grid-column:1/-1;color:#94a3b8">Nenhum produto encontrado</p>`;
+        return;
+    }
+
     container.innerHTML = lista.map((p, index) => {
-        const v = p.variacoes[0];
+        const variacoes = p.variacoes || [];
+        const vPadrao = variacoes[0] || { preco: 0, estoque: 0, nome: "Padrão" };
+        const varejo = vPadrao.preco;
+
         return `
             <div class="produto-card">
                 <img src="${p.imagem}" onclick="abrirModal('${p.imagem}')">
                 <h3>${p.name}</h3>
                 <div class="preco-container">
-                    <del>Varejo: R$ ${v.preco.toFixed(2)}</del>
-                    <div class="preco-b2b">B2B: R$ ${(v.preco * 0.9).toFixed(2)}</div>
+                    <del>Varejo: R$ ${varejo.toFixed(2)}</del>
+                    <div class="preco-b2b">B2B: R$ ${(varejo * 0.9).toFixed(2)} <small>(10% OFF)</small></div>
                 </div>
-                <div class="estoque-info">Estoque: <span id="stk-${index}">${v.estoque}</span></div>
-                <select id="var-${index}" onchange="document.getElementById('stk-${index}').innerText = this.value.split('|')[2]">
-                    ${p.variacoes.map(vr => `<option value="${vr.nome}|${vr.preco}|${vr.estoque}">${vr.nome}</option>`).join("")}
-                </select>
+                <div class="tabela-progressiva">
+                    <div class="faixa-item"><span>🔥 12% OFF > R$500</span><strong>R$ ${(varejo * 0.88).toFixed(2)}</strong></div>
+                    <div class="faixa-item destaque"><span>💎 15% OFF > R$1000</span><strong>R$ ${(varejo * 0.85).toFixed(2)}</strong></div>
+                </div>
+                <div class="estoque-info">Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span></div>
+
+                ${variacoes.length > 1 ? `
+                    <select id="var-${index}" class="select-variacao" onchange="atualizarEstoqueVisivel(${index})">
+                        ${variacoes.map(v => `<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join("")}
+                    </select>
+                ` : ""}
+
                 <div class="controle-qtd">
-                    <button onclick="ajustar(${index},'-')">−</button>
-                    <input id="qtd-${index}" value="0" readonly>
-                    <button onclick="ajustar(${index},'+')">+</button>
-                    <button class="btn-add" onclick="adicionar(${index},'${p.name}')">🛒</button>
+                    <div class="qtd-box">
+                        <button class="btn-qtd" onclick="ajustarQtd(${index},'-')">−</button>
+                        <input class="input-qtd" id="qtd-${index}" value="0" readonly>
+                        <button class="btn-qtd" onclick="ajustarQtd(${index},'+')">+</button>
+                    </div>
+                    <button class="btn-add" onclick="adicionar(${index}, '${p.name.replace(/'/g, "\\'")}')">🛒 Adicionar</button>
                 </div>
             </div>`;
     }).join("");
 }
 
-function ajustar(idx, op) {
+function ajustarQtd(idx, op) {
     const input = document.getElementById(`qtd-${idx}`);
-    const sel = document.getElementById(`var-${idx}`);
-    const max = parseInt(sel.value.split("|")[2]);
+    const select = document.getElementById(`var-${idx}`);
+    let estoqueMax = select ? parseInt(select.value.split("|")[2]) : (produtosVisiveis[idx].variacoes?.[0]?.estoque || 0);
+
     let v = parseInt(input.value);
-    if (op === "+" && v < max) input.value = v + 1;
+    if (op === "+" && v < estoqueMax) input.value = v + 1;
     else if (op === "-" && v > 0) input.value = v - 1;
 }
 
 function adicionar(idx, nome) {
-    const q = parseInt(document.getElementById(`qtd-${idx}`).value);
-    if (q <= 0) return;
-    const [v, p, e] = document.getElementById(`var-${idx}`).value.split("|");
-    
-    const ex = carrinho.find(i => i.name === nome && i.var === v);
-    if ((q + (ex ? ex.qtd : 0)) > e) return alert("Estoque insuficiente");
+    const input = document.getElementById(`qtd-${idx}`);
+    const select = document.getElementById(`var-${idx}`);
+    const qtdPedida = parseInt(input.value);
+    if (qtdPedida <= 0) return alert("Selecione a quantidade");
 
-    if (ex) ex.qtd += q;
-    else carrinho.push({ name: nome, var: v, preco: parseFloat(p), qtd: q });
-    
-    document.getElementById(`qtd-${idx}`).value = 0;
+    let variacao, preco, estoqueMax;
+    if (select) {
+        const [v, p, e] = select.value.split("|");
+        variacao = v; preco = parseFloat(p); estoqueMax = parseInt(e);
+    } else {
+        const v = produtosVisiveis[idx].variacoes?.[0];
+        variacao = v.nome; preco = v.preco; estoqueMax = v.estoque;
+    }
+
+    const existente = carrinho.find(i => i.name === nome && i.var === variacao);
+    if ((qtdPedida + (existente ? existente.qtd : 0)) > estoqueMax) {
+        return alert("⚠️ Limite de estoque atingido para esta variação.");
+    }
+
+    if (existente) existente.qtd += qtdPedida;
+    else carrinho.push({ name: nome, var: variacao, preco: preco, qtd: qtdPedida });
+
+    input.value = 0;
+    salvarCarrinho();
     atualizarInterface();
 }
 
 function atualizarInterface() {
-    const sub = carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0);
-    const desc = sub >= 1000 ? 15 : (sub >= 500 ? 12 : 10);
-    const total = sub * (1 - desc / 100);
-
-    document.getElementById("cart-count").innerText = carrinho.length;
+    const subtotal = carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0);
+    const desconto = subtotal >= 1000 ? 15 : (subtotal >= 500 ? 12 : 10);
+    const totalB2B = subtotal * (1 - desconto / 100);
+    const economia = subtotal - totalB2B;
     
-    // Feedback de Progresso
-    const fb = document.getElementById("feedback-progresso");
-    const bar = document.getElementById("progress-bar");
-    bar.style.width = Math.min((sub/1000)*100, 100) + "%";
-    fb.innerText = sub < 200 ? `Faltam R$ ${(200-sub).toFixed(2)}` : (sub < 500 ? `Faltam R$ ${(500-sub).toFixed(2)} p/ 12%` : "Desconto Máximo!");
+    document.getElementById("cart-count").innerText = carrinho.length;
 
-    // Itens
+    // Atualização da Barra
+    const barra = document.getElementById("progress-bar");
+    const feedback = document.getElementById("feedback-progresso");
+    if (barra) {
+        barra.style.width = Math.min((subtotal / 1000) * 100, 100) + "%";
+        if (subtotal < 200) feedback.innerHTML = `Faltam R$ ${(200-subtotal).toFixed(2)} para o mínimo.`;
+        else if (subtotal < 500) feedback.innerHTML = `Faltam R$ ${(500-subtotal).toFixed(2)} para 12% OFF!`;
+        else if (subtotal < 1000) feedback.innerHTML = `Faltam R$ ${(1000-subtotal).toFixed(2)} para 15% OFF!`;
+        else feedback.innerHTML = `💎 Desconto máximo atingido!`;
+    }
+
+    // Renderização da Nova Ordem de Valores
     document.getElementById("lista-itens-carrinho").innerHTML = carrinho.map((i, idx) => `
         <div class="item-carrinho">
-            <span>${i.qtd}x ${i.name}</span>
-            <button onclick="carrinho.splice(${idx},1); atualizarInterface();">✕</button>
-        </div>`).join("");
+            <span>${i.qtd}x ${i.name} (${i.var})</span>
+            <div class="item-preco"><strong>R$ ${(i.preco * (1 - desconto/100)).toFixed(2)}</strong></div>
+            <button onclick="removerItem(${idx})">✕</button>
+        </div>
+    `).join("") + (carrinho.length ? `
+        <div class="info-valores" style="padding-top:10px; margin-top:10px; border-top: 1px solid #334155;">
+            <p style="color: #94a3b8; margin: 0;">Total varejo: R$ ${subtotal.toFixed(2)}</p>
+            <h3 style="color: white; margin: 5px 0;">Total B2B: R$ ${totalB2B.toFixed(2)}</h3>
+            <p style="color: #22c55e; font-weight: bold; margin: 0;">Economia para parceiro: R$ ${economia.toFixed(2)}</p>
+        </div>` : "");
+}
 
-    // RESUMO DE VALORES CORRIGIDO
-    const res = document.getElementById("resumo-valores-container");
-    res.innerHTML = carrinho.length ? `
-        <div class="info-valores">
-            <div class="valor-linha varejo"><span>Total varejo:</span><span>R$ ${sub.toFixed(2)}</span></div>
-            <div class="valor-linha b2b"><span>Total B2B:</span><span>R$ ${total.toFixed(2)}</span></div>
-            <div class="valor-linha economia"><span>Economia para parceiro:</span><span>R$ ${(sub-total).toFixed(2)}</span></div>
-        </div>` : "";
+function removerItem(idx) { carrinho.splice(idx, 1); salvarCarrinho(); atualizarInterface(); }
+
+function gerarPDF() {
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Pedido Crazy Fantasy B2B", 10, 10);
+    doc.text(`Cliente: ${document.getElementById("razao-social").value}`, 10, 20);
+    let y = 40;
+    carrinho.forEach(i => { doc.text(`${i.qtd}x ${i.name} (${i.var})`, 10, y); y += 10; });
+    doc.save("pedido.pdf");
+}
+
+function enviarWhatsApp() {
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
+    const msg = `*Pedido Crazy Fantasy*%0A*Cliente:* ${document.getElementById("razao-social").value}%0A` + carrinho.map(i => `• ${i.qtd}x ${i.name}`).join("%0A");
+    window.open(`https://wa.me/5519992850208?text=${msg}`, "_blank");
+}
+
+function enviarEmail() {
+    if (carrinho.reduce((a, i) => a + (i.preco * i.qtd), 0) < 200) return alert("Pedido mínimo R$ 200");
+    const corpo = carrinho.map(i => `${i.qtd}x ${i.name} (${i.var})`).join("\n");
+    window.location.href = `mailto:lojacrazyfantasy@hotmail.com?cc=${document.getElementById("email").value}&bcc=claus.galvao@hotmail.com&subject=Pedido B2B&body=${encodeURIComponent(corpo)}`;
 }
 
 function toggleMenuEnvio() {
     const m = document.getElementById("menu-envio-opcoes");
-    m.style.display = m.style.display === "flex" ? "none" : "flex";
+    m.style.display = (m.style.display === "flex") ? "none" : "flex";
 }
 
-function carregarCarrinho() {
-    const s = localStorage.getItem("carrinhoCF");
-    if(s) { carrinho = JSON.parse(s); atualizarInterface(); }
-}
-
+function limparCarrinho() { if(confirm("Limpar pedido?")) { carrinho = []; salvarCarrinho(); atualizarInterface(); } }
 function toggleCarrinho() { document.getElementById("carrinho-drawer").classList.toggle("open"); }
+function abrirModal(src) { document.getElementById("img-ampliada").src = src; document.getElementById("modal-img").style.display = "flex"; }
+function fecharModal() { document.getElementById("modal-img").style.display = "none"; }
+function filtrarBusca() {
+    const t = document.getElementById("busca").value.toLowerCase();
+    produtosVisiveis = todosProdutos.filter(p => p.name.toLowerCase().includes(t));
+    renderizarProdutos(produtosVisiveis);
+}
+function renderizarMenu() {
+    const m = document.getElementById("menu-categorias");
+    const c = ["Todos", ...new Set(todosProdutos.map(p => p.categoria))];
+    m.innerHTML = c.map(cat => `<button class="cat-btn" onclick="filtrarCategoria('${cat}')">${cat}</button>`).join("");
+}
+function filtrarCategoria(cat) {
+    categoriaAtual = cat;
+    produtosVisiveis = cat === "Todos" ? todosProdutos : todosProdutos.filter(p => p.categoria === cat);
+    renderizarProdutos(produtosVisiveis);
+}
+function atualizarEstoqueVisivel(idx) {
+    const s = document.getElementById(`var-${idx}`);
+    document.getElementById(`estoque-num-${idx}`).innerText = s.value.split("|")[2];
+}
+
 document.addEventListener("DOMContentLoaded", carregarProdutos);
