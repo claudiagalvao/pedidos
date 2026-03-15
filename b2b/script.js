@@ -58,10 +58,8 @@ function renderizarProdutos(lista){
 const container = document.getElementById("produtos");
 
 if(!lista.length){
-
 container.innerHTML = `<p style="grid-column:1/-1;color:#94a3b8">Nenhum produto encontrado</p>`;
 return;
-
 }
 
 container.innerHTML = lista.map((p,index)=>{
@@ -105,13 +103,6 @@ B2B: ${(varejo*0.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
 Estoque: <span id="estoque-num-${index}">${vPadrao.estoque}</span>
 </div>
 
-${variacoes.length>1 ? `
-<select id="var-${index}" class="select-variacao"
-onchange="atualizarEstoqueVisivel(${index})">
-${variacoes.map(v=>`<option value="${v.nome}|${v.preco}|${v.estoque}">${v.nome}</option>`).join("")}
-</select>
-` : ""}
-
 <div class="controle-qtd">
 
 <div class="qtd-box">
@@ -146,19 +137,10 @@ QUANTIDADE
 function ajustarQtd(idx,op){
 
 const input = document.getElementById(`qtd-${idx}`);
-const select = document.getElementById(`var-${idx}`);
-
-let estoqueMax = select
-? parseInt(select.value.split("|")[2])
-: (produtosVisiveis[idx].variacoes?.[0]?.estoque || 0);
-
 let v = parseInt(input.value);
 
-if(op==="+" && v<estoqueMax)
-input.value = v+1;
-
-else if(op==="-" && v>0)
-input.value = v-1;
+if(op==="+" ) input.value = v+1;
+else if(op==="-" && v>0) input.value = v-1;
 
 }
 
@@ -169,8 +151,6 @@ ADICIONAR
 function adicionar(idx,nome,btn){
 
 const input = document.getElementById(`qtd-${idx}`);
-const select = document.getElementById(`var-${idx}`);
-
 const qtdPedida = parseInt(input.value);
 
 if(qtdPedida<=0){
@@ -178,45 +158,17 @@ alert("Selecione a quantidade");
 return;
 }
 
-let variacao,preco,estoqueMax;
+const produto = produtosVisiveis[idx];
+const preco = produto.variacoes?.[0]?.preco || 0;
 
-if(select){
-
-const [v,p,e] = select.value.split("|");
-
-variacao=v;
-preco=parseFloat(p);
-estoqueMax=parseInt(e);
-
-}else{
-
-const v = produtosVisiveis[idx].variacoes?.[0];
-
-variacao=v.nome;
-preco=v.preco;
-estoqueMax=v.estoque;
-
-}
-
-const existente = carrinho.find(i=>i.name===nome && i.var===variacao);
-
-if((qtdPedida + (existente ? existente.qtd : 0)) > estoqueMax){
-alert("⚠️ Limite de estoque atingido");
-return;
-}
-
-if(existente)
-existente.qtd += qtdPedida;
-
-else
-carrinho.push({name:nome,var:variacao,preco:preco,qtd:qtdPedida});
+carrinho.push({name:nome,preco:preco,qtd:qtdPedida});
 
 input.value=0;
 
 salvarCarrinho();
 atualizarInterface();
 
-/* abrir carrinho automaticamente */
+/* abrir carrinho */
 
 const drawer = document.getElementById("carrinho-drawer");
 
@@ -258,14 +210,11 @@ if(subtotal>=1000) desconto=15;
 else if(subtotal>=500) desconto=12;
 else if(subtotal>=200) desconto=10;
 
-const totalB2B = subtotal*(1-desconto/100);
-const economia = subtotal-totalB2B;
-
 const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
 
 document.getElementById("cart-count").innerText=totalItens;
 
-/* GAMIFICAÇÃO */
+/* gamificação */
 
 const stepMin = document.getElementById("step-minimo");
 const step12 = document.getElementById("step-12");
@@ -275,7 +224,7 @@ if(stepMin) stepMin.classList.toggle("active", subtotal>=200);
 if(step12) step12.classList.toggle("active", subtotal>=500);
 if(step15) step15.classList.toggle("active", subtotal>=1000);
 
-/* BARRA */
+/* barra progresso */
 
 const barra = document.getElementById("progress-bar");
 const feedback = document.getElementById("feedback-progresso");
@@ -298,7 +247,7 @@ feedback.innerHTML=`💎 Desconto máximo atingido`;
 
 }
 
-/* LISTA CARRINHO */
+/* lista carrinho */
 
 document.getElementById("lista-itens-carrinho").innerHTML=
 
@@ -306,10 +255,10 @@ carrinho.map((i,idx)=>`
 
 <div class="item-carrinho">
 
-<span>${i.qtd}x ${i.name} (${i.var})</span>
+<span>${i.qtd}x ${i.name}</span>
 
 <div class="item-preco">
-<strong>${(i.preco*(1-desconto/100)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
+<strong>${(i.preco).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
 </div>
 
 <button onclick="removerItem(${idx})">✕</button>
@@ -333,9 +282,6 @@ atualizarInterface();
 
 }
 
-
-
-
 /* ===============================
 FORMULÁRIO
 =============================== */
@@ -346,10 +292,61 @@ const razao = document.getElementById("razao-social").value.trim();
 const cnpj = document.getElementById("cnpj").value.trim();
 const email = document.getElementById("email").value.trim();
 const telefone = document.getElementById("telefone").value.trim();
-const pagamento = document.getElementById("pagamento").value
 
+if(!razao || !cnpj || !email || !telefone){
 
+alert("Preencha todos os dados de faturamento");
 
+return false;
+
+}
+
+return true;
+
+}
+
+/* ===============================
+WHATSAPP
+=============================== */
+
+function enviarWhatsApp(){
+
+if(!validarFormulario()) return;
+
+let msg="*Pedido Crazy Fantasy B2B*%0A";
+
+carrinho.forEach(i=>{
+msg+=`• ${i.qtd}x ${i.name}%0A`;
+});
+
+window.open(`https://wa.me/5519992850208?text=${msg}`,"_blank");
+
+}
+
+/* ===============================
+PDF
+=============================== */
+
+function gerarPDF(){
+
+if(!validarFormulario()) return;
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+doc.text("Pedido Crazy Fantasy B2B",10,10);
+
+let y=30;
+
+carrinho.forEach(i=>{
+doc.text(`${i.qtd}x ${i.name}`,10,y);
+y+=10;
+});
+
+doc.save("pedido.pdf");
+
+}
 
 /* ===============================
 MODAL
@@ -417,14 +414,6 @@ produtosVisiveis=cat==="Todos"
 :todosProdutos.filter(p=>p.categoria===cat);
 
 renderizarProdutos(produtosVisiveis);
-
-}
-
-function atualizarEstoqueVisivel(idx){
-
-const s=document.getElementById(`var-${idx}`);
-
-document.getElementById(`estoque-num-${idx}`).innerText=s.value.split("|")[2];
 
 }
 
