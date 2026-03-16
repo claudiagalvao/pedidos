@@ -1129,3 +1129,27 @@ color:#22c55e;
 transform:scale(1.15);
 }
 
+
+
+.close-btn{
+
+position:absolute;
+top:15px;
+right:18px;
+
+font-size:26px;
+font-weight:bold;
+
+color:#f87171;
+cursor:pointer;
+
+transition:0.25s;
+
+}
+
+.close-btn:hover{
+
+color:#ef4444;
+transform:scale(1.2);
+
+}
