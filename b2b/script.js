@@ -311,6 +311,26 @@ feedback.innerHTML=`💎 Faltam ${(1000-subtotal).toLocaleString('pt-BR',{style:
 else
 feedback.innerHTML=`💎 Desconto máximo atingido`;
 
+
+
+
+  const stepMin = document.getElementById("step-minimo");
+const step12 = document.getElementById("step-12");
+const step15 = document.getElementById("step-15");
+
+if(stepMin) stepMin.classList.toggle("active", subtotal>=200);
+if(step12) step12.classList.toggle("active", subtotal>=500);
+if(step15) step15.classList.toggle("active", subtotal>=1000);
+
+
+
+
+  
+
+
+
+  
+
 }
 
 /* lista carrinho */
@@ -581,6 +601,28 @@ imgClone.remove();
 function animarCarrinho(){
 
 const cart = document.querySelector(".cart-icon");
+
+cart.classList.add("bounce");
+
+setTimeout(()=>{
+cart.classList.remove("bounce");
+},400);
+
+}
+
+
+
+
+
+/* ===============================
+ANIMAÇÃO BOUNCE DO CARRINHO
+=============================== */
+
+function animarCarrinho(){
+
+const cart = document.querySelector(".cart-icon");
+
+if(!cart) return;
 
 cart.classList.add("bounce");
 
