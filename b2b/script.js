@@ -505,3 +505,47 @@ document.getElementById(`estoque-num-${idx}`).innerText=s.value.split("|")[2];
 }
 
 document.addEventListener("DOMContentLoaded",carregarProdutos);
+
+
+/* ===============================
+ANIMAÇÃO PRODUTO VOANDO
+=============================== */
+
+function animarProdutoCarrinho(btn){
+
+const card = btn.closest(".produto-card");
+const img = card.querySelector("img");
+const carrinho = document.querySelector(".cart-icon");
+
+if(!img || !carrinho) return;
+
+const imgClone = img.cloneNode(true);
+
+const imgRect = img.getBoundingClientRect();
+const cartRect = carrinho.getBoundingClientRect();
+
+imgClone.style.position="fixed";
+imgClone.style.left=imgRect.left+"px";
+imgClone.style.top=imgRect.top+"px";
+imgClone.style.width=imgRect.width+"px";
+imgClone.style.height=imgRect.height+"px";
+imgClone.style.transition="all 0.7s ease";
+imgClone.style.zIndex="9999";
+
+document.body.appendChild(imgClone);
+
+setTimeout(()=>{
+
+imgClone.style.left=cartRect.left+"px";
+imgClone.style.top=cartRect.top+"px";
+imgClone.style.width="30px";
+imgClone.style.height="30px";
+imgClone.style.opacity="0.5";
+
+},10);
+
+setTimeout(()=>{
+imgClone.remove();
+},700);
+
+}
