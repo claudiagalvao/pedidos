@@ -1154,3 +1154,23 @@ color:#ef4444;
 transform:scale(1.2);
 
 }
+
+
+
+
+
+.cart-icon{
+display:flex;
+align-items:center;
+gap:6px;
+
+cursor:pointer;
+
+font-size:22px;
+font-weight:bold;
+
+padding:6px 10px;
+border-radius:8px;
+
+transition:transform 0.2s ease;
+}
