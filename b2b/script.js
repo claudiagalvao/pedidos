@@ -248,8 +248,6 @@ salvarCarrinho();
 atualizarInterface();
 
 
-  animarCarrinho();
-
 /* abrir carrinho automaticamente */
 
 const drawer = document.getElementById("carrinho-drawer");
@@ -598,22 +596,3 @@ imgClone.remove();
 
 
 
-
-
-/* ===============================
-ANIMAÇÃO BOUNCE DO CARRINHO
-=============================== */
-function animarCarrinho(){
-
-const cart = document.querySelector(".cart-icon");
-
-if(!cart) return;
-
-cart.classList.add("bounce");
-
-setTimeout(()=>{
-cart.classList.remove("bounce");
-},200);
-
-
-}
