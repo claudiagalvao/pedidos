@@ -247,6 +247,9 @@ input.value=0;
 salvarCarrinho();
 atualizarInterface();
 
+
+  animarCarrinho();
+
 /* abrir carrinho automaticamente */
 
 const drawer = document.getElementById("carrinho-drawer");
@@ -567,5 +570,22 @@ imgClone.style.opacity="0.5";
 setTimeout(()=>{
 imgClone.remove();
 },700);
+
+}
+
+
+
+
+
+
+function animarCarrinho(){
+
+const cart = document.querySelector(".cart-icon");
+
+cart.classList.add("bounce");
+
+setTimeout(()=>{
+cart.classList.remove("bounce");
+},400);
 
 }
