@@ -455,16 +455,108 @@ const { jsPDF } = window.jspdf;
 
 const doc = new jsPDF();
 
-doc.text("Pedido Crazy Fantasy B2B",10,10);
+let y = 20;
 
-let y=30;
+/* CABEÇALHO */
+
+doc.setFontSize(18);
+doc.text("CRAZY FANTASY", 10, y);
+
+y += 8;
+
+doc.setFontSize(12);
+doc.text("Pedido B2B", 10, y);
+
+y += 10;
+
+/* CLIENTE */
+
+const razao = document.getElementById("razao-social").value;
+const cnpj = document.getElementById("cnpj").value;
+const email = document.getElementById("email").value;
+const telefone = document.getElementById("telefone").value;
+
+doc.setFontSize(11);
+
+doc.text(`Cliente: ${razao}`,10,y);
+y+=6;
+
+doc.text(`CNPJ/CPF: ${cnpj}`,10,y);
+y+=6;
+
+doc.text(`Email: ${email}`,10,y);
+y+=6;
+
+doc.text(`Telefone: ${telefone}`,10,y);
+y+=10;
+
+/* TABELA */
+
+doc.setFontSize(12);
+doc.text("Itens do pedido",10,y);
+
+y+=6;
+
+doc.line(10,y,200,y);
+
+y+=6;
+
+let subtotal = 0;
 
 carrinho.forEach(i=>{
+
+const totalItem = i.preco * i.qtd;
+
+doc.setFontSize(10);
+
 doc.text(`${i.qtd}x ${i.name} (${i.var})`,10,y);
-y+=10;
+doc.text(`R$ ${totalItem.toFixed(2)}`,170,y);
+
+subtotal += totalItem;
+
+y+=6;
+
 });
 
-doc.save("pedido.pdf");
+/* TOTAL */
+
+y+=4;
+doc.line(10,y,200,y);
+
+y+=8;
+
+doc.setFontSize(12);
+
+doc.text(`Subtotal: R$ ${subtotal.toFixed(2)}`,10,y);
+
+y+=6;
+
+let desconto = 0;
+
+if(subtotal >= 1000) desconto = 15;
+else if(subtotal >= 500) desconto = 12;
+else if(subtotal >= 200) desconto = 10;
+
+const valorDesconto = subtotal * (desconto/100);
+const total = subtotal - valorDesconto;
+
+doc.text(`Desconto: ${desconto}%`,10,y);
+
+y+=6;
+
+doc.text(`Total: R$ ${total.toFixed(2)}`,10,y);
+
+/* RODAPÉ */
+
+y+=12;
+
+doc.setFontSize(9);
+
+doc.text("Crazy Fantasy - Portal B2B",10,y);
+y+=4;
+doc.text("Valinhos - SP | (19) 99285-0208",10,y);
+
+doc.save("pedido-crazy-fantasy.pdf");
 
 }
 
@@ -525,17 +617,36 @@ m.innerHTML=c.map(cat=>`<button class="cat-btn" onclick="filtrarCategoria('${cat
 
 }
 
+
+
+
 function filtrarCategoria(cat){
 
-categoriaAtual=cat;
+categoriaAtual = cat;
 
-produtosVisiveis=cat==="Todos"
-?todosProdutos
-:todosProdutos.filter(p=>p.categoria===cat);
+produtosVisiveis = cat === "Todos"
+? todosProdutos
+: todosProdutos.filter(p => p.categoria === cat);
 
 renderizarProdutos(produtosVisiveis);
 
+/* ATIVAR COR DO MENU */
+
+document.querySelectorAll(".cat-btn").forEach(btn=>{
+btn.classList.remove("active");
+
+if(btn.innerText === cat){
+btn.classList.add("active");
 }
+
+});
+
+}
+
+
+
+
+
 
 function atualizarEstoqueVisivel(idx){
 
