@@ -598,20 +598,6 @@ imgClone.remove();
 
 
 
-function animarCarrinho(){
-
-const cart = document.querySelector(".cart-icon");
-
-cart.classList.add("bounce");
-
-setTimeout(()=>{
-cart.classList.remove("bounce");
-},400);
-
-}
-
-
-
 
 
 /* ===============================
