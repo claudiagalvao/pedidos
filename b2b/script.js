@@ -609,14 +609,11 @@ const cart = document.querySelector(".cart-icon");
 
 if(!cart) return;
 
-/* força reinício da animação */
-cart.classList.remove("bounce");
-void cart.offsetWidth;
-
 cart.classList.add("bounce");
 
 setTimeout(()=>{
 cart.classList.remove("bounce");
-},500);
+},200);
+
 
 }
