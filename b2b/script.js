@@ -224,6 +224,9 @@ qtd:qtdPedida
 
 input.value=0;
 
+  animarProdutoCarrinho(btn);
+
+  
 salvarCarrinho();
 atualizarInterface();
 
