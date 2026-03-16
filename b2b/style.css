@@ -1118,5 +1118,14 @@ animation:bounceCart 0.4s;
 }
 
 
+.step{
+opacity:0.35;
+transition:0.3s;
+}
 
+.step.active{
+opacity:1;
+color:#22c55e;
+transform:scale(1.15);
+}
 
