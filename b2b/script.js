@@ -144,10 +144,27 @@ QUANTIDADE
 function ajustarQtd(idx,op){
 
 const input = document.getElementById(`qtd-${idx}`);
+const select = document.getElementById(`var-${idx}`);
+
+let estoqueMax = 0;
+
+if(select){
+
+estoqueMax = parseInt(select.value.split("|")[2]);
+
+}else{
+
+estoqueMax = produtosVisiveis[idx].variacoes?.[0]?.estoque || 0;
+
+}
+
 let v = parseInt(input.value);
 
-if(op==="+" ) input.value = v+1;
-else if(op==="-" && v>0) input.value = v-1;
+if(op==="+" && v < estoqueMax)
+input.value = v+1;
+
+else if(op==="-" && v>0)
+input.value = v-1;
 
 }
 
