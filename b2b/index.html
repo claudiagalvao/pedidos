@@ -9,6 +9,113 @@
 
 <body>
 
+
+
+<!-- TELA DE BLOQUEIO B2B (Cole logo após a tag <body>) -->
+<div id="lockscreen-overlay" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0b0b0e;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+    <div style="
+        background: #121216;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        border: 1px solid #00f2fe;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    ">
+        <!-- Ícone / Cadeado Emoticon -->
+        <div style="font-size: 3rem; margin-bottom: 20px; color: #00f2fe; filter: drop-shadow(0 0 8px #00f2fe);">🔒</div>
+        
+        <h2 style="color: #ffffff; margin-bottom: 10px; font-weight: 600;">Portal B2B Exclusivo</h2>
+        <p style="color: #a0a0b0; font-size: 0.9rem; margin-bottom: 25px;">Insira a senha de parceiro para acessar o catálogo de atacado.</p>
+        
+        <!-- Campo de Senha -->
+        <input type="password" id="b2b-password" placeholder="Digite a senha aqui..." style="
+            width: 100%;
+            padding: 12px 15px;
+            background: #1c1c24;
+            border: 1px solid #333344;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+        " onfocus="this.style.borderColor='#00f2fe'; this.style.boxShadow='0 0 8px rgba(0,242,254,0.3)';" 
+           onblur="this.style.borderColor='#333344'; this.style.boxShadow='none';">
+        
+        <!-- Mensagem de Erro -->
+        <div id="error-msg" style="color: #ff4a5a; font-size: 0.85rem; margin-top: 10px; min-height: 20px; font-weight: 500;"></div>
+        
+        <!-- Botão de Entrar -->
+        <button onclick="checkB2bPassword()" style="
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            border: none;
+            border-radius: 6px;
+            color: #000000;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+            transition: 0.2s;
+        " onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 20px rgba(0, 242, 254, 0.6)';"
+           onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0, 242, 254, 0.4)';">
+            Acessar Portal
+        </button>
+    </div>
+</div>
+
+<script>
+    // Defina a sua senha aqui (substitua pelo que desejar)
+    const SENHA_CORRETA = "crazyb2b2026"; 
+
+    function checkB2bPassword() {
+        const inputSenha = document.getElementById('b2b-password').value;
+        const overlay = document.getElementById('lockscreen-overlay');
+        const erroDiv = document.getElementById('error-msg');
+
+        if (inputSenha === SENHA_CORRETA) {
+            // Remove a tela de bloqueio com um efeito suave de sumiço
+            overlay.style.transition = "opacity 0.5s ease";
+            overlay.style.opacity = "0";
+            setTimeout(() => {
+                overlay.style.display = "none";
+            }, 500);
+        } else {
+            // Exibe mensagem de erro se errar
+            erroDiv.innerText = "Senha incorreta. Tente novamente.";
+            document.getElementById('b2b-password').value = "";
+            document.getElementById('b2b-password').focus();
+        }
+    }
+
+    // Permite dar 'Enter' no teclado para enviar a senha
+    document.getElementById('b2b-password').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkB2bPassword();
+        }
+    });
+</script>
+
+
+  
+
 <header class="hero-banner">
 <img src="banner.png" class="banner-img" alt="Banner Crazy Fantasy">
 </header>
